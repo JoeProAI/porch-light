@@ -1,0 +1,62 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Porch Light",
+  "colors": {
+    "primary": "#000000"
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get started",
+        "pages": [
+          "index",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "Product",
+        "pages": [
+          "architecture",
+          "ranking",
+          "evidence-trail",
+          "eoc-snapshot-mode"
+        ]
+      },
+      {
+        "group": "Data",
+        "pages": [
+          "data-sources",
+          "zetaris-federation",
+          "country-adapters"
+        ]
+      },
+      {
+        "group": "Models",
+        "pages": [
+          "meterless-and-nemotron",
+          "eval"
+        ]
+      },
+      {
+        "group": "Trust",
+        "pages": [
+          "privacy",
+          "license"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": [
+          "deploy"
+        ]
+      },
+      {
+        "group": "Sponsors",
+        "pages": [
+          "sponsors"
+        ]
+      }
+    ]
+  }
+}

@@ -70,12 +70,12 @@ last update: Wed Oct 21 2026 8:20 PM ET
 
 ## Area: Docs
 owner now: Hackathon Desk docs seat  (primary Hackathon Desk docs seat, backup Claude Code)
-state: not started
-next step: see your CREW brief
-branch: desk/docs-*   open PRs: none
-how to run: n/a
-blocked: none
-last update: Wed Oct 21 2026 8:20 PM ET
+state: in progress
+next step: fill pages after the 10 PM merge window and once the contract lands; add the openapi pointer and api-reference/ only after contract/openapi.yaml is on main; set brand colors and logo from design tokens
+branch: desk/docs-stubs   open PRs: see PR "Docs: site skeleton and non-contract stub pages"
+how to run: cd docs && npx mint dev
+blocked: API reference waits on contract/openapi.yaml (G1)
+last update: Wed Oct 21 2026 8:40 PM ET
 
 ## Area: Front matter and ops
 owner now: Hackathon Desk  (primary Hackathon Desk, backup Devin)
