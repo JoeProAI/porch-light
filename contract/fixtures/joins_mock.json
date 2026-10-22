@@ -1,0 +1,78 @@
+{
+  "proposals": [
+    {
+      "id": "jp-mock-001",
+      "from_table": "cms_nursing_homes",
+      "from_key": "ssa_county",
+      "to_table": "nber_ssa_fips",
+      "to_key": "fips",
+      "method": "ssa_to_fips_crosswalk",
+      "measured_match_rate": 1.0,
+      "fan_out": 1.0,
+      "threshold": 0.95,
+      "status": "accepted",
+      "seen_before": false,
+      "query_id": "zq-mock-201"
+    },
+    {
+      "id": "jp-mock-002",
+      "from_table": "cms_dialysis",
+      "from_key": "zip",
+      "to_table": "empower",
+      "to_key": "zip",
+      "method": "zip_to_empower",
+      "measured_match_rate": 0.98,
+      "fan_out": 1.0,
+      "threshold": 0.95,
+      "status": "accepted",
+      "seen_before": false,
+      "query_id": "zq-mock-202"
+    },
+    {
+      "id": "jp-mock-003",
+      "from_table": "cms_dialysis",
+      "from_key": "ccn",
+      "to_table": "tiger_tracts_2024",
+      "to_key": "tract_geoid",
+      "method": "census_geocode",
+      "measured_match_rate": 0.92,
+      "fan_out": 1.0,
+      "threshold": 0.85,
+      "status": "accepted",
+      "seen_before": false,
+      "query_id": "zq-mock-203"
+    },
+    {
+      "id": "jp-mock-004",
+      "from_table": "cms_dialysis",
+      "from_key": "ccn",
+      "to_table": "empower",
+      "to_key": "ccn",
+      "method": "exact_key",
+      "measured_match_rate": 0.0,
+      "fan_out": 0.0,
+      "threshold": 0.95,
+      "status": "refused",
+      "seen_before": false,
+      "query_id": "zq-mock-204"
+    }
+  ],
+  "failed": [
+    {
+      "from_key": "ccn",
+      "to_key": "tract_geoid",
+      "method": "census_geocode",
+      "reason": "2 dialysis centers could not be geocoded (mock)",
+      "row_count": 2,
+      "query_id": "zq-mock-205"
+    },
+    {
+      "from_key": "zip",
+      "to_key": "zip",
+      "method": "zip_to_empower",
+      "reason": "1 ZIP outside the emPOWER coverage layer (mock)",
+      "row_count": 1,
+      "query_id": "zq-mock-206"
+    }
+  ]
+}

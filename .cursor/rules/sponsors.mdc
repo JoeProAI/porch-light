@@ -1,0 +1,38 @@
+---
+description: How each sponsor technology must be used in Porch Light
+alwaysApply: true
+---
+
+# Sponsors
+
+## Zetaris
+
+The only door to data. Every runtime read is federated SQL through
+Zetaris: the local Docker install on the 5080 PC, never the AWS cluster
+route. Postgres plus PostGIS registers as a JDBC datasource; point in
+polygon runs in PostGIS. The USL model `porch_light_usl` declares entities
+and relationships; DQ rules feed the "couldn't join" list. Join match
+rates come from Zetaris count queries, never an LLM confidence. Every
+query id lands in the evidence record and the audit log.
+
+## Meterless
+
+The only door to models. The app talks to one OpenAI-compatible base URL
+on the Meterless Runtime (Nightshift). Bearer token is read from
+Nightshift's proxy-token file at runtime, never committed or logged.
+Engines: Scout Intent signs every export, H-MEM with TrustLedger links
+claims to fact ids and query ids, a minimal World Model tracks alert,
+check-ins and network state.
+
+## NVIDIA Nemotron
+
+The only model family in the product. Join proposals, explanations, call
+scripts, Content Safety, Parse and embeddings are Nemotron via NIM (cloud)
+or local GGUF on the RTX 5080 through Meterless. No non-NVIDIA model runs
+in the runtime path.
+
+## Cursor
+
+Contract commit and cloud agents for the web UI. These rules in
+`.cursor/rules/` are how every agent (Cursor included) stays inside its
+area, follows the house rules and keeps HANDOFF.md current.

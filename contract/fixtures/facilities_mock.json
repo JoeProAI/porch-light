@@ -1,0 +1,6547 @@
+{
+  "items": [
+    {
+      "id": "fac_mock_586901",
+      "country": "us",
+      "name": "Bayshore Palms Care Center (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "586901"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "7251 Mock Blvd, Bradenton FL 34216",
+      "zip": "34216",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081567336"
+      },
+      "lat": 27.51413,
+      "lon": -82.490478,
+      "attributes": {
+        "star_rating": 2,
+        "staffing_rn_hours": 0.66,
+        "beds": 168
+      },
+      "score": {
+        "total": 0.5558,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.222,
+            "weight": 0.25,
+            "weighted": 0.0555,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.68,
+            "weight": 0.2,
+            "weighted": 0.136,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.829,
+            "weight": 0.15,
+            "weighted": 0.1243,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 18,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-001",
+          "zq-mock-002",
+          "zq-mock-003",
+          "zq-mock-004",
+          "zq-mock-005"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-001"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-006"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-002"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-003"
+          }
+        ],
+        "score": {
+          "total": 0.5558,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.222,
+              "weight": 0.25,
+              "weighted": 0.0555,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.68,
+              "weight": 0.2,
+              "weighted": 0.136,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.829,
+              "weight": 0.15,
+              "weighted": 0.1243,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 18
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.222,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-002"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 120,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-003"
+          },
+          {
+            "name": "star_rating",
+            "value": 2,
+            "unit": "mock",
+            "query_id": "zq-mock-001"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.66,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-001"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Bayshore Palms Care Center ranks here because mock SVI percentile 0.222 and mock emPOWER density 0.68 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-000"
+        },
+        "ledger_ids": [
+          "tl-mock-000a",
+          "tl-mock-000b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_607754",
+      "country": "us",
+      "name": "Manatee River Senior Living (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "607754"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "9340 Mock Blvd, Bradenton FL 34211",
+      "zip": "34211",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081590124"
+      },
+      "lat": 27.542219,
+      "lon": -82.537237,
+      "attributes": {
+        "star_rating": 5,
+        "staffing_rn_hours": 0.37,
+        "beds": 186
+      },
+      "score": {
+        "total": 0.7293,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.885,
+            "weight": 0.25,
+            "weighted": 0.2213,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.813,
+            "weight": 0.2,
+            "weighted": 0.1626,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.703,
+            "weight": 0.15,
+            "weighted": 0.1054,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 4,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-007",
+          "zq-mock-008",
+          "zq-mock-009",
+          "zq-mock-010",
+          "zq-mock-011"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-007"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-012"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-008"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-009"
+          }
+        ],
+        "score": {
+          "total": 0.7293,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.885,
+              "weight": 0.25,
+              "weighted": 0.2213,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.813,
+              "weight": 0.2,
+              "weighted": 0.1626,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.703,
+              "weight": 0.15,
+              "weighted": 0.1054,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 4
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.885,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-008"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 348,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-009"
+          },
+          {
+            "name": "star_rating",
+            "value": 5,
+            "unit": "mock",
+            "query_id": "zq-mock-007"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.37,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-007"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Manatee River Senior Living ranks here because mock SVI percentile 0.885 and mock emPOWER density 0.813 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-001"
+        },
+        "ledger_ids": [
+          "tl-mock-001a",
+          "tl-mock-001b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_523693",
+      "country": "us",
+      "name": "Palma Sola Nursing and Rehab (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "523693"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "9153 Mock Blvd, Bradenton FL 34222",
+      "zip": "34222",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081385000"
+      },
+      "lat": 27.275859,
+      "lon": -82.259797,
+      "attributes": {
+        "star_rating": 1,
+        "staffing_rn_hours": 0.64,
+        "beds": 195
+      },
+      "score": {
+        "total": 0.5525,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.523,
+            "weight": 0.25,
+            "weighted": 0.1308,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.495,
+            "weight": 0.2,
+            "weighted": 0.099,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.551,
+            "weight": 0.15,
+            "weighted": 0.0827,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 19,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-013",
+          "zq-mock-014",
+          "zq-mock-015",
+          "zq-mock-016",
+          "zq-mock-017"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-013"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-018"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-014"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-015"
+          }
+        ],
+        "score": {
+          "total": 0.5525,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.523,
+              "weight": 0.25,
+              "weighted": 0.1308,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.495,
+              "weight": 0.2,
+              "weighted": 0.099,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.551,
+              "weight": 0.15,
+              "weighted": 0.0827,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 19
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.523,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-014"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 111,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-015"
+          },
+          {
+            "name": "star_rating",
+            "value": 1,
+            "unit": "mock",
+            "query_id": "zq-mock-013"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.64,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-013"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Palma Sola Nursing and Rehab ranks here because mock SVI percentile 0.523 and mock emPOWER density 0.495 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-002"
+        },
+        "ledger_ids": [
+          "tl-mock-002a",
+          "tl-mock-002b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_655455",
+      "country": "us",
+      "name": "Gulf Breeze Health Center (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "655455"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "1733 Mock Blvd, Bradenton FL 34219",
+      "zip": "34219",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081831692"
+      },
+      "lat": 27.363729,
+      "lon": -82.381768,
+      "attributes": {
+        "star_rating": 2,
+        "staffing_rn_hours": 0.35,
+        "beds": 217
+      },
+      "score": {
+        "total": 0.4817,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.595,
+            "weight": 0.25,
+            "weighted": 0.1487,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.306,
+            "weight": 0.2,
+            "weighted": 0.0612,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.212,
+            "weight": 0.15,
+            "weighted": 0.0318,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 22,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-019",
+          "zq-mock-020",
+          "zq-mock-021",
+          "zq-mock-022",
+          "zq-mock-023"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-019"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-024"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-020"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-021"
+          }
+        ],
+        "score": {
+          "total": 0.4817,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.595,
+              "weight": 0.25,
+              "weighted": 0.1487,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.306,
+              "weight": 0.2,
+              "weighted": 0.0612,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.212,
+              "weight": 0.15,
+              "weighted": 0.0318,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 22
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.595,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-020"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 196,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-021"
+          },
+          {
+            "name": "star_rating",
+            "value": 2,
+            "unit": "mock",
+            "query_id": "zq-mock-019"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.35,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-019"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Gulf Breeze Health Center ranks here because mock SVI percentile 0.595 and mock emPOWER density 0.306 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-003"
+        },
+        "ledger_ids": [
+          "tl-mock-003a",
+          "tl-mock-003b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_108860",
+      "country": "us",
+      "name": "Bradenton Oaks Nursing Home (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "108860"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "6628 Mock Blvd, Bradenton FL 34222",
+      "zip": "34222",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081796941"
+      },
+      "lat": 27.402225,
+      "lon": -82.518973,
+      "attributes": {
+        "star_rating": 1,
+        "staffing_rn_hours": 0.83,
+        "beds": 143
+      },
+      "score": {
+        "total": 0.6078,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.269,
+            "weight": 0.25,
+            "weighted": 0.0673,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.689,
+            "weight": 0.2,
+            "weighted": 0.1378,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.418,
+            "weight": 0.15,
+            "weighted": 0.0627,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 1,
+            "weight": 0.1,
+            "weighted": 0.1,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 12,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-025",
+          "zq-mock-026",
+          "zq-mock-027",
+          "zq-mock-028",
+          "zq-mock-029"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-025"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-030"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-026"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-027"
+          }
+        ],
+        "score": {
+          "total": 0.6078,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.269,
+              "weight": 0.25,
+              "weighted": 0.0673,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.689,
+              "weight": 0.2,
+              "weighted": 0.1378,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.418,
+              "weight": 0.15,
+              "weighted": 0.0627,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 1,
+              "weight": 0.1,
+              "weighted": 0.1,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 12
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.269,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-026"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 406,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-027"
+          },
+          {
+            "name": "star_rating",
+            "value": 1,
+            "unit": "mock",
+            "query_id": "zq-mock-025"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.83,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-025"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Bradenton Oaks Nursing Home ranks here because mock SVI percentile 0.269 and mock emPOWER density 0.689 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-004"
+        },
+        "ledger_ids": [
+          "tl-mock-004a",
+          "tl-mock-004b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_411740",
+      "country": "us",
+      "name": "Cortez Cove Skilled Care (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "411740"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "6514 Mock Blvd, Bradenton FL 34221",
+      "zip": "34221",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081684245"
+      },
+      "lat": 27.45532,
+      "lon": -82.693018,
+      "attributes": {
+        "star_rating": 3,
+        "staffing_rn_hours": 0.47,
+        "beds": 205
+      },
+      "score": {
+        "total": 0.607,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.675,
+            "weight": 0.25,
+            "weighted": 0.1688,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.314,
+            "weight": 0.2,
+            "weighted": 0.0628,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.903,
+            "weight": 0.15,
+            "weighted": 0.1354,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 13,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-031",
+          "zq-mock-032",
+          "zq-mock-033",
+          "zq-mock-034",
+          "zq-mock-035"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-031"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-036"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-032"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-033"
+          }
+        ],
+        "score": {
+          "total": 0.607,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.675,
+              "weight": 0.25,
+              "weighted": 0.1688,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.314,
+              "weight": 0.2,
+              "weighted": 0.0628,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.903,
+              "weight": 0.15,
+              "weighted": 0.1354,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 13
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.675,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-032"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 60,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-033"
+          },
+          {
+            "name": "star_rating",
+            "value": 3,
+            "unit": "mock",
+            "query_id": "zq-mock-031"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.47,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-031"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Cortez Cove Skilled Care ranks here because mock SVI percentile 0.675 and mock emPOWER density 0.314 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-005"
+        },
+        "ledger_ids": [
+          "tl-mock-005a",
+          "tl-mock-005b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_507053",
+      "country": "us",
+      "name": "Terra Ceia Bay Health (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "507053"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "7356 Mock Blvd, Bradenton FL 34222",
+      "zip": "34222",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081916645"
+      },
+      "lat": 27.363372,
+      "lon": -82.336998,
+      "attributes": {
+        "star_rating": 4,
+        "staffing_rn_hours": 1.08,
+        "beds": 145
+      },
+      "score": {
+        "total": 0.7193,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.802,
+            "weight": 0.25,
+            "weighted": 0.2005,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.8,
+            "weight": 0.2,
+            "weighted": 0.16,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.792,
+            "weight": 0.15,
+            "weighted": 0.1188,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 5,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-037",
+          "zq-mock-038",
+          "zq-mock-039",
+          "zq-mock-040",
+          "zq-mock-041"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-037"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-042"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-038"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-039"
+          }
+        ],
+        "score": {
+          "total": 0.7193,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.802,
+              "weight": 0.25,
+              "weighted": 0.2005,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.8,
+              "weight": 0.2,
+              "weighted": 0.16,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.792,
+              "weight": 0.15,
+              "weighted": 0.1188,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 5
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.802,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-038"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 276,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-039"
+          },
+          {
+            "name": "star_rating",
+            "value": 4,
+            "unit": "mock",
+            "query_id": "zq-mock-037"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 1.08,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-037"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Terra Ceia Bay Health ranks here because mock SVI percentile 0.802 and mock emPOWER density 0.8 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-006"
+        },
+        "ledger_ids": [
+          "tl-mock-006a",
+          "tl-mock-006b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_200812",
+      "country": "us",
+      "name": "Parrish Pines Care Center (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "200812"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "5081 Mock Blvd, Bradenton FL 34219",
+      "zip": "34219",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081614292"
+      },
+      "lat": 27.124193,
+      "lon": -82.304275,
+      "attributes": {
+        "star_rating": 4,
+        "staffing_rn_hours": 0.27,
+        "beds": 188
+      },
+      "score": {
+        "total": 0.7159,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.976,
+            "weight": 0.25,
+            "weighted": 0.244,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.874,
+            "weight": 0.2,
+            "weighted": 0.1748,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.381,
+            "weight": 0.15,
+            "weighted": 0.0571,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 6,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-043",
+          "zq-mock-044",
+          "zq-mock-045",
+          "zq-mock-046",
+          "zq-mock-047"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-043"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-048"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-044"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-045"
+          }
+        ],
+        "score": {
+          "total": 0.7159,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.976,
+              "weight": 0.25,
+              "weighted": 0.244,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.874,
+              "weight": 0.2,
+              "weighted": 0.1748,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.381,
+              "weight": 0.15,
+              "weighted": 0.0571,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 6
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.976,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-044"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 222,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-045"
+          },
+          {
+            "name": "star_rating",
+            "value": 4,
+            "unit": "mock",
+            "query_id": "zq-mock-043"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.27,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-043"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Parrish Pines Care Center ranks here because mock SVI percentile 0.976 and mock emPOWER density 0.874 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-007"
+        },
+        "ledger_ids": [
+          "tl-mock-007a",
+          "tl-mock-007b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_190413",
+      "country": "us",
+      "name": "Anna Maria Senior Health (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "190413"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "3944 Mock Blvd, Bradenton FL 34219",
+      "zip": "34219",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081767705"
+      },
+      "lat": 27.389823,
+      "lon": -82.651466,
+      "attributes": {
+        "star_rating": 1,
+        "staffing_rn_hours": 0.82,
+        "beds": 78
+      },
+      "score": {
+        "total": 0.4571,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.262,
+            "weight": 0.25,
+            "weighted": 0.0655,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.678,
+            "weight": 0.2,
+            "weighted": 0.1356,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.107,
+            "weight": 0.15,
+            "weighted": 0.016,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 23,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-049",
+          "zq-mock-050",
+          "zq-mock-051",
+          "zq-mock-052",
+          "zq-mock-053"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-049"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-054"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-050"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-051"
+          }
+        ],
+        "score": {
+          "total": 0.4571,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.262,
+              "weight": 0.25,
+              "weighted": 0.0655,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.678,
+              "weight": 0.2,
+              "weighted": 0.1356,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.107,
+              "weight": 0.15,
+              "weighted": 0.016,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 23
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.262,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-050"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 240,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-051"
+          },
+          {
+            "name": "star_rating",
+            "value": 1,
+            "unit": "mock",
+            "query_id": "zq-mock-049"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.82,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-049"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Anna Maria Senior Health ranks here because mock SVI percentile 0.262 and mock emPOWER density 0.678 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-008"
+        },
+        "ledger_ids": [
+          "tl-mock-008a",
+          "tl-mock-008b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_532351",
+      "country": "us",
+      "name": "Lakewood Ranch Care (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "532351"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "4664 Mock Blvd, Bradenton FL 34209",
+      "zip": "34209",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081325255"
+      },
+      "lat": 27.330894,
+      "lon": -82.567517,
+      "attributes": {
+        "star_rating": 1,
+        "staffing_rn_hours": 0.55,
+        "beds": 163
+      },
+      "score": {
+        "total": 0.6099,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.721,
+            "weight": 0.25,
+            "weighted": 0.1802,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.834,
+            "weight": 0.2,
+            "weighted": 0.1668,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.153,
+            "weight": 0.15,
+            "weighted": 0.0229,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 11,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-055",
+          "zq-mock-056",
+          "zq-mock-057",
+          "zq-mock-058",
+          "zq-mock-059"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-055"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-060"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-056"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-057"
+          }
+        ],
+        "score": {
+          "total": 0.6099,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.721,
+              "weight": 0.25,
+              "weighted": 0.1802,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.834,
+              "weight": 0.2,
+              "weighted": 0.1668,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.153,
+              "weight": 0.15,
+              "weighted": 0.0229,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 11
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.721,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-056"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 458,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-057"
+          },
+          {
+            "name": "star_rating",
+            "value": 1,
+            "unit": "mock",
+            "query_id": "zq-mock-055"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.55,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-055"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Lakewood Ranch Care ranks here because mock SVI percentile 0.721 and mock emPOWER density 0.834 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-009"
+        },
+        "ledger_ids": [
+          "tl-mock-009a",
+          "tl-mock-009b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_338797",
+      "country": "us",
+      "name": "Ellenton Gardens Nursing (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "338797"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "292 Mock Blvd, Bradenton FL 34205",
+      "zip": "34205",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081585408"
+      },
+      "lat": 27.547344,
+      "lon": -82.485765,
+      "attributes": {
+        "star_rating": 2,
+        "staffing_rn_hours": 0.49,
+        "beds": 160
+      },
+      "score": {
+        "total": 0.5757,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.486,
+            "weight": 0.25,
+            "weighted": 0.1215,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.909,
+            "weight": 0.2,
+            "weighted": 0.1818,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.216,
+            "weight": 0.15,
+            "weighted": 0.0324,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 17,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-061",
+          "zq-mock-062",
+          "zq-mock-063",
+          "zq-mock-064",
+          "zq-mock-065"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-061"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-066"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-062"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-063"
+          }
+        ],
+        "score": {
+          "total": 0.5757,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.486,
+              "weight": 0.25,
+              "weighted": 0.1215,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.909,
+              "weight": 0.2,
+              "weighted": 0.1818,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.216,
+              "weight": 0.15,
+              "weighted": 0.0324,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 17
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.486,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-062"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 444,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-063"
+          },
+          {
+            "name": "star_rating",
+            "value": 2,
+            "unit": "mock",
+            "query_id": "zq-mock-061"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.49,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-061"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Ellenton Gardens Nursing ranks here because mock SVI percentile 0.486 and mock emPOWER density 0.909 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-010"
+        },
+        "ledger_ids": [
+          "tl-mock-010a",
+          "tl-mock-010b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_497738",
+      "country": "us",
+      "name": "Oneco Manor Health Center (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "497738"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "3108 Mock Blvd, Bradenton FL 34207",
+      "zip": "34207",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081728292"
+      },
+      "lat": 27.089781,
+      "lon": -82.625083,
+      "attributes": {
+        "star_rating": 1,
+        "staffing_rn_hours": 0.29,
+        "beds": 161
+      },
+      "score": {
+        "total": 0.5315,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.566,
+            "weight": 0.25,
+            "weighted": 0.1415,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.633,
+            "weight": 0.2,
+            "weighted": 0.1266,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.156,
+            "weight": 0.15,
+            "weighted": 0.0234,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 21,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-067",
+          "zq-mock-068",
+          "zq-mock-069",
+          "zq-mock-070",
+          "zq-mock-071"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-067"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-072"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-068"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-069"
+          }
+        ],
+        "score": {
+          "total": 0.5315,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.566,
+              "weight": 0.25,
+              "weighted": 0.1415,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.633,
+              "weight": 0.2,
+              "weighted": 0.1266,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.156,
+              "weight": 0.15,
+              "weighted": 0.0234,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 21
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.566,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-068"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 217,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-069"
+          },
+          {
+            "name": "star_rating",
+            "value": 1,
+            "unit": "mock",
+            "query_id": "zq-mock-067"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.29,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-067"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Oneco Manor Health Center ranks here because mock SVI percentile 0.566 and mock emPOWER density 0.633 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-011"
+        },
+        "ledger_ids": [
+          "tl-mock-011a",
+          "tl-mock-011b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_442781",
+      "country": "us",
+      "name": "Samoset Shores Nursing (mock)",
+      "type": "nursing_home",
+      "key": {
+        "type": "ccn",
+        "value": "442781"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "562 Mock Blvd, Bradenton FL 34209",
+      "zip": "34209",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081479395"
+      },
+      "lat": 27.220083,
+      "lon": -82.575834,
+      "attributes": {
+        "star_rating": 5,
+        "staffing_rn_hours": 0.87,
+        "beds": 107
+      },
+      "score": {
+        "total": 0.4429,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 0.8,
+            "weight": 0.3,
+            "weighted": 0.24
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.269,
+            "weight": 0.25,
+            "weighted": 0.0673,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.304,
+            "weight": 0.2,
+            "weighted": 0.0608,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.499,
+            "weight": 0.15,
+            "weighted": 0.0748,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 25,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-073",
+          "zq-mock-074",
+          "zq-mock-075",
+          "zq-mock-076",
+          "zq-mock-077"
+        ],
+        "sources": [
+          {
+            "name": "cms_nursing_homes",
+            "dataset_id": "4pq5-n9py",
+            "url": "https://data.cms.gov/provider-data/dataset/4pq5-n9py",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_nursing_homes",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_nursing_homes/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "ccn",
+            "method": "postgis_point_in_polygon",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-073"
+          },
+          {
+            "from_key": "ssa_county",
+            "to_key": "fips",
+            "method": "ssa_to_fips_crosswalk",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-078"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-074"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-075"
+          }
+        ],
+        "score": {
+          "total": 0.4429,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 0.8,
+              "weight": 0.3,
+              "weighted": 0.24
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.269,
+              "weight": 0.25,
+              "weighted": 0.0673,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.304,
+              "weight": 0.2,
+              "weighted": 0.0608,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.499,
+              "weight": 0.15,
+              "weighted": 0.0748,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 25
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.269,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-074"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 432,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-075"
+          },
+          {
+            "name": "star_rating",
+            "value": 5,
+            "unit": "mock",
+            "query_id": "zq-mock-073"
+          },
+          {
+            "name": "staffing_rn_hours",
+            "value": 0.87,
+            "unit": "hours per resident day, mock",
+            "query_id": "zq-mock-073"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Samoset Shores Nursing ranks here because mock SVI percentile 0.269 and mock emPOWER density 0.304 put it in the upper band, citing 42 CFR 483.73 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 483.73",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-012"
+        },
+        "ledger_ids": [
+          "tl-mock-012a",
+          "tl-mock-012b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_941356",
+      "country": "us",
+      "name": "Bradenton Dialysis Center (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "941356"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "8396 Mock Blvd, Bradenton FL 34216",
+      "zip": "34216",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081228674"
+      },
+      "lat": 27.323326,
+      "lon": -82.504224,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": false,
+        "five_star": 3,
+        "stations": 10
+      },
+      "score": {
+        "total": 0.6203,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.31,
+            "weight": 0.25,
+            "weighted": 0.0775,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.802,
+            "weight": 0.2,
+            "weighted": 0.1604,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.549,
+            "weight": 0.15,
+            "weighted": 0.0824,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 9,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-079",
+          "zq-mock-080",
+          "zq-mock-081",
+          "zq-mock-082",
+          "zq-mock-083"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-079"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-080"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-081"
+          }
+        ],
+        "score": {
+          "total": 0.6203,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.31,
+              "weight": 0.25,
+              "weighted": 0.0775,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.802,
+              "weight": 0.2,
+              "weighted": 0.1604,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.549,
+              "weight": 0.15,
+              "weighted": 0.0824,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 9
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.31,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-080"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 34,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-081"
+          },
+          {
+            "name": "late_shift",
+            "value": false,
+            "unit": "mock",
+            "query_id": "zq-mock-079"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Bradenton Dialysis Center ranks here because mock SVI percentile 0.31 and mock emPOWER density 0.802 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-013"
+        },
+        "ledger_ids": [
+          "tl-mock-013a",
+          "tl-mock-013b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_118385",
+      "country": "us",
+      "name": "Gulf Coast Kidney Care (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "118385"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "7309 Mock Blvd, Bradenton FL 34216",
+      "zip": "34216",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081537500"
+      },
+      "lat": 27.425974,
+      "lon": -82.548533,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": false,
+        "five_star": 5,
+        "stations": 38
+      },
+      "score": {
+        "total": 0.5336,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.509,
+            "weight": 0.25,
+            "weighted": 0.1273,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.422,
+            "weight": 0.2,
+            "weighted": 0.0844,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.146,
+            "weight": 0.15,
+            "weighted": 0.0219,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 20,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-084",
+          "zq-mock-085",
+          "zq-mock-086",
+          "zq-mock-087",
+          "zq-mock-088"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-084"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-085"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-086"
+          }
+        ],
+        "score": {
+          "total": 0.5336,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.509,
+              "weight": 0.25,
+              "weighted": 0.1273,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.422,
+              "weight": 0.2,
+              "weighted": 0.0844,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.146,
+              "weight": 0.15,
+              "weighted": 0.0219,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 20
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.509,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-085"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 405,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-086"
+          },
+          {
+            "name": "late_shift",
+            "value": false,
+            "unit": "mock",
+            "query_id": "zq-mock-084"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Gulf Coast Kidney Care ranks here because mock SVI percentile 0.509 and mock emPOWER density 0.422 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-014"
+        },
+        "ledger_ids": [
+          "tl-mock-014a",
+          "tl-mock-014b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_542633",
+      "country": "us",
+      "name": "Manatee Bay Dialysis (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "542633"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "5361 Mock Blvd, Bradenton FL 34209",
+      "zip": "34209",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081659439"
+      },
+      "lat": 27.112114,
+      "lon": -82.344285,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": true,
+        "five_star": 1,
+        "stations": 32
+      },
+      "score": {
+        "total": 0.6339,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.081,
+            "weight": 0.25,
+            "weighted": 0.0203,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.92,
+            "weight": 0.2,
+            "weighted": 0.184,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.864,
+            "weight": 0.15,
+            "weighted": 0.1296,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 8,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-089",
+          "zq-mock-090",
+          "zq-mock-091",
+          "zq-mock-092",
+          "zq-mock-093"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-089"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-090"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-091"
+          }
+        ],
+        "score": {
+          "total": 0.6339,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.081,
+              "weight": 0.25,
+              "weighted": 0.0203,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.92,
+              "weight": 0.2,
+              "weighted": 0.184,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.864,
+              "weight": 0.15,
+              "weighted": 0.1296,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 8
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.081,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-090"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 266,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-091"
+          },
+          {
+            "name": "late_shift",
+            "value": true,
+            "unit": "mock",
+            "query_id": "zq-mock-089"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Manatee Bay Dialysis ranks here because mock SVI percentile 0.081 and mock emPOWER density 0.92 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-015"
+        },
+        "ledger_ids": [
+          "tl-mock-015a",
+          "tl-mock-015b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_420295",
+      "country": "us",
+      "name": "Palma Sola Renal Center (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "420295"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "4237 Mock Blvd, Bradenton FL 34205",
+      "zip": "34205",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081325346"
+      },
+      "lat": 27.561452,
+      "lon": -82.679162,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": true,
+        "five_star": 1,
+        "stations": 20
+      },
+      "score": {
+        "total": 0.5979,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.631,
+            "weight": 0.25,
+            "weighted": 0.1578,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.432,
+            "weight": 0.2,
+            "weighted": 0.0864,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.358,
+            "weight": 0.15,
+            "weighted": 0.0537,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 14,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-094",
+          "zq-mock-095",
+          "zq-mock-096",
+          "zq-mock-097",
+          "zq-mock-098"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-094"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-095"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-096"
+          }
+        ],
+        "score": {
+          "total": 0.5979,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.631,
+              "weight": 0.25,
+              "weighted": 0.1578,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.432,
+              "weight": 0.2,
+              "weighted": 0.0864,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.358,
+              "weight": 0.15,
+              "weighted": 0.0537,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 14
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.631,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-095"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 283,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-096"
+          },
+          {
+            "name": "late_shift",
+            "value": true,
+            "unit": "mock",
+            "query_id": "zq-mock-094"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Palma Sola Renal Center ranks here because mock SVI percentile 0.631 and mock emPOWER density 0.432 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-016"
+        },
+        "ledger_ids": [
+          "tl-mock-016a",
+          "tl-mock-016b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_300092",
+      "country": "us",
+      "name": "Cortez Road Dialysis (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "300092"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "4781 Mock Blvd, Bradenton FL 34208",
+      "zip": "34208",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081157739"
+      },
+      "lat": 27.314589,
+      "lon": -82.459225,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": false,
+        "five_star": 4,
+        "stations": 19
+      },
+      "score": {
+        "total": 0.5879,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.688,
+            "weight": 0.25,
+            "weighted": 0.172,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.051,
+            "weight": 0.2,
+            "weighted": 0.0102,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.705,
+            "weight": 0.15,
+            "weighted": 0.1057,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 15,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-099",
+          "zq-mock-100",
+          "zq-mock-101",
+          "zq-mock-102",
+          "zq-mock-103"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-099"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-100"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-101"
+          }
+        ],
+        "score": {
+          "total": 0.5879,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.688,
+              "weight": 0.25,
+              "weighted": 0.172,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.051,
+              "weight": 0.2,
+              "weighted": 0.0102,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.705,
+              "weight": 0.15,
+              "weighted": 0.1057,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 15
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.688,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-100"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 469,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-101"
+          },
+          {
+            "name": "late_shift",
+            "value": false,
+            "unit": "mock",
+            "query_id": "zq-mock-099"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Cortez Road Dialysis ranks here because mock SVI percentile 0.688 and mock emPOWER density 0.051 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-017"
+        },
+        "ledger_ids": [
+          "tl-mock-017a",
+          "tl-mock-017b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_776445",
+      "country": "us",
+      "name": "Lakewood Ranch Dialysis (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "776445"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "9500 Mock Blvd, Bradenton FL 34208",
+      "zip": "34208",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081350324"
+      },
+      "lat": 27.247595,
+      "lon": -82.455542,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": true,
+        "five_star": 5,
+        "stations": 20
+      },
+      "score": {
+        "total": 0.7428,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.443,
+            "weight": 0.25,
+            "weighted": 0.1108,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.908,
+            "weight": 0.2,
+            "weighted": 0.1816,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.336,
+            "weight": 0.15,
+            "weighted": 0.0504,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 1,
+            "weight": 0.1,
+            "weighted": 0.1,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 2,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-104",
+          "zq-mock-105",
+          "zq-mock-106",
+          "zq-mock-107",
+          "zq-mock-108"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-104"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-105"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-106"
+          }
+        ],
+        "score": {
+          "total": 0.7428,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.443,
+              "weight": 0.25,
+              "weighted": 0.1108,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.908,
+              "weight": 0.2,
+              "weighted": 0.1816,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.336,
+              "weight": 0.15,
+              "weighted": 0.0504,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 1,
+              "weight": 0.1,
+              "weighted": 0.1,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 2
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.443,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-105"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 278,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-106"
+          },
+          {
+            "name": "late_shift",
+            "value": true,
+            "unit": "mock",
+            "query_id": "zq-mock-104"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Lakewood Ranch Dialysis ranks here because mock SVI percentile 0.443 and mock emPOWER density 0.908 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-018"
+        },
+        "ledger_ids": [
+          "tl-mock-018a",
+          "tl-mock-018b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_676669",
+      "country": "us",
+      "name": "Ellenton Kidney Center (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "676669"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "2898 Mock Blvd, Bradenton FL 34219",
+      "zip": "34219",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081111432"
+      },
+      "lat": 27.171806,
+      "lon": -82.301674,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": false,
+        "five_star": 5,
+        "stations": 21
+      },
+      "score": {
+        "total": 0.7394,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.83,
+            "weight": 0.25,
+            "weighted": 0.2075,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.9,
+            "weight": 0.2,
+            "weighted": 0.18,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.346,
+            "weight": 0.15,
+            "weighted": 0.0519,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 3,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-109",
+          "zq-mock-110",
+          "zq-mock-111",
+          "zq-mock-112",
+          "zq-mock-113"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-109"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-110"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-111"
+          }
+        ],
+        "score": {
+          "total": 0.7394,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.83,
+              "weight": 0.25,
+              "weighted": 0.2075,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.9,
+              "weight": 0.2,
+              "weighted": 0.18,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.346,
+              "weight": 0.15,
+              "weighted": 0.0519,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 3
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.83,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-110"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 459,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-111"
+          },
+          {
+            "name": "late_shift",
+            "value": false,
+            "unit": "mock",
+            "query_id": "zq-mock-109"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Ellenton Kidney Center ranks here because mock SVI percentile 0.83 and mock emPOWER density 0.9 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-019"
+        },
+        "ledger_ids": [
+          "tl-mock-019a",
+          "tl-mock-019b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_817692",
+      "country": "us",
+      "name": "Parrish Dialysis Care (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "817692"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "9882 Mock Blvd, Bradenton FL 34205",
+      "zip": "34205",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081781564"
+      },
+      "lat": 27.396035,
+      "lon": -82.269053,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": false,
+        "five_star": 1,
+        "stations": 34
+      },
+      "score": {
+        "total": 0.5794,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.174,
+            "weight": 0.25,
+            "weighted": 0.0435,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.584,
+            "weight": 0.2,
+            "weighted": 0.1168,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.794,
+            "weight": 0.15,
+            "weighted": 0.1191,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 16,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-114",
+          "zq-mock-115",
+          "zq-mock-116",
+          "zq-mock-117",
+          "zq-mock-118"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-114"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-115"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-116"
+          }
+        ],
+        "score": {
+          "total": 0.5794,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.174,
+              "weight": 0.25,
+              "weighted": 0.0435,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.584,
+              "weight": 0.2,
+              "weighted": 0.1168,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.794,
+              "weight": 0.15,
+              "weighted": 0.1191,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 16
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.174,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-115"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 135,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-116"
+          },
+          {
+            "name": "late_shift",
+            "value": false,
+            "unit": "mock",
+            "query_id": "zq-mock-114"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Parrish Dialysis Care ranks here because mock SVI percentile 0.174 and mock emPOWER density 0.584 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-020"
+        },
+        "ledger_ids": [
+          "tl-mock-020a",
+          "tl-mock-020b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_770608",
+      "country": "us",
+      "name": "Bayshore Renal Center (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "770608"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "619 Mock Blvd, Bradenton FL 34209",
+      "zip": "34209",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081839291"
+      },
+      "lat": 27.322443,
+      "lon": -82.356222,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": false,
+        "five_star": 1,
+        "stations": 18
+      },
+      "score": {
+        "total": 0.7963,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.851,
+            "weight": 0.25,
+            "weighted": 0.2127,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.771,
+            "weight": 0.2,
+            "weighted": 0.1542,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.863,
+            "weight": 0.15,
+            "weighted": 0.1294,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 1,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-119",
+          "zq-mock-120",
+          "zq-mock-121",
+          "zq-mock-122",
+          "zq-mock-123"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-119"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-120"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-121"
+          }
+        ],
+        "score": {
+          "total": 0.7963,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.851,
+              "weight": 0.25,
+              "weighted": 0.2127,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.771,
+              "weight": 0.2,
+              "weighted": 0.1542,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.863,
+              "weight": 0.15,
+              "weighted": 0.1294,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 1
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.851,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-120"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 192,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-121"
+          },
+          {
+            "name": "late_shift",
+            "value": false,
+            "unit": "mock",
+            "query_id": "zq-mock-119"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Bayshore Renal Center ranks here because mock SVI percentile 0.851 and mock emPOWER density 0.771 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-021"
+        },
+        "ledger_ids": [
+          "tl-mock-021a",
+          "tl-mock-021b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_642856",
+      "country": "us",
+      "name": "Oneco Dialysis Clinic (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "642856"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "1163 Mock Blvd, Bradenton FL 34222",
+      "zip": "34222",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081682873"
+      },
+      "lat": 27.568126,
+      "lon": -82.710872,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": true,
+        "five_star": 4,
+        "stations": 34
+      },
+      "score": {
+        "total": 0.6117,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.767,
+            "weight": 0.25,
+            "weighted": 0.1918,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.504,
+            "weight": 0.2,
+            "weighted": 0.1008,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.127,
+            "weight": 0.15,
+            "weighted": 0.0191,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 10,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-124",
+          "zq-mock-125",
+          "zq-mock-126",
+          "zq-mock-127",
+          "zq-mock-128"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-124"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-125"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-126"
+          }
+        ],
+        "score": {
+          "total": 0.6117,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.767,
+              "weight": 0.25,
+              "weighted": 0.1918,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.504,
+              "weight": 0.2,
+              "weighted": 0.1008,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.127,
+              "weight": 0.15,
+              "weighted": 0.0191,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 10
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.767,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-125"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 54,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-126"
+          },
+          {
+            "name": "late_shift",
+            "value": true,
+            "unit": "mock",
+            "query_id": "zq-mock-124"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Oneco Dialysis Clinic ranks here because mock SVI percentile 0.767 and mock emPOWER density 0.504 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-022"
+        },
+        "ledger_ids": [
+          "tl-mock-022a",
+          "tl-mock-022b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_110673",
+      "country": "us",
+      "name": "Terra Ceia Dialysis (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "110673"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "3132 Mock Blvd, Bradenton FL 34205",
+      "zip": "34205",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081571127"
+      },
+      "lat": 27.157233,
+      "lon": -82.32711,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": false,
+        "five_star": 1,
+        "stations": 38
+      },
+      "score": {
+        "total": 0.4455,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.144,
+            "weight": 0.25,
+            "weighted": 0.036,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.385,
+            "weight": 0.2,
+            "weighted": 0.077,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.217,
+            "weight": 0.15,
+            "weighted": 0.0325,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 24,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-129",
+          "zq-mock-130",
+          "zq-mock-131",
+          "zq-mock-132",
+          "zq-mock-133"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-129"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-130"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-131"
+          }
+        ],
+        "score": {
+          "total": 0.4455,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.144,
+              "weight": 0.25,
+              "weighted": 0.036,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.385,
+              "weight": 0.2,
+              "weighted": 0.077,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.217,
+              "weight": 0.15,
+              "weighted": 0.0325,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 24
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.144,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-130"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 276,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-131"
+          },
+          {
+            "name": "late_shift",
+            "value": false,
+            "unit": "mock",
+            "query_id": "zq-mock-129"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Terra Ceia Dialysis ranks here because mock SVI percentile 0.144 and mock emPOWER density 0.385 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-023"
+        },
+        "ledger_ids": [
+          "tl-mock-023a",
+          "tl-mock-023b"
+        ]
+      },
+      "mock": true
+    },
+    {
+      "id": "fac_mock_968637",
+      "country": "us",
+      "name": "Anna Maria Renal Care (mock)",
+      "type": "dialysis",
+      "key": {
+        "type": "ccn",
+        "value": "968637"
+      },
+      "alt_keys": [
+        {
+          "type": "fips",
+          "value": "12081"
+        }
+      ],
+      "address": "6742 Mock Blvd, Bradenton FL 34219",
+      "zip": "34219",
+      "county_key": {
+        "type": "fips",
+        "value": "12081"
+      },
+      "tract_key": {
+        "type": "tract_geoid",
+        "value": "12081984330"
+      },
+      "lat": 27.090865,
+      "lon": -82.291461,
+      "geocode": {
+        "source": "census_geocoder",
+        "match_quality": "exact"
+      },
+      "attributes": {
+        "late_shift": false,
+        "five_star": 4,
+        "stations": 40
+      },
+      "score": {
+        "total": 0.6644,
+        "terms": [
+          {
+            "name": "type_weight",
+            "input": 1.0,
+            "weight": 0.3,
+            "weighted": 0.3
+          },
+          {
+            "name": "svi_pct",
+            "input": 0.284,
+            "weight": 0.25,
+            "weighted": 0.071,
+            "note": "tract SVI overall percentile RPL_THEMES, mock value"
+          },
+          {
+            "name": "empower_density_pct",
+            "input": 0.918,
+            "weight": 0.2,
+            "weighted": 0.1836,
+            "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+          },
+          {
+            "name": "cms_risk",
+            "input": 0.732,
+            "weight": 0.15,
+            "weighted": 0.1098,
+            "note": "from CMS fields, mock value"
+          },
+          {
+            "name": "plan_flag",
+            "input": 0,
+            "weight": 0.1,
+            "weighted": 0.0,
+            "note": "county plan names the facility or area as a priority, mock value"
+          }
+        ],
+        "formula_version": "weights.yaml mock v0.1",
+        "rank": 7,
+        "tie_break": "facility type, then ccn"
+      },
+      "evidence": {
+        "zetaris_query_ids": [
+          "zq-mock-134",
+          "zq-mock-135",
+          "zq-mock-136",
+          "zq-mock-137",
+          "zq-mock-138"
+        ],
+        "sources": [
+          {
+            "name": "cms_dialysis",
+            "dataset_id": "23ew-n7w9",
+            "url": "https://data.cms.gov/provider-data/dataset/23ew-n7w9",
+            "license": "CMS public data"
+          },
+          {
+            "name": "svi_2022",
+            "dataset_id": "SVI_2022_US",
+            "url": "https://svi.cdc.gov/",
+            "license": "public domain, cite CDC/ATSDR SVI"
+          },
+          {
+            "name": "empower",
+            "dataset_id": "HHS_emPOWER_REST_Service_Public",
+            "url": "https://services2.arcgis.com/",
+            "license": "public, de-identified, small cells masked"
+          }
+        ],
+        "data_as_of": [
+          {
+            "source": "cms_dialysis",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/cms_dialysis/mock.provenance.json"
+          },
+          {
+            "source": "svi_2022",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/svi_2022/mock.provenance.json"
+          },
+          {
+            "source": "empower",
+            "modified": "2024-09-15T00:00:00Z",
+            "fetched_at": "2024-10-09T06:00:00Z",
+            "snapshot_id": "snap_mock_12081_20241009T0600Z",
+            "stale": false,
+            "provenance_file": "data/snapshot/raw/empower/mock.provenance.json"
+          }
+        ],
+        "join_path": [
+          {
+            "from_key": "ccn",
+            "to_key": "tract_geoid",
+            "method": "census_geocode",
+            "match_rate": 0.92,
+            "query_id": "zq-mock-134"
+          },
+          {
+            "from_key": "tract_geoid",
+            "to_key": "fips",
+            "method": "exact_key",
+            "match_rate": 1.0,
+            "query_id": "zq-mock-135"
+          },
+          {
+            "from_key": "zip",
+            "to_key": "zip",
+            "method": "zip_to_empower",
+            "match_rate": 0.98,
+            "query_id": "zq-mock-136"
+          }
+        ],
+        "score": {
+          "total": 0.6644,
+          "terms": [
+            {
+              "name": "type_weight",
+              "input": 1.0,
+              "weight": 0.3,
+              "weighted": 0.3
+            },
+            {
+              "name": "svi_pct",
+              "input": 0.284,
+              "weight": 0.25,
+              "weighted": 0.071,
+              "note": "tract SVI overall percentile RPL_THEMES, mock value"
+            },
+            {
+              "name": "empower_density_pct",
+              "input": 0.918,
+              "weight": 0.2,
+              "weighted": 0.1836,
+              "note": "ZIP-level aggregate of electricity-dependent DME users, mock value"
+            },
+            {
+              "name": "cms_risk",
+              "input": 0.732,
+              "weight": 0.15,
+              "weighted": 0.1098,
+              "note": "from CMS fields, mock value"
+            },
+            {
+              "name": "plan_flag",
+              "input": 0,
+              "weight": 0.1,
+              "weighted": 0.0,
+              "note": "county plan names the facility or area as a priority, mock value"
+            }
+          ],
+          "formula_version": "weights.yaml mock v0.1",
+          "tie_break": "facility type, then ccn",
+          "rank": 7
+        },
+        "dq_results": [
+          {
+            "rule": "ccn_format",
+            "passed": true
+          },
+          {
+            "rule": "zip_is_5_digits",
+            "passed": true
+          },
+          {
+            "rule": "tract_geoid_11_digits",
+            "passed": true
+          },
+          {
+            "rule": "lat_lon_in_county_bbox",
+            "passed": true
+          }
+        ],
+        "failed_joins": [],
+        "facts": [
+          {
+            "name": "svi_pct",
+            "value": 0.284,
+            "unit": "percentile 0-1, mock",
+            "query_id": "zq-mock-135"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 359,
+            "unit": "electricity-dependent DME users per ZIP, mock",
+            "query_id": "zq-mock-136"
+          },
+          {
+            "name": "late_shift",
+            "value": false,
+            "unit": "mock",
+            "query_id": "zq-mock-134"
+          }
+        ],
+        "reason": {
+          "text": "MOCK explanation: Anna Maria Renal Care ranks here because mock SVI percentile 0.284 and mock emPOWER density 0.918 put it in the upper band, citing 42 CFR 494.62 and county plan section ESF-8 page 12 (mock).",
+          "rule_cites": [
+            {
+              "cite": "42 CFR 494.62",
+              "plan_section": "ESF-8 (mock)",
+              "page": 12
+            }
+          ],
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "provider": "nim",
+          "trace_id": "tr-mock-024"
+        },
+        "ledger_ids": [
+          "tl-mock-024a",
+          "tl-mock-024b"
+        ]
+      },
+      "mock": true
+    }
+  ],
+  "total": 25
+}

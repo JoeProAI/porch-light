@@ -1,0 +1,74 @@
+{
+  "run_id": "run_milton_12081_mock",
+  "steps": [
+    {
+      "step": "alert_loaded",
+      "provider": "none",
+      "mode": "none",
+      "latency_ms": 12,
+      "started_at": "2024-10-09T06:00:01Z",
+      "trace_id": "tr-mock-run-01",
+      "detail": "mock alert from committed capture"
+    },
+    {
+      "step": "warning_area_built",
+      "provider": "none",
+      "mode": "none",
+      "latency_ms": 340,
+      "started_at": "2024-10-09T06:00:02Z",
+      "trace_id": "tr-mock-run-02",
+      "detail": "zone shapes unioned in PostGIS (mock)"
+    },
+    {
+      "step": "joins_proposed",
+      "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "provider": "nim",
+      "mode": "meterless/deep",
+      "latency_ms": 4200,
+      "input_tokens": 3100,
+      "output_tokens": 640,
+      "tokens_per_sec": 152.4,
+      "started_at": "2024-10-09T06:00:03Z",
+      "trace_id": "tr-mock-run-03"
+    },
+    {
+      "step": "joins_measured",
+      "provider": "none",
+      "mode": "none",
+      "latency_ms": 980,
+      "started_at": "2024-10-09T06:00:08Z",
+      "trace_id": "tr-mock-run-04",
+      "detail": "Zetaris count queries, match rates measured (mock)"
+    },
+    {
+      "step": "scored",
+      "provider": "none",
+      "mode": "none",
+      "latency_ms": 55,
+      "started_at": "2024-10-09T06:00:09Z",
+      "trace_id": "tr-mock-run-05",
+      "detail": "fixed formula, no model"
+    },
+    {
+      "step": "reason_written",
+      "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "provider": "nim",
+      "mode": "meterless/deep",
+      "latency_ms": 11500,
+      "input_tokens": 14800,
+      "output_tokens": 5200,
+      "tokens_per_sec": 149.8,
+      "started_at": "2024-10-09T06:00:10Z",
+      "trace_id": "tr-mock-run-06"
+    },
+    {
+      "step": "export_signed",
+      "provider": "none",
+      "mode": "none",
+      "latency_ms": 30,
+      "started_at": "2024-10-09T06:00:22Z",
+      "trace_id": "tr-mock-run-07",
+      "detail": "Scout Intent signed the execution contract (mock)"
+    }
+  ]
+}
