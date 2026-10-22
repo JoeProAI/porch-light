@@ -35,9 +35,9 @@ last update: Wed Oct 21 2026 8:20 PM ET
 
 ## Area: Data
 owner now: Devin  (primary Devin, backup Cursor cloud agent (data))
-state: two-county intake and actual PostGIS loading are working for Manatee/Sarasota. Ninety-three primary source artifacts verify. The private database contains 62 source facilities; actual SQL finds 58 geography rows and 57 points covered by current published zones. The 88 source/database checks pass, with two additional Git-byte fidelity regressions passing before commit. No source or database transport is mocked.
-next step: open focused private work PRs, obtain the licensed Zetaris bundle and register the read-only JDBC exports. Then repair the contract, define validated scoring inputs and execute real Nemotron explanations. No direct PostGIS application read substitutes for Zetaris.
-branch: devin/data-nws-capture, based on locally available origin/devin/data-scaffold; open PRs: existing https://github.com/JoeProAI/porch-light/pull/1, no new PR.
+state: two-county intake and actual PostGIS loading are working for Manatee/Sarasota. Ninety-three primary source artifacts verify. The private database contains 62 source facilities; actual SQL finds 58 geography rows and 57 points covered by current published zones. All 90 checks pass. Data is committed at 07f7ca5 and private draft PR 17 is open. No source or database transport is mocked.
+next step: obtain the licensed Zetaris bundle and register the read-only JDBC exports; address fresh review findings without merging; then repair the contract, validate scoring policy and execute real Nemotron explanations. No direct PostGIS application read substitutes for Zetaris.
+branch: devin/data-nws-capture, descended from data scaffold PR 1; new private draft https://github.com/JoeProAI/porch-light/pull/17. Joe owns all merges. Existing review flags are not claimed cleared.
 how to run: `python -m data.adapters.us.preflight_county --county sarasota`; `python -m data.snapshot.load_snapshot --county manatee --county sarasota`; `python -m data.snapshot.reader`; `python -m unittest data.snapshot.test_database -v`. Private credentials stay outside Git and are not command arguments.
 blocked: licensed Zetaris platform bundle/registry entitlement and actual JDBC/audit proof; source refusals, operator review, missing Sarasota plan, historical applicability, policy/contract repairs and Nemotron execution. The newer audit remains on devin/ops-takeover; its HANDOFF conflict is not integrated.
 
@@ -51,7 +51,7 @@ emPOWER note: sources.yaml now cites the HHS emPOWER FeatureServer ZIP level lay
 5. Inspect the actual licensed bundle before running it. [Client setup](https://zetaris.github.io/getting-started/docs/connections/client-setup.html) documents direct REST at /api/v1.0, commonly port 8888, and the UI commonly port 3000. This machine already has a listener on 3000, so resolve bindings without disrupting it.
 6. Connect the supported Zetaris driver to the dedicated data network and register PostGIS through JDBC using a restricted read role. Retain real query and audit identifiers for a spatial query over actual loaded records. SELECT 1, a listening port or pg_isready does not close G2.
 
-last update: Thu Oct 22 2026 9:17 AM ET
+last update: Thu Oct 22 2026 9:42 AM ET
 
 ### Two-county SQL proof, Oct 22 at 9:17 AM ET
 
@@ -129,12 +129,12 @@ last update: Wed Oct 21 2026 8:20 PM ET
 
 ## Area: Docs
 owner now: Devin for the bounded private documentation pass; Hackathon Desk remains primary
-state: six Mintlify MDX pages and navigation updated locally in the isolated porch-light-docs worktree. They record actual source coverage, provenance, evaluation limits, replay and API status. Static frontmatter, code-fence, local-link and sixteen navigation-target checks pass; no rendered build was run.
+state: six Mintlify MDX pages and navigation updated in the isolated porch-light-docs worktree and committed locally at 6ec5c7b. They now record two-county coverage, actual PostGIS checks, provenance, ninety checks and implementation limits. Static checks pass; no rendered build or publication was performed.
 next step: integrate the verified data/contract work before publishing runnable application instructions. Reconcile remaining inherited stubs/contract-derived pages, retrieve the original design tokens/assets and run a real Mintlify build when tooling is approved.
 branch: desk/docs-private-progress, based on origin/desk/docs-stubs at 49bd63c; existing PR 13 is unchanged and no new PR is open.
-how to run: docs source is at D:\Projects\AI_Projects\porch-light-docs\docs. The source workflow and its seventy-three captured-source tests are documented, not misrepresented as a running API.
+how to run: docs source is at D:\Projects\AI_Projects\porch-light-docs\docs. Eighty-three source/Git checks and seven actual SQL checks are documented, not misrepresented as a running API.
 blocked: Mintlify CLI is not installed, application/contract integration is incomplete and publication requires Joe's approval. No push, Mintlify connection, deployment or public preview occurred.
-last update: Thu Oct 22 2026 5:50 AM ET
+last update: Thu Oct 22 2026 9:42 AM ET
 
 ## Area: Front matter and ops
 owner now: Hackathon Desk  (primary Hackathon Desk, backup Devin)
@@ -216,8 +216,8 @@ Joe explicitly requires exceptional visual quality, not merely a functional dash
 - Approval covers this generic update on the existing project board, not a detailed reveal, Mintlify publication, signup, new account, outreach, credit claim or paid action. Existing reveal/deploy controls remain in force.
 
 ## Status
-2026-10-22 9:17 AM ET: Isolated PostGIS is healthy and real two-county data is loaded; private commit/PR preparation is in progress.
+2026-10-22 9:42 AM ET: Two-county PostGIS data is committed at 07f7ca5 with private draft PR 17 open; docs are committed locally at 6ec5c7b.
 Coverage: 62 source facilities, 58 geography rows, 57 current-zone covered points and 93 verified primary source artifacts; no forced matches.
-Checks: 88 pass, including seven real SQL/role/idempotence checks; compilation and diff checks pass. No public port or deployment.
+Checks: all 90 pass, including seven real SQL checks and two Git-byte regressions; secret scans and known-credential audit pass. No public port or deployment.
 Privacy: technical details remain private; approved generic HackOS copy is not posted and Mintlify is not published.
 Blocked: actual Zetaris bundle/JDBC audit, normalized policy/contract, local Nemotron, operator quality review and missing/uncertain source coverage.
