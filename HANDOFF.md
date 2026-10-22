@@ -26,12 +26,12 @@ How work moves between agents. If an area's primary stalls or runs out of quota,
 ## Area: Contract
 owner now: Devin  (primary Joe in Cursor, backup Devin; Devin took over as backup while Joe was on other gates)
 state: contract/openapi.yaml (11 endpoints incl. GET checkins and export artifact download, 13 schemas plus typed errors and empty states; Devin Review findings addressed in d537834), contract/adapter.md, contract/types (TypeScript and Python dataclasses), contract/fixtures (mock alert, 25 mock facilities with Evidence and ScoreBreakdown, joins with failed joins, trace, export receipt), .cursor/rules (house, paths, sponsors), and contract/validate_fixtures.py all landed on contract/initial. Fixtures validate.
-next step: Joe reviews and merges the PR to main; every other agent codes against contract/types and the adapter interface. Then PR #1 (devin/data-scaffold) follow-up: data/scoring/weights.yaml term names should be renamed to match the contract ScoreTerm names (type_weight, svi_pct, empower_density_pct, cms_risk, plan_flag); the PR #1 placeholder weights do not conflict, only the names need to line up.
-branch: contract/initial   open PRs: see merge log
-how to run: python3 contract/validate_fixtures.py (needs pyyaml and jsonschema; pip install -r contract/requirements.txt)
-fix note: validate_fixtures.py now removes its own directory from sys.path so contract/types cannot shadow the stdlib types module on Python 3.12+; it also uses Draft202012Validator with a referencing registry to match OpenAPI 3.1.
+next step: Joe reviews and merges the PR to main; every other agent codes against contract/types and the adapter interface. PR #1 (devin/data-scaffold) already renamed data/scoring/weights.yaml terms to the contract ScoreTerm names (af68a70). Open fixture follow-ups from the Wringer: M9 to M12, L1 to L4.
+branch: contract/initial   open PRs: #14 contract (contract/initial)
+how to run: python3 contract/validate_fixtures.py (pip install -r contract/requirements.txt: pyyaml, jsonschema, referencing)
+fix note: validate_fixtures.py now removes its own directory from sys.path so contract/types cannot shadow the stdlib types module (failed on Python 3.11, 3.12 and 3.13 before; the path check now uses os.path instead of splitting on forward slashes); it also uses Draft202012Validator with a referencing registry to match OpenAPI 3.1, and checks facilities_mock.json against RankedFacility so a row missing score or evidence fails.
 blocked: none
-last update: Wed Oct 21 2026 8:45 PM ET
+last update: Wed Oct 21 2026 8:47 PM ET
 
 ## Area: Data
 owner now: Devin  (primary Devin, backup Cursor cloud agent (data))

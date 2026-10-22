@@ -5,13 +5,15 @@ One command:
 
     python3 contract/validate_fixtures.py
 
-Needs only pyyaml and jsonschema. Exit 0 when every fixture validates.
+Needs pyyaml, jsonschema and referencing (see contract/requirements.txt). Exit 0 when every fixture validates.
 """
+import os
 import sys
 
 # Drop the script's own directory from sys.path so contract/types does not
 # shadow the stdlib types module when run as `python3 contract/validate_fixtures.py`.
-sys.path = [p for p in sys.path if p != __file__.rsplit("/", 1)[0]]
+_HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path = [p for p in sys.path if os.path.abspath(p or os.curdir) != _HERE]
 
 import json
 from pathlib import Path
@@ -53,7 +55,7 @@ def check(name: str, fixture_file: str, schema_name: str,
 
 errors = []
 errors += check("alert", "alert_milton_mock.json", "Alert")
-errors += check("facilities", "facilities_mock.json", "Facility", items_key="items")
+errors += check("facilities", "facilities_mock.json", "RankedFacility", items_key="items")
 errors += check("joins", "joins_mock.json", "JoinReport")
 errors += check("trace", "trace_mock.json", "Trace")
 errors += check("receipt", "export_receipt_mock.json", "ExportReceipt")
