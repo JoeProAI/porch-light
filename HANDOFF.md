@@ -43,7 +43,12 @@ blocked: local Zetaris on the 5080 needs Joe at the keyboard (steps below); cont
 ### Local Zetaris on the 5080, steps for Joe (gate G2, never AWS)
 1. Windows side: install Docker Desktop with the WSL2 backend. Cap WSL2 in `%UserProfile%\.wslconfig`: `memory=8GB`, `processors=4`.
 2. WSL2 terminal: create the shared network `docker network create porchlight`, then pull and start the Zetaris build from the hackathon sponsor page (unverified: community/local edition and the default 8080 UI port are not confirmed from the sponsor page yet, L13), exposing its UI port on loopback only. `docker run -d --name porchlight-zetaris --network porchlight -p 127.0.0.1:8080:8080 <zetaris-image>`.
-3. Same WSL2: start PostGIS on the same network with no published port: `docker run -d --name porchlight-postgis --network porchlight -e POSTGRES_PASSWORD=<password> -e POSTGRES_DB=porchlight postgis/postgis:16-3.4`. Publish `127.0.0.1:5432:5432` only if local psql access is needed.
+3. Same WSL2: start PostGIS on the same network with no published port, credentials via env file: `docker run -d --name porchlight-postgis --network porchlight --env-file data/.env.postgis postgis/postgis:16-3.4`. Publish `127.0.0.1:5432:5432` only if local psql access is needed. `data/.env.postgis` is gitignored (root `.gitignore` covers `.env.*`); shape is placeholders only:
+
+   ```
+   POSTGRES_PASSWORD=<password>
+   POSTGRES_DB=porchlight
+   ```
 4. Zetaris admin UI: register a JDBC datasource `porchlight_postgis`: `jdbc:postgresql://porchlight-postgis:5432/porchlight`, user `postgres`, password from env, never in code or docs.
 5. Verify: run `SELECT 1` through Zetaris SQL against the datasource, then mark G2 in the Gates table.
 
