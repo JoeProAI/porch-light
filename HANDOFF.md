@@ -83,7 +83,7 @@ state: in progress
 next step: (1) verify metadata.json field names against the HackOS submission form (behind Joe's login); current keys follow the community draft schema, not an official format. (2) Confirm the NIM model id for Nemotron 3.5 Embed 1B (still marked TODO in metadata.json). (3) Fill the "where" paths in metadata.json and DECLARED_PREEXISTING.md as the build lands. (4) Set demo_url once a demo is hosted (empty string for now).
 branch: desk/frontmatter-fixes   open PRs: see PR "Front matter: add built_window/demo_url, Zetaris declaration, handoff update"
 how to run: metadata.json validates against metadata.schema.json (demo_url and built_window added to the schema)
-note: the contract was written by Devin (PR #14), not Cursor. metadata.json sponsors.cursor how and where are TODO placeholders now. Joe needs to settle real Cursor evidence (run links, usage CSV) and attribution before submission. README.md still credits the contract commit to Cursor (M8, outside this PR).
+note: the contract was written by Devin (PR #14), not Cursor. metadata.json sponsors.cursor how and where are TODO placeholders now. Joe needs to settle real Cursor evidence (run links, usage CSV) and attribution before submission. README.md sponsor map now matches metadata.json: the Cursor contract credit is removed (M8) and the Cursor row is a TODO placeholder. Real Cursor evidence is still owed by Joe.
 blocked: HackOS field names need Joe's login (screenshot of the submission form or Setup Guide)
 last update: Wed Oct 21 2026 8:35 PM ET
 
