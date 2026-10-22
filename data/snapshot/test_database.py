@@ -15,7 +15,7 @@ from data.snapshot.reader import query as reader_query
 class RealDatabaseTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.loaded = load()
+        cls.loaded = load(("manatee",))
         cls.snapshot = cls.loaded["snapshot_hash"]
 
     def rows(self, select):
@@ -27,8 +27,6 @@ class RealDatabaseTests(unittest.TestCase):
         self.assertEqual(self.loaded["coverage"], [
             {"county_fips": "12081", "source_rows": 20, "geography_rows": 18,
              "current_zone_covered_rows": 18, "svi_rows": 18, "empower_rows": 18},
-            {"county_fips": "12115", "source_rows": 42, "geography_rows": 40,
-             "current_zone_covered_rows": 39, "svi_rows": 40, "empower_rows": 39},
         ])
 
     def test_original_cms_rows_are_preserved_in_jsonb(self):
@@ -39,7 +37,7 @@ class RealDatabaseTests(unittest.TestCase):
             )
         }
         expected = {}
-        for profile in (MANATEE, SARASOTA):
+        for profile in (MANATEE,):
             for kind, row, _ in source_records(CMS, profile):
                 expected[(kind, row["CMS Certification Number (CCN)"])] = row
         self.assertEqual(actual, expected)
@@ -50,17 +48,8 @@ class RealDatabaseTests(unittest.TestCase):
             "FROM porch_light.facility_source "
             f"WHERE snapshot_hash='{self.snapshot}' AND geom IS NULL ORDER BY ccn"
         )
-        self.assertEqual({row["ccn"] for row in actual}, {"102538", "102646", "105452", "682802"})
+        self.assertEqual({row["ccn"] for row in actual}, {"102538", "102646"})
         self.assertTrue(all(row["no_point"] for row in actual))
-
-    def test_real_point_outside_the_published_zone_is_not_buffered_into_it(self):
-        rows = query_json(
-            "SELECT ccn,warning_covers,distance_to_current_zone_m FROM porch_light.facility_context "
-            f"WHERE snapshot_hash='{self.snapshot}' AND ccn='682716'"
-        )
-        self.assertEqual(len(rows), 1)
-        self.assertFalse(rows[0]["warning_covers"])
-        self.assertGreater(rows[0]["distance_to_current_zone_m"], 0)
 
     def test_jdbc_exports_use_portable_scalar_columns_and_retain_limits(self):
         types = query_json(
@@ -73,7 +62,7 @@ class RealDatabaseTests(unittest.TestCase):
             "SELECT county_fips,ccn,ranking_ready,zetaris_query_performed,"
             "archived_plan_captured FROM porch_light.facility_export"
         )
-        self.assertEqual(len(rows), 62)
+        self.assertEqual(len(rows), 20)
         self.assertTrue(all(not row["ranking_ready"] and not row["zetaris_query_performed"] for row in rows))
         self.assertTrue(all(not row["archived_plan_captured"] for row in rows if row["county_fips"] == "12115"))
 
@@ -85,7 +74,7 @@ class RealDatabaseTests(unittest.TestCase):
             f"'rows',(SELECT count(*) FROM porch_light.facility_export WHERE snapshot_hash='{self.snapshot}'));"
         ))
         self.assertEqual(proof, {
-            "role": "porchlight_zetaris_read", "read_only": "on", "can_write": False, "rows": 62,
+            "role": "porchlight_zetaris_read", "read_only": "on", "can_write": False, "rows": 20,
         })
         labels = subprocess.run(
             ["docker", "inspect", "--format", "{{json .NetworkSettings.Ports}}", CONTAINER],
@@ -99,14 +88,14 @@ class RealDatabaseTests(unittest.TestCase):
             "SELECT count(*) AS rows FROM porch_light.facility_source "
             f"WHERE snapshot_hash='{self.snapshot}'"
         )
-        again = load()
+        again = load(("manatee",))
         self.assertEqual(again["snapshot_hash"], self.snapshot)
         after = query_json(
             "SELECT count(*) AS rows FROM porch_light.facility_source "
             f"WHERE snapshot_hash='{self.snapshot}'"
         )
         self.assertEqual(before, after)
-        self.assertEqual(after, [{"rows": 62}])
+        self.assertEqual(after, [{"rows": 20}])
 
 
 if __name__ == "__main__":

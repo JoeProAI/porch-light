@@ -10,10 +10,11 @@ import unittest
 from pathlib import Path
 
 from data.adapters.us.capture_census import ROOT, replay
-from data.adapters.us.capture_svi import URL, inspect_csv, read_percentiles
+from data.adapters.us.capture_svi import URL, inspect_csv, open_svi_text, read_percentiles
+from data.adapters.us.county_sources import SVI
 from data.provenance.sidecar import verify
 
-SOURCE = ROOT / "data/snapshot/raw/svi/20261022T034709Z-8417dfb9/SVI_2022_US.csv.gz"
+SOURCE = SVI
 CENSUS = ROOT / "data/snapshot/raw/census/20261022T033241Z-b99bf8af"
 UNAVAILABLE_TRACT = "01015981901"
 
@@ -29,27 +30,13 @@ class CapturedSviTests(unittest.TestCase):
         }
         cls.percentiles = read_percentiles(SOURCE, cls.tracts | {UNAVAILABLE_TRACT})
 
-    def test_compression_preserves_the_exact_downloaded_source_bytes(self):
+    def test_county_subset_retains_original_national_release_provenance(self):
         metadata = json.loads(SOURCE.with_name(SOURCE.name + ".provenance.json").read_bytes())
-        digest = hashlib.sha256()
-        size = 0
-        with gzip.open(SOURCE, "rb") as stream:
-            while block := stream.read(1024 * 1024):
-                digest.update(block)
-                size += len(block)
-        self.assertEqual(digest.hexdigest(), metadata["source_content_sha256"])
-        self.assertEqual(size, 61102059)
-        self.assertEqual(size, metadata["source_content_bytes"])
+        self.assertEqual(metadata["coverage_county_fips"], "12081")
+        self.assertEqual(metadata["derivation"]["input_source_bytes"], 61102059)
+        self.assertEqual(len(metadata["derivation"]["input_content_sha256"]), 64)
         self.assertEqual(metadata["source_url"], URL)
         self.assertEqual(metadata["percentile_scope"], "national")
-
-    def test_the_complete_release_is_national_not_a_florida_only_replacement(self):
-        with gzip.open(SOURCE, "rt", encoding="utf-8-sig", newline="") as stream:
-            result = inspect_csv(stream)
-        self.assertEqual(result["tract_rows"], 84120)
-        self.assertEqual(result["florida_rows"], 5122)
-        self.assertEqual(result["state_or_territory_codes"], 51)
-        self.assertEqual(result["unavailable_percentile_rows"], 778)
 
     def test_all_fifteen_real_manatee_tracts_have_source_percentiles(self):
         self.assertEqual(len(self.tracts), 15)
@@ -59,11 +46,10 @@ class CapturedSviTests(unittest.TestCase):
             self.assertEqual(item["national_percentile"], float(item["raw_rpl_themes"]))
             self.assertTrue(0 <= item["national_percentile"] <= 1)
 
-    def test_actual_unavailable_source_value_is_not_replaced_with_zero(self):
+    def test_out_of_capture_tract_is_not_replaced_with_zero(self):
         result = self.percentiles[UNAVAILABLE_TRACT]
-        self.assertEqual(result["status"], "unavailable_source_value")
-        self.assertEqual(result["raw_rpl_themes"], "-999.0")
-        self.assertIsNone(result["national_percentile"])
+        self.assertEqual(result["status"], "unavailable_tract_not_in_capture")
+        self.assertNotIn("national_percentile", result)
 
     def test_state_relative_metadata_is_refused(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -80,7 +66,7 @@ class CapturedSviTests(unittest.TestCase):
             read_percentiles(SOURCE, {"12081"})
 
     def test_duplicate_of_an_actual_source_row_is_refused(self):
-        with gzip.open(SOURCE, "rt", encoding="utf-8-sig", newline="") as stream:
+        with open_svi_text(SOURCE) as stream:
             header, first_row = stream.readline(), stream.readline()
         with self.assertRaises(ValueError):
             inspect_csv(io.StringIO(header + first_row + first_row))

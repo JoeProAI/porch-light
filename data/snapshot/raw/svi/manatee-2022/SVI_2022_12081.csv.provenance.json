@@ -1,0 +1,17 @@
+{
+  "source_url": "https://svi.cdc.gov/Documents/Data/2022/csv/states/SVI_2022_US.csv",
+  "fetched_at_utc": "2026-10-22T03:47:16+00:00",
+  "sha256": "0e4df7cbb907989d56fc0ab2587b81cdd763b591fec62317629eaa834cf7c317",
+  "license": "CDC/ATSDR Social Vulnerability Index 2022 public data; cite CDC/ATSDR",
+  "fetch_command": "Python csv county filter: FIPS startswith 12081; original field values preserved",
+  "percentile_scope": "national",
+  "release_year": 2022,
+  "coverage_county_fips": "12081",
+  "derivation": {
+    "operation": "county row subset, no percentile recalculation",
+    "input_sha256": "dfcd91ee49845c030c756df841c41c5f4ea0d35b8a0cc3edb0ab26c2e34ab87f",
+    "input_content_sha256": "58df3dca3d4194879ffbd4b5e753eae48676ef691da1fa669f5fc40c3f79bc6a",
+    "input_source_bytes": 61102059,
+    "derived_at_utc": "2026-10-22T14:53:34+00:00"
+  }
+}

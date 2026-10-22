@@ -7,7 +7,7 @@ from data.adapters.us.counties import MANATEE, SARASOTA, CountyProfile, county_p
 
 ROOT = Path(__file__).resolve().parents[3]
 RAW = ROOT / "data/snapshot/raw"
-SVI = RAW / "svi/20261022T034709Z-8417dfb9/SVI_2022_US.csv.gz"
+SVI = RAW / "svi/manatee-2022/SVI_2022_12081.csv"
 EMPOWER = RAW / "empower/20261022T034841Z-6bed0765"
 CMS = RAW / "cms/20261022T030046Z-a5ce96ba"
 COASTAL = RAW / "nws/20261022T022303Z-b4222c27"
@@ -44,7 +44,7 @@ def selected_sources(key: str) -> CountySources:
 
 
 def source_directories(keys: tuple[str, ...]) -> list[Path]:
-    directories = {CMS, COASTAL, SVI.parent, EMPOWER}
+    directories = {CMS, SVI.parent, EMPOWER}
     for key in keys:
         source = selected_sources(key)
         directories.update((source.census, source.warning))

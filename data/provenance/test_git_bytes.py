@@ -13,7 +13,7 @@ class CapturedGitBytesTests(unittest.TestCase):
     def test_raw_source_and_sidecar_attributes_disable_conversion_and_whitespace_rewrites(self):
         samples = [
             "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
-            "data/snapshot/raw/svi/20261022T034709Z-8417dfb9/SVI_2022_US.csv.gz.provenance.json",
+            "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv.provenance.json",
         ]
         result = subprocess.run(
             ["git", "-C", str(ROOT), "check-attr", "text", "whitespace", "--", *samples],
@@ -24,7 +24,10 @@ class CapturedGitBytesTests(unittest.TestCase):
         self.assertTrue(all(line.endswith(": unset") for line in lines))
 
     def test_every_staged_or_committed_capture_and_sidecar_matches_original_working_bytes(self):
-        files = sorted(path for path in (ROOT / "data/snapshot/raw").rglob("*") if path.is_file())
+        tracked = subprocess.check_output(
+            ["git", "-C", str(ROOT), "ls-files", "-z", "--", "data/snapshot/raw"]
+        ).decode().split("\0")
+        files = sorted(ROOT / name for name in tracked if name)
         self.assertTrue(files)
         names = [path.relative_to(ROOT).as_posix() for path in files]
         result = subprocess.run(

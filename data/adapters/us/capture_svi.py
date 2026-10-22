@@ -57,6 +57,12 @@ def inspect_csv(stream) -> dict:
     }
 
 
+def open_svi_text(path: Path):
+    if path.suffix == ".gz":
+        return gzip.open(path, "rt", encoding="utf-8-sig", newline="")
+    return path.open("r", encoding="utf-8-sig", newline="")
+
+
 def read_percentiles(path: Path, tract_ids: set[str]) -> dict:
     if not verify(path):
         raise ValueError("Verified SVI source capture is required")
@@ -66,7 +72,7 @@ def read_percentiles(path: Path, tract_ids: set[str]) -> dict:
     if any(not re.fullmatch(r"\d{11}", value) for value in tract_ids):
         raise ValueError("SVI joins require actual eleven-digit tract identifiers")
     found = {}
-    with gzip.open(path, "rt", encoding="utf-8-sig", newline="") as stream:
+    with open_svi_text(path) as stream:
         reader = csv.DictReader(stream)
         if not REQUIRED.issubset(reader.fieldnames or []):
             raise ValueError("SVI capture has missing required fields")
@@ -87,7 +93,7 @@ def read_percentiles(path: Path, tract_ids: set[str]) -> dict:
                 "national_percentile": value if available else None,
             }
     return {
-        fips: found.get(fips, {"status": "unavailable_tract_not_in_release"})
+        fips: found.get(fips, {"status": "unavailable_tract_not_in_capture"})
         for fips in sorted(tract_ids)
     }
 

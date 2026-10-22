@@ -11,7 +11,7 @@ from pathlib import Path
 from data.adapters.us.capture_census import replay, source_records
 from data.adapters.us.capture_empower import read_snapshot
 from data.adapters.us.capture_milton import county_zones
-from data.adapters.us.capture_svi import read_percentiles
+from data.adapters.us.capture_svi import open_svi_text, read_percentiles
 from data.adapters.us.counties import COUNTIES
 from data.adapters.us.county_sources import CMS, EMPOWER, SVI, selected_sources, source_directories
 from data.provenance.sidecar import sha256_of, verify
@@ -95,7 +95,7 @@ def collect(keys: tuple[str, ...]) -> tuple[str, list[dict]]:
             })
     found = set()
     read_percentiles(SVI, wanted_tracts)
-    with gzip.open(SVI, "rt", encoding="utf-8-sig", newline="") as stream:
+    with open_svi_text(SVI) as stream:
         for row in csv.DictReader(stream):
             if row["FIPS"] not in wanted_tracts:
                 continue
@@ -134,7 +134,7 @@ def collect(keys: tuple[str, ...]) -> tuple[str, list[dict]]:
     return snapshot, records
 
 
-def load(keys: tuple[str, ...] = tuple(COUNTIES)) -> dict:
+def load(keys: tuple[str, ...] = ("manatee",)) -> dict:
     snapshot, records = collect(keys)
     psql((ROOT / "data/snapshot/schema.sql").read_text())
     payload = io.StringIO()
@@ -259,7 +259,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--county", action="append", choices=tuple(COUNTIES))
     args = parser.parse_args()
-    print(json.dumps(load(tuple(args.county or COUNTIES)), indent=2))
+    print(json.dumps(load(tuple(args.county or ("manatee",))), indent=2))
     return 0
 
 

@@ -13,7 +13,7 @@ import sidecar
 
 SOURCE = (
     Path(__file__).resolve().parents[2]
-    / "data/snapshot/raw/nws/20261022T022303Z-b4222c27/alert-01.json"
+    / "data/snapshot/raw/iem/20261022T030817Z-ad065921/nws_zone_FLZ155.json"
 )
 SOURCE_META = json.loads(SOURCE.with_name(SOURCE.name + ".provenance.json").read_text())
 FETCHED = datetime.fromisoformat(SOURCE_META["fetched_at_utc"].replace("Z", "+00:00"))
