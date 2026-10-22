@@ -1,0 +1,7 @@
+{
+  "source_url": "postgresql://porchlight-postgis:5432/porchlight",
+  "fetched_at_utc": "2026-10-22T15:24:33+00:00",
+  "sha256": "362e2dd5b63139413b9dc8426247846ea36df9e564275812a2dc62b0cf666cd8",
+  "license": "Derived from public CMS/Census/CDC/HHS/NWS and archived plan records; original terms retained",
+  "fetch_command": "python -m engines.rank_manatee --output D:\\Projects\\AI_Projects\\porch-light-engines\\engines\\snapshots\\manatee-ranked.json"
+}
