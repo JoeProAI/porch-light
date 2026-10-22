@@ -1,1 +1,2 @@
 data/snapshot/raw/** -text -whitespace linguist-vendored
+engines/snapshots/** -text -whitespace
