@@ -100,7 +100,7 @@ last update: Wed Oct 21 2026 8:20 PM ET
 owner now: Devin (takeover recorded Wed Oct 21 2026 9:53 PM ET)
 state: live GitHub state and all five PR heads audited. Main remains ffa61d9. The merge order below combines without conflicts on a local scratch branch only. Nothing was merged on GitHub.
 next step: contract repair and fresh reviews, expiring alert capture, CI, model client, then one real-data Manatee call sheet. Keep global adapters gated on G4. Keep Web with Cursor.
-branch: devin/ops-takeover (HANDOFF only)   open PRs: none at commit time
+branch: devin/ops-takeover (HANDOFF only)   open PRs: [#16](https://github.com/JoeProAI/porch-light/pull/16)
 how to run: combined tree passes contract fixture validation, 10 provenance unit tests, strict TypeScript checking, Python compilation, metadata schema validation, git diff --check and gitleaks git . --redact --no-banner.
 blocked: private Devin Review pages require browser login. Published reviews target older commits, not the current PR heads. G2 and G3 have no working local service evidence.
 last update: Wed Oct 21 2026 9:53 PM ET
@@ -154,7 +154,7 @@ All are open and GitHub reports MERGEABLE/CLEAN, but all have zero status checks
 
 ## Status
 2026-10-21 9:53 PM ET: Devin owns Engines, Eval and CI, and Integration; Web stays Cursor first. Audit only; no issues created.
-PRs: existing #14, #1, #12, #13, #15 remain open; their combined tree passes local checks, but no CI or current-head review is established.
+PRs: [#16](https://github.com/JoeProAI/porch-light/pull/16) records this audit; existing #14, #1, #12, #13, #15 remain open. Their combined tree passes local checks, but no CI or current-head review is established.
 Gates: no gate closed. Four real NWS warnings still resolve; capture with sidecars is the next time-sensitive data step.
 Blocked: Joe's G2/G3 setup, merges, private review-page login, and contract findings above. No deployment, public release or paid model call.
 Next: approve issue drafts, repair contract, capture warnings, then CI and fixture-only model client. No cloud session was created.
