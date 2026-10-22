@@ -129,12 +129,12 @@ last update: Wed Oct 21 2026 8:20 PM ET
 
 ## Area: Docs
 owner now: Devin for the bounded private documentation pass; Hackathon Desk remains primary
-state: six Mintlify MDX pages and navigation updated in the isolated porch-light-docs worktree and committed locally at 6ec5c7b. They now record two-county coverage, actual PostGIS checks, provenance, ninety checks and implementation limits. Static checks pass; no rendered build or publication was performed.
+state: twelve MDX pages and navigation are updated in the isolated porch-light-docs worktree. Private commits 6ec5c7b and 207c49b record current implementation and a judge-first walkthrough, sponsor-evidence matrix and map-mode contract. Static source/route checks pass; no rendered build or publication was performed.
 next step: integrate the verified data/contract work before publishing runnable application instructions. Reconcile remaining inherited stubs/contract-derived pages, retrieve the original design tokens/assets and run a real Mintlify build when tooling is approved.
 branch: desk/docs-private-progress, based on origin/desk/docs-stubs at 49bd63c; existing PR 13 is unchanged and no new PR is open.
 how to run: docs source is at D:\Projects\AI_Projects\porch-light-docs\docs. Eighty-three source/Git checks and seven actual SQL checks are documented, not misrepresented as a running API.
 blocked: Mintlify CLI is not installed, application/contract integration is incomplete and publication requires Joe's approval. No push, Mintlify connection, deployment or public preview occurred.
-last update: Thu Oct 22 2026 9:42 AM ET
+last update: Thu Oct 22 2026 10:16 AM ET
 
 ## Area: Front matter and ops
 owner now: Hackathon Desk  (primary Hackathon Desk, backup Devin)
@@ -215,8 +215,17 @@ Joe explicitly requires exceptional visual quality, not merely a functional dash
 - Approved public copy, not posted: "Real-source checks are passing. We're testing the failure paths before end-to-end integration. Keeping the details private until the demo is ready."
 - Approval covers this generic update on the existing project board, not a detailed reveal, Mintlify publication, signup, new account, outreach, credit claim or paid action. Existing reveal/deploy controls remain in force.
 
+### Judge entry, sponsor proof and map modes, Oct 22 at 10:16 AM ET
+
+- The private docs now start with a judge route, followed directly by sponsor evidence. The required final sequence is warning, call-first list, source/query/model inspection, operator status/export, then the same snapshot offline. It is separate from the currently runnable source/SQL review route.
+- The guide maps all six official criteria and their weights to required evidence, without assigning the project a score. No application demo URL or completed workflow is invented.
+- Zetaris, Meterless, NVIDIA and Cursor are acknowledged with current verified state and missing proof. Editor rules do not prove Cursor development, routing is not generation, and PostGIS is not a Zetaris audit. No sponsor credit/award/endorsement claim is made.
+- Two map views are intended: an operator map paired with the call list and a public Storm Watch view. Live mode means actual warning updates with source times, not live patient tracking, current power knowledge or generated forecasts. Retrospective Milton and aged offline snapshots must be clearly labeled.
+- The map UI and scheduled refresh are not yet built. Source geometry and actual SQL coverage are prepared. Public viewing must not expose operator notes or patient information; unknown coordinates get no pin and points are not buffered to manufacture coverage.
+- This is private documentation source at 207c49b, not a deployed map or published sponsor announcement. Mintlify rendering and the actual application still require verification.
+
 ## Status
-2026-10-22 9:42 AM ET: Two-county PostGIS data is committed at 07f7ca5 with private draft PR 17 open; docs are committed locally at 6ec5c7b.
+2026-10-22 10:16 AM ET: Private draft PR 17 contains the real two-county data; local docs commit 207c49b adds the judge/sponsor/map contract.
 Coverage: 62 source facilities, 58 geography rows, 57 current-zone covered points and 93 verified primary source artifacts; no forced matches.
 Checks: all 90 pass, including seven real SQL checks and two Git-byte regressions; secret scans and known-credential audit pass. No public port or deployment.
 Privacy: technical details remain private; approved generic HackOS copy is not posted and Mintlify is not published.
