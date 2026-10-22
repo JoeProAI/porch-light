@@ -81,11 +81,10 @@ export interface AlertList {
   empty_state?: EmptyState;
 }
 
-export interface CreateRunRequest {
-  alert_id?: string;
-  alert?: Alert;
-  country?: CountryCode;
-}
+// Exactly one of alert_id or alert.
+export type CreateRunRequest =
+  | { alert_id: string; alert?: never; country?: CountryCode }
+  | { alert_id?: never; alert: Alert; country?: CountryCode };
 
 export type RunStatus =
   | "queued"
@@ -329,6 +328,16 @@ export interface Contract {
   disclaimers?: string[];
 }
 
+export type ExportFormat = "csv" | "print_sheet" | "call_script";
+
+export interface ExportArtifact {
+  format: ExportFormat;
+  sha256: string;
+  href: string; // download path under /runs/{id}/exports/{export_id}/artifacts/{format}
+  media_type?: string;
+  filename?: string;
+}
+
 export interface ExportRequest {
   formats: ("csv" | "print_sheet" | "call_script")[];
   include_call_script?: boolean;
@@ -338,7 +347,8 @@ export interface ExportReceipt {
   export_id: string;
   run_id: string;
   created_at: string;
-  csv_sha256: string; // 64 hex chars
+  artifacts: ExportArtifact[]; // one per requested format, each retrievable at href
+  csv_sha256?: string; // present when the csv format was exported
   zetaris_query_ids: string[];
   snapshot_id: string;
   model_trace_ids?: string[];
@@ -347,8 +357,15 @@ export interface ExportReceipt {
   held?: string[]; // outputs Scout Intent held back (e.g. call script offline)
 }
 
+// A facility after ranking: GET /runs/{id}/facilities always carries
+// score and evidence. Raw Facility stays for adapter output pre-scoring.
+export interface RankedFacility extends Facility {
+  score: ScoreBreakdown;
+  evidence: Evidence;
+}
+
 export interface FacilityList {
-  items: Facility[];
+  items: RankedFacility[];
   total?: number;
   empty_state?: EmptyState;
 }

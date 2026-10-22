@@ -2,6 +2,15 @@
   "export_id": "exp-mock-001",
   "run_id": "run_milton_12081_mock",
   "created_at": "2024-10-09T06:00:22Z",
+  "artifacts": [
+    {
+      "format": "csv",
+      "sha256": "ee59542ab07d31afa168c009d554ac064869385c0da1bfaac17a818fbd53b71a",
+      "href": "/runs/run_milton_12081_mock/exports/exp-mock-001/artifacts/csv",
+      "media_type": "text/csv",
+      "filename": "call_sheet_mock.csv"
+    }
+  ],
   "csv_sha256": "ee59542ab07d31afa168c009d554ac064869385c0da1bfaac17a818fbd53b71a",
   "zetaris_query_ids": [
     "zq-mock-001",

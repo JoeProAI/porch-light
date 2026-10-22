@@ -122,9 +122,14 @@ class AlertList:
 
 @dataclass
 class CreateRunRequest:
+    """Exactly one of alert_id or alert."""
     alert_id: Optional[str] = None
     alert: Optional[Alert] = None
     country: Optional[CountryCode] = None
+
+    def __post_init__(self) -> None:
+        if (self.alert_id is None) == (self.alert is None):
+            raise ValueError("exactly one of alert_id or alert is required")
 
 
 class RunStatus(str, Enum):
@@ -418,6 +423,23 @@ class Contract:
 
 
 @dataclass
+class RankedFacility(Facility):
+    """A facility after ranking: the call sheet always carries score and
+    evidence. Raw Facility stays for adapter output pre-scoring."""
+    score: ScoreBreakdown = field(default=None)  # type: ignore[assignment]
+    evidence: Evidence = field(default=None)  # type: ignore[assignment]
+
+
+@dataclass
+class ExportArtifact:
+    format: str  # csv | print_sheet | call_script
+    sha256: str
+    href: str  # download path under /runs/{id}/exports/{export_id}/artifacts/{format}
+    media_type: Optional[str] = None
+    filename: Optional[str] = None
+
+
+@dataclass
 class ExportRequest:
     formats: list[str]  # csv | print_sheet | call_script
     include_call_script: bool = False
@@ -428,10 +450,11 @@ class ExportReceipt:
     export_id: str
     run_id: str
     created_at: str
-    csv_sha256: str  # 64 hex chars
+    artifacts: list[ExportArtifact]  # one per requested format, retrievable at href
     zetaris_query_ids: list[str]
     snapshot_id: str
     contract_signature: str
+    csv_sha256: Optional[str] = None  # present when the csv format was exported
     model_trace_ids: list[str] = field(default_factory=list)
     contract: Optional[Contract] = None
     held: list[str] = field(default_factory=list)
@@ -439,7 +462,7 @@ class ExportReceipt:
 
 @dataclass
 class FacilityList:
-    items: list[Facility]
+    items: list["RankedFacility"]
     total: Optional[int] = None
     empty_state: Optional["EmptyState"] = None
 
