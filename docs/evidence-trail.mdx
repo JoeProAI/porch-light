@@ -2,7 +2,7 @@
 title: "Evidence trail"
 ---
 
-Every row on the call sheet carries proof of where its numbers came from.
+Every row on the call sheet shows where its numbers came from.
 
 ## The Evidence record
 
@@ -10,7 +10,7 @@ Each ranked facility has an `Evidence` record with:
 
 - `zetaris_query_ids`: the Zetaris queries behind the row
 - `sources`: dataset name, id, URL and license
-- `data_as_of`: per-source fetch time, snapshot id, and a `stale` flag that is set when the row is read from the snapshot while the source is unreachable
+- `data_as_of`: per-source fetch time, snapshot id, and a `stale` flag. It's set when the source is down and the row comes from the snapshot
 - `join_path`: each `JoinHop` with its match rate, which Zetaris SQL measures and is never an LLM confidence
 - `score`: the full score breakdown
 - `dq_results`: data quality rules and whether each passed
