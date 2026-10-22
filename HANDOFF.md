@@ -3,6 +3,8 @@ Updated: Wed Oct 21 2026 8:20 PM ET   Target submit: Mon Oct 26 6 PM ET   Judgin
 
 How work moves between agents. If an area's primary stalls or runs out of quota, its backup reads that area's section and picks up from "next step". Edit only your own area's section. Never commit secrets; env var names only.
 
+Work from origin/ branches or your own worktree; do not rely on the shared clone's local branch names.
+
 ## Gates
 | Gate | Due | Status | Note |
 |---|---|---|---|
@@ -21,7 +23,7 @@ How work moves between agents. If an area's primary stalls or runs out of quota,
 |---|---|---|---|---|
 
 ## Decisions
-- 2026-10-21: Repo created private after the window opened; first commit is the compliance kit, contract follows from Cursor.
+- 2026-10-21: Repo created private after the window opened; first commit is the compliance kit. Devin wrote the contract (PR #14). Cursor is credited for the .cursor/rules/ files and the web and data cloud agents (per .cursor/rules/sponsors.mdc at 362e1c8).
 
 ## Area: Contract
 owner now: Joe in Cursor  (primary Joe in Cursor, backup Devin)
@@ -83,7 +85,7 @@ state: in progress
 next step: (1) verify metadata.json field names against the HackOS submission form (behind Joe's login); current keys follow the community draft schema, not an official format. (2) Confirm the NIM model id for Nemotron 3.5 Embed 1B (still marked TODO in metadata.json). (3) Fill the "where" paths in metadata.json and DECLARED_PREEXISTING.md as the build lands. (4) Set demo_url once a demo is hosted (empty string for now).
 branch: desk/frontmatter-fixes   open PRs: see PR "Front matter: add built_window/demo_url, Zetaris declaration, handoff update"
 how to run: metadata.json validates against metadata.schema.json (demo_url and built_window added to the schema)
-note: the contract was written by Devin (PR #14), not Cursor. metadata.json sponsors.cursor how and where are TODO placeholders now. Joe needs to settle real Cursor evidence (run links, usage CSV) and attribution before submission. README.md sponsor map now matches metadata.json: the Cursor contract credit is removed (M8) and the Cursor row is a TODO placeholder. Real Cursor evidence is still owed by Joe.
+note: the contract was written by Devin (PR #14), not Cursor. metadata.json sponsors.cursor how and where are TODO placeholders now. Joe needs to settle real Cursor evidence (run links, usage CSV) and attribution before submission. README.md and metadata.json now credit Cursor per .cursor/rules/sponsors.mdc (362e1c8): .cursor/rules/ files plus the web UI and data backup cloud agents. .cursor/rules/ lands on main with PR #14. Cursor run links, models and the usage CSV are still owed.
 blocked: HackOS field names need Joe's login (screenshot of the submission form or Setup Guide)
 last update: Wed Oct 21 2026 8:35 PM ET
 

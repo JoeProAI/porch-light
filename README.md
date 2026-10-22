@@ -15,7 +15,7 @@ Built for the GenAI.Works Open Agent Hackathon 2026, Track 01 (Solving Fragmente
 | Zetaris | `data/` | The only data path at runtime: federated SQL over a Unified Semantic Layer, with measured joins and DQ rules. TODO: paths |
 | Meterless | `engines/` | The only model path: Meterless Runtime routing `meterless/deep`, `fast` and `local`, plus Scout Intent, H-MEM with TrustLedger, and a minimal World Model. TODO: paths |
 | NVIDIA Nemotron | `engines/model_client/` | The only model family in the product: join proposals, explanations, call scripts, Content Safety, Parse. TODO: models confirmed |
-| Cursor | TODO: paths Cursor actually produced | TODO: attach real Cursor run links and describe the actual Cursor contribution before submission. |
+| Cursor | `.cursor/rules/` | The `.cursor/rules/` files every agent follows to stay inside its area, follow the house rules and keep HANDOFF.md current. Cursor also runs the cloud agents for the web UI seat and the data backup seat. The contract (PR #14) was written by Devin, not Cursor. TODO: run links |
 
 ## Feature to engine
 

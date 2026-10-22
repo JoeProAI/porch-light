@@ -57,10 +57,10 @@
     },
     "cursor": {
       "status": "planned",
-      "how": "TODO: attach real Cursor run links and describe actual Cursor contribution",
+      "how": "Cursor supplies the .cursor/rules/ files: the rules every agent (Cursor included) follows to stay inside its area, follow the house rules and keep HANDOFF.md current. Cursor also runs the cloud agents for the web UI seat and the data backup seat. The contract (PR #14) was written by Devin, not by a Cursor run.",
       "models": ["TODO: fill from the Cursor usage CSV"],
       "surfaces": ["ide", "background-agents"],
-      "where": ["TODO: fill with paths Cursor actually produced, once confirmed"],
+      "where": [".cursor/rules/"],
       "evidence": ["TODO: cloud agent PR links, exported transcripts, Cursor usage CSV"],
       "decisions": []
     },
