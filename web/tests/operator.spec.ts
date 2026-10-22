@@ -52,7 +52,14 @@ test("real ledger, synchronized selection, keyboard evidence and no browser erro
   await expect(dialog).toBeVisible();
   await expect(dialog.locator(".terms-table tbody tr")).toHaveCount(5);
   await expect(dialog).toContainText(snapshot.facilities[2].score.total.toFixed(6));
-  await expect(dialog).toContainText("Zetaris integration pending");
+  if (snapshot.data_access.data_access_mode === "zetaris") {
+    await expect(dialog).toContainText("Zetaris audit verified");
+    for (const id of snapshot.facilities[2].evidence.zetaris_query_ids) {
+      await expect(dialog).toContainText(id);
+    }
+  } else {
+    await expect(dialog).toContainText("Zetaris integration pending");
+  }
   await expect(dialog).toContainText("Draft / operator review required");
   await expect(dialog).toContainText("nvidia/nemotron-3.5-super-vl-120b-a12b");
   for (const source of snapshot.facilities[2].evidence.sources) await expect(dialog.getByRole("link", { name: source.name })).toHaveAttribute("href", source.url);

@@ -1,6 +1,6 @@
 {
   "schema_version": "porch-light.manatee-development-snapshot.v1",
-  "generated_at": "2026-10-22T15:24:33+00:00",
+  "generated_at": "2026-10-22T18:52:12+00:00",
   "county": {
     "name": "Manatee",
     "fips": "12081",
@@ -15,13 +15,31 @@
     "historical_2024_boundary_equivalence_verified": false
   },
   "data_access": {
-    "executed_at": "2026-10-22T15:24:31.726752+00:00",
-    "backend_pid": 8910,
-    "transaction_id": "890",
+    "executed_at": "2026-10-22T18:52:10.871+00:00",
+    "backend_pid": 19599,
+    "transaction_id": "892",
     "database_role": "porchlight_zetaris_read",
-    "data_access_mode": "postgis_development",
-    "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-    "zetaris_query_ids": []
+    "data_access_mode": "zetaris",
+    "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+    "zetaris_query_ids": [
+      "80"
+    ],
+    "zetaris_audit": {
+      "source": "Zetaris audit.public.sql_audit_log",
+      "query_id": "80",
+      "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+      "start_time": "2026-10-22T18:52:10.638+00:00",
+      "end_time": "2026-10-22T18:52:10.871+00:00",
+      "finish_successfully": true,
+      "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+      "driver_version": "2.4.3.1"
+    },
+    "source_postgis_read_receipt": {
+      "executed_at": "2026-10-22T18:52:11.27255+00:00",
+      "backend_pid": 19599,
+      "transaction_id": "892",
+      "database_role": "porchlight_zetaris_read"
+    }
   },
   "source_snapshot_hash": "3487853191f654185326130fcf9281af66e00482f23e347102665e796a6d2f6f",
   "warning_geometry": {
@@ -9631,7 +9649,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS dialysis",
@@ -9667,20 +9687,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "dialysis",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.9989,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 431,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 10866,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 2.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/dialysis.csv",
         "source_sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/dialysis-682766.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"682766\", \"lat\": 27.462452233521, \"lon\": -82.562689099284, \"file\": \"dialysis-682766.json\", \"kind\": \"dialysis\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000105\", \"county_geoid\": \"12081\", \"coordinate_source\": \"census_address_match\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -9732,7 +9796,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.9989; CMS stars 2.0; published ZIP DME 431/10866. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 1
     },
     {
@@ -9811,7 +9875,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -9847,20 +9913,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.9917,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 529,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 13062,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 2.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-105603.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"105603\", \"lat\": 27.5199, \"lon\": -82.552, \"file\": \"nursing_homes-105603.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081001502\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -9912,7 +10022,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.9917; CMS stars 2; published ZIP DME 529/13062. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 2
     },
     {
@@ -9991,7 +10101,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS dialysis",
@@ -10027,20 +10139,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "dialysis",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.9722,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 276,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 7016,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 3.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/dialysis.csv",
         "source_sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/dialysis-102853.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"102853\", \"lat\": 27.495156989279, \"lon\": -82.558552404755, \"file\": \"dialysis-102853.json\", \"kind\": \"dialysis\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000703\", \"county_geoid\": \"12081\", \"coordinate_source\": \"census_address_match\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -10092,7 +10248,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.9722; CMS stars 3.0; published ZIP DME 276/7016. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 3
     },
     {
@@ -10171,7 +10327,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -10207,20 +10365,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.9958,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 431,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 10866,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 2.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-105525.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"105525\", \"lat\": 27.4426, \"lon\": -82.555, \"file\": \"nursing_homes-105525.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000304\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -10266,7 +10468,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.9958; CMS stars 2; published ZIP DME 431/10866. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 4
     },
     {
@@ -10345,7 +10547,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS dialysis",
@@ -10381,20 +10585,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "dialysis",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.5958,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 229,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 5280,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 2.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/dialysis.csv",
         "source_sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/dialysis-682519.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"682519\", \"lat\": 27.521875199282, \"lon\": -82.52594305135, \"file\": \"dialysis-682519.json\", \"kind\": \"dialysis\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081001904\", \"county_geoid\": \"12081\", \"coordinate_source\": \"census_address_match\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -10440,7 +10688,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.5958; CMS stars 2.0; published ZIP DME 229/5280. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 5
     },
     {
@@ -10519,7 +10767,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -10555,20 +10805,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.9395,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 148,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 4801,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 1.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-106017.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"106017\", \"lat\": 27.4625, \"lon\": -82.625, \"file\": \"nursing_homes-106017.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081001106\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -10614,7 +10908,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.9395; CMS stars 1; published ZIP DME 148/4801. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 6
     },
     {
@@ -10693,7 +10987,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -10729,20 +11025,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.8946,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 322,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 7563,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 3.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-105159.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"105159\", \"lat\": 27.4807, \"lon\": -82.564, \"file\": \"nursing_homes-105159.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000103\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -10788,7 +11128,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.8946; CMS stars 3; published ZIP DME 322/7563. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 7
     },
     {
@@ -10867,7 +11207,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -10903,20 +11245,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.9722,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 276,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 7016,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 3.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-105551.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"105551\", \"lat\": 27.4991, \"lon\": -82.548, \"file\": \"nursing_homes-105551.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000703\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -10962,7 +11348,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.9722; CMS stars 3; published ZIP DME 276/7016. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 8
     },
     {
@@ -11041,7 +11427,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -11077,20 +11465,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.9985,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 276,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 7016,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 4.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-105045.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"105045\", \"lat\": 27.4962, \"lon\": -82.54, \"file\": \"nursing_homes-105045.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000704\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -11136,7 +11568,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.9985; CMS stars 4; published ZIP DME 276/7016. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 9
     },
     {
@@ -11215,7 +11647,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS dialysis",
@@ -11251,20 +11685,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "dialysis",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.3109,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 376,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 11627,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 3.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/dialysis.csv",
         "source_sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/dialysis-102849.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"102849\", \"lat\": 27.481203839401, \"lon\": -82.618991523991, \"file\": \"dialysis-102849.json\", \"kind\": \"dialysis\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000406\", \"county_geoid\": \"12081\", \"coordinate_source\": \"census_address_match\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -11310,7 +11788,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.3109; CMS stars 3.0; published ZIP DME 376/11627. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 10
     },
     {
@@ -11389,7 +11867,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -11425,20 +11905,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.2486,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 376,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 11627,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 1.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-105327.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"105327\", \"lat\": 27.4834, \"lon\": -82.62, \"file\": \"nursing_homes-105327.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000405\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -11484,7 +12008,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.2486; CMS stars 1; published ZIP DME 376/11627. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 11
     },
     {
@@ -11563,7 +12087,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -11599,20 +12125,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.5148,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 322,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 7563,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 4.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-106030.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"106030\", \"lat\": 27.4965, \"lon\": -82.576, \"file\": \"nursing_homes-106030.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000101\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -11658,7 +12228,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.5148; CMS stars 4; published ZIP DME 322/7563. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 12
     },
     {
@@ -11737,7 +12307,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -11773,20 +12345,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.4561,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 376,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 11627,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 3.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-105655.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"105655\", \"lat\": 27.4833, \"lon\": -82.625, \"file\": \"nursing_homes-105655.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000407\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -11832,7 +12448,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.4561; CMS stars 3; published ZIP DME 376/11627. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 13
     },
     {
@@ -11911,7 +12527,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -11947,20 +12565,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.6727,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 285,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 10095,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 4.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-106025.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"106025\", \"lat\": 27.3964, \"lon\": -82.514, \"file\": \"nursing_homes-106025.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000805\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -12006,7 +12668,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.6727; CMS stars 4; published ZIP DME 285/10095. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 14
     },
     {
@@ -12085,7 +12747,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -12121,20 +12785,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.3109,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 376,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 11627,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 3.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-105529.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"105529\", \"lat\": 27.4786, \"lon\": -82.62, \"file\": \"nursing_homes-105529.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000406\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -12180,7 +12888,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.3109; CMS stars 3; published ZIP DME 376/11627. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 15
     },
     {
@@ -12259,7 +12967,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS nursing_homes",
@@ -12295,20 +13005,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "nursing_home",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.3109,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 376,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 11627,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 4.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/nursing_homes.csv",
         "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/nursing_homes-105629.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"105629\", \"lat\": 27.4812, \"lon\": -82.617, \"file\": \"nursing_homes-105629.json\", \"kind\": \"nursing_homes\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000406\", \"county_geoid\": \"12081\", \"coordinate_source\": \"cms_provided\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -12354,7 +13108,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.3109; CMS stars 4; published ZIP DME 376/11627. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 16
     },
     {
@@ -12433,7 +13187,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS dialysis",
@@ -12469,20 +13225,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "dialysis",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.1604,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 46,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 2104,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 4.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/dialysis.csv",
         "source_sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/dialysis-682503.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"682503\", \"lat\": 27.394445689796, \"lon\": -82.452691294841, \"file\": \"dialysis-682503.json\", \"kind\": \"dialysis\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081000810\", \"county_geoid\": \"12081\", \"coordinate_source\": \"census_address_match\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -12528,7 +13328,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.1604; CMS stars 4.0; published ZIP DME 46/2104. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 17
     },
     {
@@ -12607,7 +13407,9 @@
         "small_count_caution": false
       },
       "evidence": {
-        "zetaris_query_ids": [],
+        "zetaris_query_ids": [
+          "80"
+        ],
         "sources": [
           {
             "name": "CMS dialysis",
@@ -12643,20 +13445,64 @@
           }
         ],
         "failed_joins": [],
-        "facts": [],
+        "facts": [
+          {
+            "name": "facility_type",
+            "value": "dialysis",
+            "query_id": "80"
+          },
+          {
+            "name": "svi_pct",
+            "value": 0.1946,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_dme_count",
+            "value": 188,
+            "query_id": "80"
+          },
+          {
+            "name": "empower_medicare_beneficiaries",
+            "value": 9950,
+            "query_id": "80"
+          },
+          {
+            "name": "cms_star_rating",
+            "value": 4.0,
+            "query_id": "80"
+          }
+        ],
         "source_artifact_path": "data/snapshot/raw/cms/20261022T030046Z-a5ce96ba/dialysis.csv",
         "source_sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
         "geography_artifact_path": "data/snapshot/raw/census/20261022T033241Z-b99bf8af/dialysis-682713.json",
         "svi_artifact_path": "data/snapshot/raw/svi/manatee-2022/SVI_2022_12081.csv",
         "geography": "{\"ccn\": \"682713\", \"lat\": 27.480304233853, \"lon\": -82.431924335746, \"file\": \"dialysis-682713.json\", \"kind\": \"dialysis\", \"status\": \"census_geography_returned\", \"tract_geoid\": \"12081002021\", \"county_geoid\": \"12081\", \"coordinate_source\": \"census_address_match\", \"address_match_quality\": null, \"address_quality_review_required\": true}",
         "read_receipt": {
-          "executed_at": "2026-10-22T15:24:31.726752+00:00",
-          "backend_pid": 8910,
-          "transaction_id": "890",
+          "executed_at": "2026-10-22T18:52:10.871+00:00",
+          "backend_pid": 19599,
+          "transaction_id": "892",
           "database_role": "porchlight_zetaris_read",
-          "data_access_mode": "postgis_development",
-          "statement_sha256": "fe66ef2b06a058916cc59eefb48536e5cd18ccd96deebf717352df9ccddaecaa",
-          "zetaris_query_ids": []
+          "data_access_mode": "zetaris",
+          "statement_sha256": "89aafdd3cb9c15fcb81c7898d559885e1ac3c868e14b40a48ba88ef2e839abd0",
+          "zetaris_query_ids": [
+            "80"
+          ],
+          "zetaris_audit": {
+            "source": "Zetaris audit.public.sql_audit_log",
+            "query_id": "80",
+            "query_hash": "5922b226de4ef8711dfd179777b2bb27",
+            "start_time": "2026-10-22T18:52:10.638+00:00",
+            "end_time": "2026-10-22T18:52:10.871+00:00",
+            "finish_successfully": true,
+            "sql_query": "/* porchlight_229fc18f10bc4b40b310ca37b065cb2e */\nSELECT bundle_json FROM porchlight_postgis.porchlight_manatee_bundle_v1",
+            "driver_version": "2.4.3.1"
+          },
+          "source_postgis_read_receipt": {
+            "executed_at": "2026-10-22T18:52:11.27255+00:00",
+            "backend_pid": 19599,
+            "transaction_id": "892",
+            "database_role": "porchlight_zetaris_read"
+          }
         },
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
@@ -12702,7 +13548,7 @@
         }
       },
       "computed_reason": "National tract SVI 0.1946; CMS stars 4.0; published ZIP DME 188/9950. ZIP context is not a facility patient count.",
-      "development_only": true,
+      "development_only": false,
       "rank": 18
     }
   ],
@@ -12748,11 +13594,16 @@
     }
   ],
   "limits": [
-    "Direct PostGIS development read, not a completed Zetaris/audit integration.",
-    "No mock query IDs. Actual Zetaris query references remain pending.",
+    "Data served through licensed Zetaris JDBC with successful audit references.",
+    "Per-row query IDs resolve to actual Zetaris audit records.",
     "Prototype policy mappings require operator review; not clinically validated.",
     "Current source records do not establish October 2024 facility conditions.",
     "Geocode quality and archived plan applicability remain unverified.",
     "No calls or messages are sent."
-  ]
+  ],
+  "model_output_reuse": {
+    "source_snapshot_sha256": "362e2dd5b63139413b9dc8426247846ea36df9e564275812a2dc62b0cf666cd8",
+    "original_generated_at": "2026-10-22T15:24:33+00:00",
+    "new_model_call_performed": false
+  }
 }
