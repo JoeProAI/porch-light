@@ -40,8 +40,10 @@ sources:
     notes: batch mode available; keep raw responses for audit
   nber_ssa_fips:
     kind: file
-    url: https://www.nber.org/research/data/social-security-administration-ssa-fips-statecounty-crosswalk
-    notes: SSA county code to FIPS crosswalk
+    url: https://data.nber.org/ssa-fips-state-county-crosswalk/
+    notes: SSA county code to FIPS crosswalk; per-year CSVs under <year>/
+      (for example 2024/ssa_fips_state_county_2024.csv); public data files
+      hosted by NBER, maintained by Jean Roth, source data from CMS
   tiger_tracts_2024:
     kind: file
     url: https://www2.census.gov/geo/tiger/TIGER2024/TRACT/
