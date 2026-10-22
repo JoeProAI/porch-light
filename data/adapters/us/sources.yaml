@@ -1,0 +1,56 @@
+# Frozen core sources (SPEC section 4 is authoritative; confirm URLs there).
+# Each entry maps to one adapter under data/adapters/us/ and one raw cache dir
+# under data/snapshot/raw/<key>/ with .provenance.json sidecars.
+
+sources:
+  nws_alerts:
+    kind: api
+    url: https://api.weather.gov/alerts/active
+    notes: live feed; also captured into fixture for the live event replay
+  iem_archive:
+    kind: api
+    url: https://mesonet.agron.iastate.edu/api/1/nwstext/
+    notes: golden Hurricane Milton alert for Manatee County FL (FIPS 12081)
+  nws_zones:
+    kind: file
+    url: https://www.weather.gov/gis/ZoneCounty
+    notes: zone-based alerts carry no polygon; join zone ids to shapes
+  cms_nursing_homes:
+    kind: socrata
+    url: https://data.cms.gov/resource/4pq5-n9py.json
+    notes: county field is an SSA county code; map to FIPS via nber_ssa_fips
+  cms_dialysis:
+    kind: socrata
+    url: https://data.cms.gov/resource/23ew-n7w9.json
+    notes: no lat/long; geocode each address via census_geocoder
+  svi_2022:
+    kind: file
+    url: https://svi.cdc.gov/Documents/Data/2022/csv/states/SVI_2022_US.csv
+    notes: tract-level social vulnerability, joined by GEOID
+  empower:
+    kind: api
+    url: https://empower.hhs.gov/
+    notes: layers 5, 9, 13 etc are DME users of that service, not all patients;
+      label exactly per the emPOWER data dictionary
+  census_geocoder:
+    kind: api
+    url: https://geocoding.geo.census.gov/geocoder/geographies/address
+    notes: batch mode available; keep raw responses for audit
+  nber_ssa_fips:
+    kind: file
+    url: https://www.nber.org/research/data/social-security-administration-ssa-fips-statecounty-crosswalk
+    notes: SSA county code to FIPS crosswalk
+  tiger_tracts_2024:
+    kind: file
+    url: https://www2.census.gov/geo/tiger/TIGER2024/TRACT/
+    notes: tract polygons for SVI join and facility geocode confirmation
+  cms_ep_rule:
+    kind: cite
+    url: https://www.ecfr.gov/current/title-42
+    notes: 42 CFR 483.73 and 494.62, cited on the call sheet evidence
+  manatee_cemp:
+    kind: pdf
+    url: https://www.mymanatee.org/departments/public_safety/emergency_management
+    notes: county plan PDF; parsed by Nemotron Parse into plan_sections
+
+# Stretch or cut: ACS, EIA, OpenFEMA, home health, hospitals, Apify.

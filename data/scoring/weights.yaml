@@ -1,0 +1,11 @@
+# Fixed, transparent scoring weights for the call-first ranking.
+# The formula is fixed: same inputs always give the same rank. Nemotron writes
+# the explanation; it never changes the score.
+# TODO Sat: lock term names and weights against the final Evidence record fields.
+
+version: 0.1.0
+terms:
+  # placeholded structure; real weights land with data/scoring/score.py
+  vulnerability_weight: 0.0
+  exposure_weight: 0.0
+  fragility_weight: 0.0
