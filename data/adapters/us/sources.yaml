@@ -32,8 +32,14 @@ sources:
   empower:
     kind: api
     url: https://empower.hhs.gov/
-    notes: layers 5, 9, 13 etc are DME users of that service, not all patients;
-      label exactly per the emPOWER data dictionary
+    notes: at-risk layers count Medicare beneficiaries on electricity-dependent
+      DME combined with a service, not all patients; official HHS emPOWER
+      REST Service layers (geohealth.hhs.gov MapServer, checked 2026-10-22):
+      Electrically Dependent-All 1yr (0), Facility ESRD Dialysis Any DME (4),
+      O2 Services Any DME (8), Home Health Services Any DME (12),
+      At-Home Hospice Any DME (16), Any Healthcare Service Any DME (20);
+      label exactly with these layer names
+      (https://geohealth.hhs.gov/dataaccess/rest/services/HHS_emPOWER_REST_Service_Public/MapServer)
   census_geocoder:
     kind: api
     url: https://geocoding.geo.census.gov/geocoder/geographies/address
