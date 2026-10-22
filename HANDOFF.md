@@ -52,7 +52,7 @@ blocked: local Zetaris on the 5080 needs Joe at the keyboard (steps below); cont
 4. Zetaris admin UI: register a JDBC datasource `porchlight_postgis`: `jdbc:postgresql://porchlight-postgis:5432/porchlight`, user `postgres`, password from env, never in code or docs.
 5. Verify: run `SELECT 1` through Zetaris SQL against the datasource, then mark G2 in the Gates table.
 
-last update: Wed Oct 21 2026 8:45 PM ET
+last update: Wed Oct 21 2026 8:54 PM ET
 
 ## Area: Engines
 owner now: Claude Code  (primary Claude Code, backup Devin)
