@@ -61,6 +61,33 @@ Verdicts:
 
 Full review (outside the repo): /workspace/hackathons/open-agent-2026/porch-light/reviews/wringer-batch-1.md on the shared box.
 
+### Wringer batch 1b (2026-10-21 ~8:46 PM ET)
+Verdicts (no Highs):
+- PR #14 (contract, head 83a6afd): pass. H1 fixed and verified on Python 3.11 to 3.13, including negative runs.
+- PR #12 (front matter, head 68cd3c9): pass. Fix M14 and M15 before judge-facing text is built from metadata.json.
+- PR #13 (docs, head e931ba4): pass.
+- PR #15 (this PR) was not reviewed.
+
+Still open from batch 1: M7 and M9 to M12 (the source also notes L8 is still open).
+
+| Id | Sev | Problem (short) | Fix (short) | Owner area |
+|---|---|---|---|---|
+| M13 | Med | Validator checks facilities fixture against Facility, not RankedFacility; missing score/evidence passes | Validate against FacilityList or RankedFacility | Contract |
+| M14 | Med | metadata.json says contract made in Cursor; Devin wrote it (same as M8) | Reword to real Cursor work, or real Cursor runs linked | Front matter and ops |
+| M15 | Med | nemotron-4-340b-reward listed but 404ed in G0 smoke and was dropped | Remove or mark dropped | Front matter and ops |
+| M16 | Med | PR #12 and #13 bodies lack the required `### HANDOFF` block (same as M6) | Edit both bodies to the template, placed last | Front matter and ops, Docs |
+| L18 | Low | Commit d537834 subject has an em dash; history can't be rewritten | Won't fix (accepted) | Contract |
+| L19 | Low | Fix note says shadowing on 3.12+; it also failed on 3.11 | Say "Python 3.11+" | Contract |
+| L20 | Low | requirements.txt unpinned; referencing imported but not listed | Pin jsonschema>=4.18, referencing, pyyaml | Contract |
+| L21 | Low | Path filter breaks on native Windows backslash paths | Use os.path.dirname/abspath | Contract |
+| L22 | Low | Local Nemotron models and nemotron-parse-2.0 unverified | Tag "unverified" until G3 and Parse test pass | Front matter and ops |
+| L23 | Low | Zetaris patterns declared Apache 2.0 with no source | Add the repo URL | Front matter and ops |
+| L24 | Low | AGPL-3.0-only vs AGPL-3.0 stated inconsistently | Pick one SPDX id everywhere | Front matter and ops |
+| L25 | Low | Area "last update" times later than commits; PRs named, not linked (same as L8, L15) | Use commit time; link the PR number | Front matter and ops, Docs |
+| L26 | Low | Mintlify app or hosting would publish a public docs URL | Keep docs local until Joe says yes at submission | Docs |
+
+Full batch 1b detail is in the same review file on the shared box.
+
 ## Decisions
 - 2026-10-21: Repo created private after the window opened; first commit is the compliance kit, contract follows from Cursor.
 
