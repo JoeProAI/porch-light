@@ -12,8 +12,7 @@ class CountyProfile:
 
 
 MANATEE = CountyProfile("manatee", "Manatee", "FL", "12081")
-SARASOTA = CountyProfile("sarasota", "Sarasota", "FL", "12115")
-COUNTIES = {profile.key: profile for profile in (MANATEE, SARASOTA)}
+COUNTIES = {MANATEE.key: MANATEE}
 
 
 def county_profile(key: str) -> CountyProfile:

@@ -1,9 +1,9 @@
-"""Explicit source selections for the two verified pilot county intakes."""
+"""Explicit source selection for the frozen Manatee demo."""
 
 from dataclasses import dataclass
 from pathlib import Path
 
-from data.adapters.us.counties import MANATEE, SARASOTA, CountyProfile, county_profile
+from data.adapters.us.counties import MANATEE, CountyProfile, county_profile
 
 ROOT = Path(__file__).resolve().parents[3]
 RAW = ROOT / "data/snapshot/raw"
@@ -30,11 +30,6 @@ SOURCES = {
         RAW / "iem/20261022T030817Z-ad065921",
         RAW / "cemp/20261022T033833Z-30a3bbd5/bradenton_adoption_2020.pdf",
         2018, 2020,
-    ),
-    SARASOTA.key: CountySources(
-        SARASOTA,
-        RAW / "census/20261022T122355Z-be9e3a8d",
-        RAW / "iem/20261022T123021Z-0919e9fc",
     ),
 }
 

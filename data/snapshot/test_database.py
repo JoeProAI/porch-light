@@ -6,7 +6,7 @@ import unittest
 
 from data.adapters.us.capture_census import source_records
 from data.adapters.us.county_sources import CMS
-from data.adapters.us.counties import MANATEE, SARASOTA
+from data.adapters.us.counties import MANATEE
 from data.snapshot.db import CONTAINER, query_json
 from data.snapshot.load_snapshot import load
 from data.snapshot.reader import query as reader_query

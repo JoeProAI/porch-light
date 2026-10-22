@@ -1,7 +1,0 @@
-{
-  "source_url": "https://geocoding.geo.census.gov/geocoder/vintages?benchmark=Public_AR_Current&format=json",
-  "fetched_at_utc": "2026-10-22T12:23:56+00:00",
-  "sha256": "4b0a40a29e6c01d8df1af5473a479f26e35d699e70815315d2535b3a4aed7d2f",
-  "license": "US Census Bureau US government public data; https://www.census.gov/about/policies/quality/guidelines.html",
-  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_census --county sarasota"
-}
