@@ -25,7 +25,7 @@ How work moves between agents. If an area's primary stalls or runs out of quota,
 
 ## Area: Contract
 owner now: Devin  (primary Joe in Cursor, backup Devin; Devin took over as backup while Joe was on other gates)
-state: contract/openapi.yaml (all 10 endpoints, 13 schemas plus typed errors and empty states), contract/adapter.md, contract/types (TypeScript and Python dataclasses), contract/fixtures (mock alert, 25 mock facilities with Evidence and ScoreBreakdown, joins with failed joins, trace, export receipt), .cursor/rules (house, paths, sponsors), and contract/validate_fixtures.py all landed on contract/initial. Fixtures validate.
+state: contract/openapi.yaml (11 endpoints incl. GET checkins and export artifact download, 13 schemas plus typed errors and empty states; Devin Review findings addressed in d537834), contract/adapter.md, contract/types (TypeScript and Python dataclasses), contract/fixtures (mock alert, 25 mock facilities with Evidence and ScoreBreakdown, joins with failed joins, trace, export receipt), .cursor/rules (house, paths, sponsors), and contract/validate_fixtures.py all landed on contract/initial. Fixtures validate.
 next step: Joe reviews and merges the PR to main; every other agent codes against contract/types and the adapter interface. Then PR #1 (devin/data-scaffold) follow-up: data/scoring/weights.yaml term names should be renamed to match the contract ScoreTerm names (type_weight, svi_pct, empower_density_pct, cms_risk, plan_flag); the PR #1 placeholder weights do not conflict, only the names need to line up.
 branch: contract/initial   open PRs: see merge log
 how to run: python3 contract/validate_fixtures.py (needs pyyaml and jsonschema)
