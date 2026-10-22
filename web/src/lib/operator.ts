@@ -56,7 +56,11 @@ export const createProjection = (geometry: Geometry, facilities: Facility[], sco
   const points = (scope === "facilities" && facilityPoints.length ? facilityPoints : [
     ...geometry.coordinates.flat(2), ...facilityPoints,
   ]).map(mercator);
-  if (!points.length) return { project: (): Coordinate => [300, 200], paths: [] as string[] };
+  if (!points.length) return {
+    project: (): Coordinate => [300, 200],
+    unproject: (): Coordinate => [Number.NaN, Number.NaN],
+    paths: [] as string[],
+  };
   const xs = points.map(point => point[0]), ys = points.map(point => point[1]);
   const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
   const scale = Math.min(520 / Math.max(maxX - minX, 0.00001), 310 / Math.max(maxY - minY, 0.00001));
@@ -67,5 +71,10 @@ export const createProjection = (geometry: Geometry, facilities: Facility[], sco
   const paths = geometry.coordinates.map(polygon => polygon.map(ring =>
     ring.map((point, i) => `${i === 0 ? "M" : "L"}${project(point).map(n => n.toFixed(2)).join(",")}`).join(" ") + " Z",
   ).join(" "));
-  return { project, paths };
+  const unproject = ([x, y]: Coordinate): Coordinate => {
+    const rawX = (x - 300) / scale + (minX + maxX) / 2;
+    const rawY = (200 - y) / scale + (minY + maxY) / 2;
+    return [rawX * 180 / Math.PI, (2 * Math.atan(Math.exp(rawY)) - Math.PI / 2) * 180 / Math.PI];
+  };
+  return { project, unproject, paths };
 };

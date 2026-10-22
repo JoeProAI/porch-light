@@ -36,6 +36,12 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
         <h2 id="evidence-title">The reason for this rank.</h2>
         <p className="drawer-facility">{row.name}</p>
         <p className="reason">{row.computed_reason}</p>
+        <ol className="proof-spine" aria-label="Evidence lineage">
+          <li><span>01</span><div><strong>Observed</strong><small>CMS / CCN {row.ccn}</small></div></li>
+          <li data-verified={isZetaris}><span>02</span><div><strong>{isZetaris ? "Audited" : "Development"}</strong><small>{isZetaris ? `Zetaris ${row.evidence.zetaris_query_ids.join(", ")}` : "No vendor audit claimed"}</small></div></li>
+          <li><span>03</span><div><strong>Fixed policy</strong><small>{row.score.formula_version}</small></div></li>
+          <li><span>04</span><div><strong>{modelText ? "Model draft" : "Computed reason"}</strong><small>{modelText ? "Genuine stored Nemotron output" : "No model output claimed"}</small></div></li>
+        </ol>
         <section>
           <h3>Deterministic, not clinical</h3>
           <p className="fineprint">Prototype score on a 0 to 1 scale. No clinical validation. Contact outcomes never change this rank. Tie-break: {row.score.tie_break}.</p>

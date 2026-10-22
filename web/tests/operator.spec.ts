@@ -2,11 +2,60 @@ import { test, expect } from "@playwright/test";
 import { readFile, rename } from "node:fs/promises";
 import snapshotJson from "../data/manatee-ranked.json";
 import provenance from "../data/manatee-ranked.json.provenance.json";
+import proofContract from "../design/proof-contract.json";
+import materialProvenance from "../design/material-provenance.json";
 import { createHash } from "node:crypto";
 import { createCsv, createProjection, parseContacts } from "../src/lib/operator";
 import type { Snapshot } from "../src/lib/types";
 
 const snapshot = snapshotJson as unknown as Snapshot;
+
+test("Proof Desk contract drives the real typography, palette and material", async ({ page, request }) => {
+  await page.goto("/");
+  await expect(page.locator(".facility-row")).toHaveCount(18);
+  const actual = await page.evaluate(() => {
+    const style = getComputedStyle(document.documentElement);
+    return {
+      ground: style.getPropertyValue("--color-bg").trim(),
+      accent: style.getPropertyValue("--color-accent").trim(),
+      body: getComputedStyle(document.body).fontFamily,
+      display: getComputedStyle(document.querySelector("h1")!).fontFamily,
+    };
+  });
+  expect(proofContract.direction.id).toBe("night-ledger");
+  expect(actual.ground).toBe(proofContract.tokens.background);
+  expect(actual.accent).toBe(proofContract.tokens.accent);
+  expect(actual.display).toContain("Libre Baskerville");
+  expect(actual.body).toContain("Alegreya Sans");
+  if (await page.evaluate(() => innerWidth < 768)) {
+    const phone = await page.locator(".phone-line").boundingBox();
+    expect(phone).not.toBeNull();
+    expect(phone!.y + phone!.height).toBeLessThan(812);
+  }
+  const material = await request.get("/design/night-ledger.webp");
+  expect(material.ok()).toBe(true);
+  expect(createHash("sha256").update(await material.body()).digest("hex")).toBe(materialProvenance.sha256);
+});
+
+test("source atlas and contact workbench stay ordered across desktop and tablet", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/");
+  await expect(page.locator(".facility-row")).toHaveCount(18);
+  await expect(page.locator(".atlas-column")).toBeVisible();
+  const ledger = await page.locator(".ledger").boundingBox();
+  const atlas = await page.locator(".atlas-column").boundingBox();
+  const contact = await page.locator(".operator-rail").boundingBox();
+  expect(ledger && atlas && contact).toBeTruthy();
+  expect(atlas!.x).toBeGreaterThan(ledger!.x);
+  expect(contact!.x).toBeGreaterThan(atlas!.x);
+  expect(atlas!.width).toBeGreaterThan(ledger!.width);
+  expect(atlas!.y).toBeLessThan(520);
+  await page.setViewportSize({ width: 1024, height: 1024 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.locator(".facility-row").nth(1).click();
+  await expect(page.locator(".intro-index strong")).toHaveText("02");
+  await expect(page.locator(".atlas-index-strip")).toContainText(snapshot.facilities[1].name);
+});
 
 test("actual bytes, deterministic terms, projection and local record validation", async () => {
   expect(createHash("sha256").update(await readFile("data/manatee-ranked.json")).digest("hex")).toBe(provenance.sha256);

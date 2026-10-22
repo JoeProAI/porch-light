@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-22T20:25:43.950Z",
+  "brief": {
+    "product": "Porch Light",
+    "purpose": "Help a county emergency operator inspect a real storm warning, work a sourced call-first facility list, inspect actual Zetaris and Nemotron evidence, record contact and export without losing their place.",
+    "audience": "Emergency operators who need calm hierarchy, immediately reachable phone actions, explicit source age and trustworthy failure states under pressure.",
+    "framework": "Next.js 16, React 19, strict TypeScript, Tailwind 4, local-first snapshot. Preserve existing tested ranking, query-ID evidence, CSV/print and mobile keyboard workflow. No public deployment.",
+    "anchors": "Night Ledger. Carbon paper, brass, black book cloth. Ivory editorial authority, a dominant source atlas, narrow utility rails and one moving brass index. Ambitious graphic composition with restrained operational focus.",
+    "taboos": "Generic SaaS cards, oversized marketing hero in operator view, decorative metrics, emoji, purple gradients, neon/hologram imagery, fake radar or location routes, invented data, hidden states, unsourced urgency."
+  },
+  "direction": {
+    "id": "night-ledger",
+    "number": "05",
+    "name": "Night Ledger",
+    "tone": "Nocturnal restraint",
+    "display": "Baskerville",
+    "body": "Optima",
+    "composition": "Deep margins, narrow measures, and one luminous interruption",
+    "motion": "Slow shutters and deliberate focus pulls",
+    "material": "Carbon paper, brass, black book cloth",
+    "signature": "A moving brass index reveals context without breaking the quiet",
+    "palette": ["#121613", "#ebe4cf", "#d8a83e", "#7b9d8b"],
+    "plate": "/plates/night-ledger.webp",
+    "axes": {
+      "typeVolume": 62, "gridRupture": 20, "chromaHeat": 28,
+      "materialGrit": 56, "motionCharge": 22, "detailLoad": 38
+    }
+  },
+  "tokens": {
+    "background": "#121613", "surface": "#212420", "text": "#ebe4cf",
+    "muted": "#908d80", "accent": "#d8a83e", "focus": "#7b9d8b",
+    "radius": 0, "density": 4
+  },
+  "axes": {
+    "typeVolume": 72, "gridRupture": 38, "chromaHeat": 34,
+    "materialGrit": 70, "motionCharge": 28, "detailLoad": 72
+  },
+  "audit": {
+    "score": 90,
+    "label": "Distinct",
+    "categories": [
+      {"name": "Identity", "score": 91}, {"name": "Type", "score": 88},
+      {"name": "Contrast", "score": 91}, {"name": "States", "score": 96},
+      {"name": "Courage", "score": 86}, {"name": "Narrative", "score": 90}
+    ],
+    "flags": []
+  }
+}

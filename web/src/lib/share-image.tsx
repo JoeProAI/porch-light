@@ -3,56 +3,60 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { readSnapshot } from "./snapshot";
 import { createProjection, hasCoordinates } from "./operator";
+import proofContract from "../../design/proof-contract.json";
 
 export const renderShareImage = async (): Promise<Response> => {
   const [{ snapshot }, displayFont, bodyFont] = await Promise.all([
     readSnapshot(),
-    readFile(path.join(process.cwd(), "node_modules/@fontsource/fraunces/files/fraunces-latin-400-normal.woff")),
-    readFile(path.join(process.cwd(), "node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff")),
+    readFile(path.join(process.cwd(), "node_modules/@fontsource/libre-baskerville/files/libre-baskerville-latin-400-normal.woff")),
+    readFile(path.join(process.cwd(), "node_modules/@fontsource/alegreya-sans/files/alegreya-sans-latin-400-normal.woff")),
   ]);
   const { project, paths } = createProjection(snapshot.warning_geometry, snapshot.facilities, "facilities");
+  const colors = proofContract.tokens;
+  const audited = snapshot.data_access.data_access_mode === "zetaris";
   return new ImageResponse(
-    <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", background: "#101b20", color: "#f0ecdf", padding: "40px 52px", fontFamily: "Plex" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 22, borderBottom: "1px solid #3c4b50" }}>
-        <span style={{ fontFamily: "Fraunces", fontSize: 36, letterSpacing: "-2px" }}>Porch Light.</span>
-        <span style={{ fontSize: 15, letterSpacing: "2px", color: "#afbbbd" }}>MANATEE / FL · MILTON 2024</span>
+    <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", background: colors.background, color: colors.text, padding: "36px 48px 30px 78px", fontFamily: "OptimaStudy", borderLeft: `24px solid ${colors.surface}` }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 22, borderBottom: `1px solid ${colors.muted}` }}>
+        <span style={{ fontFamily: "BaskervilleStudy", fontSize: 32, letterSpacing: "-2px" }}>Porch Light.</span>
+        <span style={{ fontSize: 17, letterSpacing: "2px", color: colors.accent }}>THE RESPONSE ATLAS / MANATEE</span>
       </div>
-      <div style={{ display: "flex", flex: 1, paddingTop: 28, gap: 48 }}>
-        <div style={{ display: "flex", flexDirection: "column", width: 640 }}>
-          <span style={{ fontSize: 13, color: "#e8b66d", letterSpacing: "2px" }}>RETROSPECTIVE / CALL-FIRST LEDGER</span>
-          <span style={{ fontFamily: "Fraunces", fontSize: 69, letterSpacing: "-4px", lineHeight: 1.05, marginTop: 20, marginBottom: 25 }}>Know who to call first.</span>
+      <div style={{ display: "flex", flex: 1, paddingTop: 32, gap: 32 }}>
+        <div style={{ display: "flex", flexDirection: "column", width: 540 }}>
+          <span style={{ fontSize: 14, color: colors.muted, letterSpacing: "2px" }}>HURRICANE MILTON / RETROSPECTIVE 2024</span>
+          <span style={{ fontFamily: "BaskervilleStudy", fontSize: 64, letterSpacing: "-4px", lineHeight: 1.12, marginTop: 28, marginBottom: 10 }}>One light on.</span>
+          <span style={{ fontSize: 23, color: colors.accent, marginBottom: 30 }}>Who to call first, and why.</span>
           {snapshot.facilities.slice(0, 3).map(row => (
-            <div key={row.id} style={{ display: "flex", alignItems: "center", gap: 16, borderTop: "1px solid #3c4b50", padding: "14px 0", color: row.rank === 1 ? "#e8b66d" : "#f0ecdf" }}>
-              <span style={{ fontSize: 18, width: 26 }}>{String(row.rank).padStart(2, "0")}</span>
+            <div key={row.id} style={{ display: "flex", alignItems: "center", gap: 16, borderTop: `1px solid ${colors.surface}`, padding: "14px 0", color: row.rank === 1 ? colors.accent : colors.text }}>
+              <span style={{ fontSize: 23, width: 30 }}>{String(row.rank).padStart(2, "0")}</span>
               <span style={{ fontSize: 16, flex: 1 }}>{row.name}</span>
               <span style={{ fontSize: 18 }}>{row.score.total.toFixed(4)}</span>
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", flexDirection: "column", width: 360, borderLeft: "1px solid #3c4b50", paddingLeft: 24 }}>
-          <span style={{ color: "#afbbbd", fontSize: 13, marginBottom: 12 }}>ACTUAL SOURCE GEOGRAPHY</span>
-          <svg width="336" height="255" viewBox="0 0 600 400" style={{ background: "#17272c" }}>
+        <div style={{ display: "flex", flexDirection: "column", width: 440, borderLeft: `1px solid ${colors.muted}`, paddingLeft: 24 }}>
+          <span style={{ color: colors.accent, fontSize: 15, marginBottom: 20 }}>THE BRASS INDEX / 01</span>
+          <svg width="408" height="300" viewBox="0 0 600 400" style={{ background: colors.surface }}>
             <defs><clipPath id="share-clip"><rect width="600" height="400" /></clipPath></defs>
             <g clipPath="url(#share-clip)">
-              {paths.map((d, i) => <path key={i} d={d} fill="#1d3034" fillRule="evenodd" stroke="#79938a" strokeWidth="1.5" />)}
+              {paths.map((d, i) => <path key={i} d={d} fill={colors.background} fillRule="evenodd" stroke={colors.focus} strokeWidth="1.5" />)}
               {snapshot.facilities.filter(hasCoordinates).map(row => {
                 const [cx, cy] = project([row.lon, row.lat]);
-                return <circle key={row.id} cx={cx} cy={cy} r={row.rank === 1 ? 9 : 5} fill={row.rank === 1 ? "#e8b66d" : "#d1d5cb"} />;
+                return <circle key={row.id} cx={cx} cy={cy} r={row.rank === 1 ? 11 : 5} fill={row.rank === 1 ? colors.accent : colors.text} />;
               })}
             </g>
           </svg>
-          <span style={{ marginTop: 18, fontSize: 16, color: "#e8b66d" }}>{snapshot.counts.ranked_rows} ranked · {snapshot.counts.refused_rows} refused</span>
-          <span style={{ marginTop: 10, fontSize: 14, lineHeight: 1.5, color: "#afbbbd" }}>Current zone shapes. Location review required. Not live radar or current conditions.</span>
+          <span style={{ marginTop: 18, fontSize: 20, color: colors.accent }}>{snapshot.counts.ranked_rows} ranked / {snapshot.counts.refused_rows} refused</span>
+          <span style={{ marginTop: 10, fontSize: 16, lineHeight: 1.4, color: colors.muted }}>Actual source geometry. Not live radar or current conditions.</span>
         </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, paddingTop: 18, borderTop: "1px solid #3c4b50", color: "#afbbbd" }}>
-        <span>Development PostGIS · Zetaris pending · Not clinical guidance</span>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 15, paddingTop: 18, borderTop: `1px solid ${colors.muted}`, color: colors.muted }}>
+        <span>{audited ? `Zetaris audit ${snapshot.data_access.zetaris_query_ids.join(", ")}` : "Development data"} / Prototype, not clinical guidance</span>
         <span>SNAPSHOT {snapshot.generated_at.slice(0, 10)}</span>
       </div>
     </div>,
     { width: 1200, height: 630, fonts: [
-      { name: "Fraunces", data: displayFont, weight: 400, style: "normal" },
-      { name: "Plex", data: bodyFont, weight: 400, style: "normal" },
+      { name: "BaskervilleStudy", data: displayFont, weight: 400, style: "normal" },
+      { name: "OptimaStudy", data: bodyFont, weight: 400, style: "normal" },
     ] },
   );
 };

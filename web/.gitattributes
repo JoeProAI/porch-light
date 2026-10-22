@@ -1,1 +1,3 @@
 data/*.json -text -whitespace
+design/*.json -text -whitespace
+public/design/* -text -whitespace
