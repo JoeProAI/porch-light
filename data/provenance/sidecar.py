@@ -11,11 +11,14 @@ Sidecar format (see data/provenance/README.md):
 import argparse
 import hashlib
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 REQUIRED_KEYS = ["source_url", "fetched_at_utc", "sha256", "license", "fetch_command"]
+
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
 def sha256_of(path: Path) -> str:
@@ -26,25 +29,55 @@ def sha256_of(path: Path) -> str:
     return h.hexdigest()
 
 
+def _valid_fetched_at(value) -> bool:
+    if not isinstance(value, str) or not value:
+        return False
+    try:
+        dt = datetime.fromisoformat(value)
+    except ValueError:
+        return False
+    return dt.tzinfo is not None
+
+
+def _valid_meta(meta) -> bool:
+    if not isinstance(meta, dict):
+        return False
+    for key in REQUIRED_KEYS:
+        if not isinstance(meta.get(key), str) or not meta[key]:
+            return False
+    if not _valid_fetched_at(meta["fetched_at_utc"]):
+        return False
+    return bool(SHA256_RE.match(meta["sha256"]))
+
+
 def write_sidecar(path: Path, source_url: str, license_line: str, fetch_command: str,
                   fetched_at_utc: str | None = None) -> Path:
     if not path.is_file():
         sys.exit(f"no such file: {path}")
+    digest = sha256_of(path)
+    out = path.with_name(path.name + ".provenance.json")
+    if fetched_at_utc is None and out.is_file():
+        try:
+            old = json.loads(out.read_text())
+        except json.JSONDecodeError:
+            old = {}
+        if old.get("sha256") == digest and _valid_fetched_at(old.get("fetched_at_utc")):
+            fetched_at_utc = old["fetched_at_utc"]
+    if fetched_at_utc is None:
+        fetched_at_utc = datetime.now(timezone.utc).isoformat(timespec="seconds")
     sidecar = {
         "source_url": source_url,
-        "fetched_at_utc": fetched_at_utc
-        or datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "sha256": sha256_of(path),
+        "fetched_at_utc": fetched_at_utc,
+        "sha256": digest,
         "license": license_line,
         "fetch_command": fetch_command,
     }
-    out = path.with_name(path.name + ".provenance.json")
     out.write_text(json.dumps(sidecar, indent=2) + "\n")
     return out
 
 
 def verify(path: Path) -> bool:
-    """Check the sidecar exists and its sha256 still matches the file."""
+    """Check the sidecar exists, has usable metadata, and matches the file."""
     side = path.with_name(path.name + ".provenance.json")
     if not side.is_file():
         return False
@@ -52,7 +85,7 @@ def verify(path: Path) -> bool:
         meta = json.loads(side.read_text())
     except json.JSONDecodeError:
         return False
-    if any(k not in meta for k in REQUIRED_KEYS):
+    if not _valid_meta(meta):
         return False
     return meta["sha256"] == sha256_of(path)
 

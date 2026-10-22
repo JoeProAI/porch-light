@@ -43,7 +43,7 @@ blocked: local Zetaris on the 5080 needs Joe at the keyboard (steps below); cont
 ### Local Zetaris on the 5080, steps for Joe (gate G2, never AWS)
 1. Windows side: install Docker Desktop with the WSL2 backend. Cap WSL2 in `%UserProfile%\.wslconfig`: `memory=8GB`, `processors=4`.
 2. WSL2 terminal: pull and start the Zetaris build from the hackathon sponsor page (community/local edition), expose its UI port (default 8080). `docker run -d -p 8080:8080 <zetaris-image>`.
-3. Same WSL2: start PostGIS: `docker run -d --name porchlight-postgis -p 5432:5432 -e POSTGRES_PASSWORD=<password> -e POSTGRES_DB=porchlight postgis/postgis:16-3.4`.
+3. Same WSL2: start PostGIS: `docker run -d --name porchlight-postgis -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD=<password> -e POSTGRES_DB=porchlight postgis/postgis:16-3.4`.
 4. Zetaris admin UI: register a JDBC datasource `porchlight_postgis`: `jdbc:postgresql://<wsl2-host>:5432/porchlight`, user `postgres`, password from env, never in code or docs.
 5. Verify: run `SELECT 1` through Zetaris SQL against the datasource, then mark G2 in the Gates table.
 
