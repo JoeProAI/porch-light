@@ -7,12 +7,19 @@ One command:
 
 Needs only pyyaml and jsonschema. Exit 0 when every fixture validates.
 """
-import json
 import sys
+
+# Drop the script's own directory from sys.path so contract/types does not
+# shadow the stdlib types module when run as `python3 contract/validate_fixtures.py`.
+sys.path = [p for p in sys.path if p != __file__.rsplit("/", 1)[0]]
+
+import json
 from pathlib import Path
 
 import jsonschema
+import referencing.jsonschema
 import yaml
+from referencing import Registry, Resource
 
 ROOT = Path(__file__).resolve().parent
 FIXTURES = ROOT / "fixtures"
@@ -20,15 +27,19 @@ FIXTURES = ROOT / "fixtures"
 spec = yaml.safe_load((ROOT / "openapi.yaml").read_text())
 schemas = spec["components"]["schemas"]
 
-resolver = jsonschema.RefResolver.from_schema(spec)
+registry = Registry().with_resource(
+    "openapi.yaml", Resource.from_contents(
+        spec, default_specification=referencing.jsonschema.DRAFT202012))
+root_validator = jsonschema.Draft202012Validator(
+    {"$ref": "openapi.yaml"}, registry=registry)
 
 
 def check(name: str, fixture_file: str, schema_name: str,
           items_key: str | None = None) -> list[str]:
     errors = []
     data = json.loads((FIXTURES / fixture_file).read_text())
-    validator = jsonschema.Draft7Validator(
-        schemas[schema_name], resolver=resolver)
+    validator = root_validator.evolve(
+        schema={"$ref": f"openapi.yaml#/components/schemas/{schema_name}"})
     if items_key is None:
         docs = [(fixture_file, data)]
     else:
