@@ -1,56 +1,56 @@
 {
-  "export_id": "exp-mock-001",
-  "run_id": "run_milton_12081_mock",
-  "created_at": "2024-10-09T06:00:22Z",
   "artifacts": [
     {
+      "filename": "call_sheet_mock.csv",
       "format": "csv",
-      "sha256": "ee59542ab07d31afa168c009d554ac064869385c0da1bfaac17a818fbd53b71a",
       "href": "/runs/run_milton_12081_mock/exports/exp-mock-001/artifacts/csv",
       "media_type": "text/csv",
-      "filename": "call_sheet_mock.csv"
+      "sha256": "ee59542ab07d31afa168c009d554ac064869385c0da1bfaac17a818fbd53b71a"
     }
   ],
+  "contract": {
+    "action": "export_call_sheet",
+    "disclaimers": [
+      "Call script is a draft; a human reviews before any call (mock)."
+    ],
+    "engine": "scout_intent",
+    "evidence_ids": [
+      "fac_mock_100608",
+      "fac_mock_106445",
+      "fac_mock_106669",
+      "fac_mock_107754",
+      "fac_mock_107053",
+      "fac_mock_100812",
+      "fac_mock_108637",
+      "fac_mock_102633",
+      "fac_mock_101356",
+      "fac_mock_102856"
+    ],
+    "id": "ctr-mock-001",
+    "inputs_hash": "dd1a24493f9f1c15e510e30f067dd12843e0a1799d74861ad088ea8eac958a5d",
+    "request_hash": "a845d4da5125588c40ffedd0549939fb4b1c4df53e105a8961204f6281df5e5c",
+    "signature": "mock-signature-not-a-real-signature",
+    "signed_at": "2024-10-09T06:00:22Z",
+    "trace_ids": [
+      "tr-mock-run-03",
+      "tr-mock-run-06"
+    ]
+  },
+  "contract_signature": "mock-signature-not-a-real-signature",
+  "created_at": "2024-10-09T06:00:22Z",
   "csv_sha256": "ee59542ab07d31afa168c009d554ac064869385c0da1bfaac17a818fbd53b71a",
+  "export_id": "exp-mock-001",
+  "held": [],
+  "model_trace_ids": [
+    "tr-mock-run-03",
+    "tr-mock-run-06"
+  ],
+  "run_id": "run_milton_12081_mock",
+  "snapshot_id": "snap_mock_12081_20241009T0600Z",
   "zetaris_query_ids": [
     "zq-mock-001",
     "zq-mock-201",
     "zq-mock-202",
     "zq-mock-203"
-  ],
-  "snapshot_id": "snap_mock_12081_20241009T0600Z",
-  "model_trace_ids": [
-    "tr-mock-run-03",
-    "tr-mock-run-06"
-  ],
-  "contract": {
-    "id": "ctr-mock-001",
-    "action": "export_call_sheet",
-    "engine": "scout_intent",
-    "request_hash": "a845d4da5125588c40ffedd0549939fb4b1c4df53e105a8961204f6281df5e5c",
-    "inputs_hash": "dd1a24493f9f1c15e510e30f067dd12843e0a1799d74861ad088ea8eac958a5d",
-    "evidence_ids": [
-      "fac_mock_586901",
-      "fac_mock_607754",
-      "fac_mock_523693",
-      "fac_mock_655455",
-      "fac_mock_108860",
-      "fac_mock_411740",
-      "fac_mock_507053",
-      "fac_mock_200812",
-      "fac_mock_190413",
-      "fac_mock_532351"
-    ],
-    "trace_ids": [
-      "tr-mock-run-03",
-      "tr-mock-run-06"
-    ],
-    "signed_at": "2024-10-09T06:00:22Z",
-    "signature": "mock-signature-not-a-real-signature",
-    "disclaimers": [
-      "Call script is a draft; a human reviews before any call (mock)."
-    ]
-  },
-  "contract_signature": "mock-signature-not-a-real-signature",
-  "held": []
+  ]
 }
