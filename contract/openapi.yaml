@@ -717,6 +717,28 @@ components:
         steps:
           type: array
           items: { $ref: "#/components/schemas/TraceStep" }
+    LedgerEntry:
+      type: object
+      required: [id, facility_id, claims, query_ids]
+      properties:
+        id: { type: string, description: "TrustLedger entry id, for example tl-mock-001a." }
+        facility_id: { type: string }
+        claims:
+          type: array
+          items: { type: string }
+          description: "Fact names this entry links the reason's claims to."
+        query_ids:
+          type: array
+          items: { type: string }
+        mock: { type: boolean }
+    Ledger:
+      type: object
+      required: [run_id, entries]
+      properties:
+        run_id: { type: string }
+        entries:
+          type: array
+          items: { $ref: "#/components/schemas/LedgerEntry" }
     CheckInStatus:
       type: string
       enum: [called, answered, no_answer]
