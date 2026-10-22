@@ -31,15 +31,23 @@ sources:
     notes: tract-level social vulnerability, joined by GEOID
   empower:
     kind: api
-    url: https://empower.hhs.gov/
-    notes: at-risk layers count Medicare beneficiaries on electricity-dependent
-      DME combined with a service, not all patients; official HHS emPOWER
-      REST Service layers (geohealth.hhs.gov MapServer, checked 2026-10-22):
-      Electrically Dependent-All 1yr (0), Facility ESRD Dialysis Any DME (4),
-      O2 Services Any DME (8), Home Health Services Any DME (12),
-      At-Home Hospice Any DME (16), Any Healthcare Service Any DME (20);
-      label exactly with these layer names
-      (https://geohealth.hhs.gov/dataaccess/rest/services/HHS_emPOWER_REST_Service_Public/MapServer)
+    url: https://services2.arcgis.com/ZQ4jTQn6k7VPXEwO/arcgis/rest/services/HHS_emPOWER_REST_Service_Public/FeatureServer
+    notes: >-
+      counts are Medicare beneficiaries who use electricity-dependent DME
+      or devices, not all patients; each service layer counts DME users who
+      also receive that service. ZIP level layers in the official HHS emPOWER
+      FeatureServer (layer list checked HTTP 200 on 2026-10-22), names exact
+      except the official en dashes written here as hyphens:
+      Electricity Dependent DME - ALL - ZipLevel (1),
+      Facility ESRD Dialysis Any DME - ZipLevel (5),
+      O2 Services Any DME - ZipLevel (9),
+      Home Health Services Any DME - ZipLevel (13),
+      At-Home Hospice Any DME - ZipLevel (17),
+      Any Healthcare Service Any DME - ZipLevel (21);
+      CountyLevel and StateLevel are the next two ids after each ZipLevel id.
+      Label definitions: https://empowerprogram.hhs.gov/empowermap (HTTP 200).
+      The geohealth.hhs.gov MapServer copy of this service uses different
+      group ids (0, 4, 8, 12, 16, 20) and timed out from the build box.
   census_geocoder:
     kind: api
     url: https://geocoding.geo.census.gov/geocoder/geographies/address
