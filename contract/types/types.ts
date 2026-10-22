@@ -129,6 +129,10 @@ export interface GeocodeInfo {
   match_quality?: "exact" | "partial" | "tied" | "failed";
 }
 
+export type FacilityPhone =
+  | { status: "available"; value: string; source: SourceRef; source_record_key?: string }
+  | { status: "unavailable"; reason: string; value?: never };
+
 export interface Facility {
   id: string;
   country: CountryCode;
@@ -137,6 +141,7 @@ export interface Facility {
   key: ExternalKey; // ccn in the US, osm_id in the global adapter
   alt_keys?: ExternalKey[];
   address?: string;
+  phone?: FacilityPhone;
   zip?: string;
   county_key?: ExternalKey;
   tract_key?: ExternalKey;
@@ -168,7 +173,7 @@ export interface ScoreBreakdown {
   total: number;
   terms: ScoreTerm[];
   formula_version: string;
-  rank?: number;
+  rank: number;
   tie_break?: string;
 }
 
@@ -287,6 +292,7 @@ export interface TraceStep {
   output_tokens?: number;
   tokens_per_sec?: number;
   trace_id?: string;
+  query_ids?: string[];
   started_at: string;
   detail?: string;
 }

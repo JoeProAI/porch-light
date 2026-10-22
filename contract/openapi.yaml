@@ -14,6 +14,8 @@ info:
     the formula ranks.
   license:
     name: AGPL-3.0
+security:
+  - bearerAuth: []
 tags:
   - name: alerts
   - name: runs
@@ -328,6 +330,10 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/Health" }
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
   parameters:
     RunId:
       name: id
@@ -506,6 +512,7 @@ components:
           type: array
           items: { $ref: "#/components/schemas/ExternalKey" }
         address: { type: string }
+        phone: { $ref: "#/components/schemas/FacilityPhone" }
         zip: { type: string }
         county_key:
           $ref: "#/components/schemas/ExternalKey"
@@ -526,6 +533,22 @@ components:
         score: { $ref: "#/components/schemas/ScoreBreakdown" }
         evidence: { $ref: "#/components/schemas/Evidence" }
         mock: { type: boolean }
+    FacilityPhone:
+      oneOf:
+        - type: object
+          required: [status, value, source]
+          properties:
+            status: { const: available }
+            value: { type: string, minLength: 1 }
+            source: { $ref: "#/components/schemas/SourceRef" }
+            source_record_key: { type: string }
+        - type: object
+          required: [status, reason]
+          properties:
+            status: { const: unavailable }
+            reason: { type: string, minLength: 1 }
+          not:
+            required: [value]
     RankedFacility:
       description: >-
         A facility after ranking. Used by GET /runs/{id}/facilities so the
@@ -551,14 +574,14 @@ components:
         note: { type: string, description: "Plain label for the evidence drawer, for example: ZIP level aggregate." }
     ScoreBreakdown:
       type: object
-      required: [total, terms, formula_version]
+      required: [total, terms, formula_version, rank]
       properties:
         total: { type: number }
         terms:
           type: array
           items: { $ref: "#/components/schemas/ScoreTerm" }
         formula_version: { type: string, description: "Version of data/scoring/weights.yaml used." }
-        rank: { type: integer }
+        rank: { type: integer, minimum: 1 }
         tie_break: { type: string, description: "Ties break by facility type, then facility key." }
     SourceRef:
       type: object
@@ -707,6 +730,10 @@ components:
         output_tokens: { type: integer }
         tokens_per_sec: { type: number }
         trace_id: { type: string }
+        query_ids:
+          type: array
+          items: { type: string, minLength: 1 }
+          uniqueItems: true
         started_at: { type: string, format: date-time }
         detail: { type: string }
     Trace:

@@ -183,6 +183,22 @@ class GeocodeInfo:
 
 
 @dataclass
+class FacilityPhone:
+    status: str
+    value: Optional[str] = None
+    source: Optional["SourceRef"] = None
+    source_record_key: Optional[str] = None
+    reason: Optional[str] = None
+
+    def __post_init__(self):
+        if self.status == "available":
+            if not self.value or self.source is None:
+                raise ValueError("An available phone requires its actual source and value")
+        elif self.status != "unavailable" or self.value is not None or not self.reason:
+            raise ValueError("An unavailable phone requires a reason and no value")
+
+
+@dataclass
 class Facility:
     id: str
     country: CountryCode
@@ -193,6 +209,7 @@ class Facility:
     lon: float
     alt_keys: list[ExternalKey] = field(default_factory=list)
     address: Optional[str] = None
+    phone: Optional[FacilityPhone] = None
     zip: Optional[str] = None
     county_key: Optional[ExternalKey] = None
     tract_key: Optional[ExternalKey] = None
@@ -225,8 +242,12 @@ class ScoreBreakdown:
     total: float
     terms: list[ScoreTerm]
     formula_version: str
-    rank: Optional[int] = None
+    rank: int
     tie_break: Optional[str] = None
+
+    def __post_init__(self):
+        if not isinstance(self.rank, int) or isinstance(self.rank, bool) or self.rank < 1:
+            raise ValueError("A ranked score requires a positive integer rank")
 
 
 @dataclass
@@ -373,6 +394,7 @@ class TraceStep:
     output_tokens: Optional[int] = None
     tokens_per_sec: Optional[float] = None
     trace_id: Optional[str] = None
+    query_ids: list[str] = field(default_factory=list)
     detail: Optional[str] = None
 
 
@@ -426,8 +448,12 @@ class Contract:
 class RankedFacility(Facility):
     """A facility after ranking: the call sheet always carries score and
     evidence. Raw Facility stays for adapter output pre-scoring."""
-    score: ScoreBreakdown = field(default=None)  # type: ignore[assignment]
-    evidence: Evidence = field(default=None)  # type: ignore[assignment]
+    score: ScoreBreakdown = field(kw_only=True)
+    evidence: Evidence = field(kw_only=True)
+
+    def __post_init__(self):
+        if self.score is None or self.evidence is None:
+            raise ValueError("Ranked rows require both score and evidence")
 
 
 @dataclass
