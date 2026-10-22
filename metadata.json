@@ -55,10 +55,10 @@
     },
     "cursor": {
       "status": "planned",
-      "how": "TODO: attach real Cursor run links and describe actual Cursor contribution",
+      "how": "The contract commit and compliance kit are made in Cursor, .cursor/rules (house, paths, sponsors) govern every agent, and Cursor cloud agents own the web UI and back up the data layer, each through a PR.",
       "models": ["TODO: fill from the Cursor usage CSV"],
       "surfaces": ["ide", "background-agents"],
-      "where": ["TODO: fill with paths Cursor actually produced, once confirmed"],
+      "where": [".cursor/rules/", "web/", "ops/build-log/cursor/"],
       "evidence": ["TODO: cloud agent PR links, exported transcripts, Cursor usage CSV"],
       "decisions": []
     },
@@ -72,7 +72,8 @@
         "Nemotron 3 Nano 4B (local, GGUF)",
         "Nemotron 3.5 Embed 1B (TODO: confirm NIM model id)",
         "nvidia/nemotron-3.5-content-safety",
-        "nvidia/nemotron-parse-2.0"
+        "nvidia/nemotron-parse-2.0",
+        "nvidia/nemotron-4-340b-reward"
       ],
       "route": "via-meterless",
       "where": ["TODO: engines/model_client/ after build"],
