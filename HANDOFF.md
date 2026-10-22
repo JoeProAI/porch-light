@@ -1,5 +1,5 @@
 # HANDOFF
-Updated: Wed Oct 21 2026 9:53 PM ET   Target submit: Mon Oct 26 6 PM ET   Judging opens: Mon Oct 26 8 PM ET   Hard stop: Tue Oct 27 5 PM ET
+Updated: Wed Oct 21 2026 10:04 PM ET   Target submit: Mon Oct 26 6 PM ET   Judging opens: Mon Oct 26 8 PM ET   Hard stop: Tue Oct 27 5 PM ET
 
 How work moves between agents. If an area's primary stalls or runs out of quota, its backup reads that area's section and picks up from "next step". Edit only your own area's section. Never commit secrets; env var names only.
 
@@ -102,8 +102,8 @@ state: live GitHub state and all five PR heads audited. Main remains ffa61d9. Th
 next step: contract repair and fresh reviews, expiring alert capture, CI, model client, then one real-data Manatee call sheet. Keep global adapters gated on G4. Keep Web with Cursor.
 branch: devin/ops-takeover (HANDOFF only)   open PRs: [#16](https://github.com/JoeProAI/porch-light/pull/16)
 how to run: combined tree passes contract fixture validation, 10 provenance unit tests, strict TypeScript checking, Python compilation, metadata schema validation, git diff --check and gitleaks git . --redact --no-banner.
-blocked: private Devin Review pages require browser login. Published reviews target older commits, not the current PR heads. G2 and G3 have no working local service evidence.
-last update: Wed Oct 21 2026 9:53 PM ET
+blocked: private Devin Review and HackOS workspace access require browser login. Devin Cloud CLI is signed out. PR #16 has a hidden review flag that is not cleared. Published reviews of the original batch target older commits. G2 and G3 have no working local service evidence.
+last update: Wed Oct 21 2026 10:04 PM ET
 
 ### Verified PR batch
 
@@ -152,9 +152,23 @@ All are open and GitHub reports MERGEABLE/CLEAN, but all have zero status checks
 4. G3: obtain the supported Nightshift/Meterless setup, keep its token in the local token file, and configure a local Nemotron model that fits the GPU. Confirm its exact model id and supported runner; do not assume an Ollama installation proves this.
 5. G3: GET /v1/models through Meterless, then one Joe-approved local request with meterless-app: porch-light and meterless-scope: user. Prove the underlying model is Nemotron, then disconnect the upstream route and repeat locally. Never record the token.
 
+### Access verification and delivery roles
+
+Checked locally on Oct 21 at about 10 PM ET. No model requests or new cloud sessions were made.
+
+- HackOS: the public event page and official rules are readable at https://hackathon.genai.works/event/open-agent-hackathon-2026. The controlled browser shows Sign in, and /sign-in shows the login form. Authenticated team dashboard, submission fields and sponsor-credit claims are not accessible yet.
+- Official rule 5.1 confirms Zetaris, Meterless and Cursor development are mandatory. Rule 7.1 confirms Impact 30, Technical 20, Innovation 15, Demo 15, Product and UX 10, Sponsor tech 10. The delivery goal is a measured operator workflow, not the largest agent roster.
+- Devin Cloud: devin auth status reports Not logged in; devin cloud drs whoami fails for the same reason. The available DeepWiki MCP exposes wiki tools only, not session management. Cloud capability is installed but usable account access is not verified. Joe needs devin auth login before a bounded job can start.
+- Claude Code: executable installed; claude auth status reports loggedIn false. Sign in before assigning work. Installation does not establish subscription capacity.
+- Hermes: installed. hermes auth status openai-codex reports logged in; Nous reports logged out. Codex CLI separately reports logged in using ChatGPT. No inference test, active Hermes provider or remaining quota is established.
+- Grok Build: executable exists, but version/help probes returned no useful output and a failure exit. Remaining usage is unknown. Grok Bots are not on the critical path while Joe reports their quota recovery is two days away.
+- Credentials: Joe supplied the location of a private local env file outside the repo. NVIDIA_API_KEY, MODAL_TOKEN_ID and MODAL_TOKEN_SECRET are present and nonempty, with no malformed entries. The file ACL grants access only to Joe's Windows account through inheritance. No values were printed, copied into the repo, uploaded or tested against a paid service. Zetaris and Meterless credentials are pending issuance. Devin Cloud uses separate developer authentication; do not add unrelated Grok or Cursor provider keys.
+- Role proposal, not dispatched: Devin owns integration and critical data/API work; Cursor owns the authored web experience; Claude Code handles a bounded contract/security review or isolated engine task once signed in; Hermes handles sourced data research and adversarial evidence checks using an authenticated approved provider; Codex can take isolated eval/CI work when available. Give each worker a separate worktree, area and acceptance test.
+- Winning demonstration: real warning to sourced call sheet, inspect a reason down to query/source/failed-join evidence, retain operator check-ins, export, disconnect the network and repeat from the same snapshot. Measure time and correctness against Joe's manual baseline and hand check; report only observed results.
+
 ## Status
-2026-10-21 9:53 PM ET: Devin owns Engines, Eval and CI, and Integration; Web stays Cursor first. Audit only; no issues created.
-PRs: [#16](https://github.com/JoeProAI/porch-light/pull/16) records this audit; existing #14, #1, #12, #13, #15 remain open. Their combined tree passes local checks, but no CI or current-head review is established.
-Gates: no gate closed. Four real NWS warnings still resolve; capture with sidecars is the next time-sensitive data step.
-Blocked: Joe's G2/G3 setup, merges, private review-page login, and contract findings above. No deployment, public release or paid model call.
-Next: approve issue drafts, repair contract, capture warnings, then CI and fixture-only model client. No cloud session was created.
+2026-10-21 10:04 PM ET: Public rules and agent access checked. NVIDIA and Modal variable presence verified privately. Joe is installing Nightshift.
+PRs: [#16](https://github.com/JoeProAI/porch-light/pull/16) records the audit; its hidden review flag is not cleared. Original five PRs remain open.
+Gates: no gate closed. Capture real warnings, then prove Zetaris JDBC reads and local Nemotron through Meterless.
+Blocked: HackOS/review browser login, Devin Cloud and Claude CLI login, Zetaris/Meterless provisioning, G2/G3 and contract findings.
+Next: one measured Manatee workflow with inspectable evidence and offline replay; assign isolated worker lanes only after authentication. No cloud session created.
