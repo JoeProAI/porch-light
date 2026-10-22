@@ -1,0 +1,7 @@
+{
+  "source_url": "https://data.cms.gov/provider-data/sites/default/files/resources/4b708f7ece9ed1ef3060686c5546ddf1_1790792149/NH_ProviderInfo_Sep2026_3.csv",
+  "fetched_at_utc": "2026-10-22T03:00:47+00:00",
+  "sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+  "license": "Not specified in captured CMS metadata; public CMS provider-data release",
+  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_cms"
+}

@@ -1,0 +1,7 @@
+{
+  "source_url": "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/23ew-n7w9",
+  "fetched_at_utc": "2026-10-22T03:00:48+00:00",
+  "sha256": "c011234ed5418278ac177cbe6279480d17e8c465ce1789cfb779a86f0e1abec5",
+  "license": "Not specified in captured CMS metadata; public CMS provider-data release",
+  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_cms"
+}

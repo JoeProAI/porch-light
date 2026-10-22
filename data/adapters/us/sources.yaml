@@ -6,11 +6,16 @@ sources:
   nws_alerts:
     kind: api
     url: https://api.weather.gov/alerts/active
-    notes: live feed; also captured into fixture for the live event replay
+    notes: live feed; untouched captured alerts support real event replay
   iem_archive:
     kind: api
-    url: https://mesonet.agron.iastate.edu/api/1/nwstext/
-    notes: golden Hurricane Milton alert for Manatee County FL (FIPS 12081)
+    url: https://mesonet.agron.iastate.edu/api/1/nwstext/202410072107-KTBW-WTUS82-TCVTBW
+    notes: >-
+      Verified real Milton Hurricane Warning issuance, KTBW HU.W.1014,
+      2024-10-07 21:07 UTC, including Coastal and Inland Manatee.
+      Event-history query and original text are captured with sidecars.
+      This is a retrospective scenario; current CMS records do not establish
+      historical facility conditions.
   nws_zones:
     kind: file
     url: https://www.weather.gov/gis/ZoneCounty
@@ -18,20 +23,32 @@ sources:
   cms_nursing_homes:
     kind: provider_data_datastore
     url: https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0
+    metadata_url: https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/4pq5-n9py
     notes: county field is an SSA county code; map to FIPS via nber_ssa_fips;
-      each sidecar records the exact query URL used
+      each sidecar records the exact source URL used. capture_cms discovers
+      the official bulk CSV from captured metadata, rather than guessing
+      download URLs. The preserved release was modified 2026-09-30.
   cms_dialysis:
     kind: provider_data_datastore
     url: https://data.cms.gov/provider-data/api/1/datastore/query/23ew-n7w9/0
+    metadata_url: https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/23ew-n7w9
     notes: no lat/long; geocode each address via census_geocoder; each
-      sidecar records the exact query URL used
+      sidecar records the exact source URL used. The preserved release was
+      modified 2026-06-16. Source names beginning zz_closed_ are held for
+      review, never treated as a verified operating facility.
   svi_2022:
     kind: file
     url: https://svi.cdc.gov/Documents/Data/2022/csv/states/SVI_2022_US.csv
-    notes: tract-level social vulnerability, joined by GEOID
+    notes: >-
+      National tract-level social vulnerability, joined by GEOID. The raw
+      source is stored losslessly as gzip with both compressed and original
+      content hashes. Do not substitute Florida-relative percentiles.
+      Unavailable source values remain unavailable, never zero-filled.
   empower:
     kind: api
     url: https://services2.arcgis.com/ZQ4jTQn6k7VPXEwO/arcgis/rest/services/HHS_emPOWER_REST_Service_Public/FeatureServer
+    captured_layer_id: 1
+    captured_layer_name: "Electricity Dependent DME \u2013 ALL \u2013 ZipLevel"
     notes: >-
       counts are Medicare beneficiaries who use electricity-dependent DME
       or devices, not all patients; each service layer counts DME users who
@@ -45,13 +62,23 @@ sources:
       At-Home Hospice Any DME - ZipLevel (17),
       Any Healthcare Service Any DME - ZipLevel (21);
       CountyLevel and StateLevel are the next two ids after each ZipLevel id.
+      The current capture retains all 968 Florida layer-1 features and the
+      layer definition and count query. A service edit timestamp is not a
+      verified data reporting month. ZIP counts are not facility patients.
       Label definitions: https://empowerprogram.hhs.gov/empowermap (HTTP 200).
       The geohealth.hhs.gov MapServer copy of this service uses different
       group ids (0, 4, 8, 12, 16, 20) and timed out from the build box.
   census_geocoder:
     kind: api
     url: https://geocoding.geo.census.gov/geocoder/geographies/address
-    notes: batch mode available; keep raw responses for audit
+    benchmark: Public_AR_Current
+    geography_vintage: Census2020_Current
+    notes: >-
+      Preserve the benchmark/vintage lists and original geography responses.
+      Nursing-home inputs are the actual CMS-provided points; dialysis uses
+      actual CMS addresses. Source input hashes and CCNs bind each response.
+      An absent Exact match rating is not treated as Exact. These lookups do
+      not pretend to be an SSA crosswalk or a Zetaris spatial query.
   nber_ssa_fips:
     kind: file
     url: https://data.nber.org/ssa-fips-state-county-crosswalk/
@@ -68,7 +95,12 @@ sources:
     notes: 42 CFR 483.73 and 494.62, cited on the call sheet evidence
   manatee_cemp:
     kind: pdf
-    url: https://www.mymanatee.org/departments/public_safety/emergency_management
-    notes: county plan PDF; parsed by Nemotron Parse into plan_sections
+    url: https://cityofbradenton.com/vertical/sites/%7B98CFEB92-7265-45CB-AF6F-7115C2CD7C81%7D/uploads/CEMP.pdf
+    notes: >-
+      Actual official City of Bradenton adoption record containing the full
+      2018 Manatee CEMP and the 2020 adoption resolution, 93 PDF pages.
+      The separate County Clerk PDF returned 403 and was not fabricated.
+      Applicability in 2024 or today still requires confirmation.
+      Nemotron Parse into plan_sections has not run.
 
 # Stretch or cut: ACS, EIA, OpenFEMA, home health, hospitals, Apify.

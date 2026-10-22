@@ -5,9 +5,8 @@
 
 version: 0.1.0
 terms:
-  # placeholder structure; real weights land with data/scoring/score.py
-  type_weight: 0.0
-  svi_pct: 0.0
-  empower_density_pct: 0.0
-  cms_risk: 0.0
-  plan_flag: 0.0
+  type_weight: 0.30
+  svi_pct: 0.25
+  empower_density_pct: 0.20
+  cms_risk: 0.15
+  plan_flag: 0.10

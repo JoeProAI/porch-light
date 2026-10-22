@@ -1,0 +1,12 @@
+{
+  "source_url": "https://geocoding.geo.census.gov/geocoder/geographies/coordinates?benchmark=Public_AR_Current&vintage=Census2020_Current&format=json&x=-82.539&y=27.3509",
+  "fetched_at_utc": "2026-10-22T12:23:57+00:00",
+  "sha256": "9fd349c837875fe99ab1d82ae651bba46485b5af585be9068d60edbd2bdbee5b",
+  "license": "US Census Bureau US government public data; https://www.census.gov/about/policies/quality/guidelines.html",
+  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_census --county sarasota",
+  "request_input_source": {
+    "artifact": "data\\snapshot\\raw\\cms\\20261022T030046Z-a5ce96ba\\nursing_homes.csv",
+    "sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+    "ccn": "105147"
+  }
+}

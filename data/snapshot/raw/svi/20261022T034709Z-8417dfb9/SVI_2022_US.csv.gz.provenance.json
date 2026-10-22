@@ -1,0 +1,12 @@
+{
+  "source_url": "https://svi.cdc.gov/Documents/Data/2022/csv/states/SVI_2022_US.csv",
+  "fetched_at_utc": "2026-10-22T03:47:16+00:00",
+  "sha256": "dfcd91ee49845c030c756df841c41c5f4ea0d35b8a0cc3edb0ab26c2e34ab87f",
+  "license": "CDC/ATSDR Social Vulnerability Index 2022 public data; cite CDC/ATSDR",
+  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_svi",
+  "content_encoding": "gzip",
+  "source_content_sha256": "58df3dca3d4194879ffbd4b5e753eae48676ef691da1fa669f5fc40c3f79bc6a",
+  "source_content_bytes": 61102059,
+  "percentile_scope": "national",
+  "release_year": 2022
+}

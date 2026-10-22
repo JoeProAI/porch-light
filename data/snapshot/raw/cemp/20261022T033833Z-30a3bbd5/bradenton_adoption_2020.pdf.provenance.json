@@ -1,0 +1,7 @@
+{
+  "source_url": "https://cityofbradenton.com/vertical/sites/%7B98CFEB92-7265-45CB-AF6F-7115C2CD7C81%7D/uploads/CEMP.pdf",
+  "fetched_at_utc": "2026-10-22T03:38:34+00:00",
+  "sha256": "0267286a8b0bf7901b23f549649fc7d22dedea7ae6d7842c8a349db44b7e4d77",
+  "license": "Official Florida local-government public record; reuse license not specified by the source",
+  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_cemp"
+}

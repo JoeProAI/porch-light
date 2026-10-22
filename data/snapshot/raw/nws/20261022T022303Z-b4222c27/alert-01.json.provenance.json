@@ -1,0 +1,7 @@
+{
+  "source_url": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.68b53ffc5cb9b47e004915f4ddbb117ffc1e0f5f.001.3",
+  "fetched_at_utc": "2026-10-22T02:23:03+00:00",
+  "sha256": "3779f90e25b053236b49905ef1d0bb3d619d1015188822fe295c4316b03c62af",
+  "license": "US National Weather Service public domain; https://www.weather.gov/disclaimer",
+  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_nws --alert-id urn:oid:2.49.0.1.840.0.68b53ffc5cb9b47e004915f4ddbb117ffc1e0f5f.001.3 --alert-id urn:oid:2.49.0.1.840.0.47e5fe7e51ea9277e9589881280d49f0f818aa43.001.1 --alert-id urn:oid:2.49.0.1.840.0.47e5fe7e51ea9277e9589881280d49f0f818aa43.002.1 --alert-id urn:oid:2.49.0.1.840.0.47e5fe7e51ea9277e9589881280d49f0f818aa43.003.1"
+}

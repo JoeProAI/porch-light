@@ -1,0 +1,7 @@
+{
+  "source_url": "https://mesonet.agron.iastate.edu/api/1/nwstext/202410072107-KTBW-WTUS82-TCVTBW",
+  "fetched_at_utc": "2026-10-22T12:30:22+00:00",
+  "sha256": "0f0d02bc8d18a1b102a80c589b6a61aed483c0edb99ac53e3fce9cd3209b139f",
+  "license": "NWS text is US government public domain; IEM API terms permit legal use: https://mesonet.agron.iastate.edu/api/1/docs",
+  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_milton --county sarasota"
+}

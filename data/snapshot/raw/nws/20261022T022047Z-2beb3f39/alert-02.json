@@ -1,0 +1,97 @@
+{
+    "@context": [
+        "https://geojson.org/geojson-ld/geojson-context.jsonld",
+        {
+            "@version": "1.1",
+            "wx": "https://api.weather.gov/ontology#",
+            "@vocab": "https://api.weather.gov/ontology#"
+        }
+    ],
+    "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.47e5fe7e51ea9277e9589881280d49f0f818aa43.001.1",
+    "type": "Feature",
+    "geometry": null,
+    "properties": {
+        "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.47e5fe7e51ea9277e9589881280d49f0f818aa43.001.1",
+        "@type": "wx:Alert",
+        "id": "urn:oid:2.49.0.1.840.0.47e5fe7e51ea9277e9589881280d49f0f818aa43.001.1",
+        "areaDesc": "Virginia Beach",
+        "geocode": {
+            "SAME": [
+                "051810"
+            ],
+            "UGC": [
+                "VAZ098"
+            ]
+        },
+        "affectedZones": [
+            "https://api.weather.gov/zones/forecast/VAZ098"
+        ],
+        "references": [
+            {
+                "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.f748759c1a4abb7b85f3baa8c76243a734232df7.001.2",
+                "identifier": "urn:oid:2.49.0.1.840.0.f748759c1a4abb7b85f3baa8c76243a734232df7.001.2",
+                "sender": "w-nws.webmaster@noaa.gov",
+                "sent": "2026-10-21T14:07:00-04:00"
+            }
+        ],
+        "sent": "2026-10-21T19:59:00-04:00",
+        "effective": "2026-10-21T19:59:00-04:00",
+        "onset": "2026-10-21T19:59:00-04:00",
+        "expires": "2026-10-22T04:00:00-04:00",
+        "ends": "2026-10-22T09:00:00-04:00",
+        "status": "Actual",
+        "messageType": "Update",
+        "category": "Met",
+        "severity": "Severe",
+        "certainty": "Likely",
+        "urgency": "Expected",
+        "event": "Coastal Flood Warning",
+        "sender": "w-nws.webmaster@noaa.gov",
+        "senderName": "NWS Wakefield VA",
+        "headline": "Coastal Flood Warning issued October 21 at 7:59PM EDT until October 22 at 9:00AM EDT by NWS Wakefield VA",
+        "description": "* WHAT...For the High Surf Advisory, large breaking waves of 6\nto 9 feet in the surf zone. For the Coastal Flood Warning, up\nto one foot of inundation above ground level expected in low-\nlying areas near shorelines and tidal waterways.\n\n* WHERE...Virginia Beach.\n\n* WHEN...For the High Surf Advisory, until 7 PM EDT Thursday.\nFor the Coastal Flood Warning, until 9 AM EDT Thursday.\n\n* IMPACTS...Widespread flooding of vulnerable areas will result\nin an elevated threat of property damage to homes and\nbusinesses near the waterfront and shoreline. Water will be 1\nto 2 feet above ground level in some areas resulting in a\nsufficient depth to close numerous roads and threaten homes\nand businesses. Flooding will extend inland from the\nwaterfront along tidal rivers and bays resulting in some road\nclosures and flooding of vehicles. Dangerous swimming and\nsurfing conditions and localized beach erosion.",
+        "instruction": "Take the necessary actions to protect flood-prone property. If\ntravel is required, do not drive around barricades or through\nwater of unknown depth.\n\nInexperienced swimmers should remain out of the water due to\ndangerous surf conditions.",
+        "response": "Avoid",
+        "note": null,
+        "parameters": {
+            "AWIPSidentifier": [
+                "CFWAKQ"
+            ],
+            "WMOidentifier": [
+                "WHUS41 KAKQ 212359"
+            ],
+            "NWSheadline": [
+                "COASTAL FLOOD WARNING REMAINS IN EFFECT UNTIL 9 AM EDT THURSDAY... ...HIGH SURF ADVISORY REMAINS IN EFFECT UNTIL 7 PM EDT THURSDAY"
+            ],
+            "BLOCKCHANNEL": [
+                "EAS",
+                "NWEM",
+                "CMAS"
+            ],
+            "EAS-ORG": [
+                "WXR"
+            ],
+            "VTEC": [
+                "/O.CON.KAKQ.CF.W.0003.000000T0000Z-261022T1300Z/"
+            ],
+            "eventEndingTime": [
+                "2026-10-22T09:00:00-04:00"
+            ],
+            "expiredReferences": [
+                "w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.8d14ae8a6f477069b4efb54c04085a3123644bb1.001.1,2026-10-21T03:59:00-04:00"
+            ]
+        },
+        "scope": "Public",
+        "code": "IPAWSv1.0",
+        "language": "en-US",
+        "web": "http://www.weather.gov",
+        "eventCode": {
+            "SAME": [
+                "CFW"
+            ],
+            "NationalWeatherService": [
+                "CFW"
+            ]
+        }
+    }
+}
