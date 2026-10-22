@@ -36,9 +36,9 @@ last update: Wed Oct 21 2026 8:20 PM ET
 owner now: Devin  (primary Devin, backup Cursor cloud agent (data))
 state: scaffold in PR (adapters layout, provenance sidecar helper, snapshot dirs)
 next step: Thu Oct 22: load core sources into the PostGIS snapshot with provenance sidecars, capture live Nor'easter alerts + golden Milton alert (FIPS 12081) + zone shapes, geocode dialysis addresses, map NH SSA codes to FIPS. Done check: a Zetaris SQL join returns in-area facilities with tract and SVI.
-branch: devin/data-*   open PRs: devin/data-scaffold (scaffold)
+branch: devin/data-*   open PRs: #1 data scaffold (devin/data-scaffold)
 how to run: `python3 data/provenance/sidecar.py <file> --source-url <u> --license "<line>" --fetch-command "<cmd>"`; add `--verify` to check a sidecar.
-blocked: local Zetaris on the 5080 needs Joe at the keyboard (steps below); contract/initial not pushed yet, so data builds against contract/fixtures/ until it lands.
+blocked: local Zetaris on the 5080 needs Joe at the keyboard (steps below); contract/initial is up as PR #14, so data builds against it once it lands.
 
 ### Local Zetaris on the 5080, steps for Joe (gate G2, never AWS)
 1. Windows side: install Docker Desktop with the WSL2 backend. Cap WSL2 in `%UserProfile%\.wslconfig`: `memory=8GB`, `processors=4`.
@@ -47,7 +47,7 @@ blocked: local Zetaris on the 5080 needs Joe at the keyboard (steps below); cont
 4. Zetaris admin UI: register a JDBC datasource `porchlight_postgis`: `jdbc:postgresql://<wsl2-host>:5432/porchlight`, user `postgres`, password from env, never in code or docs.
 5. Verify: run `SELECT 1` through Zetaris SQL against the datasource, then mark G2 in the Gates table.
 
-last update: Wed Oct 21 2026 8:20 PM ET
+last update: Wed Oct 21 2026 8:45 PM ET
 
 ## Area: Engines
 owner now: Claude Code  (primary Claude Code, backup Devin)

@@ -7,9 +7,9 @@ them into PostGIS; Zetaris reads PostGIS through a registered JDBC datasource.
 
 ## Layout (grows as loads land)
 
-- `raw/<source_key>/` — raw cached artifacts + `.provenance.json` sidecars.
-- `ddl/` — table DDL (facilities, zones, tracts, warning areas, plan_sections).
-- `load/` — per-source load scripts called by the adapters.
+- `raw/<source_key>/`: raw cached artifacts + `.provenance.json` sidecars.
+- `ddl/`: table DDL (facilities, zones, tracts, warning areas, plan_sections).
+- `load/`: per-source load scripts called by the adapters.
 
 EOC snapshot mode: a snapshot directory plus `snapshot_id` and data-as-of
 stamps, synced to the offline box. Lands Sat Oct 24.

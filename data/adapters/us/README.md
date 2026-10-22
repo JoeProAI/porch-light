@@ -12,9 +12,9 @@ An adapter does three things:
 
 Adapter skeleton (to be filled per source, matching contract/adapter.md):
 
-- `fetch(ctx) -> list[path]` — download raw artifacts
-- `load(ctx, paths) -> list[str]` — load into PostGIS, return table names
-- `provenance(paths)` — write/refresh sidecars via `data/provenance/sidecar.py`
+- `fetch(ctx) -> list[path]`: download raw artifacts
+- `load(ctx, paths) -> list[str]`: load into PostGIS, return table names
+- `provenance(paths)`: write/refresh sidecars via `data/provenance/sidecar.py`
 
 No adapter may read another area's data path, call a model, or bypass Zetaris
 at runtime. Fetch is a build-time step; runtime reads are Zetaris SQL only.

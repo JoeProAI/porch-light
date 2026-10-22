@@ -16,13 +16,15 @@ sources:
     url: https://www.weather.gov/gis/ZoneCounty
     notes: zone-based alerts carry no polygon; join zone ids to shapes
   cms_nursing_homes:
-    kind: socrata
-    url: https://data.cms.gov/resource/4pq5-n9py.json
-    notes: county field is an SSA county code; map to FIPS via nber_ssa_fips
+    kind: provider_data_datastore
+    url: https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0
+    notes: county field is an SSA county code; map to FIPS via nber_ssa_fips;
+      each sidecar records the exact query URL used
   cms_dialysis:
-    kind: socrata
-    url: https://data.cms.gov/resource/23ew-n7w9.json
-    notes: no lat/long; geocode each address via census_geocoder
+    kind: provider_data_datastore
+    url: https://data.cms.gov/provider-data/api/1/datastore/query/23ew-n7w9/0
+    notes: no lat/long; geocode each address via census_geocoder; each
+      sidecar records the exact query URL used
   svi_2022:
     kind: file
     url: https://svi.cdc.gov/Documents/Data/2022/csv/states/SVI_2022_US.csv

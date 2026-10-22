@@ -7,11 +7,11 @@ through the `porch_light_usl` Unified Semantic Layer.
 
 ## Layout
 
-- `adapters/us/` — all US source adapters, behind `contract/adapter.md`.
-- `adapters/global/` — stretch only (GDACS, Overpass, WorldPop, CAP). Sat afternoon, after G4.
-- `scoring/` — the fixed, transparent ranking formula. Weights in `weights.yaml`.
-- `snapshot/` — PostGIS snapshot DDL and load scripts; the golden path reads here.
-- `provenance/` — sidecar convention and `sidecar.py` helper.
+- `adapters/us/`: all US source adapters, behind `contract/adapter.md`.
+- `adapters/global/`: stretch only (GDACS, Overpass, WorldPop, CAP). Sat afternoon, after G4.
+- `scoring/`: the fixed, transparent ranking formula. Weights in `weights.yaml`.
+- `snapshot/`: PostGIS snapshot DDL and load scripts; the golden path reads here.
+- `provenance/`: sidecar convention and `sidecar.py` helper.
 
 ## Rules
 
