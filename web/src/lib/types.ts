@@ -34,7 +34,14 @@ export type Snapshot = {
   generated_at: string;
   county: { name: string; fips: string; state: string };
   scenario: { event: string; warning_year: number; mode: string; zone_geometry_vintage: string; historical_2024_boundary_equivalence_verified: boolean };
-  data_access: { executed_at: string; data_access_mode: string; statement_sha256: string; zetaris_query_ids: string[]; transaction_id: string };
+  data_access: {
+    executed_at: string; data_access_mode: string; statement_sha256: string;
+    zetaris_query_ids: string[]; transaction_id: string;
+    zetaris_audit?: {
+      source: string; query_id: string; query_hash: string; start_time: string;
+      end_time: string; finish_successfully: boolean; sql_query: string; driver_version?: string;
+    };
+  };
   source_snapshot_hash: string;
   warning_geometry: Geometry;
   policy: { version: string; clinical_validation: boolean; plan_year: number; plan_flag: string; empower_density_pct: string; cms_risk: string; plan_artifact: string; plan_sha256: string; plan_current_applicability_verified: boolean };

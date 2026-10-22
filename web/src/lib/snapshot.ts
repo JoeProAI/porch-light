@@ -18,7 +18,7 @@ export const readSnapshot = async (): Promise<{ snapshot: Snapshot; provenance: 
   if (
     snapshot.schema_version !== "porch-light.manatee-development-snapshot.v1" ||
     snapshot.scenario.mode !== "retrospective" ||
-    snapshot.data_access.data_access_mode !== "postgis_development" ||
+    !["postgis_development", "zetaris"].includes(snapshot.data_access.data_access_mode) ||
     !Array.isArray(snapshot.facilities) ||
     snapshot.facilities.length !== snapshot.counts.ranked_rows ||
     snapshot.refused.length !== snapshot.counts.refused_rows ||
@@ -35,6 +35,16 @@ export const readSnapshot = async (): Promise<{ snapshot: Snapshot; provenance: 
   if (JSON.stringify(snapshot.data_access.zetaris_query_ids).includes("zq-mock") ||
     snapshot.facilities.some(row => row.evidence.zetaris_query_ids.some(id => id.includes("zq-mock")))) {
     throw new Error("Non-genuine query references rejected.");
+  }
+  if (snapshot.data_access.data_access_mode === "zetaris") {
+    const audit = snapshot.data_access.zetaris_audit;
+    const ids = snapshot.data_access.zetaris_query_ids;
+    if (!audit?.finish_successfully || !audit.end_time || !audit.query_id ||
+      !ids.includes(audit.query_id) ||
+      snapshot.facilities.some(row => row.evidence.zetaris_query_ids.length === 0 ||
+        row.evidence.zetaris_query_ids.some(id => !ids.includes(id)))) {
+      throw new Error("Zetaris mode requires a successful audit receipt and closed row references.");
+    }
   }
   return { snapshot, provenance };
 };

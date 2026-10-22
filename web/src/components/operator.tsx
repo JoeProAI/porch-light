@@ -19,6 +19,7 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
   const [offline, setOffline] = useState(false);
   const [clock, setClock] = useState<number | null>(null);
   const reducedMotion = useReducedMotion();
+  const isZetaris = snapshot.data_access.data_access_mode === "zetaris";
   const storageKey = `porch-light:contacts:v1:${snapshot.source_snapshot_hash}`;
   const row = snapshot.facilities.find(item => item.id === selectedId);
   const recorded = snapshot.facilities.filter(item => contacts[item.id] && contacts[item.id].status !== "uncontacted").length;
@@ -106,7 +107,7 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
             <details className="limits"><summary>Source limits &amp; integration state</summary><ul>{snapshot.limits.map(limit => <li key={limit}>{limit}</li>)}</ul><p>Current published NWS shapes are used; equivalence to the 2024 boundary is unverified. ZIP DME context is not a facility patient count.</p></details>
           </div>
         </section>
-        <div className="source-strip"><span><i className="source-dot" /> Development PostGIS <span className="muted">/ Zetaris pending</span></span><span>Fixed policy · not clinically validated</span><span>{offline ? "Offline · loaded snapshot only" : "Local snapshot · no live refresh"}</span></div>
+        <div className="source-strip"><span><i className="source-dot" /> {isZetaris ? "Zetaris JDBC" : "Development PostGIS"} <span className="muted">/ {isZetaris ? "audit verified" : "Zetaris pending"}</span></span><span>Fixed policy · not clinically validated</span><span>{offline ? "Offline · loaded snapshot only" : "Local snapshot · no live refresh"}</span></div>
         <div className="workspace-heading">
           <div><span className="eyebrow">The call sheet</span><h2>Priority, with a paper trail.</h2></div>
           <div className="export-actions"><button onClick={exportCsv} disabled={!ready || !snapshot.facilities.length}>Export CSV <span aria-hidden="true">↓</span></button><button onClick={() => window.print()} disabled={!snapshot.facilities.length}>Print sheet <span aria-hidden="true">↗</span></button></div>
@@ -166,7 +167,7 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
           <p>Public source records. Transparent priorities.<br />A retrospective prototype, not emergency or clinical guidance.</p>
           <details><summary>Technology and sponsor evidence</summary>
             <p>Meterless and NVIDIA Nemotron: {snapshot.model_executions.length > 0 ? "Actual stored model drafts are identified in the row evidence drawer." : "No completed model execution in this snapshot."}</p>
-            <p>Zetaris: integration and query IDs are pending. This screen uses a direct PostGIS development snapshot.</p>
+            <p>Zetaris: {isZetaris ? "This snapshot carries real query references confirmed against the vendor audit database." : "Integration and query IDs are pending. This screen uses a direct PostGIS development snapshot."}</p>
             <p>Cursor: required development evidence is pending. No completed usage claim is made.</p>
           </details>
         </div>

@@ -24,6 +24,7 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
   let geography: Record<string, unknown> = {};
   try { geography = JSON.parse(row.evidence.geography) as Record<string, unknown>; } catch { geography = {}; }
   const explanation = row.evidence.model_explanation;
+  const isZetaris = snapshot.data_access.data_access_mode === "zetaris";
   const modelRecord = explanation && typeof explanation === "object" ? explanation as Record<string, unknown> : null;
   const modelText = typeof explanation === "string" ? explanation :
     modelRecord && typeof modelRecord.text === "string" ? modelRecord.text : null;
@@ -75,9 +76,15 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
           <ul className="dq-list">{row.evidence.dq_results.map(result => <li key={result.rule}><span>{result.passed ? "Pass" : "Unverified"}</span><code>{result.rule}</code></li>)}</ul>
         </section>
         <section className="integration-state">
-          <span className="eyebrow">Zetaris integration pending</span>
-          <h3>Development PostGIS read.</h3>
-          <p>No completed Zetaris integration or Zetaris query reference is claimed. SQL receipt is a direct development database read.</p>
+          <span className="eyebrow">{isZetaris ? "Zetaris audit verified" : "Zetaris integration pending"}</span>
+          <h3>{isZetaris ? "Real federated JDBC read." : "Development PostGIS read."}</h3>
+          <p>{isZetaris ? "This row's query references resolve to a successful Zetaris audit execution. The underlying source remains PostGIS; the application data path is Zetaris." : "No completed Zetaris integration or Zetaris query reference is claimed. SQL receipt is a direct development database read."}</p>
+          {isZetaris && <dl className="provenance-list">
+            <dt>Row query IDs</dt><dd><code>{row.evidence.zetaris_query_ids.join(", ")}</code></dd>
+            <dt>Audit source</dt><dd>{snapshot.data_access.zetaris_audit?.source}</dd>
+            <dt>Vendor query hash</dt><dd><code>{snapshot.data_access.zetaris_audit?.query_hash}</code></dd>
+            <dt>Audited statement</dt><dd><code>{snapshot.data_access.zetaris_audit?.sql_query}</code></dd>
+          </dl>}
           <dl className="provenance-list">
             <dt>Executed</dt><dd>{formatDate(snapshot.data_access.executed_at)}</dd>
             <dt>Transaction</dt><dd>{snapshot.data_access.transaction_id}</dd>
