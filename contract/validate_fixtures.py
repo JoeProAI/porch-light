@@ -88,12 +88,15 @@ def cross_checks() -> list[str]:
             errs.append(
                 f"facilities:{f['id']}: score.total {total} != "
                 f"sum of weighted terms {expected}")
-        # (e) county_key 12081 rows sit inside the Manatee lat band
+        # (e) county_key 12081 rows sit inside a conservative Manatee box.
+        # The Sarasota line runs near lat 27.39 west of about -82.25, so the
+        # floor is 27.38. Fixture points were checked with the Census
+        # geocoder (coordinates to county 12081).
         if (f.get("county_key", {}).get("value") == "12081"
-                and not 27.20 <= f["lat"] <= 27.65):
+                and not (27.38 <= f["lat"] <= 27.65 and -82.75 <= f["lon"] <= -82.05)):
             errs.append(
-                f"facilities:{f['id']}: county_key 12081 but lat "
-                f"{f['lat']} outside 27.20..27.65")
+                f"facilities:{f['id']}: county_key 12081 but point "
+                f"{f['lat']},{f['lon']} outside the Manatee box")
 
     # (c) receipt evidence_ids are the top 10 facilities by rank, in order
     top10 = [f["id"] for f in by_rank[:10]]
@@ -139,7 +142,12 @@ def cross_checks() -> list[str]:
     return errs
 
 
-errors += cross_checks()
+# Cross-fixture checks assume schema-valid fixtures, so they only run when
+# the schema pass is clean; otherwise a missing field would crash them.
+if errors:
+    errors.append("cross-fixture checks skipped until schema errors are fixed")
+else:
+    errors += cross_checks()
 
 if errors:
     print(f"FAIL: {len(errors)} validation error(s)")

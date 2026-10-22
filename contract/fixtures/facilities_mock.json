@@ -748,8 +748,8 @@
         "type": "ccn",
         "value": "103693"
       },
-      "lat": 27.275859,
-      "lon": -82.259797,
+      "lat": 27.492592,
+      "lon": -82.57111,
       "mock": true,
       "name": "Palma Sola Nursing and Rehab (mock)",
       "score": {
@@ -1015,8 +1015,8 @@
         "type": "ccn",
         "value": "105455"
       },
-      "lat": 27.363729,
-      "lon": -82.381768,
+      "lat": 27.5287,
+      "lon": -82.56245,
       "mock": true,
       "name": "Gulf Breeze Health Center (mock)",
       "score": {
@@ -1816,8 +1816,8 @@
         "type": "ccn",
         "value": "107053"
       },
-      "lat": 27.363372,
-      "lon": -82.336998,
+      "lat": 27.517595,
+      "lon": -82.522278,
       "mock": true,
       "name": "Terra Ceia Bay Health (mock)",
       "score": {
@@ -2617,8 +2617,8 @@
         "type": "ccn",
         "value": "102351"
       },
-      "lat": 27.330894,
-      "lon": -82.567517,
+      "lat": 27.588292,
+      "lon": -82.429403,
       "mock": true,
       "name": "Lakewood Ranch Care (mock)",
       "score": {
@@ -3418,8 +3418,8 @@
         "type": "ccn",
         "value": "102781"
       },
-      "lat": 27.220083,
-      "lon": -82.575834,
+      "lat": 27.457561,
+      "lon": -82.530259,
       "mock": true,
       "name": "Samoset Shores Nursing (mock)",
       "score": {
@@ -3675,8 +3675,8 @@
         "type": "ccn",
         "value": "101356"
       },
-      "lat": 27.323326,
-      "lon": -82.504224,
+      "lat": 27.480452,
+      "lon": -82.47627,
       "mock": true,
       "name": "Bradenton Dialysis Center (mock)",
       "score": {
@@ -4712,8 +4712,8 @@
         "type": "ccn",
         "value": "100092"
       },
-      "lat": 27.314589,
-      "lon": -82.459225,
+      "lat": 27.436881,
+      "lon": -82.589904,
       "mock": true,
       "name": "Cortez Road Dialysis (mock)",
       "score": {
@@ -4969,8 +4969,8 @@
         "type": "ccn",
         "value": "106445"
       },
-      "lat": 27.247595,
-      "lon": -82.455542,
+      "lat": 27.546309,
+      "lon": -82.477046,
       "mock": true,
       "name": "Lakewood Ranch Dialysis (mock)",
       "score": {
@@ -5226,8 +5226,8 @@
         "type": "ccn",
         "value": "106669"
       },
-      "lat": 27.2615,
-      "lon": -82.445,
+      "lat": 27.443694,
+      "lon": -82.426836,
       "mock": true,
       "name": "Ellenton Kidney Center (mock)",
       "score": {
@@ -5740,8 +5740,8 @@
         "type": "ccn",
         "value": "100608"
       },
-      "lat": 27.322443,
-      "lon": -82.356222,
+      "lat": 27.595983,
+      "lon": -82.366178,
       "mock": true,
       "name": "Bayshore Renal Center (mock)",
       "score": {
