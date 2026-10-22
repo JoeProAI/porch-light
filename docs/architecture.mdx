@@ -2,4 +2,24 @@
 title: "Architecture"
 ---
 
-Coming soon.
+Porch Light takes a weather alert in, builds the warning area, ranks the facilities inside it with a fixed formula, and returns a call sheet where every row carries its evidence trail. Zetaris is the only data path. Meterless is the only model path. Nemotron explains, and the formula ranks.
+
+## Request lifecycle
+
+1. **Pick an alert.** `GET /alerts/archived` lists alerts replayed from committed captures. `GET /alerts/active` lists live alerts and returns an empty list offline.
+2. **Start a run.** `POST /runs` takes exactly one of `alert_id` or a full `alert`. The run moves through these statuses: `queued`, `building_area`, `finding_facilities`, `measuring_joins`, `scoring`, `writing_reasons`, `ready`, `exporting`, `done`, or `failed`. Every step lands in the audit log.
+3. **Read the call sheet.** `GET /runs/{id}/facilities` returns ranked facilities, each with its score breakdown and evidence.
+4. **Inspect the seams.** `GET /runs/{id}/joins` returns join proposals with measured match rates, plus failed joins.
+5. **Inspect the trace.** `GET /runs/{id}/trace` returns every step with its model id, provider, Meterless mode, latency and tokens.
+6. **Record check-ins.** `POST /runs/{id}/checkins` marks a facility `called`, `answered` or `no_answer`. `GET /runs/{id}/checkins` returns the history.
+7. **Export.** `POST /runs/{id}/export` is checked and signed by Scout Intent and returns an export receipt. Artifacts download from `GET /runs/{id}/exports/{export_id}/artifacts/{format}`.
+
+`GET /health` reports Zetaris, Meterless, network and snapshot status.
+
+## Warning area
+
+A `WarningArea` records how it was built (`built_from`): `zone_shapes`, `storm_polygon`, `admin_boundary` or `gdacs_buffer`. Zone-based alerts, such as hurricane warnings, build from zone shapes.
+
+## Country adapters
+
+The contract has no US-specific logic. Country-specific work sits behind the adapter interface in `contract/adapter.md`. See [Country adapters](/country-adapters).

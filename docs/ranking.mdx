@@ -2,4 +2,28 @@
 title: "Ranking"
 ---
 
-Coming soon.
+Facilities are ranked by a fixed, transparent formula, not by a model. Nemotron writes the explanation but never sets the order.
+
+## Score breakdown
+
+Each ranked facility carries a `ScoreBreakdown`:
+
+- `total`
+- `terms`, a list of `ScoreTerm`
+- `formula_version`, the version of `data/scoring/weights.yaml` that was used
+- `rank`
+- `tie_break`: ties break by facility type, then facility key
+
+## Score terms
+
+Each `ScoreTerm` has a `name`, `input`, `weight`, `weighted` and an optional plain `note` for the evidence drawer. Term names in the contract:
+
+- `type_weight`
+- `svi_pct`
+- `empower_density_pct`
+- `cms_risk`
+- `plan_flag`
+
+## Weights
+
+Weights live in `data/scoring/weights.yaml`, not in the contract. They will be documented here once that file lands.

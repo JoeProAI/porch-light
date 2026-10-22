@@ -2,4 +2,42 @@
 title: "Evidence trail"
 ---
 
-Coming soon.
+Every row on the call sheet carries proof of where its numbers came from.
+
+## The Evidence record
+
+Each ranked facility has an `Evidence` record with:
+
+- `zetaris_query_ids`: the Zetaris queries behind the row
+- `sources`: dataset name, id, URL and license
+- `data_as_of`: per-source fetch time, snapshot id, and a `stale` flag that is set when the row is read from the snapshot while the source is unreachable
+- `join_path`: each `JoinHop` with its match rate, which Zetaris SQL measures and is never an LLM confidence
+- `score`: the full score breakdown
+- `dq_results`: data quality rules and whether each passed
+- `failed_joins`
+- `facts`
+- `reason`: Nemotron's explanation, with its `trace_id`
+- `ledger_ids`: TrustLedger entries that link each claim in the reason to fact ids
+
+## Export receipt
+
+`POST /runs/{id}/export` returns an `ExportReceipt` with:
+
+- `export_id`, `run_id` and `created_at`
+- `artifacts`: one per requested format (`csv`, `print_sheet` or `call_script`), each with a SHA-256 hash and a download `href`
+- `csv_sha256` when CSV was exported
+- `zetaris_query_ids`, `snapshot_id` and `model_trace_ids`
+- `contract`, the Scout Intent execution contract: action, request hash, inputs hash, evidence ids, trace ids, signature and disclaimers
+- `contract_signature`
+- `held`: outputs Scout Intent held back
+
+If Scout Intent refuses an export, the API returns `403` with `export_refused`. The agent drafts, and a human decides.
+
+## Two layers
+
+The adapter interface keeps two layers apart:
+
+1. **Build time:** adapters download raw files into `data/snapshot/raw/`, write `.provenance.json` sidecars and load them into the PostGIS snapshot.
+2. **Runtime:** the app reads only through Zetaris SQL.
+
+<Note>The receipt in `contract/fixtures/export_receipt_mock.json` uses a mock signature and mock hashes.</Note>
