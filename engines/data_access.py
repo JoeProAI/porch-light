@@ -2,9 +2,12 @@
 
 import hashlib
 import json
+import os
+import re
 from typing import Protocol
 
 from data.snapshot.reader import query
+from engines.zetaris_client import audited_query, jdbc_query
 
 
 class ManateeRepository(Protocol):
@@ -61,3 +64,79 @@ class PostgisDevelopmentRepository:
             "zetaris_query_ids": [],
         })
         return result
+
+
+def zetaris_names() -> tuple[str, str]:
+    names = (
+        os.environ.get("PORCHLIGHT_ZETARIS_DATASOURCE", "porchlight_postgis"),
+        os.environ.get("PORCHLIGHT_ZETARIS_BUNDLE_VIEW", "porchlight_manatee_bundle_v1"),
+    )
+    if any(not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name) for name in names):
+        raise ValueError("Unsafe Zetaris datasource/view identifier")
+    return names
+
+
+def register_zetaris_bundle_view() -> dict:
+    datasource, view = zetaris_names()
+    sources = jdbc_query("SHOW DATASOURCES")["rows"]
+    if not any(str(row.get("name", "")).lower() == datasource.lower() for row in sources):
+        raise RuntimeError(
+            f"Zetaris datasource {datasource} is not registered. Register the private "
+            "read-only JDBC connection first; no password is sent in audited SQL."
+        )
+    native_sql = (
+        "SELECT CAST(q.bundle_value AS text) AS bundle_json FROM (\n"
+        + MANATEE_SQL.strip().rstrip(";") + "\n) AS q(bundle_value)"
+    )
+    result = audited_query(
+        f"CREATE DATASOURCE VIEW {view} FROM {datasource} AS {native_sql}"
+    )
+    return {"datasource": datasource, "view": view, "audit": result["audit"]}
+
+
+class ZetarisRepository:
+    def read_bundle(self) -> dict:
+        datasource, view = zetaris_names()
+        statement = f"SELECT bundle_json FROM {datasource}.{view}"
+        response = audited_query(statement)
+        rows = response.get("rows", [])
+        if len(rows) != 1 or not isinstance(rows[0].get("bundle_json"), str):
+            raise RuntimeError("Zetaris did not return exactly one actual source bundle")
+        result = json.loads(rows[0]["bundle_json"])
+        if not result.get("snapshot_hash") or not result.get("rows"):
+            raise RuntimeError("Zetaris source bundle is empty or incomplete")
+        if any(row.get("county_fips") != "12081" for row in result["rows"]):
+            raise RuntimeError("Selected source bundle contains another county")
+        audit = response["audit"]
+        query_id = audit["query_id"]
+        if not isinstance(query_id, str) or not query_id or "mock" in query_id.lower():
+            raise RuntimeError("Zetaris did not supply an actual audit execution ID")
+        original = dict(result.get("read_receipt", {}))
+        result["read_receipt"] = {
+            **original,
+            "data_access_mode": "zetaris",
+            "executed_at": audit["end_time"],
+            "statement_sha256": hashlib.sha256(audit["sql_query"].encode()).hexdigest(),
+            "zetaris_query_ids": [query_id],
+            "zetaris_audit": {
+                "source": "Zetaris audit.public.sql_audit_log",
+                "query_id": query_id, "query_hash": audit["query_hash"],
+                "start_time": audit["start_time"], "end_time": audit["end_time"],
+                "finish_successfully": audit["finish_successfully"],
+                "sql_query": audit["sql_query"],
+                "driver_version": response.get("driver_version"),
+            },
+            "source_postgis_read_receipt": original,
+        }
+        for row in result["rows"]:
+            row["zetaris_query_ids"] = [query_id]
+            row["zetaris_query_performed"] = True
+        return result
+
+
+def repository_for_mode(mode: str) -> ManateeRepository:
+    if mode == "zetaris":
+        return ZetarisRepository()
+    if mode == "postgis_development":
+        return PostgisDevelopmentRepository()
+    raise ValueError("Unknown data-access mode; no implicit fallback")
