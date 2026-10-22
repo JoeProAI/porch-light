@@ -1,5 +1,5 @@
 # HANDOFF
-Updated: Wed Oct 21 2026 10:04 PM ET   Target submit: Mon Oct 26 6 PM ET   Judging opens: Mon Oct 26 8 PM ET   Hard stop: Tue Oct 27 5 PM ET
+Updated: Wed Oct 21 2026 10:13 PM ET   Target submit: Mon Oct 26 6 PM ET   Judging opens: Mon Oct 26 8 PM ET   Hard stop: Tue Oct 27 5 PM ET
 
 How work moves between agents. If an area's primary stalls or runs out of quota, its backup reads that area's section and picks up from "next step". Edit only your own area's section. Never commit secrets; env var names only.
 
@@ -103,7 +103,7 @@ next step: contract repair and fresh reviews, expiring alert capture, CI, model 
 branch: devin/ops-takeover (HANDOFF only)   open PRs: [#16](https://github.com/JoeProAI/porch-light/pull/16)
 how to run: combined tree passes contract fixture validation, 10 provenance unit tests, strict TypeScript checking, Python compilation, metadata schema validation, git diff --check and gitleaks git . --redact --no-banner.
 blocked: private Devin Review and HackOS workspace access require browser login. Devin Cloud CLI is signed out. PR #16 has a hidden review flag that is not cleared. Published reviews of the original batch target older commits. G2 and G3 have no working local service evidence.
-last update: Wed Oct 21 2026 10:04 PM ET
+last update: Wed Oct 21 2026 10:13 PM ET
 
 ### Verified PR batch
 
@@ -166,9 +166,24 @@ Checked locally on Oct 21 at about 10 PM ET. No model requests or new cloud sess
 - Role proposal, not dispatched: Devin owns integration and critical data/API work; Cursor owns the authored web experience; Claude Code handles a bounded contract/security review or isolated engine task once signed in; Hermes handles sourced data research and adversarial evidence checks using an authenticated approved provider; Codex can take isolated eval/CI work when available. Give each worker a separate worktree, area and acceptance test.
 - Winning demonstration: real warning to sourced call sheet, inspect a reason down to query/source/failed-join evidence, retain operator check-ins, export, disconnect the network and repeat from the same snapshot. Measure time and correctness against Joe's manual baseline and hand check; report only observed results.
 
+### Local session handoff, Oct 21 at 10:13 PM ET
+
+- Canonical checkout: D:\Projects\AI_Projects\porch-light, origin https://github.com/JoeProAI/porch-light.git, branch devin/ops-takeover. This branch contains the audit handoff, not the unmerged contract/data implementation. Verify cwd, origin, branch and dirty state before editing.
+- Do not use D:\Projects\AI_Projects\porchlight without the hyphen. It is an unrelated meetings project and was only inspected, never changed. The old C:\Users\Joseph\Documents\Codex\2026-10-05\task workspace is not the canonical project.
+- Evidence-only scratch checkout: C:\Users\Joseph\Documents\Codex\2026-10-05\task\porch-light-audit, branch devin/ops-audit-integration. It combines the original five PR heads locally; no scratch merge was pushed. Do not assume its green checks apply to main or to the takeover branch.
+- The original five PRs combine cleanly. A fresh git merge-tree check of that batch against PR #16 reports a HANDOFF.md content conflict. PR #16 needs reconciliation after the original batch; do not blindly add it to the clean merge list. Preserve both the existing area updates and the newer factual audit corrections. Never rewrite reviewed branch history.
+- Nightshift is installed and Joe explicitly asked Devin to finish setup. The wizard was at Connect a model source with zero providers and zero ready local lanes. No provider was configured by Devin.
+- Runtime install: C:\Users\Joseph\AppData\Local\Nightshift. Relevant static source is under nightshift-ui, cli and engine. Read supported APIs/configuration before changing anything; do not copy this product's source into Porch Light.
+- Runtime state: %LOCALAPPDATA%\ai.meterless.runtime. proxy-token exists there; its contents were never printed. config.toml exists. %APPDATA%\ai.meterless.runtime\meterless.json is app state, not a product config template. Do not dump either credential-bearing state or logs into chat.
+- Latest listeners: 127.0.0.1:8088 (bundled Node proxy), 127.0.0.1:11435 (meterlessd), and 0.0.0.0:8089 (meterless-runtime). Investigate the all-interface management listener and its authentication before considering setup secure. Do not expose a public URL or change unrelated firewall/network settings.
+- A listening proxy is not a passed G3. No authenticated /v1/models call, local Nemotron response, NIM configuration or offline replay has been verified. No paid inference, compute run, provider mutation or model download was initiated by this session.
+- Credential source supplied by Joe: %USERPROFILE%\.porchlight\porchlight.env, outside the repo. Read it only inside a process that needs it. Verify variable names/presence without values; never put values in shell arguments, prompts, PRs, logs or the repo. Do not add Grok/Cursor keys. The local proxy token is already generated by Nightshift and is distinct from pending sponsor credits.
+- Supported Meterless contract was checked against https://github.com/Meterless/Meterless/blob/main/docs/agent-ready/add-meterless-provider.md and docs/products/nightshift/hotspot.md: one /v1 base URL, real bearer token from the state directory, meterless-app header, meterless-scope: user for chat, routing aliases from /v1/models, and 180 s timeout. /healthz alone is not proof of access.
+- Immediate work: verify Nightshift safely without non-Nemotron fallback; capture the expiring real warnings with sidecars; repair contract gaps in a separate contract PR; build CI and the fixture-only client. Missing cloud/developer login is not a reason to stop all local work.
+
 ## Status
-2026-10-21 10:04 PM ET: Public rules and agent access checked. NVIDIA and Modal variable presence verified privately. Joe is installing Nightshift.
-PRs: [#16](https://github.com/JoeProAI/porch-light/pull/16) records the audit; its hidden review flag is not cleared. Original five PRs remain open.
-Gates: no gate closed. Capture real warnings, then prove Zetaris JDBC reads and local Nemotron through Meterless.
-Blocked: HackOS/review browser login, Devin Cloud and Claude CLI login, Zetaris/Meterless provisioning, G2/G3 and contract findings.
-Next: one measured Manatee workflow with inspectable evidence and offline replay; assign isolated worker lanes only after authentication. No cloud session created.
+2026-10-21 10:13 PM ET: Canonical checkout is D:\Projects\AI_Projects\porch-light. Nightshift is installed; Devin's setup investigation is incomplete.
+PRs: [#16](https://github.com/JoeProAI/porch-light/pull/16) records the handoff; hidden flag remains. It conflicts with the combined original batch in HANDOFF.md.
+Gates: none closed. Proxy now listens locally, but authenticated models, Nemotron inference and Zetaris JDBC reads remain unverified.
+Blocked: HackOS/Devin/Claude login, Zetaris setup, unsupported/unverified NIM route, contract findings and merge/review reconciliation.
+Next: verify Nightshift securely, preserve expiring warnings, then contract repairs, CI and model client. No cloud session or paid request was started.
