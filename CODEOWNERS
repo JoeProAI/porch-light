@@ -1,0 +1,10 @@
+# Area owners (see HANDOFF.md). Joe reviews and merges everything.
+*                    @JoeProAI
+/contract/           @JoeProAI
+/.cursor/rules/      @JoeProAI
+/data/               @JoeProAI
+/engines/            @JoeProAI
+/eval/               @JoeProAI
+/.github/workflows/  @JoeProAI
+/web/                @JoeProAI
+/docs/               @JoeProAI

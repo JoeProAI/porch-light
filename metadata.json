@@ -1,0 +1,119 @@
+{
+  "$schema": "./metadata.schema.json",
+  "schema_version": "0.1-community",
+  "project": {
+    "name": "Porch Light",
+    "summary": "emPOWER tells you how many. Porch Light tells you who to call first, and why: when a hurricane or tornado warning drops, it gives a county emergency manager a ranked, explained call sheet of the dialysis centers and nursing homes inside the warning area, with proof of where every number came from.",
+    "licence": "AGPL-3.0-only"
+  },
+  "track": "Solving Fragmented Intelligence",
+  "team": {
+    "name": "Burden of Proof",
+    "solo": true,
+    "builders": [
+      { "name": "Joe Gaither", "role": "owner: decides, reviews and merges; agents write the code", "github": "JoeProAI" }
+    ]
+  },
+  "repository": "https://github.com/JoeProAI/porch-light",
+  "submission": {
+    "demo_video": null,
+    "slide_deck": "TODO: deck link or repo path (Mon Oct 26)"
+  },
+  "sponsors": {
+    "zetaris": {
+      "status": "planned",
+      "how": "Zetaris is the only door to data. Every read is federated SQL through the Query Director over a Unified Semantic Layer (porch_light_usl) with declared relationships and DQ rules; Nemotron proposes joins, Zetaris SQL measures each one's match rate, and only measured joins become USL relationships. Every fact on the call sheet carries its Zetaris query id and audit row.",
+      "interface": "rest",
+      "deployment": "local-docker",
+      "data_sources": [
+        "NWS alerts API",
+        "Iowa Environmental Mesonet NWS warning archive",
+        "NWS zone shapes",
+        "CMS Nursing Homes Provider Information (4pq5-n9py)",
+        "CMS Dialysis Facility Listing (23ew-n7w9)",
+        "CDC/ATSDR SVI 2022",
+        "Census Geocoder",
+        "NBER SSA to FIPS crosswalk",
+        "HHS emPOWER REST Service",
+        "Census TIGER/Line 2024 tracts",
+        "CMS Emergency Preparedness rule (42 CFR 483.73, 494.62)",
+        "Manatee County CEMP (county plan PDF)",
+        "Postgres + PostGIS EOC snapshot (JDBC datasource)"
+      ],
+      "where": ["TODO: data/ paths after build"],
+      "evidence": ["TODO: evidence drawer demo moment, export receipt, Zetaris audit log cross-reference"],
+      "decisions": ["TODO: ADR or docs/zetaris-federation.mdx"]
+    },
+    "meterless": {
+      "status": "planned",
+      "how": "Meterless is the only model path: the app talks to one OpenAI-compatible base URL on Meterless Runtime (Nightshift), routing meterless/deep, fast and local. Scout Intent guards the export and signs an execution contract; H-MEM with TrustLedger remembers measured join outcomes and links every claim to fact and query ids; a minimal World Model holds alert, area, check-in, network and provider state. Markovian and Swarm are not used.",
+      "engines": ["Scout Intent", "H-MEM", "World Model"],
+      "provider": "nightshift",
+      "where": ["TODO: engines/ paths after build"],
+      "evidence": ["TODO: contract hash on the call sheet, TrustLedger entries, offline unplug beat"],
+      "decisions": ["TODO: Thursday Nightshift local-Nemotron spike decision in HANDOFF.md"]
+    },
+    "cursor": {
+      "status": "planned",
+      "how": "The contract commit and compliance kit are made in Cursor, .cursor/rules (house, paths, sponsors) govern every agent, and Cursor cloud agents own the web UI and back up the data layer, each through a PR.",
+      "models": ["TODO: fill from the Cursor usage CSV"],
+      "surfaces": ["ide", "background-agents"],
+      "where": [".cursor/rules/", "web/", "ops/build-log/cursor/"],
+      "evidence": ["TODO: cloud agent PR links, exported transcripts, Cursor usage CSV"],
+      "decisions": []
+    },
+    "nvidia": {
+      "status": "planned",
+      "how": "Nemotron is the only model family in the runtime path. It proposes join paths and writes every call-first explanation and call script (it never ranks; a fixed formula does). Super VL and Lightning run on NIM through Meterless; Nano 9B v2 and Nano 4B run locally on the RTX 5080 for EOC snapshot mode; Content Safety screens scripts; Parse splits the county plan PDF.",
+      "models": [
+        "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "Nemotron Nano 9B v2 (local, GGUF)",
+        "Nemotron 3 Nano 4B (local, GGUF)",
+        "Nemotron 3.5 Embed 1B (TODO: confirm NIM model id)",
+        "nvidia/nemotron-3.5-content-safety",
+        "nvidia/nemotron-parse-2.0",
+        "nvidia/nemotron-4-340b-reward"
+      ],
+      "route": "via-meterless",
+      "where": ["TODO: engines/model_client/ after build"],
+      "evidence": ["TODO: trace panel and Who answered badge, local vs cloud eval results"],
+      "decisions": []
+    }
+  },
+  "pre_existing": [
+    {
+      "name": "Proof Desk (proof.joepro.systems)",
+      "what": "Joe Gaither's own design-direction tool, built before the hackathon. Used on Oct 21 to produce the Porch Light design brief, direction, dial settings and one background plate. Dev tooling only; no Proof Desk source code is in the product.",
+      "where": ["not in this repository"]
+    },
+    {
+      "name": "Design contract and tokens",
+      "what": "Outputs of Proof Desk: the design contract JSON and CSS custom properties (--pd-* values from Proof Desk's dial-to-CSS formulas).",
+      "where": ["design/proof-desk-contract.json", "design/design-tokens.css"],
+      "since": "2026-10-21"
+    },
+    {
+      "name": "Generated design assets",
+      "what": "Hero key art, deck plates, OG card, logo mark and hero and logo video loops generated through OpenRouter before the build window. Models, prompts and costs are in the manifest. No people, no third-party marks.",
+      "where": ["design/art/", "design/art/manifest.json"],
+      "since": "2026-10-21"
+    },
+    {
+      "name": "Meterless engine specs (open-source reference)",
+      "what": "engines/*/AGENTS.md specs from github.com/meterless/meterless (Apache-2.0); engines are implemented fresh from them.",
+      "where": ["not in this repository"]
+    },
+    {
+      "name": "Zetaris getting-started patterns (open-source reference)",
+      "what": "Zetaris getting-started patterns (Apache-2.0), credited in NOTICE.",
+      "where": ["not in this repository"]
+    }
+  ],
+  "run": {
+    "setup": "README.md Quickstart and docs/quickstart.mdx (TODO: write after build). Judges get Replay mode without credentials; live mode needs local Zetaris and Nightshift.",
+    "sample_mode": true,
+    "secrets": []
+  },
+  "evidence_logs": "TODO: audit_events export path (hash-chained JSONL) and eval/results/"
+}

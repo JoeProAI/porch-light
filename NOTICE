@@ -1,0 +1,13 @@
+Porch Light
+Copyright 2026 Joe Gaither / Burden of Proof.
+Porch Light is a name of Burden of Proof.
+
+Licensed under the GNU Affero General Public License v3.0 (see LICENSE).
+
+Third-party credits
+- Meterless engine specs (github.com/meterless/meterless), Apache License 2.0. Porch Light implements them fresh from the specs.
+- Zetaris getting-started patterns, Apache License 2.0.
+- Data sources (attributions are completed as each source lands, with provenance sidecars under data/):
+  National Weather Service, Iowa Environmental Mesonet, CMS (Nursing Homes, Dialysis Facilities),
+  CDC/ATSDR SVI 2022, HHS emPOWER, U.S. Census Bureau (Geocoder, TIGER/Line), NBER SSA to FIPS crosswalk,
+  Manatee County CEMP.
