@@ -13,7 +13,7 @@ import hashlib
 import json
 import re
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 REQUIRED_KEYS = ["source_url", "fetched_at_utc", "sha256", "license", "fetch_command"]
@@ -30,30 +30,40 @@ def sha256_of(path: Path) -> str:
 
 
 def _valid_fetched_at(value) -> bool:
-    if not isinstance(value, str) or not value:
+    if not isinstance(value, str) or not value.strip():
         return False
+    raw = value.strip()
+    if raw.endswith("Z"):
+        raw = raw[:-1] + "+00:00"
     try:
-        dt = datetime.fromisoformat(value)
+        dt = datetime.fromisoformat(raw)
     except ValueError:
         return False
-    return dt.tzinfo is not None
+    return dt.tzinfo is not None and dt.utcoffset() == timedelta(0)
 
 
 def _valid_meta(meta) -> bool:
     if not isinstance(meta, dict):
         return False
     for key in REQUIRED_KEYS:
-        if not isinstance(meta.get(key), str) or not meta[key]:
+        if not isinstance(meta.get(key), str) or not meta[key].strip():
             return False
     if not _valid_fetched_at(meta["fetched_at_utc"]):
         return False
-    return bool(SHA256_RE.match(meta["sha256"]))
+    return bool(SHA256_RE.match(meta["sha256"].strip()))
 
 
 def write_sidecar(path: Path, source_url: str, license_line: str, fetch_command: str,
                   fetched_at_utc: str | None = None) -> Path:
     if not path.is_file():
         sys.exit(f"no such file: {path}")
+    source_url = source_url.strip()
+    license_line = license_line.strip()
+    fetch_command = fetch_command.strip()
+    if fetched_at_utc is not None:
+        fetched_at_utc = fetched_at_utc.strip()
+        if not _valid_fetched_at(fetched_at_utc):
+            sys.exit(f"fetched_at_utc must be ISO 8601 with +00:00 or Z offset: {fetched_at_utc}")
     digest = sha256_of(path)
     out = path.with_name(path.name + ".provenance.json")
     if fetched_at_utc is None and out.is_file():
@@ -72,6 +82,9 @@ def write_sidecar(path: Path, source_url: str, license_line: str, fetch_command:
         "license": license_line,
         "fetch_command": fetch_command,
     }
+    if not _valid_meta(sidecar):
+        sys.exit(f"refusing to write invalid sidecar for {path}: "
+                 "all fields must be nonempty and fetched_at_utc must carry a +00:00 or Z offset")
     out.write_text(json.dumps(sidecar, indent=2) + "\n")
     return out
 
