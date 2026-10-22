@@ -6,7 +6,7 @@ How work moves between agents. If an area's primary stalls or runs out of quota,
 ## Gates
 | Gate | Due | Status | Note |
 |---|---|---|---|
-| G1 Contract commit lands | Wed Oct 21, 9 PM ET | open | Cursor cloud agent on `contract/initial` |
+| G1 Contract commit lands | Wed Oct 21, 9 PM ET | open | Delivered by Devin's PR #14 (https://github.com/JoeProAI/porch-light/pull/14) on `contract/initial`; H1 validator fix in commit 83a6afd; Wringer-passed; not yet merged |
 | G2 Zetaris local on the 5080 | Thu Oct 22, 10 AM ET | open | |
 | G3 Local Nemotron via Meterless | Thu Oct 22, noon ET | open | |
 | G4 US golden path green | Sat Oct 24, 1 PM ET | open | |
