@@ -1,6 +1,6 @@
 {
   "schema_version": "porch-light.manatee-development-snapshot.v1",
-  "generated_at": "2026-10-23T18:54:53+00:00",
+  "generated_at": "2026-10-23T20:25:15+00:00",
   "county": {
     "name": "Manatee",
     "fips": "12081",
@@ -10049,11 +10049,105 @@
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
         "model_explanation": {
-          "text": "Rank 1 with score_total 0.8011138888888889; CMS stars 2.0, national SVI percentile 0.9989, aggregate ZIP DME context 431 among 10,866 Medicare beneficiaries (ratio 0.03966501012332045; 18 county-ZIP reference rows).",
-          "trace_id": "chatcmpl-4e2bd9af-5f03-40eb-b9f3-a1068efa57cb",
-          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-          "mode": "meterless/deep",
-          "draft": true
+          "status": "failed",
+          "text": null,
+          "grounding": {
+            "passed": false
+          },
+          "attempts": [
+            {
+              "event_id": "eafe8705bd9b4aa08a4e07ca4b559223",
+              "started_at": "2026-10-23T18:59:05.598944+00:00",
+              "purpose": "explanation_batch",
+              "requested_model": "meterless/deep",
+              "mode": "meterless/deep",
+              "execution_location": "not_reported",
+              "input_sha256": "8df486c224c2dea3177abdd9e290dfd948a75cf7206564febf1db0a1e1924346",
+              "facility_ccns": [
+                "682766",
+                "105603",
+                "102853"
+              ],
+              "max_tokens": 4096,
+              "thinking_disabled": true,
+              "status": "failed",
+              "response_id": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+              "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+              "usage": {
+                "prompt_tokens": 1146,
+                "completion_tokens": 667,
+                "total_tokens": 1813
+              },
+              "endpoint": "http://127.0.0.1:8088/v1",
+              "latency_ms": 6127,
+              "ended_at": "2026-10-23T18:59:11.726204+00:00",
+              "meterless_receipt": {
+                "request_id": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+                "receipt_id": "rcpt_req_mklc9ms9",
+                "winning_route": {
+                  "kind": "cloud",
+                  "label": "Nemotron 3.5 Super VL 120B A12B",
+                  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+                  "provider": "nvidia",
+                  "tier": "C"
+                },
+                "actual_usd": 0,
+                "effective_mode": "auto",
+                "requested_mode": "meterless/auto"
+              }
+            },
+            {
+              "event_id": "0a06b01a15c84ca98b9a02851e576ee1",
+              "started_at": "2026-10-23T19:17:26.863858+00:00",
+              "purpose": "explanation_batch",
+              "requested_model": "meterless/deep",
+              "mode": "meterless/deep",
+              "execution_location": "nvidia_cloud",
+              "input_sha256": "8df486c224c2dea3177abdd9e290dfd948a75cf7206564febf1db0a1e1924346",
+              "facility_ccns": [
+                "682766",
+                "105603",
+                "102853"
+              ],
+              "max_tokens": 4096,
+              "thinking_disabled": true,
+              "status": "failed",
+              "retry_of": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+              "paid_fallback_enabled": false,
+              "response_id": "chatcmpl-1364fe41-5531-4ef5-9860-9fd6243bdd42",
+              "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+              "usage": {
+                "prompt_tokens": 1146,
+                "completion_tokens": 973,
+                "total_tokens": 2119
+              },
+              "endpoint": "http://127.0.0.1:8088/v1",
+              "provider_content": "{\"\": \"\"}",
+              "meterless_receipt": {
+                "request_id": "chatcmpl-1364fe41-5531-4ef5-9860-9fd6243bdd42",
+                "receipt_id": "rcpt_req_3fh66ii1",
+                "winning_route": {
+                  "kind": "cloud",
+                  "label": "Nemotron 3.5 Super VL 120B A12B",
+                  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+                  "provider": "nvidia",
+                  "tier": "C"
+                },
+                "actual_usd": 0,
+                "effective_mode": "auto",
+                "requested_mode": "meterless/auto"
+              },
+              "provider_output": {
+                "": ""
+              },
+              "validation_error": "Model changed the facility scope or output schema",
+              "latency_ms": 13380,
+              "ended_at": "2026-10-23T19:17:40.244345+00:00",
+              "approval": "porch-light-national-20261023",
+              "budget_attempt": 1
+            }
+          ],
+          "reason": "The initial attempt and its sole retry failed; no third attempt or replacement is permitted."
         },
         "score": {
           "total": 0.8011138888888889,
@@ -10092,7 +10186,16 @@
           "formula_version": "manatee-development-v1",
           "tie_break": "facility type, then CCN",
           "rank": 1
-        }
+        },
+        "previous_model_explanations": [
+          {
+            "text": "Rank 1 with score_total 0.8011138888888889; CMS stars 2.0, national SVI percentile 0.9989, aggregate ZIP DME context 431 among 10,866 Medicare beneficiaries (ratio 0.03966501012332045; 18 county-ZIP reference rows).",
+            "trace_id": "chatcmpl-4e2bd9af-5f03-40eb-b9f3-a1068efa57cb",
+            "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+            "mode": "meterless/deep",
+            "draft": true
+          }
+        ]
       },
       "computed_reason": "National tract SVI 0.9989; CMS stars 2.0; published ZIP DME 431/10866. ZIP context is not a facility patient count.",
       "development_only": false,
@@ -10455,11 +10558,105 @@
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
         "model_explanation": {
-          "text": "Rank 2 with score_total 0.750425; CMS stars 2.0, national SVI percentile 0.9917, aggregate ZIP DME context 529 among 13,062 Medicare beneficiaries (ratio 0.04049915786250191; 18 county-ZIP reference rows).",
-          "trace_id": "chatcmpl-4e2bd9af-5f03-40eb-b9f3-a1068efa57cb",
-          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-          "mode": "meterless/deep",
-          "draft": true
+          "status": "failed",
+          "text": null,
+          "grounding": {
+            "passed": false
+          },
+          "attempts": [
+            {
+              "event_id": "eafe8705bd9b4aa08a4e07ca4b559223",
+              "started_at": "2026-10-23T18:59:05.598944+00:00",
+              "purpose": "explanation_batch",
+              "requested_model": "meterless/deep",
+              "mode": "meterless/deep",
+              "execution_location": "not_reported",
+              "input_sha256": "8df486c224c2dea3177abdd9e290dfd948a75cf7206564febf1db0a1e1924346",
+              "facility_ccns": [
+                "682766",
+                "105603",
+                "102853"
+              ],
+              "max_tokens": 4096,
+              "thinking_disabled": true,
+              "status": "failed",
+              "response_id": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+              "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+              "usage": {
+                "prompt_tokens": 1146,
+                "completion_tokens": 667,
+                "total_tokens": 1813
+              },
+              "endpoint": "http://127.0.0.1:8088/v1",
+              "latency_ms": 6127,
+              "ended_at": "2026-10-23T18:59:11.726204+00:00",
+              "meterless_receipt": {
+                "request_id": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+                "receipt_id": "rcpt_req_mklc9ms9",
+                "winning_route": {
+                  "kind": "cloud",
+                  "label": "Nemotron 3.5 Super VL 120B A12B",
+                  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+                  "provider": "nvidia",
+                  "tier": "C"
+                },
+                "actual_usd": 0,
+                "effective_mode": "auto",
+                "requested_mode": "meterless/auto"
+              }
+            },
+            {
+              "event_id": "0a06b01a15c84ca98b9a02851e576ee1",
+              "started_at": "2026-10-23T19:17:26.863858+00:00",
+              "purpose": "explanation_batch",
+              "requested_model": "meterless/deep",
+              "mode": "meterless/deep",
+              "execution_location": "nvidia_cloud",
+              "input_sha256": "8df486c224c2dea3177abdd9e290dfd948a75cf7206564febf1db0a1e1924346",
+              "facility_ccns": [
+                "682766",
+                "105603",
+                "102853"
+              ],
+              "max_tokens": 4096,
+              "thinking_disabled": true,
+              "status": "failed",
+              "retry_of": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+              "paid_fallback_enabled": false,
+              "response_id": "chatcmpl-1364fe41-5531-4ef5-9860-9fd6243bdd42",
+              "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+              "usage": {
+                "prompt_tokens": 1146,
+                "completion_tokens": 973,
+                "total_tokens": 2119
+              },
+              "endpoint": "http://127.0.0.1:8088/v1",
+              "provider_content": "{\"\": \"\"}",
+              "meterless_receipt": {
+                "request_id": "chatcmpl-1364fe41-5531-4ef5-9860-9fd6243bdd42",
+                "receipt_id": "rcpt_req_3fh66ii1",
+                "winning_route": {
+                  "kind": "cloud",
+                  "label": "Nemotron 3.5 Super VL 120B A12B",
+                  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+                  "provider": "nvidia",
+                  "tier": "C"
+                },
+                "actual_usd": 0,
+                "effective_mode": "auto",
+                "requested_mode": "meterless/auto"
+              },
+              "provider_output": {
+                "": ""
+              },
+              "validation_error": "Model changed the facility scope or output schema",
+              "latency_ms": 13380,
+              "ended_at": "2026-10-23T19:17:40.244345+00:00",
+              "approval": "porch-light-national-20261023",
+              "budget_attempt": 1
+            }
+          ],
+          "reason": "The initial attempt and its sole retry failed; no third attempt or replacement is permitted."
         },
         "score": {
           "total": 0.750425,
@@ -10498,7 +10695,16 @@
           "formula_version": "manatee-development-v1",
           "tie_break": "facility type, then CCN",
           "rank": 2
-        }
+        },
+        "previous_model_explanations": [
+          {
+            "text": "Rank 2 with score_total 0.750425; CMS stars 2.0, national SVI percentile 0.9917, aggregate ZIP DME context 529 among 13,062 Medicare beneficiaries (ratio 0.04049915786250191; 18 county-ZIP reference rows).",
+            "trace_id": "chatcmpl-4e2bd9af-5f03-40eb-b9f3-a1068efa57cb",
+            "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+            "mode": "meterless/deep",
+            "draft": true
+          }
+        ]
       },
       "computed_reason": "National tract SVI 0.9917; CMS stars 2; published ZIP DME 529/13062. ZIP context is not a facility patient count.",
       "development_only": false,
@@ -10861,11 +11067,105 @@
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
         "model_explanation": {
-          "text": "Rank 3 with score_total 0.7458277777777778; CMS stars 3.0, national SVI percentile 0.9722, aggregate ZIP DME context 276 among 7,016 Medicare beneficiaries (ratio 0.03933865450399088; 18 county-ZIP reference rows).",
-          "trace_id": "chatcmpl-4e2bd9af-5f03-40eb-b9f3-a1068efa57cb",
-          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-          "mode": "meterless/deep",
-          "draft": true
+          "status": "failed",
+          "text": null,
+          "grounding": {
+            "passed": false
+          },
+          "attempts": [
+            {
+              "event_id": "eafe8705bd9b4aa08a4e07ca4b559223",
+              "started_at": "2026-10-23T18:59:05.598944+00:00",
+              "purpose": "explanation_batch",
+              "requested_model": "meterless/deep",
+              "mode": "meterless/deep",
+              "execution_location": "not_reported",
+              "input_sha256": "8df486c224c2dea3177abdd9e290dfd948a75cf7206564febf1db0a1e1924346",
+              "facility_ccns": [
+                "682766",
+                "105603",
+                "102853"
+              ],
+              "max_tokens": 4096,
+              "thinking_disabled": true,
+              "status": "failed",
+              "response_id": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+              "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+              "usage": {
+                "prompt_tokens": 1146,
+                "completion_tokens": 667,
+                "total_tokens": 1813
+              },
+              "endpoint": "http://127.0.0.1:8088/v1",
+              "latency_ms": 6127,
+              "ended_at": "2026-10-23T18:59:11.726204+00:00",
+              "meterless_receipt": {
+                "request_id": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+                "receipt_id": "rcpt_req_mklc9ms9",
+                "winning_route": {
+                  "kind": "cloud",
+                  "label": "Nemotron 3.5 Super VL 120B A12B",
+                  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+                  "provider": "nvidia",
+                  "tier": "C"
+                },
+                "actual_usd": 0,
+                "effective_mode": "auto",
+                "requested_mode": "meterless/auto"
+              }
+            },
+            {
+              "event_id": "0a06b01a15c84ca98b9a02851e576ee1",
+              "started_at": "2026-10-23T19:17:26.863858+00:00",
+              "purpose": "explanation_batch",
+              "requested_model": "meterless/deep",
+              "mode": "meterless/deep",
+              "execution_location": "nvidia_cloud",
+              "input_sha256": "8df486c224c2dea3177abdd9e290dfd948a75cf7206564febf1db0a1e1924346",
+              "facility_ccns": [
+                "682766",
+                "105603",
+                "102853"
+              ],
+              "max_tokens": 4096,
+              "thinking_disabled": true,
+              "status": "failed",
+              "retry_of": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+              "paid_fallback_enabled": false,
+              "response_id": "chatcmpl-1364fe41-5531-4ef5-9860-9fd6243bdd42",
+              "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+              "usage": {
+                "prompt_tokens": 1146,
+                "completion_tokens": 973,
+                "total_tokens": 2119
+              },
+              "endpoint": "http://127.0.0.1:8088/v1",
+              "provider_content": "{\"\": \"\"}",
+              "meterless_receipt": {
+                "request_id": "chatcmpl-1364fe41-5531-4ef5-9860-9fd6243bdd42",
+                "receipt_id": "rcpt_req_3fh66ii1",
+                "winning_route": {
+                  "kind": "cloud",
+                  "label": "Nemotron 3.5 Super VL 120B A12B",
+                  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+                  "provider": "nvidia",
+                  "tier": "C"
+                },
+                "actual_usd": 0,
+                "effective_mode": "auto",
+                "requested_mode": "meterless/auto"
+              },
+              "provider_output": {
+                "": ""
+              },
+              "validation_error": "Model changed the facility scope or output schema",
+              "latency_ms": 13380,
+              "ended_at": "2026-10-23T19:17:40.244345+00:00",
+              "approval": "porch-light-national-20261023",
+              "budget_attempt": 1
+            }
+          ],
+          "reason": "The initial attempt and its sole retry failed; no third attempt or replacement is permitted."
         },
         "score": {
           "total": 0.7458277777777778,
@@ -10904,7 +11204,16 @@
           "formula_version": "manatee-development-v1",
           "tie_break": "facility type, then CCN",
           "rank": 3
-        }
+        },
+        "previous_model_explanations": [
+          {
+            "text": "Rank 3 with score_total 0.7458277777777778; CMS stars 3.0, national SVI percentile 0.9722, aggregate ZIP DME context 276 among 7,016 Medicare beneficiaries (ratio 0.03933865450399088; 18 county-ZIP reference rows).",
+            "trace_id": "chatcmpl-4e2bd9af-5f03-40eb-b9f3-a1068efa57cb",
+            "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+            "mode": "meterless/deep",
+            "draft": true
+          }
+        ]
       },
       "computed_reason": "National tract SVI 0.9722; CMS stars 3.0; published ZIP DME 276/7016. ZIP context is not a facility patient count.",
       "development_only": false,
@@ -11266,7 +11575,48 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "105525",
+          "text": "CMS source rating: 2.0 stars. Source tract SVI percentile: 0.9958. This describes area context, not clinical urgency. Published ZIP context reports 431 DME beneficiaries among 10866 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "afb2489628bb411d013e459a7ddb22b45ab0dd91a70d1a331ce6cdf9464a78f1",
+            "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "status": "passed",
+          "trace_id": "chatcmpl-0339768d-2104-4271-ad2c-27ed20595ce9",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "effective_mode": "auto",
+          "draft": true,
+          "cache_reuse": "Identical source-clause catalog hash"
+        },
         "score": {
           "total": 0.7403388888888889,
           "terms": [
@@ -11666,7 +12016,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "682519",
+          "text": "CMS source rating: 2.0 stars. Source tract SVI percentile: 0.5958. This describes area context, not clinical urgency. Published ZIP context reports 229 DME beneficiaries among 5280 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "e6e8249889c697b8bfddf7b7085d98a88eee4fb0e27636ed35e77360d08771e6",
+            "source_sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+              "retry_of": null,
+              "event_id": "f3d3a620c8ed46f4a919c32005651342"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.7336722222222222,
           "terms": [
@@ -12066,7 +12469,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "106017",
+          "text": "CMS source rating: 1.0 stars. Source tract SVI percentile: 0.9395. This describes area context, not clinical urgency. Published ZIP context reports 148 DME beneficiaries among 4801 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "ec0e33a76f9683fc578c5ba5deb9bb4815ca80ee2cbc2175d5dd095a154f2e60",
+            "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+              "retry_of": null,
+              "event_id": "f3d3a620c8ed46f4a919c32005651342"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.7304305555555556,
           "terms": [
@@ -12466,7 +12922,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "105159",
+          "text": "CMS source rating: 3.0 stars. Source tract SVI percentile: 0.8946. This describes area context, not clinical urgency. Published ZIP context reports 322 DME beneficiaries among 7563 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "f91ee68947df6aa7418a7045da4efe792d236988eaed2879edbbadbe75deccaa",
+            "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+              "retry_of": null,
+              "event_id": "f3d3a620c8ed46f4a919c32005651342"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.6997611111111111,
           "terms": [
@@ -12866,7 +13375,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "105551",
+          "text": "CMS source rating: 3.0 stars. Source tract SVI percentile: 0.9722. This describes area context, not clinical urgency. Published ZIP context reports 276 DME beneficiaries among 7016 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "0345eaaefc392a1c51d4d19536fbc5ef8629276b507605e4c838c07c2607aa66",
+            "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+              "retry_of": null,
+              "event_id": "f3d3a620c8ed46f4a919c32005651342"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.6858277777777778,
           "terms": [
@@ -13266,7 +13828,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "105045",
+          "text": "CMS source rating: 4.0 stars. Source tract SVI percentile: 0.9985. This describes area context, not clinical urgency. Published ZIP context reports 276 DME beneficiaries among 7016 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "79e4696952e9da8fde8c456b6ea19c87f1e04b54e3a63e6c30a43bb4d8389329",
+            "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+              "retry_of": null,
+              "event_id": "f3d3a620c8ed46f4a919c32005651342"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.6549027777777777,
           "terms": [
@@ -13666,7 +14281,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "102849",
+          "text": "CMS source rating: 3.0 stars. Source tract SVI percentile: 0.3109. This describes area context, not clinical urgency. Published ZIP context reports 376 DME beneficiaries among 11627 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "6a161e0ab6ca8d9d5af4636def33150947b5de9aa3f70a12490b12c1d053af3d",
+            "source_sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+              "retry_of": null,
+              "event_id": "f3d3a620c8ed46f4a919c32005651342"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.5693916666666666,
           "terms": [
@@ -14066,7 +14734,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "105327",
+          "text": "CMS source rating: 1.0 stars. Source tract SVI percentile: 0.2486. This describes area context, not clinical urgency. Published ZIP context reports 376 DME beneficiaries among 11627 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "451e0f4a991496cd6afc392fdd98a0d92d43c8f4eaa3a3a3d923d97919e2fdef",
+            "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+              "retry_of": null,
+              "event_id": "f3d3a620c8ed46f4a919c32005651342"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.5688166666666666,
           "terms": [
@@ -14466,7 +15187,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "106030",
+          "text": "CMS source rating: 4.0 stars. Source tract SVI percentile: 0.5148. This describes area context, not clinical urgency. Published ZIP context reports 322 DME beneficiaries among 7563 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "9bab4ede997dbc7871e0576bdb86871a1e1032cd847d356f5c2969d1699f0456",
+            "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+              "retry_of": null,
+              "event_id": "f3d3a620c8ed46f4a919c32005651342"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.5673111111111111,
           "terms": [
@@ -14866,7 +15640,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "105655",
+          "text": "CMS source rating: 3.0 stars. Source tract SVI percentile: 0.4561. This describes area context, not clinical urgency. Published ZIP context reports 376 DME beneficiaries among 11627 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "73e632ce4ac3646ab047deffa08a574f8f034b39cb137348fecca228e807ce26",
+            "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+              "retry_of": null,
+              "event_id": "f3d3a620c8ed46f4a919c32005651342"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.5456916666666667,
           "terms": [
@@ -15266,7 +16093,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "106025",
+          "text": "CMS source rating: 4.0 stars. Source tract SVI percentile: 0.6727. This describes area context, not clinical urgency. Published ZIP context reports 285 DME beneficiaries among 10095 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "54e9f16462a68f89e3872b298f2bc3b14490dc48a8afcc637fc2125f4a9f38da",
+            "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+              "retry_of": null,
+              "event_id": "f3d3a620c8ed46f4a919c32005651342"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.5290083333333333,
           "terms": [
@@ -15666,7 +16546,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "105529",
+          "text": "CMS source rating: 3.0 stars. Source tract SVI percentile: 0.3109. This describes area context, not clinical urgency. Published ZIP context reports 376 DME beneficiaries among 11627 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "b01560bedc4ed68b7919cd9bba66e2b85ae25220d34f273e33817641c220a8e7",
+            "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-dcaa009f-92cf-4f96-9edb-1c8ef5e858b9",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-dcaa009f-92cf-4f96-9edb-1c8ef5e858b9",
+              "retry_of": null,
+              "event_id": "76b6e362122a4da8a8ac3376be1e82e8"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.5093916666666667,
           "terms": [
@@ -16066,7 +16999,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "105629",
+          "text": "CMS source rating: 4.0 stars. Source tract SVI percentile: 0.3109. This describes area context, not clinical urgency. Published ZIP context reports 376 DME beneficiaries among 11627 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "be02283dd6b4e102bea9ca6b8fba113f5e485d948cfb2e527f015554ff152c0b",
+            "source_sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-dcaa009f-92cf-4f96-9edb-1c8ef5e858b9",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-dcaa009f-92cf-4f96-9edb-1c8ef5e858b9",
+              "retry_of": null,
+              "event_id": "76b6e362122a4da8a8ac3376be1e82e8"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.47189166666666665,
           "terms": [
@@ -16466,7 +17452,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "682503",
+          "text": "CMS source rating: 4.0 stars. Source tract SVI percentile: 0.1604. This describes area context, not clinical urgency. Published ZIP context reports 46 DME beneficiaries among 2104 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "a92c0684957bb81273fc7b431e32c7f76d644642c161be363dcedcf1989eab8c",
+            "source_sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-dcaa009f-92cf-4f96-9edb-1c8ef5e858b9",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-dcaa009f-92cf-4f96-9edb-1c8ef5e858b9",
+              "retry_of": null,
+              "event_id": "76b6e362122a4da8a8ac3376be1e82e8"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.4164888888888889,
           "terms": [
@@ -16866,7 +17905,60 @@
         "archived_plan_exact_name_mention": false,
         "plan_applicability_verified": false,
         "operator_geocode_review_required": true,
-        "model_explanation": null,
+        "model_explanation": {
+          "ccn": "682713",
+          "text": "CMS source rating: 4.0 stars. Source tract SVI percentile: 0.1946. This describes area context, not clinical urgency. Published ZIP context reports 188 DME beneficiaries among 9950 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+          "questions": [
+            "Is this the correct facility contact, and who should receive a follow-up?",
+            "Is power available, and is any backup-power support needed?"
+          ],
+          "grounding": {
+            "passed": true,
+            "method": "exact_source_clause_catalog_v1",
+            "catalog_sha256": "16ebcccca1d02660c29a180095c28257e56eac2d82754a1dd23490a5c99a29de",
+            "source_sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "fact_ids": [
+              "cms_star_rating",
+              "svi_pct",
+              "empower_dme_count",
+              "empower_medicare_beneficiaries"
+            ],
+            "query_ids": [
+              "648",
+              "649",
+              "650"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ],
+            "scope": "Exact source-clause identity and closed query references, not clinical validation"
+          },
+          "trace_id": "chatcmpl-dcaa009f-92cf-4f96-9edb-1c8ef5e858b9",
+          "model_id": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "mode": "meterless/deep",
+          "draft": true,
+          "effective_mode": "auto",
+          "provider": "nvidia",
+          "actual_usd": 0,
+          "status": "passed",
+          "attempts": [
+            {
+              "attempt": 1,
+              "status": "passed",
+              "trace_id": "chatcmpl-dcaa009f-92cf-4f96-9edb-1c8ef5e858b9",
+              "retry_of": null,
+              "event_id": "76b6e362122a4da8a8ac3376be1e82e8"
+            }
+          ],
+          "run_id": null,
+          "operator_review_required": true
+        },
         "score": {
           "total": 0.39170555555555553,
           "terms": [
@@ -16925,6 +18017,449 @@
   ],
   "model_executions": [
     {
+      "event_id": "eafe8705bd9b4aa08a4e07ca4b559223",
+      "started_at": "2026-10-23T18:59:05.598944+00:00",
+      "purpose": "explanation_batch",
+      "requested_model": "meterless/deep",
+      "mode": "meterless/deep",
+      "execution_location": "not_reported",
+      "input_sha256": "8df486c224c2dea3177abdd9e290dfd948a75cf7206564febf1db0a1e1924346",
+      "facility_ccns": [
+        "682766",
+        "105603",
+        "102853"
+      ],
+      "max_tokens": 4096,
+      "thinking_disabled": true,
+      "status": "failed",
+      "response_id": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+      "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "usage": {
+        "prompt_tokens": 1146,
+        "completion_tokens": 667,
+        "total_tokens": 1813
+      },
+      "endpoint": "http://127.0.0.1:8088/v1",
+      "latency_ms": 6127,
+      "ended_at": "2026-10-23T18:59:11.726204+00:00",
+      "meterless_receipt": {
+        "request_id": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+        "receipt_id": "rcpt_req_mklc9ms9",
+        "winning_route": {
+          "kind": "cloud",
+          "label": "Nemotron 3.5 Super VL 120B A12B",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "provider": "nvidia",
+          "tier": "C"
+        },
+        "actual_usd": 0,
+        "effective_mode": "auto",
+        "requested_mode": "meterless/auto"
+      },
+      "receipt_reconciliation": "Actual matching Meterless receipt linked after the original failed attempt; failure status unchanged"
+    },
+    {
+      "event_id": "0a06b01a15c84ca98b9a02851e576ee1",
+      "started_at": "2026-10-23T19:17:26.863858+00:00",
+      "purpose": "explanation_batch",
+      "requested_model": "meterless/deep",
+      "mode": "meterless/deep",
+      "execution_location": "nvidia_cloud",
+      "input_sha256": "8df486c224c2dea3177abdd9e290dfd948a75cf7206564febf1db0a1e1924346",
+      "facility_ccns": [
+        "682766",
+        "105603",
+        "102853"
+      ],
+      "max_tokens": 4096,
+      "thinking_disabled": true,
+      "status": "failed",
+      "retry_of": "chatcmpl-bddded22-ead2-40c5-9801-651510bd9306",
+      "paid_fallback_enabled": false,
+      "response_id": "chatcmpl-1364fe41-5531-4ef5-9860-9fd6243bdd42",
+      "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "usage": {
+        "prompt_tokens": 1146,
+        "completion_tokens": 973,
+        "total_tokens": 2119
+      },
+      "endpoint": "http://127.0.0.1:8088/v1",
+      "provider_content": "{\"\": \"\"}",
+      "meterless_receipt": {
+        "request_id": "chatcmpl-1364fe41-5531-4ef5-9860-9fd6243bdd42",
+        "receipt_id": "rcpt_req_3fh66ii1",
+        "winning_route": {
+          "kind": "cloud",
+          "label": "Nemotron 3.5 Super VL 120B A12B",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "provider": "nvidia",
+          "tier": "C"
+        },
+        "actual_usd": 0,
+        "effective_mode": "auto",
+        "requested_mode": "meterless/auto"
+      },
+      "provider_output": {
+        "": ""
+      },
+      "validation_error": "Model changed the facility scope or output schema",
+      "latency_ms": 13380,
+      "ended_at": "2026-10-23T19:17:40.244345+00:00",
+      "approval": "porch-light-national-20261023",
+      "budget_attempt": 1
+    },
+    {
+      "event_id": "1c165096707940168170faf648821f21",
+      "started_at": "2026-10-23T19:20:58.491151+00:00",
+      "purpose": "explanation_batch",
+      "requested_model": "meterless/deep",
+      "mode": "meterless/deep",
+      "execution_location": "nvidia_cloud",
+      "input_sha256": "db33a55aed2256b06210c33b6306cc70c38b7599abef3572ee708198b6fd981a",
+      "facility_ccns": [
+        "105525"
+      ],
+      "max_tokens": 4096,
+      "thinking_disabled": true,
+      "status": "grounding_passed",
+      "retry_of": null,
+      "paid_fallback_enabled": false,
+      "response_id": "chatcmpl-0339768d-2104-4271-ad2c-27ed20595ce9",
+      "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "usage": {
+        "prompt_tokens": 634,
+        "completion_tokens": 359,
+        "total_tokens": 993
+      },
+      "endpoint": "http://127.0.0.1:8088/v1",
+      "provider_content": "{\"drafts\":[{\"ccn\":\"105525\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]}]}",
+      "meterless_receipt": {
+        "request_id": "chatcmpl-0339768d-2104-4271-ad2c-27ed20595ce9",
+        "receipt_id": "rcpt_req_h7vv1ufu",
+        "winning_route": {
+          "kind": "cloud",
+          "label": "Nemotron 3.5 Super VL 120B A12B",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "provider": "nvidia",
+          "tier": "C"
+        },
+        "actual_usd": 0,
+        "effective_mode": "auto",
+        "requested_mode": "meterless/auto"
+      },
+      "provider_output": {
+        "drafts": [
+          {
+            "ccn": "105525",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          }
+        ]
+      },
+      "selection_sha256": "1164e06815d98e3f7bdf39740df763d44098a277cf0590d3e45252719922c9b4",
+      "latency_ms": 13085,
+      "ended_at": "2026-10-23T19:21:11.576428+00:00",
+      "approval": "porch-light-national-20261023",
+      "budget_attempt": 2
+    },
+    {
+      "event_id": "f3d3a620c8ed46f4a919c32005651342",
+      "started_at": "2026-10-23T20:24:24.807849+00:00",
+      "purpose": "explanation_batch",
+      "requested_model": "meterless/deep",
+      "mode": "meterless/deep",
+      "execution_location": "nvidia_cloud",
+      "input_sha256": "f2d397f3797e5a06143322866b0865527241ed0076e48c47aeae99b61c2d1343",
+      "facility_ccns": [
+        "682519",
+        "106017",
+        "105159",
+        "105551",
+        "105045",
+        "102849",
+        "105327",
+        "106030",
+        "105655",
+        "106025"
+      ],
+      "max_tokens": 4096,
+      "thinking_disabled": true,
+      "status": "grounding_passed",
+      "retry_of": null,
+      "paid_fallback_enabled": false,
+      "run_id": null,
+      "response_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+      "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "usage": {
+        "prompt_tokens": 3616,
+        "completion_tokens": 2012,
+        "total_tokens": 5628
+      },
+      "endpoint": "http://127.0.0.1:8088/v1",
+      "provider_content": "{\"drafts\":[{\"ccn\":\"682519\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"106017\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"105159\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"105551\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"105045\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"102849\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"105327\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"106030\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"105655\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"106025\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]}]}",
+      "meterless_receipt": {
+        "request_id": "chatcmpl-2267e895-f21f-4c38-9ae3-05149648a661",
+        "receipt_id": "rcpt_req_13qhbgss",
+        "winning_route": {
+          "kind": "cloud",
+          "label": "Nemotron 3.5 Super VL 120B A12B",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "provider": "nvidia",
+          "tier": "C"
+        },
+        "actual_usd": 0,
+        "effective_mode": "auto",
+        "requested_mode": "meterless/auto"
+      },
+      "provider_output": {
+        "drafts": [
+          {
+            "ccn": "682519",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "106017",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "105159",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "105551",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "105045",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "102849",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "105327",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "106030",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "105655",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "106025",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          }
+        ]
+      },
+      "selection_sha256": "b976f69f778b502f7f64f3d9ff2f97bede935e4b5a6c3da3f541b4a62d14b990",
+      "latency_ms": 37222,
+      "ended_at": "2026-10-23T20:25:02.029803+00:00",
+      "approval": "porch-light-national-20261023",
+      "budget_attempt": 3
+    },
+    {
+      "event_id": "76b6e362122a4da8a8ac3376be1e82e8",
+      "started_at": "2026-10-23T20:25:02.040298+00:00",
+      "purpose": "explanation_batch",
+      "requested_model": "meterless/deep",
+      "mode": "meterless/deep",
+      "execution_location": "nvidia_cloud",
+      "input_sha256": "434251dc02c6bd8b9d8e5bac10cf97738b828028d4b2fbc1f677e644512dbcce",
+      "facility_ccns": [
+        "105529",
+        "105629",
+        "682503",
+        "682713"
+      ],
+      "max_tokens": 4096,
+      "thinking_disabled": true,
+      "status": "grounding_passed",
+      "retry_of": null,
+      "paid_fallback_enabled": false,
+      "run_id": null,
+      "response_id": "chatcmpl-dcaa009f-92cf-4f96-9edb-1c8ef5e858b9",
+      "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "usage": {
+        "prompt_tokens": 2101,
+        "completion_tokens": 1421,
+        "total_tokens": 3522
+      },
+      "endpoint": "http://127.0.0.1:8088/v1",
+      "provider_content": "{\"drafts\":[{\"ccn\":\"105529\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"105629\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"682503\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]},{\"ccn\":\"682713\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]}]}",
+      "meterless_receipt": {
+        "request_id": "chatcmpl-dcaa009f-92cf-4f96-9edb-1c8ef5e858b9",
+        "receipt_id": "rcpt_req_m4laihgc",
+        "winning_route": {
+          "kind": "cloud",
+          "label": "Nemotron 3.5 Super VL 120B A12B",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "provider": "nvidia",
+          "tier": "C"
+        },
+        "actual_usd": 0,
+        "effective_mode": "auto",
+        "requested_mode": "meterless/auto"
+      },
+      "provider_output": {
+        "drafts": [
+          {
+            "ccn": "105529",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "105629",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "682503",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          },
+          {
+            "ccn": "682713",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          }
+        ]
+      },
+      "selection_sha256": "5930971bf03377ee16744f8df1a781e523a2f0170595894b7fe68d3cf5ab571c",
+      "latency_ms": 13948,
+      "ended_at": "2026-10-23T20:25:15.988608+00:00",
+      "approval": "porch-light-national-20261023",
+      "budget_attempt": 4
+    }
+  ],
+  "limits": [
+    "Data served through licensed Zetaris JDBC with successful audit references.",
+    "Per-row query IDs resolve to actual Zetaris audit records.",
+    "Prototype policy mappings require operator review; not clinically validated.",
+    "Current source records do not establish October 2024 facility conditions.",
+    "Geocode quality and archived plan applicability remain unverified.",
+    "No calls or messages are sent."
+  ],
+  "historical_model_executions": [
+    {
       "response_id": "chatcmpl-4e2bd9af-5f03-40eb-b9f3-a1068efa57cb",
       "reported_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
       "requested_model": "meterless/deep",
@@ -16952,17 +18487,41 @@
       "draft_requires_operator_review": true
     }
   ],
-  "limits": [
-    "Data served through licensed Zetaris JDBC with successful audit references.",
-    "Per-row query IDs resolve to actual Zetaris audit records.",
-    "Prototype policy mappings require operator review; not clinically validated.",
-    "Current source records do not establish October 2024 facility conditions.",
-    "Geocode quality and archived plan applicability remain unverified.",
-    "No calls or messages are sent."
-  ],
-  "model_output_reuse": {
-    "source_snapshot_sha256": "362e2dd5b63139413b9dc8426247846ea36df9e564275812a2dc62b0cf666cd8",
-    "original_generated_at": "2026-10-22T15:24:33+00:00",
-    "new_model_call_performed": false
+  "model_report": {
+    "run_id": null,
+    "eligible_facilities": 18,
+    "attempted_facilities": 18,
+    "accepted_facilities": 15,
+    "unresolved_facilities": 3,
+    "not_attempted_budget": 0,
+    "first_pass_facilities": 15,
+    "retry_recoveries": 0,
+    "provider_requests": 5,
+    "accepted_facility_rate": 0.8333333333333334,
+    "first_pass_facility_rate": 0.8333333333333334,
+    "failure_reasons": {
+      "retained_grounding_failure": 1,
+      "Model changed the facility scope or output schema": 1
+    },
+    "known_actual_usd": 0,
+    "unknown_cost_receipts": 0,
+    "first_pass_requests": 4,
+    "retry_requests": 1,
+    "method": "Nemotron selects and orders exact source clauses and approved verification questions",
+    "clinical_validation": false,
+    "max_retries_per_draft": 1,
+    "failed_attempts_retained": true,
+    "retained_failed_facilities": 3,
+    "reused_accepted_facilities": 1,
+    "grounding_pass_rate": 0.8333333333333334
+  },
+  "model_status": {
+    "state": "grounding_partial",
+    "drafts": 15,
+    "new_model_calls": 2,
+    "method": "exact_source_clause_catalog_v1",
+    "clinical_validation": false,
+    "model_role": "Select and order exact source clauses and bounded verification questions, not unrestricted prose",
+    "execution_location": "not_reported"
   }
 }

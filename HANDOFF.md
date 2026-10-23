@@ -35,11 +35,11 @@ last update: Wed Oct 21 2026 8:20 PM ET
 
 ## Area: Data
 owner now: Devin  (primary Devin, backup Cursor cloud agent (data))
-state: two-county intake and actual PostGIS loading are working for Manatee/Sarasota. Ninety-three primary source artifacts verify. The private database contains 62 source facilities; actual SQL finds 58 geography rows and 57 points covered by current published zones. All 90 checks pass. Data is committed at 07f7ca5 and private draft PR 17 is open. No source or database transport is mocked.
-next step: obtain the licensed Zetaris bundle and register the read-only JDBC exports; address fresh review findings without merging; then repair the contract, validate scoring policy and execute real Nemotron explanations. No direct PostGIS application read substitutes for Zetaris.
-branch: devin/data-nws-capture, descended from data scaffold PR 1; new private draft https://github.com/JoeProAI/porch-light/pull/17. Joe owns all merges. Existing review flags are not claimed cleared.
-how to run: `python -m data.adapters.us.preflight_county --county sarasota`; `python -m data.snapshot.load_snapshot --county manatee --county sarasota`; `python -m data.snapshot.reader`; `python -m unittest data.snapshot.test_database -v`. Private credentials stay outside Git and are not command arguments.
-blocked: licensed Zetaris platform bundle/registry entitlement and actual JDBC/audit proof; source refusals, operator review, missing Sarasota plan, historical applicability, policy/contract repairs and Nemotron execution. The newer audit remains on devin/ops-takeover; its HANDOFF conflict is not integrated.
+state: national CMS, Census geography/geocodes, 2022 SVI, HHS emPOWER and NWS county/forecast-zone assets are captured privately under USERPROFILE/.porchlight. The immutable capture has 22,180 CMS records and returned geocodes, with 20,160 Census matches, not all exact. The canonical Census catalog contains 3,235 counties and county-equivalents. Ten missing current-code county geometries have official Census supplements. Source bytes, hashes, timestamps and licenses remain outside Git.
+next step: finish the separately audited county/alert sweep and retain every missing-source, geocode and join gap. No national raw datasets enter the repository. Missing county plans aren't replaced with the Manatee plan or a guessed value.
+branch: devin/data-national, stacked on devin/data-nws-capture. The existing Manatee intake remains unchanged. Joe owns every merge.
+how to run: `python -m data.adapters.us.capture_national --help`; `python -m data.snapshot.national --folder <verified-local-capture>`. The loader uses national_shapes internally to preserve official polygon rings. Ingest writes immutable source records to the dedicated PostGIS schema; application reads remain exclusively through audited Zetaris SQL. Private credentials aren't command arguments.
+blocked: source quality varies by county, territories lack some context, and unmatched/non-exact addresses remain unrankable. National policy is an explicit unvalidated four-term screen in canonical weights.yaml; it omits county plans instead of inventing them. Operational status and emergency-contact reachability aren't verified.
 
 emPOWER note: sources.yaml now cites the HHS emPOWER FeatureServer ZIP level layers (1, 5, 9, 13, 17, 21) checked HTTP 200; the geohealth MapServer ids differ and that host timed out from the box. sources.yaml parses as YAML again.
 
@@ -89,11 +89,11 @@ last update: Thu Oct 22 2026 9:42 AM ET
 
 ## Area: Engines
 owner now: Devin, takeover approved by Joe
-state: real cross-source Zetaris chain, seven distinct audited statements; SQL counts reproduce 18 ranks and two refusals.
+state: Manatee retains 18 deterministic ranks and two refusals with seven distinct audited statements. Every ranked facility has a grounding result: 15 accepted drafts, three retained failures that exhausted their sole retry. National county discovery and official-alert point coverage are implemented against separately projected CMS, Census, SVI and emPOWER relations, with individual audit IDs and SQL match counts.
 branch: devin/engines-manatee, PR18; Joe merges.
-how to run: engines/README.md; original bundle mode remains explicit, with no fallback.
-next step: all-row grounded drafts and live call scripts. Joe approved at most seven new Meterless/Nemotron requests, 4096 output tokens each, no retries or Modal.
-blocked: local GPU inference is unverified; all source relations currently share one physical PostGIS datasource.
+how to run: engines/README.md; national_jobs supplies asynchronous county/alert jobs and source-verified live call scripts. The JDBC bridge preserves UTF-8 and caches compiled bytecode outside Git. Original bundle mode remains explicit, with no fallback.
+next step: finish the full 3,235-county sweep, including all 639 counties mapped to its frozen active-alert feed and 500 seeded random additional counties. Preserve per-county timings, source refusals, unmapped alerts and every failed draft. The run isn't complete yet.
+blocked: local GPU inference and clinical validation remain unverified; all source relations currently share one physical PostGIS datasource. Joe approved up to 2,000 total Meterless request attempts, including retries, on the free NVIDIA Nemotron route. Each failed draft gets at most one linked retry. Provider/cost violations block further calls. OpenRouter backup stays disabled because no enforceable paid fallback was enabled. No Modal or paid execution.
 
 ### Nightshift setup and operator use
 

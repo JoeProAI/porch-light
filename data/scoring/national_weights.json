@@ -1,0 +1,18 @@
+{
+  "version": "national-source-screen-v1",
+  "clinical_validation": false,
+  "weights": {
+    "type_weight": "0.35",
+    "svi_pct": "0.30",
+    "empower_density_pct": "0.20",
+    "cms_risk": "0.15"
+  },
+  "type_inputs": {"dialysis": "1.0", "nursing_homes": "0.8"},
+  "scope": "Prototype outreach ordering, not clinical urgency or an operational-status prediction",
+  "svi_pct": "2022 nationally ranked tract SVI, joined by exact Census-returned tract GEOID",
+  "empower_density_pct": "Midrank of the ZIP DME/Medicare ratio among unique county ZIP rows with unmasked counts; source-reported 11 masking markers are refused",
+  "cms_risk": "(5 - source CMS stars) / 4, requiring a rating between 1 and 5",
+  "plan_context": "Not used. No county plan value is guessed or copied from Manatee.",
+  "geography": "Exact Census address match and source point covered by official county geometry. NWS counties are primary; current Census geometry explicitly supplements missing county codes.",
+  "tie_break": "Descending score, facility type, then source CCN"
+}
