@@ -56,7 +56,7 @@
 .interactive-radar-map { display: block; width: 100%; aspect-ratio: 12/7; border: 1px solid var(--line); touch-action: none; cursor: grab; }
 .interactive-radar-map:active { cursor: grabbing; }
 .interactive-radar-map:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
-.radar-map-panel.night { --map-water: #061821; --map-land: #183643; --map-boundary: #7896a0; --map-alert: #efb45e; --map-severe: #ff997e; --map-selected: #fff; }
+.radar-map-panel.night { --map-water: #070b12; --map-land: #121820; --map-boundary: #3a4556; --map-alert: #ef7a5f; --map-severe: #ff5a36; --map-selected: #f2a93b; }
 .radar-map-panel.chart { --map-water: #d3e7ea; --map-land: #f1eee5; --map-boundary: #536d78; --map-alert: #784607; --map-severe: #b4321a; --map-selected: #102e3c; }
 .map-ocean { fill: var(--map-water); }
 .map-state { fill: var(--map-land); stroke: var(--map-boundary); stroke-width: .7; vector-effect: non-scaling-stroke; }

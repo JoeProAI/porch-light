@@ -7,6 +7,7 @@ import { createCsv, formatDateEt, formatFigure, formatPhone, parseContacts } fro
 import { CoverageMap } from "./coverage-map";
 import { EvidenceDrawer } from "./evidence-drawer";
 import { CallScript } from "./call-script";
+import { LogoMark } from "./logo-mark";
 import { WatchBezel } from "./watch-bezel";
 
 export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, initialRank, sourceRunId }: {
@@ -27,6 +28,8 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
   const national = snapshot.schema_version === "porch-light.national-run.v1";
   const storageKey = `porch-light:contacts:v1:${snapshot.source_snapshot_hash}${national ? ":" + (snapshot.selected_alert?.id ?? snapshot.county.fips) : ""}`;
   const row = snapshot.facilities.find(item => item.id === selectedId);
+  const porch = [...snapshot.facilities].sort((a, b) => a.rank - b.rank)
+    .find(item => !contacts[item.id] || contacts[item.id].status === "uncontacted");
   const recorded = snapshot.facilities.filter(item => contacts[item.id] && contacts[item.id].status !== "uncontacted").length;
 
   useEffect(() => {
@@ -96,7 +99,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
     <div className="app-shell">
       <a className="skip-link" href="#call-ledger">Skip to call ledger</a>
       <header className="masthead">
-        <a href="/" className="wordmark" aria-label="Porch Light call sheet">Porch Light<span className="wordmark-period">.</span></a>
+        <a href="/" className="wordmark" aria-label="Porch Light call sheet"><LogoMark />Porch Light<span className="wordmark-period">.</span></a>
         <span className="masthead-descriptor">Emergency facility outreach</span>
         <nav className="workspace-nav" aria-label="Workspace sections">
           <a href="/">Project home</a><a href="/nationwide">US county runs</a><a href="/watch">Storm Watch</a><a href="#source-atlas">Source map</a><a href="#call-ledger">Call order</a>
@@ -110,7 +113,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
             <h1 id="page-title">Who to call <em>first.</em></h1>
             <p className="intro-description">{national ? `Dialysis centers and nursing homes. ${snapshot.county.name}, ${snapshot.county.state}. Source gaps stay visible.` : "Dialysis centers and nursing homes in the Manatee warning area."}</p>
           </div>
-          <div className="intro-index" aria-label="Selected call index">
+          <div className={`intro-index${row && porch && row.id === porch.id ? " is-porch" : ""}`} aria-label="Selected call index">
             <span className="eyebrow">Selected call</span>
             <strong>{row ? String(row.rank).padStart(2, "0") : "00"}</strong>
             <span>Selected of {snapshot.facilities.length} ranked records</span>
@@ -138,11 +141,14 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
                 {snapshot.facilities.map(item => {
                   const active = item.id === selectedId;
                   const contact = contacts[item.id];
+                  const status = contact?.status ?? "uncontacted";
+                  const lit = porch?.id === item.id;
                   return <li key={item.id} data-selected={active}>
                     <button className="facility-row" onClick={() => selectRow(item.id)} aria-pressed={active}
-                      aria-label={`Rank ${item.rank}: ${item.name}, phone ${formatPhone(item.phone.value)}, score ${formatFigure(item.score.total)}, ${contactLabels[contact?.status ?? "uncontacted"]}`}>
+                      data-porch={lit ? "true" : "false"} data-rank={item.rank}
+                      aria-label={`Rank ${item.rank}: ${item.name}, phone ${formatPhone(item.phone.value)}, score ${formatFigure(item.score.total)}, ${contactLabels[status]}`}>
                       <span className="rank mono">{String(item.rank).padStart(2, "0")}</span>
-                      <span className="facility-info"><span className="facility-type">{item.type === "dialysis" ? "Dialysis" : "Nursing home"} <span>· CCN {item.ccn}</span></span><span className="facility-name">{item.name}</span><span className="facility-phone">{formatPhone(item.phone.value)}</span><span className={`contact-state ${contact && contact.status !== "uncontacted" ? "recorded" : ""}`}>{!ready ? "Loading contact status…" : contactLabels[contact?.status ?? "uncontacted"]}{active && <span className="selection-label"> · Selected call</span>}</span>{contact && <time className="contact-time" dateTime={contact.updatedAt}>{formatDateEt(contact.updatedAt)}</time>}</span>
+                      <span className="facility-info"><span className="facility-type">{item.type === "dialysis" ? "Dialysis" : "Nursing home"} <span>· CCN {item.ccn}</span></span><span className="facility-name">{item.name}</span><span className="facility-phone">{formatPhone(item.phone.value)}</span><span className={`contact-state${status === "reached" ? " is-answered" : ""}${status !== "uncontacted" ? " is-recorded" : ""}`}>{!ready ? "Loading contact status…" : contactLabels[status]}{active && <span className="selection-label"> · Selected call</span>}</span>{contact && <time className="contact-time" dateTime={contact.updatedAt}>{formatDateEt(contact.updatedAt)}</time>}</span>
                       <span className="score mono" title={String(item.score.total)}>{formatFigure(item.score.total)}<span className="score-bar"><i style={{ width: `${item.score.total * 100}%` }} /></span></span>
                     </button>
                   </li>;
@@ -151,14 +157,14 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
             <div className="ledger-footnote">Descending fixed score, 0–1, shown to 2 decimals. The evidence drawer keeps the source figure. Prototype weights, not a prediction of harm. Manual outcomes do not reorder the list.</div>
           </section>
           <section className="atlas-column" id="source-atlas" aria-label="Source response atlas">
-            <CoverageMap geometry={snapshot.warning_geometry} facilities={snapshot.facilities} selectedId={selectedId} onSelect={selectRow}
+            <CoverageMap geometry={snapshot.warning_geometry} facilities={snapshot.facilities} selectedId={selectedId} porchId={porch?.id ?? ""} onSelect={selectRow}
               contextLabel={national ? snapshot.scenario.geometry_mode === "official_alert_polygon" ? "Official NWS alert polygon" : snapshot.selected_alert ? "County context, not the warning boundary" : "Official county boundaries, not a warning" : undefined} />
-            {row && <div className="atlas-index-strip">
+            {row && <div className={`atlas-index-strip${porch && row.id === porch.id ? " is-porch" : ""}`}>
               <span className="index-numeral" aria-hidden="true">{String(row.rank).padStart(2, "0")}</span>
               <div><span className="eyebrow">Selected care facility</span><strong>{row.name}</strong><span className="mono" title={`${row.lat}, ${row.lon}`}>CCN {row.ccn} / {formatFigure(row.lat)}, {formatFigure(row.lon)}</span></div>
             </div>}
             {row && <div className="atlas-bezel"><WatchBezel label="Ranked call order" ticks={snapshot.facilities.map(item => ({ id: item.id, label: `Jump to rank ${item.rank}, ${item.name}`, mark: String(item.rank) }))}
-              selectedId={row.id} onSelect={selectRow} centerLabel={`Focus rank ${row.rank} in the ledger`} centerMark={String(row.rank).padStart(2, "0")}
+              selectedId={row.id} litId={porch?.id} onSelect={selectRow} centerLabel={`Focus rank ${row.rank} in the ledger`} centerMark={String(row.rank).padStart(2, "0")}
               onCenter={() => document.querySelector<HTMLElement>(".facility-row[aria-pressed='true']")?.focus()} /></div>}
             <div className="atlas-provenance">
               <span className="eyebrow">{isZetaris ? "Source query, not model confidence" : "Source integration state"}</span>
@@ -168,7 +174,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
           </section>
           <aside className="operator-rail" aria-label="Selected facility contact desk">
             <div className="pane-heading"><span className="eyebrow">03 / Contact desk</span><span className="mono">Manual action only</span></div>
-            {row && <section className="next-call" aria-labelledby="next-call-title">
+            {row && <section className={`next-call${porch && row.id === porch.id ? " is-porch" : ""}`} aria-labelledby="next-call-title">
               <div className="focus-header"><span className="eyebrow">Selected / next-call focus</span><span className="mono">{String(row.rank).padStart(2, "0")} / {snapshot.facilities.length}</span></div>
               <motion.div key={row.id} initial={ready && !reducedMotion ? { opacity: 0, y: 5 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }}>
                 <h2 id="next-call-title" tabIndex={-1}>{row.name}</h2>

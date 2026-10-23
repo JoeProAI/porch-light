@@ -1,128 +1,67 @@
-# Porch Light — Storm Glass Desk
+# Porch Light — One light on
 
-Art direction for the home page, the Manatee call sheet (`/operate`), and Storm Watch (`/watch`). Written before the visual pass. This is the brief the interface has to obey.
+Art direction for `/`, `/operate`, and `/watch`. Joe rejected the teal night (`#081c26`, sage greys, the NASA hero, the radar dial over the chart). This file replaces that look.
 
 ## Purpose
 
-An emergency operator has a storm warning and a short list of care facilities to call. The interface has to show which facility is next, why that rank exists, what is still unknown, and what the weather actually published. The people using it are operators under time pressure, not a marketing audience. Every number, polygon, phone, and radar frame has to come from a source the page can name. If a source fails, the page says so.
+An operator has a storm and a short list of care facilities to call. The page shows which facility is next, why that rank exists, what is unknown, and what the weather source actually published. Every phone, polygon, and radar frame comes from a named source. If a source fails, the page says so and draws nothing in its place.
 
-## Constraints
+## Direction
 
-- Next.js 16, React 19, strict TypeScript. Styling stays in the existing token CSS. Tailwind is present and must not become the look.
-- No new paid map, weather, model, or font service. No API keys.
-- MapLibre GL JS for Storm Watch. Basemap from OpenFreeMap (no key). Radar tiles from the Iowa Environmental Mesonet NEXRAD composite, including the `m05m` through `m50m` offsets.
-- Alerts come only from the existing audited weather API. Facility pins come only from the ranked Manatee snapshot. Missing geometry is listed as “no shape from NWS” and is never drawn from a guess.
-- Times the operator reads are Eastern Time. Evidence detail keeps UTC.
-- Long floats the operator scans are shown to 2 decimals. Evidence detail keeps the source figure.
-- The regression suite locks two paint decisions: `--color-bg` is `#081c26`, `--color-accent` is `#efb45e`, the display face computes as Libre Baskerville, and the body face computes as Alegreya Sans. Those are the desk’s printed forms. This generation does not repaint them.
-- Stay off `engines/`, data ingest, Zetaris adapters, Meterless calls, and the `types/` contract.
-- WebGL is required for the chart and is initialized only on `/watch`. Reduced motion parks the radar loop. The map itself still opens, because it is the task, not decoration.
-- Touch targets on the small breakpoint are at least 44 pixels. Three breakpoints: 390, 768, 1440.
+Night is a storm blue-black, `#05070b` to `#0b0f16`, with cold slate text. The only warm colour is porch-light amber, `#f2a93b`, with a bloom toward `#ffb547`. Amber means “call this one”: the unworked next row, the home first-call card, the top unworked pin, and that call’s bezel tick. It is not hover, not focus, not the wordmark, and not a radar frame.
 
-## Direction and tone
+Focus is ice, `#8fd3ff`, so a keyboard ring never looks like the call. Green appears only as the small “Reached” chip. Severity is a word plus a colour that is not the porch: extreme `#ff5a36`, severe `#ef7a5f`, moderate paper, minor ice, unknown slate.
 
-**Storm Glass Desk.** Generation after the night ledger, not a second copy of it.
+The home page is the hero film: `hero-loop-web-1280.mp4` on the key art poster. Reduced motion keeps the still. The headline is Libre Baskerville, large, on a solid dark plate. The first-call card sits on the right, where the porch is in the picture, and glows like that light. Section plates 01–03 sit in the workflow. The logo loop sits in the masthead and becomes the still mark when motion is reduced.
 
-The room is a county desk at night. The paper (type, ranks, phones, evidence) sits in a measured column. The glass is the map: a dark vector chart that runs to the edge of the viewport and breaks the column. Brass (`#efb45e`) is the porch lamp. It marks the selected call, the selected frame, and nothing else decorative. Copy is short, sourced, and unwilling. No clinical validation, no exclusivity, no guaranteed outcome, no other country.
+Rank numerals go large, up to 14rem on the call sheet index. Operational sentences stay 16–18px in Atkinson Hyperlegible. Clocks, scores, and ids use IBM Plex Mono. Print is black on white. Rank 1 prints with a heavy bar and the word FIRST.
 
-The previous generation’s carbon-paper black book is the thing this pass leaves behind. Corners stay sharp on purpose. Softness would turn the desk into a product card.
+Rain and grain sit on the hero and the masthead chrome. They do not sit behind the ledger or the alert text.
 
-## Type pairing
+## Storm Watch
 
-- **Display:** Libre Baskerville. Used for the wordmark, the rank, the alert headline, and the bezel’s center numeral. Tight tracking on the large sizes, normal tracking on the wordmark’s brass period.
-- **Body:** Alegreya Sans. Used for instructions, reasons, and the alert list. 17px base, 1.45 line height.
-- **Mono:** Consolas, then Liberation Mono. Used for phones, clocks, query ids, scores, and coordinates. Clocks and scores are figures, not prose.
-- Fallbacks stay in the Baskerville / Optima family so a missing file does not fall through to Inter, Roboto, or Arial.
+The chart is MapLibre on the OpenFreeMap dark style, restyled to the same blue-black so land and water are not green. Radar is the IEM NEXRAD composite, including the five-minute offsets back to fifty minutes.
 
-Typographic contrast is the hierarchy: a large Baskerville rank, a small mono clock, a quiet sans instruction. No icon font. No emoji.
+The loop starts paused on the latest frame at 45% opacity. One Play/Pause button, a frame-time readout, a frame menu, an opacity slider, and a Radar on/off toggle sit in a solid bar under the chart. Nothing plays on load. Reduced motion leaves the loop parked until Play.
 
-## Palette logic
+Alert fills, a dark halo, a crisp severity stroke, and haloed labels draw above the radar. Facility pins are HTML markers above the canvas. The unworked first call is a pulsing amber porch light. The other pins are dim lamps that brighten on hover. Reduced motion leaves that light steady.
 
-One night hue, one lamp, three functional accents.
+The alert list and the selected-alert panel use a solid `#05070b` / `#0b0f16` plate. Text never sits on moving radar. A lightning shutter runs once when a new Severe or Extreme alert arrives after the first load, and never when reduced motion is on.
 
-| Token | Value | Role |
-|---|---|---|
-| `--color-bg` | `#081c26` | Night desk, locked |
-| `--color-surface` | `#112d3a` | Raised paper on the desk |
-| `--color-text` | `#f3eee3` | Ivory ink |
-| `--color-muted` | `#abbcc2` | Secondary ink, still body-sized |
-| `--color-accent` | `#efb45e` | Porch lamp, locked. Selection, rank, the bezel’s active tick |
-| `--color-focus` | `#92c6d1` | Focus ring only |
-| `--color-success` | `#b7cdb5` | A recorded contact outcome |
-| `--color-warning` | `#efb45e` | Same lamp, used when a capture is stale |
-| `--color-danger` | `#e07a5f` | Failed source, extreme alert |
-| `--color-severity-extreme` | `#e07a5f` | Alert fill and legend |
-| `--color-severity-severe` | `#efb45e` | Alert fill and legend |
-| `--color-severity-moderate` | `#e6c98a` | Alert fill and legend |
-| `--color-severity-minor` | `#92c6d1` | Alert fill and legend |
-| `--color-severity-unknown` | `#abbcc2` | Alert fill and legend |
+## Nationwide
 
-Severity colors are read from these tokens at map setup so the legend and the polygons cannot drift. Text sits on `--color-bg` or `--color-surface`, not on the severity fills. The light first-call card on the home page stays paper-colored: it is the torn sheet on top of the night photo, not a second theme.
+`/nationwide` uses the same night plates, type, and ice focus. Amber still means the next unworked call, which appears only after a real snapshot opens the call sheet. The county and alert form, the run logic, and the page markup stay as the national workbench left them. This pass changes CSS and tokens only.
 
-No purple. No white SaaS gradient. No gradient used as a brand.
+Shapeless alerts stay in the list as “no shape from NWS”. National weather is not a national ranking. Times the operator reads are Eastern. Evidence keeps UTC. Scanned figures show two decimals. The evidence drawer keeps the source figure.
 
-## Signature element
+## Tokens
 
-**The Watch Bezel.** One instrument, three jobs.
+Locked by `web/design/project-direction.json` and the operator paint test:
 
-It is a ring of real ticks with a center control. On a narrow viewport the same ticks become a horizontal row of 44-pixel targets so the hit size survives. Arrow keys move along the ticks. The active tick is the lamp.
+| Token | Value |
+| --- | --- |
+| Background | `#05070b` |
+| Surface | `#0b0f16` |
+| Text | `#ebe4cf` |
+| Muted | `#b7c0cc` |
+| Accent (the call) | `#f2a93b` |
+| Focus | `#8fd3ff` |
+| Display | Libre Baskerville |
+| Body | Atkinson Hyperlegible |
+| Mono | IBM Plex Mono |
 
-- **Storm Watch.** Each tick is one Iowa Environmental Mesonet radar layer, from 50 minutes before the latest composite through the latest composite. Eleven ticks fit a ring at 768 and wider, with a 44-pixel hit and a gap so the targets do not cover each other. Under 768 the same ticks are a row. The center plays or pauses the loop. The clock beside it shows Eastern Time derived only when the IEM scan time was actually read: scan time minus that layer’s offset, labeled as a derivation. If the clock cannot be read, the page shows the layer offset and says the composite time is unavailable. It does not invent a timestamp.
-- **Call sheet and home.** Eighteen ranked rows do not fit a ring without overlapping hits, so the same tick grammar stays a row at every width. On the call sheet, choosing a tick selects that row. The center numeral returns focus to the selected ledger row. On the home page each tick is a link to `/operate?rank=N` for a real ranked row, and the center opens rank 01. The preview does not invent a nineteenth facility.
+## Failure
 
-The bezel is the only ornament, and it is a control. It is not a spinner, a chatbot, or a decorative orbit.
+Basemap failure, radar-tile failure, and a missing audited feed each say what failed and draw no substitute imagery, alerts, or pins. Retry is explicit.
 
-## Motion grammar
+## Skill checklist
 
-One entrance: the existing ledger shutter (opacity and translate, 700ms, ease-out) on the first column of a page. Nothing else introduces itself.
-
-The bezel’s indicator moves to the active tick with a short transform. The radar loop advances one layer at a time only after the operator presses play. Reduced motion removes the shutter, removes the indicator transition, and does not start the loop. Play remains available as an explicit choice; the ticks always step one frame.
-
-Scroll reveals are not used. The map does not animate a camera tour on load. Fit and locate ease only when motion is allowed; otherwise they jump.
-
-## Material and texture
-
-- **Paper grain** sits over the desk as a fixed, pointer-transparent SVG noise at low opacity. It is the same grain on every page. It does not sit on top of dialogs (those are in the browser top layer). Print removes it.
-- **Glass** is the MapLibre chart: dark OpenFreeMap vector tiles, counties, cities, and roads, with the radar composite translucent enough that streets stay readable when the operator zooms.
-- **Sharp edges.** Radius tokens are 0. Shadows are short and black, used on the paper card and the evidence drawer, not sprayed across the page.
-- **Depth** is only desk, sheet, and drawer. The evidence drawer is the sheet pulled forward. The map is not a card inside a card.
-
-## Layout
-
-- **Home.** The archived Milton photograph is the ground. The mission sentence and the paper preview break that ground. The bezel lives on the preview. The workflow stays a numbered chain, not a three-up icon row.
-- **Call sheet.** Ledger, warning atlas, contact desk, in that order, at desktop widths. The phone stays in the first viewport on a 390-wide screen. The bezel sits in the atlas strip, not over the phone and not over the facility dots.
-- **Storm Watch.** The chart occupies the first viewport at 390, 768, and 1440. The header is one line. On a wide screen the alert panel is a column beside the chart. On a narrow screen the chart comes first and the panel follows. National weather copy never claims a national ranking.
-
-Grid logic is a 12-unit desk. The break is the chart bleeding to the viewport edge while the type keeps its margin.
-
-## Interaction states
-
-Every control uses the shared button rules: default, hover, active, focus-visible (2px `--color-focus`, offset 4px), disabled, and loading (`aria-busy`). Panels add empty and error:
-
-| Panel | Loading | Empty | Error and recovery |
-|---|---|---|---|
-| Weather alerts | “Checking the national source capture.” | No alerts in the capture, or no search match, with a clear action | Audited feed unavailable. Retry reads the feed again. No sample warning. |
-| Alert shape | — | “No shape from NWS” for any alert whose payload has no polygon | Shapes are never inferred. |
-| Alert detail | — | “No alert selected.” | Expired alerts stay visible and are marked expired. |
-| Facilities inside an alert | — | “Not ranked yet,” with the reason | National weather is not a national ranking. Only ranked Manatee coordinates are tested against the published shape. |
-| Base map | “Opening the night chart.” | — | Style failed. Retry rebuilds the map. No substitute imagery. |
-| Radar loop | “Reading the IEM composite clock.” | — | Tiles failed. Retry reloads the layer. No drawn echo. |
-| Locate | “Asking this browser for a location.” | — | Permission denied or unavailable, with a retry. No guessed point. |
-| Facility pins | — | Snapshot withheld, or no coordinates | The call sheet’s own failure page still covers a bad snapshot on `/operate`. |
-| Contact desk | “Loading local contact records…” | No ranked rows | Storage and clipboard failures stay explicit. |
-| Evidence drawer | — | No model draft when the row has none | UTC clocks and source figures stay in the drawer. |
-
-Offline is announced. A stale capture is announced, with the official NWS link and the local worker command. Silent failures are not used.
-
-## Copy
-
-Operational, specific, and a little dry. Name the source. Name the limit. Do not say “seamless,” “unlock,” “elevate,” or “trusted AI.” Do not claim the IEM tiles are the audited NOAA file. Do not claim the Manatee sheet is the country.
-
-## Extension notes
-
-- New colors go in `:root` in `proof-tokens.css` first. Components read variables. Severity on the map is read from those variables at runtime.
-- New controls use `<button>` or `<a>` and the shared button rules. Do not invent a second hover color.
-- A new page that needs the signature adds `WatchBezel` with real ticks. Do not draw a fake ring.
-- A new time shown to an operator uses `formatDateEt`. A time inside evidence uses `formatDate` (UTC). A scanned float uses two decimals; the evidence cell keeps the source figure.
-- Do not point the chart at a keyed tile host. If OpenFreeMap or IEM is replaced, the replacement has to be keyless and attributed in `.map-attribution`.
-- Failure copy names the source that failed and the retry. It does not fill the hole.
+- Signature is the moving porch light on the list, the map, and the bezel. It is the next unworked call.
+- Tokens above. No teal, sage, or olive surface.
+- Contrast stays on the dark plates. Focus is visible. Targets are at least 44px.
+- Hover, focus, pressed, and disabled are separate from the porch fill.
+- Empty, loading, stale, offline, and source-failure states stay written.
+- The story is one storm, one first call, evidence you can open.
+- 390, 768, and 1440. The map is the chart. The controls are a bar, not a dial on the echo.
+- `/nationwide` is the same night system, painted in CSS only. Its form and run logic are unchanged.
+- No Inter, no purple cards, no chatbot, no default Tailwind chrome, no invented alerts.

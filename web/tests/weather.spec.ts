@@ -71,6 +71,10 @@ test("Storm Watch renders actual alerts, authentic radar and explicit national s
   await radar;
   await waitForChart(page);
   await expect(page.locator(".storm-map")).toHaveAttribute("data-frame", "nexrad-n0q-900913");
+  await expect(page.locator(".storm-map")).toHaveAttribute("data-playing", "false");
+  await expect(page.locator(".storm-map")).toHaveAttribute("data-radar-opacity", "0.45");
+  await expect(page.getByRole("button", { name: "Play radar" })).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator(".watch-map-frame .bezel-circular")).toHaveCount(0);
   const loadedFeed = page.locator("#national-alerts-title");
   const unavailable = page.getByRole("heading", { name: "Weather data is unavailable." });
   await expect(loadedFeed.or(unavailable)).toBeVisible();
@@ -226,8 +230,9 @@ test("map load, alert click and facility pin open the evidence drawer", async ({
   } else {
     await expect(page.locator(".official-alert-detail")).toHaveCount(0);
   }
-  await page.getByRole("button", { name: "25 minutes before the latest IEM composite", exact: true }).click();
+  await page.getByLabel("Radar frame").selectOption({ label: "25 minutes before the latest IEM composite" });
   await expect(page.locator(".storm-map")).toHaveAttribute("data-frame", "nexrad-n0q-900913-m25m");
+  await expect(page.locator(".storm-map")).toHaveAttribute("data-playing", "false");
   await page.getByRole("button", { name: "Fit ranked facilities", exact: true }).click();
   const pin = page.getByRole("button", { name: `Rank 1, ${snapshot.facilities[0].name}`, exact: true });
   await expect(pin).toBeVisible();

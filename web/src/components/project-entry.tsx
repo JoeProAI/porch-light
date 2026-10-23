@@ -1,7 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { createProjection, formatPhone, hasCoordinates } from "@/lib/operator";
 import type { Snapshot } from "@/lib/types";
+import { HeroFilm } from "./hero-film";
+import { LogoMark } from "./logo-mark";
 import { ResourceLinks } from "./resource-links";
 import { SponsorEvidence } from "./sponsor-evidence";
 import { WatchBezel } from "./watch-bezel";
@@ -15,14 +16,14 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
     <div className="project-entry">
       <a className="skip-link" href="#project-purpose">Skip to project purpose</a>
       <header className="entry-header">
-        <Link className="wordmark" href="/">Porch Light<span className="wordmark-period">.</span></Link>
+        <Link className="wordmark" href="/"><LogoMark />Porch Light<span className="wordmark-period">.</span></Link>
         <span className="entry-category">Emergency operations</span>
         <nav aria-label="Project navigation"><a href="#workflow">How it works</a><Link href="/watch">Storm Watch</Link><Link href="/operate">Call sheet</Link></nav>
       </header>
       <main>
         <section className="mission" id="project-purpose" aria-labelledby="mission-title">
           <div className="storm-photo">
-            <Image src="/weather/milton-2024-nasa.jpg" alt="NASA satellite image of Hurricane Milton approaching Florida on October 8, 2024" fill priority sizes="100vw" />
+            <HeroFilm />
           </div>
           <div className="mission-copy">
             <p className="eyebrow mission-kicker">Storm preparedness / Care facilities</p>
@@ -58,7 +59,7 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
               </div>
             </> : <p>No eligible facilities in this snapshot. Open the call sheet to inspect the source refusals.</p>}
           </aside>
-          <p className="satellite-credit"><a href="https://modis.gsfc.nasa.gov/gallery/individual.php?db_date=2024-10-10" target="_blank" rel="noreferrer">Archived image: MODIS Land Rapid Response Team, NASA GSFC. October 8, 2024.</a></p>
+          <p className="satellite-credit">Demonstration: Hurricane Milton, October 8, 2024. The picture is project key art of a night storm and one porch light. It is not a NASA satellite image and not a live warning.</p>
         </section>
         <section className="demonstration-scope" aria-label="What this example contains">
           <div><span className="eyebrow">One real warning area</span><h2>Manatee County,<br />Florida.</h2></div>
@@ -70,9 +71,9 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
         <section className="project-workflow" id="workflow" aria-labelledby="workflow-title">
           <div className="workflow-intro"><p className="eyebrow">From warning to outreach</p><h2 id="workflow-title">Less searching.<br />A call sheet you can inspect.</h2><p>Porch Light brings fragmented public records into one working order. It doesn't decide clinical urgency, place calls or invent missing evidence.</p></div>
           <ol className="workflow-chain">
-            <li><span>01</span><div><h3>Locate the warning.</h3><p>An archived NWS warning and published geometry define this demonstration.</p></div></li>
-            <li><span>02</span><div><h3>Find the care facilities.</h3><p>Official CMS records, source phones and linked public context. Failed joins stay visible.</p></div></li>
-            <li><span>03</span><div><h3>Inspect the call order.</h3><p>A fixed formula ranks the rows. Nemotron writes grounded drafts, never the ranking.</p></div></li>
+            <li><img src="/art/section-01-warning-in.jpg" alt="Storm clouds and rain over a dark street, the warning coming in." /><span>01</span><div><h3>Locate the warning.</h3><p>An archived NWS warning and published geometry define this demonstration.</p></div></li>
+            <li><img src="/art/section-02-evidence.jpg" alt="A dim interior with papers and a single warm lamp, the evidence desk." /><span>02</span><div><h3>Find the care facilities.</h3><p>Official CMS records, source phones and linked public context. Failed joins stay visible.</p></div></li>
+            <li><img src="/art/section-03-call-first.jpg" alt="Four porch lights along a dark street. The nearest is bright. The others dim toward the distance." /><span>03</span><div><h3>Inspect the call order.</h3><p>A fixed formula ranks the rows. Nemotron writes grounded drafts, never the ranking.</p></div></li>
             <li><span>04</span><div><h3>Record contact. Export.</h3><p>Save a manual outcome on this device, move to the next uncontacted facility, print or export.</p></div></li>
           </ol>
         </section>

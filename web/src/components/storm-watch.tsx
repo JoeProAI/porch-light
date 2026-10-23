@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { formatDate, formatDateEt } from "@/lib/operator";
+import { formatDate, formatDateEt, parseContacts } from "@/lib/operator";
 import { hasAlertShape } from "@/lib/geo";
 import { derivedFrameTime, IEM_CLOCK_URL, parseIemClock, radarFrames, type IemClock } from "@/lib/radar-frames";
 import { weatherFreshness, type LiveWeather, type OfficialAlert } from "@/lib/weather-types";
 import type { Provenance, Snapshot } from "@/lib/types";
 import { EvidenceDrawer } from "./evidence-drawer";
+import { LogoMark } from "./logo-mark";
 import { StormMap, type StormMapApi, type StormMapStatus } from "./storm-map";
-import { WatchBezel } from "./watch-bezel";
 
 const severities = ["Extreme", "Severe", "Moderate", "Minor", "Unknown"] as const;
 
@@ -33,6 +33,10 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
   const [clockLoading, setClockLoading] = useState(true);
   const [reduced, setReduced] = useState(false);
   const [radarVisible, setRadarVisible] = useState(true);
+  const [radarOpacity, setRadarOpacity] = useState(0.45);
+  const [porchId, setPorchId] = useState(facilities[0]?.id ?? "");
+  const [flash, setFlash] = useState(false);
+  const seenAlerts = useRef<Set<string> | null>(null);
   const [alertsVisible, setAlertsVisible] = useState(true);
   const [basemapStatus, setBasemapStatus] = useState<StormMapStatus>("loading");
   const [radarStatus, setRadarStatus] = useState<StormMapStatus>("loading");
@@ -117,7 +121,38 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
     return () => window.clearInterval(timer);
   }, [playing]);
 
-  useEffect(() => { if (radarStatus === "error") setPlaying(false); }, [radarStatus]);
+  useEffect(() => { if (radarStatus === "error" || !radarVisible) setPlaying(false); }, [radarStatus, radarVisible]);
+
+  useEffect(() => {
+    if (!snapshot) return;
+    const key = `porch-light:contacts:v1:${snapshot.source_snapshot_hash}`;
+    const read = () => {
+      try {
+        const stored = parseContacts(localStorage.getItem(key), snapshot.facilities);
+        const next = [...snapshot.facilities].sort((a, b) => a.rank - b.rank)
+          .find(item => !stored[item.id] || stored[item.id].status === "uncontacted");
+        setPorchId(next?.id ?? "");
+      } catch { setPorchId(snapshot.facilities[0]?.id ?? ""); }
+    };
+    read();
+    window.addEventListener("storage", read);
+    return () => window.removeEventListener("storage", read);
+  }, [snapshot]);
+
+  useEffect(() => {
+    if (!data) return;
+    const ids = data.alerts.map(alert => alert.id);
+    if (seenAlerts.current === null) {
+      seenAlerts.current = new Set(ids);
+      return;
+    }
+    const arrived = data.alerts.some(alert => !seenAlerts.current?.has(alert.id) && (alert.severity === "Severe" || alert.severity === "Extreme"));
+    ids.forEach(id => seenAlerts.current?.add(id));
+    if (!arrived || reduced) return;
+    setFlash(true);
+    const timer = window.setTimeout(() => setFlash(false), 480);
+    return () => window.clearTimeout(timer);
+  }, [data, reduced]);
 
   const frame = radarFrames[frameIndex] ?? radarFrames[radarFrames.length - 1];
   const derived = clock ? derivedFrameTime(clock.latest, frame.offsetMinutes) : null;
@@ -141,10 +176,10 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
   const openEvidence = (id: string) => { setFacilityId(id); setEvidenceOpen(true); };
 
   return (
-    <div className="watch-shell">
+    <div className={`watch-shell${flash ? " is-lightning" : ""}`}>
       <a className="skip-link" href="#storm-chart">Skip to chart</a>
       <header className="entry-header watch-header">
-        <Link href="/" className="wordmark">Porch Light<span className="wordmark-period">.</span></Link>
+        <Link href="/" className="wordmark"><LogoMark />Porch Light<span className="wordmark-period">.</span></Link>
         <span className="entry-category">Storm Watch</span>
         <nav aria-label="Project navigation"><Link href="/">About the project</Link><Link href="/operate">Manatee call sheet</Link></nav>
       </header>
@@ -167,10 +202,10 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
             {data && freshness !== "recent" && <div className="watch-error" role="alert"><p>This capture isn't recent. Don't treat the displayed weather or alert list as current. Use the official source links.</p><p>The local capture worker may be stopped or an upstream source may be unavailable. Refreshing this page only rereads the stored capture. On this machine, run <code>.\Start-Local.ps1</code> from the repository root to start a bounded worker if none is running.</p><a href="https://www.weather.gov/" target="_blank" rel="noreferrer">Check current NWS warnings</a></div>}
             <div className="watch-map-frame" id="storm-chart">
               <h2 id="radar-title" className="radar-title">Observed radar. Real warning shapes.</h2>
-              <p className="radar-coverage">Iowa Environmental Mesonet NEXRAD composite, contiguous US only. County lines, cities, and roads stay visible. Not a forecast, and not a care-facility ranking.</p>
               <StormMap key={mapGeneration} ref={mapApi} alerts={data?.alerts ?? []} facilities={facilities}
                 selectedAlertId={selectedId} selectedFacilityId={facilityId} frameId={frame.id}
-                radarVisible={radarVisible} alertsVisible={alertsVisible} radarRetry={radarRetry} reducedMotion={reduced}
+                radarVisible={radarVisible} radarOpacity={radarOpacity} playing={playing} porchId={porchId}
+                alertsVisible={alertsVisible} radarRetry={radarRetry} reducedMotion={reduced}
                 onSelectAlert={chooseAlert} onSelectFacility={openEvidence}
                 onBasemapStatus={setBasemapStatus} onRadarStatus={setRadarStatus} onLocateResult={setLocateMessage} />
               <div className="map-toolbar" role="toolbar" aria-label="Chart controls">
@@ -180,26 +215,40 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
                 <button type="button" onClick={() => mapApi.current?.locate()} disabled={basemapStatus !== "ready" || locating} aria-busy={locating}>{locating ? "Locating…" : "Locate"}</button>
                 <button type="button" onClick={() => mapApi.current?.zoomBy(1.6)} disabled={basemapStatus !== "ready"} aria-label="Zoom in">Zoom in</button>
                 <button type="button" onClick={() => mapApi.current?.zoomBy(1 / 1.6)} disabled={basemapStatus !== "ready"} aria-label="Zoom out">Zoom out</button>
-                <button type="button" aria-pressed={radarVisible} onClick={() => setRadarVisible(value => !value)}>Radar layer: {radarVisible ? "on" : "off"}</button>
                 <button type="button" aria-pressed={alertsVisible} onClick={() => setAlertsVisible(value => !value)}>Alert shapes: {alertsVisible ? "on" : "off"}</button>
               </div>
-              <div className="watch-hud">
-                <WatchBezel label="Radar loop frames" ticks={radarFrames.map(item => ({ id: item.id, label: item.label, mark: item.offsetMinutes === 0 ? "Now" : String(item.offsetMinutes) }))}
-                  selectedId={frame.id} onSelect={id => { setPlaying(false); setFrameIndex(Math.max(0, radarFrames.findIndex(item => item.id === id))); }}
-                  centerLabel={playing ? "Pause radar loop" : "Play radar loop"} centerMark={playing ? "Pause" : "Play"} centerPressed={playing}
-                  centerDisabled={radarStatus === "error" || basemapStatus !== "ready"} onCenter={() => setPlaying(value => !value)} />
-                <div className="radar-clock" role="status">
-                  <p className="eyebrow">{frame.label}</p>
-                  {derived && clock ? (frame.offsetMinutes === 0
-                    ? <p>Latest IEM N0Q composite <time dateTime={clock.latest}>{formatDateEt(clock.latest)}</time>.</p>
-                    : <p>Offset-based estimate <time dateTime={derived}>{formatDateEt(derived)}</time>. The source layer is {frame.offsetMinutes} minutes before the latest composite. This isn't a verified per-tile observation time.</p>)
-                    : <p>{clockLoading ? "Reading the IEM composite clock." : clockError}</p>}
-                  {reduced && <p>Reduced motion is on. The loop stays parked until you press play or choose a frame.</p>}
-                  {locateMessage && <p>{locateMessage}</p>}
-                  {sheetError && <p>{sheetError}</p>}
-                  {clock && <p>Clock source captured {formatDateEt(clock.capturedAt)}. Zetaris query {clock.queryIds.join(", ")}. Each radar tile retains its own checksum and query receipt.</p>}
-                </div>
+              <div className="radar-controls">
+                <button type="button" className="radar-play" aria-pressed={playing} aria-label={playing ? "Pause radar" : "Play radar"}
+                  disabled={!radarVisible || radarStatus === "error" || basemapStatus !== "ready"}
+                  onClick={() => setPlaying(value => !value)}>{playing ? "Pause" : "Play"}</button>
+                <p className="radar-readout" role="status">
+                  <span>{playing ? "Playing" : "Paused"} · {frame.label}</span>
+                  {derived && clock ? <time dateTime={derived}>{formatDateEt(derived)}</time> : <span>{clockLoading ? "Reading the IEM composite clock." : clockError}</span>}
+                  {frame.offsetMinutes > 0 && derived && <span>Offset-based estimate. The source layer is {frame.offsetMinutes} minutes before the latest composite. This isn't a verified per-tile observation time.</span>}
+                  {clock && <span>Clock source captured {formatDateEt(clock.capturedAt)}. Zetaris query {clock.queryIds.join(", ")}.</span>}
+                </p>
+                <label className="radar-frame">Radar frame
+                  <select value={frame.id} onChange={event => {
+                    setPlaying(false);
+                    const index = radarFrames.findIndex(item => item.id === event.target.value);
+                    if (index >= 0) setFrameIndex(index);
+                  }}>
+                    {radarFrames.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}
+                  </select>
+                </label>
+                <label className="radar-opacity">Radar opacity
+                  <input type="range" min={0} max={100} step={1} value={Math.round(radarOpacity * 100)}
+                    aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(radarOpacity * 100)}
+                    aria-valuetext={`${Math.round(radarOpacity * 100)} percent`}
+                    onChange={event => setRadarOpacity(Number(event.target.value) / 100)} />
+                  <span>{Math.round(radarOpacity * 100)}%</span>
+                </label>
+                <button type="button" aria-pressed={radarVisible} onClick={() => setRadarVisible(value => !value)}>Radar layer: {radarVisible ? "on" : "off"}</button>
                 <ul className="severity-legend" aria-label="Alert severity colors">{severities.map(severity => <li key={severity}><i data-severity={severity} />{severity}</li>)}</ul>
+                <p className="radar-coverage">Iowa Environmental Mesonet NEXRAD composite, contiguous US only. County lines, cities, and roads stay visible. Not a forecast, and not a care-facility ranking.</p>
+                {reduced && <p className="radar-note">Reduced motion is on. The loop stays parked until you press Play.</p>}
+                {locateMessage && <p className="radar-note">{locateMessage}</p>}
+                {sheetError && <p className="radar-note">{sheetError}</p>}
               </div>
               {basemapStatus === "loading" && <p className="map-status-note" role="status">Opening the night chart.</p>}
               {basemapStatus === "error" && <div className="map-failure" role="alert"><h3>The base map didn't load.</h3><p>OpenFreeMap didn't return the night style. No substitute imagery is drawn.</p><button type="button" onClick={() => { setBasemapStatus("loading"); setMapGeneration(value => value + 1); }}>Retry base map</button></div>}

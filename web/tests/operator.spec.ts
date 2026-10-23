@@ -25,7 +25,7 @@ test("storm-care direction drives typography and real archived imagery", async (
   expect(actual.ground).toBe(projectDirection.tokens.background);
   expect(actual.accent).toBe(projectDirection.tokens.accent);
   expect(actual.display).toContain("Libre Baskerville");
-  expect(actual.body).toContain("Alegreya Sans");
+  expect(actual.body).toContain("Atkinson Hyperlegible");
   if (await page.evaluate(() => innerWidth < 768)) {
     await expect(page.locator(".phone-line")).toBeVisible();
     const phone = await page.locator(".phone-line").boundingBox();
