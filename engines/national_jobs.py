@@ -13,7 +13,7 @@ from engines.generate_drafts import read_verified_snapshot
 from engines.grounded_drafts import DraftFailure, request_selections
 from engines.model_budget import BudgetExceeded
 from engines.national_alerts import active_scope, warning_matches
-from engines.national_run import county_catalog, run_county
+from engines.national_run import Chain, county_catalog, run_county
 from engines.national_sweep import save
 
 ROOT = Path.home() / ".porchlight/national/jobs"
@@ -44,9 +44,26 @@ def alert_run(alert_id: str, weather_capture: str | None, progress) -> dict:
     selected = next((alert for alert in scope["alerts"] if alert["id"] == alert_id), None)
     if not selected:
         raise ValueError("The selected alert is not active in this verified capture. Refresh the official feed.")
-    if not selected["county_fips"]:
-        raise ValueError("No county intersection or supported source-zone mapping exists for this alert.")
     capture = scope["catalog"]["counties"][0]["capture_id"]
+    source_chain = Chain()
+    weather_audit = scope["weather_data_access"]["zetaris_audit"]
+    source_chain.steps = [
+        *scope["catalog"]["data_access"]["chain_steps"],
+        {"name": "Read immutable NWS alert capture", "row_count": 1,
+         "query_ids": [weather_audit["query_id"]], "audit": weather_audit},
+        *scope["mapping_data_access"]["chain_steps"],
+    ]
+    if not selected["county_fips"]:
+        return {"schema_version": "porch-light.national-gap.v1", "state": "source_gap",
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+                "source_snapshot_hash": capture,
+                "county": {"name": selected["event"] + ": " + (selected.get("areaDesc") or "source area"),
+                           "fips": "", "state": "US"},
+                "reason": "No official county intersection or supported NWS zone mapping exists for this alert. "
+                          "No county, facility or warning boundary was guessed.",
+                "selected_alert": {**selected, "captured_at": scope["captured_at"],
+                                   "capture_id": scope["weather_capture_id"]},
+                "counts": None, "facilities": [], "refused": [], "data_access": source_chain.receipt()}
     counties = []
     for index, fips in enumerate(selected["county_fips"]):
         progress("querying_alert_counties", {"completed_counties": index, "total_counties": len(selected["county_fips"])})
@@ -87,7 +104,7 @@ def alert_run(alert_id: str, weather_capture: str | None, progress) -> dict:
     if not exact_polygon:
         geometry = {"type": "MultiPolygon",
                     "coordinates": [polygon for snapshot in counties for polygon in snapshot["warning_geometry"]["coordinates"]]}
-    steps = [step for snapshot in counties for step in snapshot["data_access"]["chain_steps"]]
+    steps = source_chain.steps + [step for snapshot in counties for step in snapshot["data_access"]["chain_steps"]]
     ids = [identifier for step in steps for identifier in step["query_ids"]]
     if len(ids) != len(set(ids)):
         raise RuntimeError("Alert source steps reused an audit identifier")
@@ -133,6 +150,7 @@ def run_job(identifier: str, fips: str | None, alert_id: str | None, weather_cap
         progress("querying_sources")
         snapshot = alert_run(alert_id, weather_capture, progress) if alert_id else run_county(fips or "")
         if snapshot.get("state") != "source_gap":
+            save(folder / "snapshot.json", snapshot)
             progress("grounding_nemotron_drafts", {"eligible_facilities": len(snapshot["facilities"])})
             snapshot = enrich(snapshot, identifier)
         save(folder / "snapshot.json", snapshot)
