@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { formatDate } from "@/lib/operator";
 import { weatherFreshness, type LiveWeather } from "@/lib/weather-types";
+import { RadarMap } from "./radar-map";
 
 export const StormWatch = () => {
   const [data, setData] = useState<LiveWeather | null>(null);
@@ -17,6 +18,7 @@ export const StormWatch = () => {
   const [imageVersion, setImageVersion] = useState(0);
   const [animateRadar, setAnimateRadar] = useState(false);
   const [offline, setOffline] = useState(false);
+  const [radarView, setRadarView] = useState<"map" | "loop">("map");
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
     setLoading(true);
@@ -93,17 +95,24 @@ export const StormWatch = () => {
         {!data && !loading && <section className="watch-loading"><h2>Weather data is unavailable.</h2><p>The local ingest worker, Zetaris connection or source verification needs attention. No cached example is passed off as live.</p><button onClick={() => void refresh()}>Retry audited weather</button></section>}
         {data && <>
           <section className="radar-stage" aria-labelledby="radar-title">
-            <div className="radar-heading"><div><span className="eyebrow">NOAA / Observed precipitation</span><h2 id="radar-title">Contiguous US radar.</h2></div><span className="radar-coverage">This radar layer doesn't include Alaska, Hawaii or territories.</span></div>
-            <div className="radar-image">
+            <div className="radar-heading"><div><span className="eyebrow">NOAA / Observed precipitation</span><h2 id="radar-title">Observed radar. Real warning shapes.</h2></div><span className="radar-coverage">Night map offers available NOAA regions. The original animated loop is contiguous US only. Provider coverage can have gaps.</span></div>
+            <div className="radar-view-toggle" role="group" aria-label="Radar display mode">
+              <button aria-pressed={radarView === "map"} onClick={() => setRadarView("map")}>Interactive night map</button>
+              <button aria-pressed={radarView === "loop"} onClick={() => setRadarView("loop")}>Original NOAA loop</button>
+            </div>
+            {radarView === "map" ? data.radar_maps?.available ?
+              <RadarMap maps={data.radar_maps} alerts={data.alerts} selectedId={selectedId} onSelect={id => { setSelectedId(id); setSearch(""); }} captureId={data.capture_id} /> :
+              <div className="radar-placeholder"><h3>Transparent radar layers aren't available in this capture.</h3><p>The original verified NOAA loop is a separate view. No basemap inversion or replacement radar is used.</p><button onClick={() => setRadarView("loop")}>View original NOAA loop</button></div> :
+              <div className="radar-image">
               {!animateRadar ? <div className="radar-placeholder"><h3>Reduced motion is active.</h3><p>The official radar is an animated observed-frame loop.</p><button onClick={() => setAnimateRadar(true)}>Load animated NOAA radar</button></div> :
                 radarError ? <div className="radar-placeholder" role="alert"><h3>The radar image couldn't be verified or loaded.</h3><p>Use the official radar source, or reload the last verified capture.</p><button onClick={() => void refresh()} disabled={loading}>Reload verified radar</button></div> :
                   <><img key={`${data.capture_id}:${imageVersion}`} src={data.radar.image_url} alt="Official NOAA radar observation loop for the contiguous United States, with source frame timestamps and legend" onLoad={() => setRadarLoaded(true)} onError={() => setRadarError(true)} />{!radarLoaded && <p className="radar-loading" role="status">Loading verified NOAA source bytes...</p>}</>}
-            </div>
-            <div className="radar-source-line">
+            </div>}
+            {radarView === "loop" && <><div className="radar-source-line">
               <span>Asset updated: {data.radar.provider_last_modified ? formatDate(data.radar.provider_last_modified) : "Not supplied by source"}{radarStale ? " / source age needs review" : ""}</span>
               <a href="https://radar.weather.gov/" target="_blank" rel="noreferrer">Open official NOAA radar</a>
             </div>
-            <p className="fineprint">{data.radar.observation_time_note} Radar isn't a forecast, outage report or facility-condition report.</p>
+            <p className="fineprint">{data.radar.observation_time_note} Radar isn't a forecast, outage report or facility-condition report.</p></>}
           </section>
           <section className="national-alerts" aria-labelledby="national-alerts-title">
             <div className="alert-list-pane">
@@ -132,7 +141,7 @@ export const StormWatch = () => {
           <section className="watch-evidence"><span className="eyebrow">Capture and audit evidence</span><p>Zetaris query <code>{data.data_access.zetaris_query_ids.join(", ")}</code> / automatic view refresh every minute / source ingestion targets five-minute captures.</p><ul>{data.limits.map(limit => <li key={limit}>{limit}</li>)}</ul><p className="fineprint">National weather discovery isn't national care-facility ranking. The verified ranked demonstration remains Manatee.</p></section>
         </>}
       </main>
-      <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Follow official warnings. No patient tracking. No inferred outages or facility conditions.</p></footer>
+      <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Follow official warnings. No patient tracking. No inferred outages or facility conditions.</p><Link href="/#resources">Related official resources</Link></footer>
     </div>
   );
 };

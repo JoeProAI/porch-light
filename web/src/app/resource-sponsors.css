@@ -1,0 +1,77 @@
+.mission-sponsor-proof { display: block; max-width: 520px; min-height: 44px; margin-top: 14px; font-size: 13px; line-height: 1.7; text-decoration: none; color: var(--muted); }
+.mission-sponsor-proof span { color: var(--amber); text-decoration: underline; text-underline-offset: 4px; }
+.mission-sponsor-proof:hover { color: var(--ink); }
+.sponsor-section, .resource-section { max-width: 1504px; margin: 0 auto 70px; padding-block: 40px; border-top: 1px solid var(--line); }
+.sponsor-intro { display: grid; grid-template-columns: 1.2fr 1fr; gap: 0 60px; margin-bottom: 30px; }
+.sponsor-intro .eyebrow { grid-column: 1/-1; color: var(--amber); }
+.sponsor-intro h2, .resource-intro h2 { font: 36px/1.35 var(--display); letter-spacing: -.045em; margin: 18px 0; }
+.sponsor-intro > p:last-child { color: var(--muted); max-width: 500px; align-self: center; font-size: 18px; line-height: 1.6; }
+.sponsor-ledger { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); }
+.sponsor-ledger article { min-width: 0; padding: 28px 32px 28px 0; border-bottom: 1px solid var(--line); }
+.sponsor-ledger article:nth-child(even) { border-left: 1px solid var(--line); padding-left: 32px; }
+.sponsor-role { font: 10px/1.6 var(--mono); color: var(--amber); text-transform: uppercase; }
+.sponsor-ledger h3 { font: 28px/1.4 var(--display); margin: 18px 0; letter-spacing: -.04em; }
+.sponsor-ledger p { color: var(--muted); font-size: 17px; line-height: 1.65; max-width: 550px; }
+.proof-status { display: block; font: 11px/1.8 var(--mono); color: var(--color-focus); margin: 20px 0 8px; }
+.sponsor-ledger code { display: block; overflow-wrap: anywhere; font-size: 10px; color: var(--muted); }
+.sponsor-ledger a { display: inline-flex; align-items: center; min-height: 44px; margin-top: 14px; color: var(--amber); font-size: 16px; }
+.sponsor-limit { color: var(--muted); font-size: 13px; line-height: 1.7; margin: 22px 0 0; }
+.resource-section { display: grid; grid-template-columns: .9fr 1.1fr; gap: 10%; }
+.resource-intro .eyebrow { color: var(--amber); }
+.resource-intro > p:not(.eyebrow) { color: var(--muted); font-size: 17px; line-height: 1.7; max-width: 400px; }
+.resource-intro > .fineprint { font-size: 13px !important; }
+.resource-list { list-style: none; padding: 0; margin: 0; }
+.resource-list li { padding: 22px 0; border-top: 1px solid var(--line); }
+.resource-list li:first-child { border-top-color: var(--amber); }
+.resource-list .eyebrow { font-size: 10px; color: var(--color-focus); }
+.resource-list a { display: flex; min-height: 44px; justify-content: space-between; align-items: center; gap: 20px; color: var(--ink); font-size: 23px; text-decoration: none; }
+.resource-list a:hover { color: var(--amber); }
+.resource-list a span { color: var(--amber); font-size: 18px; }
+.resource-list p { margin: 8px 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
+.resource-list small { display: block; color: var(--muted); font: 10px/1.7 var(--mono); }
+.radar-view-toggle { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.radar-view-toggle button[aria-pressed="true"], .radar-map-controls button[aria-pressed="true"] { border-color: var(--amber); color: var(--amber); background: var(--surface); }
+.radar-map-controls { display: flex; align-items: end; gap: 14px 20px; flex-wrap: wrap; padding-bottom: 18px; }
+.radar-map-controls label { display: grid; gap: 8px; font-size: 13px; color: var(--muted); }
+.radar-map-controls select { min-height: 44px; padding: 10px 12px; background: var(--bg); color: var(--ink); border: 1px solid var(--line); font: inherit; }
+.radar-map-controls [role="group"] { display: flex; gap: 6px; }
+.radar-map-controls button { padding-inline: 12px; font-size: 13px; }
+.radar-frame-time { font: 11px/1.8 var(--mono); color: var(--color-focus); margin-bottom: 14px; }
+.interactive-radar-map { display: block; width: 100%; aspect-ratio: 12/7; border: 1px solid var(--line); touch-action: none; cursor: grab; }
+.interactive-radar-map:active { cursor: grabbing; }
+.interactive-radar-map:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+.radar-map-panel.night { --map-water: #061821; --map-land: #183643; --map-boundary: #7896a0; --map-alert: #efb45e; --map-severe: #ff997e; --map-selected: #fff; }
+.radar-map-panel.chart { --map-water: #d3e7ea; --map-land: #f1eee5; --map-boundary: #536d78; --map-alert: #784607; --map-severe: #b4321a; --map-selected: #102e3c; }
+.map-ocean { fill: var(--map-water); }
+.map-state { fill: var(--map-land); stroke: var(--map-boundary); stroke-width: .7; vector-effect: non-scaling-stroke; }
+.noaa-radar-overlay { pointer-events: none; filter: none; opacity: 1; }
+.warning-map-shape { fill: transparent; stroke: var(--map-alert); stroke-width: 1.5; vector-effect: non-scaling-stroke; cursor: pointer; }
+.warning-map-shape[data-severity="Extreme"], .warning-map-shape[data-severity="Severe"] { stroke: var(--map-severe); }
+.warning-map-shape.selected { stroke: var(--map-selected); stroke-width: 3; }
+.interactive-radar-map [data-warning]:hover .warning-map-shape, .interactive-radar-map [data-warning]:focus-visible .warning-map-shape { stroke-width: 4; stroke: var(--map-selected); }
+.radar-map-caption { display: flex; align-items: start; justify-content: space-between; gap: 24px; margin-top: 18px; }
+.radar-map-caption p { color: var(--muted); max-width: 660px; font-size: 14px; line-height: 1.7; }
+.noaa-radar-legend { max-width: 240px; max-height: 240px; width: auto; height: auto; background: white; padding: 8px; }
+.radar-map-links { display: flex; flex-wrap: wrap; gap: 12px 30px; margin-top: 12px; }
+.radar-map-links a { display: inline-flex; align-items: center; min-height: 44px; color: var(--amber); font-size: 14px; }
+@media (max-width: 1100px) {
+  .sponsor-section, .resource-section { margin-inline: 32px; }
+  .sponsor-intro, .resource-section { gap: 28px; }
+  .resource-intro h2, .sponsor-intro h2 { font-size: 30px; }
+}
+@media (max-width: 767px) {
+  .sponsor-section, .resource-section { margin: 0 20px 40px; padding-top: 28px; }
+  .sponsor-intro, .resource-section { grid-template-columns: 1fr; gap: 14px; }
+  .sponsor-intro h2, .resource-intro h2 { font-size: 28px; }
+  .sponsor-ledger { grid-template-columns: 1fr; }
+  .sponsor-ledger article, .sponsor-ledger article:nth-child(even) { border-left: 0; padding: 24px 0; }
+  .sponsor-ledger h3 { font-size: 25px; }
+  .resource-list a { font-size: 21px; }
+  .radar-map-controls { gap: 12px; }
+  .radar-map-controls label { width: 100%; }
+  .radar-map-controls select { width: 100%; }
+  .radar-map-controls > [role="group"] { flex-wrap: wrap; }
+  .radar-view-toggle button { flex: 1; min-width: 130px; font-size: 14px; }
+  .radar-map-caption { display: block; }
+  .noaa-radar-legend { max-width: 100%; }
+}

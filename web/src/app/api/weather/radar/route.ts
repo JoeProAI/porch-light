@@ -9,8 +9,9 @@ export const dynamic = "force-dynamic";
 
 export const GET = async (request: Request): Promise<Response> => {
   try {
-    const weather = await readLiveWeather();
-    if (new URL(request.url).searchParams.get("capture") !== weather.capture_id) {
+    const captureId = new URL(request.url).searchParams.get("capture") ?? "";
+    const weather = await readLiveWeather(captureId);
+    if (captureId !== weather.capture_id) {
       return new Response("Weather capture changed. Refresh the source metadata.", { status: 409 });
     }
     const root = await realpath(/* turbopackIgnore: true */ process.env.PORCHLIGHT_WEATHER_CACHE ??

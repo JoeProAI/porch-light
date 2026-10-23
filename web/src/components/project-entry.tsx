@@ -2,13 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { createProjection, formatPhone, hasCoordinates } from "@/lib/operator";
 import type { Snapshot } from "@/lib/types";
+import { ResourceLinks } from "./resource-links";
+import { SponsorEvidence } from "./sponsor-evidence";
 
 export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
   const first = snapshot.facilities[0];
   const dialysis = snapshot.facilities.filter(row => row.type === "dialysis").length;
   const nursing = snapshot.facilities.filter(row => row.type !== "dialysis").length;
   const { project, paths } = createProjection(snapshot.warning_geometry, snapshot.facilities, "facilities");
-  const audited = snapshot.data_access.data_access_mode === "zetaris";
   return (
     <div className="project-entry">
       <a className="skip-link" href="#project-purpose">Skip to project purpose</a>
@@ -28,6 +29,7 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
             <p className="mission-description">An emergency-operations call sheet for dialysis centers and nursing homes in a storm-warning area. Real phone numbers. A transparent order of outreach. Evidence behind every priority.</p>
             <Link className="entry-primary" href="/operate">Open the Manatee call sheet <span aria-hidden="true">↗</span></Link>
             <p className="mission-limit">Verified example: Hurricane Milton, 2024. Retrospective, not a live warning or current facility conditions.</p>
+            <a className="mission-sponsor-proof" href="#sponsor-title">Built with Zetaris, Meterless and NVIDIA Nemotron. <span>Inspect the proof.</span></a>
             <Link className="watch-entry-link" href="/watch">For current official weather, open Storm Watch</Link>
           </div>
           <aside className="first-call-preview" aria-label="Real first facility in the demonstration">
@@ -70,12 +72,8 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
             <li><span>04</span><div><h3>Record contact. Export.</h3><p>Save a manual outcome on this device, move to the next uncontacted facility, print or export.</p></div></li>
           </ol>
         </section>
-        <section className="entry-evidence" aria-label="Technology and evidence">
-          <div><span className="eyebrow">Built on inspectable evidence</span><h2>Real sources.<br />No invented certainty.</h2></div>
-          <p><strong>Zetaris</strong>{audited ? `Actual JDBC query ${snapshot.data_access.zetaris_query_ids.join(", ")} carries the source bundle.` : "Development data, no completed vendor audit claim."}</p>
-          <p><strong>Meterless + NVIDIA Nemotron</strong>Actual stored explanation drafts, with model and response identifiers in the evidence drawer.</p>
-          <Link href="/operate" className="entry-secondary">Inspect the working example</Link>
-        </section>
+        <SponsorEvidence snapshot={snapshot} />
+        <ResourceLinks />
       </main>
       <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Prototype policy, not clinically validated. No emergency or clinical guidance. No calls are placed.</p><span className="mono">Real source records. Visible limits.</span></footer>
     </div>

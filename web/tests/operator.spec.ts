@@ -69,6 +69,25 @@ test("source atlas and contact workbench stay ordered across desktop and tablet"
   await expect(page.locator(".atlas-index-strip")).toContainText(snapshot.facilities[1].name);
 });
 
+test("main site acknowledges sponsor roles and independent resources without false integration claims", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Built with Zetaris, Meterless and Nemotron." })).toBeVisible();
+  await expect(page.locator(".sponsor-ledger")).toContainText("Actual source query: 80");
+  await expect(page.locator(".sponsor-ledger")).toContainText("3 actual stored drafts / 18 ranked facilities");
+  await expect(page.locator(".sponsor-ledger")).toContainText("authored by Devin");
+  await expect(page.locator("#resources")).toContainText("not partnerships, endorsements or integrations");
+  await expect(page.locator(".resource-list > li")).toHaveCount(6);
+  const targets = await page.locator(".resource-list a").evaluateAll(links => links.map(link => ({
+    href: (link as HTMLAnchorElement).href, target: link.getAttribute("target"), rel: link.getAttribute("rel"),
+  })));
+  expect(targets.every(link => link.href.startsWith("https://") && link.target === "_blank" && link.rel?.includes("noreferrer"))).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole("link", { name: "Read a genuine draft" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByRole("dialog")).toContainText("Zetaris audit verified");
+  await expect(page.getByRole("dialog")).toContainText("nvidia/nemotron");
+});
+
 test("actual bytes, deterministic terms, projection and local record validation", async () => {
   expect(createHash("sha256").update(await readFile("data/manatee-ranked.json")).digest("hex")).toBe(provenance.sha256);
   expect(snapshot.facilities).toHaveLength(18);

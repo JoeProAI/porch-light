@@ -1,3 +1,19 @@
+export type MapGeometry = { type: "Polygon"; coordinates: number[][][] } |
+  { type: "MultiPolygon"; coordinates: number[][][][] };
+export type StateFeature = { type: "Feature"; properties: { NAME?: string; STUSAB?: string }; geometry: MapGeometry };
+export type RadarRegion = {
+  available: boolean; name: string; detail?: string; layer?: string; frame_time?: string;
+  bbox?: number[]; crs?: string; width?: number; height?: number; sha256?: string;
+  source_url?: string; image_url?: string; legend_url?: string; legend_sha256?: string;
+};
+export type RadarMaps = {
+  available: boolean; detail?: string;
+  regions?: Record<string, RadarRegion>;
+  states?: { type: "FeatureCollection"; features: StateFeature[] };
+  state_source?: { source_url: string; sha256: string };
+  limits?: string[];
+};
+
 export type OfficialAlert = {
   id: string;
   event: string | null;
@@ -11,6 +27,7 @@ export type OfficialAlert = {
   effective: string | null;
   expires: string | null;
   senderName: string | null;
+  geometry?: MapGeometry | null;
   zetaris_query_ids: string[];
 };
 
@@ -27,6 +44,7 @@ export type LiveWeather = {
   };
   data_access: { data_access_mode: string; executed_at: string; zetaris_query_ids: string[] };
   limits: string[];
+  radar_maps?: RadarMaps;
 };
 
 export const weatherFreshness = (capturedAt: string, now: number) => {

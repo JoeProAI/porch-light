@@ -7,7 +7,9 @@ import { createCsv, formatDate, formatPhone, parseContacts } from "@/lib/operato
 import { CoverageMap } from "./coverage-map";
 import { EvidenceDrawer } from "./evidence-drawer";
 
-export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provenance: Provenance }) => {
+export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false }: {
+  snapshot: Snapshot; provenance: Provenance; initialEvidenceOpen?: boolean;
+}) => {
   const [selectedId, setSelectedId] = useState(snapshot.facilities[0]?.id ?? "");
   const [contacts, setContacts] = useState<Contacts>({});
   const [ready, setReady] = useState(false);
@@ -15,7 +17,7 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
   const [notice, setNotice] = useState("");
   const [copying, setCopying] = useState(false);
   const [draftStatus, setDraftStatus] = useState<ContactStatus>("reached");
-  const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const [evidenceOpen, setEvidenceOpen] = useState(initialEvidenceOpen);
   const [offline, setOffline] = useState(false);
   const [clock, setClock] = useState<number | null>(null);
   const reducedMotion = useReducedMotion();
@@ -28,7 +30,8 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
     try {
       const stored = parseContacts(localStorage.getItem(storageKey), snapshot.facilities);
       setContacts(stored);
-      setSelectedId(snapshot.facilities.find(item => !stored[item.id] || stored[item.id].status === "uncontacted")?.id ?? snapshot.facilities[0]?.id ?? "");
+      setSelectedId(initialEvidenceOpen ? snapshot.facilities[0]?.id ?? "" :
+        snapshot.facilities.find(item => !stored[item.id] || stored[item.id].status === "uncontacted")?.id ?? snapshot.facilities[0]?.id ?? "");
     }
     catch { setStorageError("Local contact records couldn't be read. No stored statuses have been assumed; new changes may only last for this session."); }
     setReady(true);
@@ -39,7 +42,7 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
     window.addEventListener("online", updateConnection);
     window.addEventListener("offline", updateConnection);
     return () => { window.clearInterval(timer); window.removeEventListener("online", updateConnection); window.removeEventListener("offline", updateConnection); };
-  }, [snapshot.facilities, storageKey]);
+  }, [snapshot.facilities, storageKey, initialEvidenceOpen]);
 
   const selectRow = (id: string) => {
     setSelectedId(id);

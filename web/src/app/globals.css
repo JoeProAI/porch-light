@@ -2,6 +2,7 @@
 @import "./proof-tokens.css";
 @import "./project-entry.css";
 @import "./storm-watch.css";
+@import "./resource-sponsors.css";
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
