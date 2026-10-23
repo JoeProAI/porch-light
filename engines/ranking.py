@@ -110,7 +110,7 @@ def score_manatee(bundle: dict, plan_text: str) -> tuple[list[dict], list[dict]]
                         "county_zip_reference_rows": len(ratios),
                         "small_count_caution": row["small_count_caution"]},
             "evidence": {
-                "zetaris_query_ids": [],
+                "zetaris_query_ids": list(bundle["read_receipt"]["zetaris_query_ids"]),
                 "sources": [{"name": "CMS " + row["source_kind"],
                              "url": artifact["source_url"], "license": artifact["license"]}],
                 "data_as_of": [{
@@ -126,7 +126,16 @@ def score_manatee(bundle: dict, plan_text: str) -> tuple[list[dict], list[dict]]
                     {"rule": "county_plan_current_applicability_verified", "passed": False},
                 ],
                 "failed_joins": [],
-                "facts": [],
+                "facts": [{
+                    "name": name, "value": value,
+                    "query_id": bundle["read_receipt"]["zetaris_query_ids"][0],
+                } for name, value in {
+                    "facility_type": kind,
+                    "svi_pct": float(inputs["svi_pct"]),
+                    "empower_dme_count": int(count),
+                    "empower_medicare_beneficiaries": int(beneficiaries),
+                    "cms_star_rating": float(stars),
+                }.items()] if bundle["read_receipt"]["zetaris_query_ids"] else [],
                 "source_artifact_path": row["source_artifact_path"],
                 "source_sha256": artifact["sha256"],
                 "geography_artifact_path": row["geography_artifact_path"],
@@ -143,7 +152,7 @@ def score_manatee(bundle: dict, plan_text: str) -> tuple[list[dict], list[dict]]
                 f"published ZIP DME {int(count)}/{int(beneficiaries)}. "
                 "ZIP context is not a facility patient count."
             ),
-            "development_only": True,
+            "development_only": bundle["read_receipt"]["data_access_mode"] != "zetaris",
         })
     ranked.sort(key=lambda row: (-row["score"]["total"], row["type"], row["ccn"]))
     for rank, row in enumerate(ranked, 1):
