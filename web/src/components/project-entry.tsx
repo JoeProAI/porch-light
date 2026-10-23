@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createProjection, formatPhone, hasCoordinates } from "@/lib/operator";
 import type { Snapshot } from "@/lib/types";
 import { HeroFilm } from "./hero-film";
-import { LogoMark } from "./logo-mark";
+import { Masthead } from "./masthead";
 import { ResourceLinks } from "./resource-links";
 import { SponsorEvidence } from "./sponsor-evidence";
 import { WatchBezel } from "./watch-bezel";
@@ -15,11 +15,7 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
   return (
     <div className="project-entry">
       <a className="skip-link" href="#project-purpose">Skip to project purpose</a>
-      <header className="entry-header">
-        <Link className="wordmark" href="/"><LogoMark />Porch Light<span className="wordmark-period">.</span></Link>
-        <span className="entry-category">Emergency operations</span>
-        <nav aria-label="Project navigation"><a href="#workflow">How it works</a><Link href="/watch">Storm Watch</Link><Link href="/operate">Call sheet</Link></nav>
-      </header>
+      <Masthead />
       <main>
         <section className="mission" id="project-purpose" aria-labelledby="mission-title">
           <div className="storm-photo">

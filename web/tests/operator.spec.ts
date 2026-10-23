@@ -5,6 +5,7 @@ import provenance from "../data/manatee-ranked.json.provenance.json";
 import projectDirection from "../design/project-direction.json";
 import satelliteProvenance from "../public/weather/milton-2024-nasa.jpg.provenance.json";
 import { createHash } from "node:crypto";
+import { inflateSync } from "node:zlib";
 import { createCsv, createProjection, parseContacts } from "../src/lib/operator";
 import type { Snapshot } from "../src/lib/types";
 
@@ -114,6 +115,16 @@ test("the call sheet has no canvas-gray band across the workspace", async ({ pag
   expect(phoneBox && phoneBox.height).toBeLessThan(32);
   for (const sample of paint.samples) {
     expect(sample.chain.join(" "), `y=${sample.y}`).not.toContain("rgb(18, 18, 18)");
+  }
+  await expect(page.locator(".map-canvas svg")).toBeVisible();
+  const shot = decodePng(await page.screenshot());
+  expect(shot.width).toBeGreaterThanOrEqual(1440);
+  const scale = shot.width / 1440;
+  for (const [x, y] of [[10, 820], [1420, 820]] as const) {
+    const [r, g, b] = pngPixel(shot, Math.round(x * scale), Math.round(y * scale));
+    expect(Math.abs(r - 5), `(${x},${y}) red ${r}`).toBeLessThanOrEqual(6);
+    expect(Math.abs(g - 7), `(${x},${y}) green ${g}`).toBeLessThanOrEqual(6);
+    expect(Math.abs(b - 11), `(${x},${y}) blue ${b}`).toBeLessThanOrEqual(6);
   }
 });
 
@@ -340,3 +351,56 @@ test("missing provenance fails closed with a working retry", async ({ page }) =>
   await page.getByRole("button", { name: "Retry snapshot" }).click();
   await expect(page.locator(".facility-row")).toHaveCount(18);
 });
+
+const decodePng = (buffer: Buffer) => {
+  let offset = 8;
+  let width = 0;
+  let height = 0;
+  let colorType = 6;
+  const chunks: Buffer[] = [];
+  while (offset + 8 <= buffer.length) {
+    const length = buffer.readUInt32BE(offset);
+    const type = buffer.toString("ascii", offset + 4, offset + 8);
+    const data = buffer.subarray(offset + 8, offset + 8 + length);
+    if (type === "IHDR") {
+      width = data.readUInt32BE(0);
+      height = data.readUInt32BE(4);
+      colorType = data[9];
+    } else if (type === "IDAT") chunks.push(Buffer.from(data));
+    else if (type === "IEND") break;
+    offset += 12 + length;
+  }
+  const channels = colorType === 6 ? 4 : 3;
+  const raw = inflateSync(Buffer.concat(chunks));
+  const stride = width * channels;
+  const pixels = Buffer.alloc(height * stride);
+  const paeth = (a: number, b: number, c: number) => {
+    const p = a + b - c;
+    const pa = Math.abs(p - a);
+    const pb = Math.abs(p - b);
+    const pc = Math.abs(p - c);
+    return pa <= pb && pa <= pc ? a : pb <= pc ? b : c;
+  };
+  for (let y = 0; y < height; y += 1) {
+    const filter = raw[y * (stride + 1)];
+    const source = y * (stride + 1) + 1;
+    const row = y * stride;
+    for (let i = 0; i < stride; i += 1) {
+      const left = i >= channels ? pixels[row + i - channels] : 0;
+      const up = y > 0 ? pixels[row - stride + i] : 0;
+      const upLeft = y > 0 && i >= channels ? pixels[row - stride + i - channels] : 0;
+      const value = raw[source + i];
+      pixels[row + i] = filter === 1 ? (value + left) & 255
+        : filter === 2 ? (value + up) & 255
+          : filter === 3 ? (value + Math.floor((left + up) / 2)) & 255
+            : filter === 4 ? (value + paeth(left, up, upLeft)) & 255
+              : value;
+    }
+  }
+  return { width, height, channels, pixels };
+};
+
+const pngPixel = (image: ReturnType<typeof decodePng>, x: number, y: number) => {
+  const index = (y * image.width + x) * image.channels;
+  return [image.pixels[index], image.pixels[index + 1], image.pixels[index + 2]] as const;
+};

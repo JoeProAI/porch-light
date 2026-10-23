@@ -8,7 +8,7 @@ import { derivedFrameTime, IEM_CLOCK_URL, parseIemClock, radarFrames, type IemCl
 import { weatherFreshness, type LiveWeather, type OfficialAlert } from "@/lib/weather-types";
 import type { Provenance, Snapshot } from "@/lib/types";
 import { EvidenceDrawer } from "./evidence-drawer";
-import { LogoMark } from "./logo-mark";
+import { Masthead } from "./masthead";
 import { StormMap, type StormMapApi, type StormMapStatus } from "./storm-map";
 
 const severities = ["Extreme", "Severe", "Moderate", "Minor", "Unknown"] as const;
@@ -181,18 +181,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
   return (
     <div className={`watch-shell${flash ? " is-lightning" : ""}`}>
       <a className="skip-link" href="#storm-chart">Skip to chart</a>
-      <header className="masthead">
-        <Link href="/" className="wordmark" aria-label="Porch Light call sheet"><LogoMark />Porch Light<span className="wordmark-period">.</span></Link>
-        <span className="masthead-descriptor">Emergency facility outreach</span>
-        <nav className="workspace-nav" aria-label="Workspace sections">
-          <Link href="/">Project home</Link>
-          <Link href="/nationwide">US county runs</Link>
-          <Link href="/watch">Storm Watch</Link>
-          <Link href="/operate#source-atlas">Source map</Link>
-          <Link href="/operate#call-ledger">Call order</Link>
-        </nav>
-        <span className="edition">US weather</span>
-      </header>
+      <Masthead edition="US weather" />
       <main>
         <div className="watch-stage">
           <section className="watch-map-pane" aria-labelledby="radar-title">

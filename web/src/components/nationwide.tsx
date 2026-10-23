@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Provenance, Snapshot } from "@/lib/types";
 import { formatDate } from "@/lib/operator";
+import { Masthead } from "./masthead";
 import { Operator } from "./operator";
 
 type County = { fips: string; name: string; state: string; geometry_valid?: boolean };
@@ -112,11 +113,7 @@ export const Nationwide = () => {
 
   return <>
     <div className="app-shell national-controls">
-      <header className="masthead">
-        <a href="/" className="wordmark">Porch Light<span className="wordmark-period">.</span></a>
-        <span className="masthead-descriptor">National care-facility outreach</span>
-        <nav className="workspace-nav" aria-label="Workspace sections"><a href="/">Project home</a><a href="/watch">Storm Watch</a><a href="/operate">Manatee walkthrough</a></nav>
-      </header>
+      <Masthead />
       <Content>
         <section className="intro" aria-labelledby="national-title">
           <div className="intro-heading"><p className="eyebrow">County discovery / Official alert captures</p>

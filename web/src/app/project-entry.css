@@ -1,4 +1,4 @@
-.entry-header, .entry-footer { max-width: 1600px; margin: auto; padding: 24px 48px; display: flex; align-items: center; gap: 28px; position: relative; z-index: 1; }
+.entry-header, .entry-footer, .project-entry > .masthead { max-width: 1600px; margin: auto; padding: 24px 48px; display: flex; align-items: center; gap: 28px; position: relative; z-index: 1; background: #05070b; }
 .entry-category { font-size: 16px; color: var(--muted); border-left: 1px solid var(--line); padding-left: 28px; }
 .entry-header nav { margin-left: auto; display: flex; align-items: center; gap: 28px; }
 .entry-header nav a { min-height: 44px; display: flex; align-items: center; text-decoration: none; font-size: 16px; }
@@ -69,7 +69,7 @@
   .workflow-chain img { width: 120px; height: 88px; }
 }
 @media (max-width: 767px) {
-  .entry-header { flex-wrap: wrap; padding: 16px 20px; gap: 8px 14px; }
+  .entry-header, .project-entry > .masthead { flex-wrap: wrap; padding: 16px 20px; gap: 8px 14px; }
   .entry-category { display: none; }
   .entry-header nav { flex-basis: 100%; margin-left: 0; gap: 18px; }
   .entry-header nav a { font-size: 16px; white-space: nowrap; }

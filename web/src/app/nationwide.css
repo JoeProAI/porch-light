@@ -4,13 +4,6 @@
   min-height: 100dvh;
 }
 
-.national-controls .wordmark::before {
-  content: "";
-  width: 36px;
-  height: 36px;
-  flex: none;
-  background: url("/art/logo-mark-64.png") center / cover no-repeat;
-}
 
 .national-controls .intro {
   grid-template-columns: minmax(0, 1.4fr) minmax(220px, .7fr);
@@ -78,6 +71,3 @@
   }
 }
 
-@media print {
-  .national-controls .wordmark::before { display: none; }
-}

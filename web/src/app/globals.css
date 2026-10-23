@@ -7,8 +7,8 @@
 @import "./nationwide.css";
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: var(--text-base); line-height: var(--leading-base); -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; background: #05070b; }
+body { margin: 0; background: #05070b; color: var(--ink); font-family: var(--font-body); font-size: var(--text-base); line-height: var(--leading-base); -webkit-font-smoothing: antialiased; }
 .masthead, .entry-header { position: relative; }
 .masthead::before, .entry-header::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .22; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); }
 button, select, a { -webkit-tap-highlight-color: transparent; }
@@ -139,7 +139,7 @@ select { border: 1px solid var(--line); background: var(--surface); color: var(-
 .map-toolbar { display: flex; gap: 8px; margin-bottom: 12px; }
 .map-toolbar button { font-size: 11px; padding: 8px 12px; }
 .map-toolbar button[aria-pressed="true"] { border-color: var(--amber); color: var(--amber); }
-.map-canvas { background: var(--bg); border: 1px solid var(--line); position: relative; overflow: hidden; }
+.map-canvas { background: #05070b; border: 1px solid var(--line); position: relative; overflow: hidden; transform: translateZ(0); }
 .map-canvas svg { width: 100%; height: auto; min-height: 400px; display: block; position: relative; }
 .map-grid { stroke: color-mix(in srgb, var(--quiet-ink) 14%, transparent); fill: none; stroke-width: .6; }
 .zone-underlay { fill: color-mix(in srgb, var(--color-focus) 9%, var(--bg)); }

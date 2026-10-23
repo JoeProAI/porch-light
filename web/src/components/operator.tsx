@@ -7,7 +7,7 @@ import { createCsv, formatDateEt, formatFigure, formatPhone, parseContacts } fro
 import { CoverageMap } from "./coverage-map";
 import { EvidenceDrawer } from "./evidence-drawer";
 import { CallScript } from "./call-script";
-import { LogoMark } from "./logo-mark";
+import { Masthead } from "./masthead";
 import { WatchBezel } from "./watch-bezel";
 
 const plainReason = (value: string) => value
@@ -104,14 +104,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
   return (
     <div className="app-shell">
       <a className="skip-link" href="#call-ledger">Skip to call ledger</a>
-      <header className="masthead">
-        <a href="/" className="wordmark" aria-label="Porch Light call sheet"><LogoMark />Porch Light<span className="wordmark-period">.</span></a>
-        <span className="masthead-descriptor">Emergency facility outreach</span>
-        <nav className="workspace-nav" aria-label="Workspace sections">
-          <a href="/">Project home</a><a href="/nationwide">US county runs</a><a href="/watch">Storm Watch</a><a href="#source-atlas">Source map</a><a href="#call-ledger">Call order</a>
-        </nav>
-        <span className="edition">{snapshot.county.name.toUpperCase()} / {snapshot.county.state} <span className="edition-number">01</span></span>
-      </header>
+      <Masthead sourceHref="#source-atlas" ledgerHref="#call-ledger" edition={<>{snapshot.county.name.toUpperCase()} / {snapshot.county.state} <span className="edition-number">01</span></>} />
       <main>
         <section className="intro" aria-labelledby="page-title">
           <div className="intro-heading">
