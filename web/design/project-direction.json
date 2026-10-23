@@ -1,0 +1,17 @@
+{
+  "product": "Porch Light",
+  "source": "Joe's corrective feedback, October 22, 2026: immediately communicate the storm and care-facility outreach use case.",
+  "relationship_to_proof": "Proof Desk provides a design workflow, not the product identity. Generic fingerprint, brass-index and black-book-cloth styling is rejected.",
+  "purpose": "Help an emergency operator turn a real storm warning into a source-backed call sheet for dialysis centers and nursing homes.",
+  "graphic_source": "Actual NASA archived Hurricane Milton satellite imagery, clearly dated and credited. Real warning polygons and facility coordinates only.",
+  "tokens": {
+    "background": "#081c26",
+    "surface": "#112d3a",
+    "text": "#f3eee3",
+    "muted": "#abbcc2",
+    "accent": "#efb45e",
+    "focus": "#92c6d1",
+    "radius": 0,
+    "density": 4
+  }
+}

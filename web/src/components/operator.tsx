@@ -90,9 +90,9 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
       <a className="skip-link" href="#call-ledger">Skip to call ledger</a>
       <header className="masthead">
         <a href="/" className="wordmark" aria-label="Porch Light call sheet">Porch Light<span className="wordmark-period">.</span></a>
-        <span className="masthead-descriptor">The response atlas</span>
+        <span className="masthead-descriptor">Emergency facility outreach</span>
         <nav className="workspace-nav" aria-label="Workspace sections">
-          <a href="#source-atlas">Atlas</a><a href="#call-ledger">Call order</a><a href="#next-call-title">Contact desk</a>
+          <a href="/">Project home</a><a href="#source-atlas">Warning map</a><a href="#call-ledger">Call order</a>
         </nav>
         <span className="edition">MANATEE / FL <span className="edition-number">01</span></span>
       </header>
@@ -100,11 +100,11 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
         <section className="intro" aria-labelledby="page-title">
           <div className="intro-heading">
             <div className="eyebrow"><span className="status-line" />Retrospective · Hurricane Milton / 2024</div>
-            <h1 id="page-title">One light <em>on.</em></h1>
-            <p className="intro-description">Who to call first, and why.</p>
+            <h1 id="page-title">Who to call <em>first.</em></h1>
+            <p className="intro-description">Dialysis centers and nursing homes in the Manatee warning area.</p>
           </div>
           <div className="intro-index" aria-label="Selected call index">
-            <span className="eyebrow">The brass index</span>
+            <span className="eyebrow">Selected call</span>
             <strong>{row ? String(row.rank).padStart(2, "0") : "00"}</strong>
             <span>Selected of {snapshot.facilities.length} ranked records</span>
           </div>
@@ -116,7 +116,7 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
         </section>
         <div className="source-strip"><span><i className="source-dot" /> {isZetaris ? "Zetaris JDBC" : "Development PostGIS"} <span className="muted">/ {isZetaris ? "audit verified" : "Zetaris pending"}</span></span><span>Fixed policy · not clinically validated</span><span>{offline ? "Offline · loaded snapshot only" : "Local snapshot · no live refresh"}</span></div>
         <div className="workspace-heading">
-          <div><span className="eyebrow">A working order, not a black box</span><h2>The next call, in view.</h2></div>
+          <div><span className="eyebrow">Care-facility call sheet</span><h2>Contact. Record. Next.</h2></div>
           <div className="export-actions"><button onClick={exportCsv} disabled={!ready || !snapshot.facilities.length}>Export CSV <span aria-hidden="true">↓</span></button><button onClick={() => window.print()} disabled={!snapshot.facilities.length}>Print sheet <span aria-hidden="true">↗</span></button></div>
         </div>
         <div className="sheet-meta"><p><strong>{snapshot.counts.ranked_rows}</strong> ranked <span>/</span> {snapshot.counts.refused_rows} refused <span>/</span> {snapshot.counts.source_rows} source records</p><p>{ready ? `${recorded} / ${snapshot.facilities.length} contact outcomes recorded` : "Loading local contact records…"}</p></div>
@@ -146,7 +146,7 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
             <CoverageMap geometry={snapshot.warning_geometry} facilities={snapshot.facilities} selectedId={selectedId} onSelect={selectRow} />
             {row && <div className="atlas-index-strip">
               <span className="index-numeral" aria-hidden="true">{String(row.rank).padStart(2, "0")}</span>
-              <div><span className="eyebrow">The selected source point</span><strong>{row.name}</strong><span className="mono">CCN {row.ccn} / {row.lat?.toFixed(5)}, {row.lon?.toFixed(5)}</span></div>
+              <div><span className="eyebrow">Selected care facility</span><strong>{row.name}</strong><span className="mono">CCN {row.ccn} / {row.lat?.toFixed(5)}, {row.lon?.toFixed(5)}</span></div>
             </div>}
             <div className="atlas-provenance">
               <span className="eyebrow">{isZetaris ? "Source query, not model confidence" : "Source integration state"}</span>
@@ -189,11 +189,11 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
           <details><summary>Technology and sponsor evidence</summary>
             <p>Meterless and NVIDIA Nemotron: {snapshot.model_executions.length > 0 ? "Actual stored model drafts are identified in the row evidence drawer." : "No completed model execution in this snapshot."}</p>
             <p>Zetaris: {isZetaris ? "This snapshot carries real query references confirmed against the vendor audit database." : "Integration and query IDs are pending. This screen uses a direct PostGIS development snapshot."}</p>
-            <p>Cursor: required development evidence is pending. No completed usage claim is made.</p>
+            <p>Cursor: the project follows the shared .cursor/rules. This web implementation was built by Devin; no Cursor-run claim is made.</p>
           </details>
         </div>
         <span className="mono">MANATEE / 12081<br />MILTON · 2024</span>
-        <a className="design-credit mono" href="https://proof.joepro.systems" target="_blank" rel="noreferrer">Night Ledger / Proof Desk</a>
+        <a className="design-credit mono" href="/">About Porch Light</a>
       </footer>
       {row && <EvidenceDrawer row={row} snapshot={snapshot} provenance={provenance} open={evidenceOpen} onClose={() => setEvidenceOpen(false)} />}
     </div>

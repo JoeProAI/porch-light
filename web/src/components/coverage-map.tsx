@@ -14,9 +14,9 @@ export const CoverageMap = ({ geometry, facilities, selectedId, onSelect }: {
   const selectedPoint = selected ? projection.project([selected.lon, selected.lat]) : null;
   return (
     <section className="map-section" aria-labelledby="map-title">
-      <div className="pane-heading"><span className="eyebrow">02 / Source atlas</span><span className="mono">WGS84 / Mercator</span></div>
+      <div className="pane-heading"><span className="eyebrow">02 / Warning-area facilities</span><span className="mono">Published NWS geometry</span></div>
       <div className="section-heading">
-        <h2 id="map-title">Source geography</h2>
+        <h2 id="map-title">Care facilities in the warning area</h2>
         <span className="mono muted">{located.length}/{facilities.length} located</span>
       </div>
       <div className="map-toolbar" role="group" aria-label="Map extent">
@@ -65,7 +65,7 @@ export const CoverageMap = ({ geometry, facilities, selectedId, onSelect }: {
           })}
           <text x="27" y="447" className="map-direction">SOURCE GEOMETRY / NOT RADAR</text>
           {selected && <g className="source-index-plate" aria-hidden="true">
-            <text x="564" y="47" textAnchor="end" className="map-direction">BRASS INDEX</text>
+            <text x="564" y="47" textAnchor="end" className="map-direction">SELECTED CALL</text>
             <text x="570" y="128" textAnchor="end" className="map-index-number">{String(selected.rank).padStart(2, "0")}</text>
           </g>}
         </svg>

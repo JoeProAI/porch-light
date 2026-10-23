@@ -2,16 +2,16 @@ import { test, expect } from "@playwright/test";
 import { readFile, rename } from "node:fs/promises";
 import snapshotJson from "../data/manatee-ranked.json";
 import provenance from "../data/manatee-ranked.json.provenance.json";
-import proofContract from "../design/proof-contract.json";
-import materialProvenance from "../design/material-provenance.json";
+import projectDirection from "../design/project-direction.json";
+import satelliteProvenance from "../public/weather/milton-2024-nasa.jpg.provenance.json";
 import { createHash } from "node:crypto";
 import { createCsv, createProjection, parseContacts } from "../src/lib/operator";
 import type { Snapshot } from "../src/lib/types";
 
 const snapshot = snapshotJson as unknown as Snapshot;
 
-test("Proof Desk contract drives the real typography, palette and material", async ({ page, request }) => {
-  await page.goto("/");
+test("storm-care direction drives typography and real archived imagery", async ({ page, request }) => {
+  await page.goto("/operate");
   await expect(page.locator(".facility-row")).toHaveCount(18);
   const actual = await page.evaluate(() => {
     const style = getComputedStyle(document.documentElement);
@@ -22,9 +22,8 @@ test("Proof Desk contract drives the real typography, palette and material", asy
       display: getComputedStyle(document.querySelector("h1")!).fontFamily,
     };
   });
-  expect(proofContract.direction.id).toBe("night-ledger");
-  expect(actual.ground).toBe(proofContract.tokens.background);
-  expect(actual.accent).toBe(proofContract.tokens.accent);
+  expect(actual.ground).toBe(projectDirection.tokens.background);
+  expect(actual.accent).toBe(projectDirection.tokens.accent);
   expect(actual.display).toContain("Libre Baskerville");
   expect(actual.body).toContain("Alegreya Sans");
   if (await page.evaluate(() => innerWidth < 768)) {
@@ -32,14 +31,27 @@ test("Proof Desk contract drives the real typography, palette and material", asy
     expect(phone).not.toBeNull();
     expect(phone!.y + phone!.height).toBeLessThan(812);
   }
-  const material = await request.get("/design/night-ledger.webp");
+  const material = await request.get("/weather/milton-2024-nasa.jpg");
   expect(material.ok()).toBe(true);
-  expect(createHash("sha256").update(await material.body()).digest("hex")).toBe(materialProvenance.sha256);
+  expect(createHash("sha256").update(await material.body()).digest("hex")).toBe(satelliteProvenance.sha256);
+});
+
+test("project entry explains the storm and care-facility use case and opens the real tool", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Storm warning. Clear first call." })).toBeVisible();
+  await expect(page.locator(".mission-description")).toContainText("dialysis centers and nursing homes");
+  await expect(page.locator(".mission-limit")).toContainText("not a live warning");
+  await expect(page.locator(".first-call-preview")).toContainText(snapshot.facilities[0].name);
+  await expect(page.locator(".satellite-credit")).toContainText("October 8, 2024");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole("link", { name: "Open the Manatee call sheet" }).click();
+  await expect(page).toHaveURL(/\/operate$/);
+  await expect(page.locator(".facility-row")).toHaveCount(18);
 });
 
 test("source atlas and contact workbench stay ordered across desktop and tablet", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto("/");
+  await page.goto("/operate");
   await expect(page.locator(".facility-row")).toHaveCount(18);
   await expect(page.locator(".atlas-column")).toBeVisible();
   const ledger = await page.locator(".ledger").boundingBox();
@@ -87,7 +99,7 @@ test("real ledger, synchronized selection, keyboard evidence and no browser erro
   page.on("console", msg => { if (msg.type() === "error") errors.push(msg.text()); });
   page.on("requestfailed", request => failed.push(request.url()));
   page.on("request", request => { if (!request.url().startsWith("http://127.0.0.1:3101")) external.push(request.url()); });
-  await page.goto("/");
+  await page.goto("/operate");
   await expect(page.locator(".facility-row")).toHaveCount(18);
   await expect(page.locator(".facility-row").first()).toContainText("Not contacted");
   await expect(page.getByText("Not a live warning.")).toBeVisible();
@@ -130,7 +142,7 @@ test("real ledger, synchronized selection, keyboard evidence and no browser erro
 });
 
 test("manual outcome persists, advances without reranking, CSV and print use actual rows", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/operate");
   const names = await page.locator(".facility-name").allTextContents();
   await expect(page.getByRole("button", { name: "Record & next uncontacted" })).toBeEnabled();
   await page.getByLabel("Manually record an outcome").selectOption("no_answer");
@@ -160,7 +172,7 @@ test("manual outcome persists, advances without reranking, CSV and print use act
 
 test("copy success and storage/clipboard failures are explicit; loaded snapshot works offline", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-  await page.goto("/");
+  await page.goto("/operate");
   await page.getByRole("button", { name: `Copy phone for ${snapshot.facilities[0].name}`, exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Copied phone");
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(snapshot.facilities[0].phone.value);
@@ -191,13 +203,13 @@ test("social image routes are real 1200x630 PNGs and metadata resolves locally",
     expect(buffer.readUInt32BE(20)).toBe(630);
   }
   await page.goto("/");
-  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", "http://127.0.0.1:3101/opengraph-image");
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", "https://porchlight.earth/opengraph-image");
   await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute("content", "summary_large_image");
 });
 
 test("unreadable local contact records never seed an outcome", async ({ page }) => {
   await page.addInitScript(key => localStorage.setItem(key, "{"), `porch-light:contacts:v1:${snapshot.source_snapshot_hash}`);
-  await page.goto("/");
+  await page.goto("/operate");
   await expect(page.locator(".storage-warning")).toContainText("couldn't be read");
   await expect(page.locator(".facility-row").first()).toContainText("Not contacted");
 });
@@ -207,7 +219,7 @@ test("missing provenance fails closed with a working retry", async ({ page }) =>
   const held = `${source}.unavailable`;
   await rename(source, held);
   try {
-    await page.goto("/");
+    await page.goto("/operate");
     await expect(page.getByRole("heading", { name: "The ledger couldn't be verified." })).toBeVisible();
     await expect(page.locator(".facility-row")).toHaveCount(0);
   } finally {

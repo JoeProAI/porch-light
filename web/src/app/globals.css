@@ -1,10 +1,10 @@
 @import "tailwindcss";
 @import "./proof-tokens.css";
+@import "./project-entry.css";
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
-body::before { content: ""; position: fixed; inset: 0; pointer-events: none; background: url("/design/night-ledger.webp") center / cover; opacity: .09; z-index: -1; }
 button, select, a { -webkit-tap-highlight-color: transparent; }
 button, select { font: inherit; }
 button, .button { min-height: 44px; border: 1px solid var(--line); background: transparent; color: var(--ink); padding: 10px 15px; cursor: pointer; text-decoration: none; transition: background var(--fast), border-color var(--fast), color var(--fast); }
@@ -130,7 +130,6 @@ select { border: 1px solid var(--line); background: var(--surface); color: var(-
 .map-toolbar button { font-size: 11px; padding: 8px 12px; }
 .map-toolbar button[aria-pressed="true"] { border-color: var(--amber); color: var(--amber); }
 .map-canvas { background: var(--bg); border: 1px solid var(--line); position: relative; overflow: hidden; }
-.map-canvas::before { content: ""; position: absolute; inset: 0; background: url("/design/night-ledger.webp") 65% 60% / cover; opacity: .22; pointer-events: none; }
 .map-canvas svg { width: 100%; height: auto; min-height: 400px; display: block; position: relative; }
 .map-grid { stroke: color-mix(in srgb, var(--quiet-ink) 14%, transparent); fill: none; stroke-width: .6; }
 .zone-underlay { fill: color-mix(in srgb, var(--color-focus) 9%, var(--bg)); }

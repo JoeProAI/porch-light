@@ -3,28 +3,29 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { readSnapshot } from "./snapshot";
 import { createProjection, hasCoordinates } from "./operator";
-import proofContract from "../../design/proof-contract.json";
+import projectDirection from "../../design/project-direction.json";
 
 export const renderShareImage = async (): Promise<Response> => {
-  const [{ snapshot }, displayFont, bodyFont] = await Promise.all([
+  const [{ snapshot }, displayFont, bodyFont, stormImage] = await Promise.all([
     readSnapshot(),
     readFile(path.join(process.cwd(), "node_modules/@fontsource/libre-baskerville/files/libre-baskerville-latin-400-normal.woff")),
     readFile(path.join(process.cwd(), "node_modules/@fontsource/alegreya-sans/files/alegreya-sans-latin-400-normal.woff")),
+    readFile(path.join(process.cwd(), "public/weather/milton-2024-nasa.jpg")),
   ]);
   const { project, paths } = createProjection(snapshot.warning_geometry, snapshot.facilities, "facilities");
-  const colors = proofContract.tokens;
+  const colors = projectDirection.tokens;
   const audited = snapshot.data_access.data_access_mode === "zetaris";
   return new ImageResponse(
     <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", background: colors.background, color: colors.text, padding: "36px 48px 30px 78px", fontFamily: "OptimaStudy", borderLeft: `24px solid ${colors.surface}` }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 22, borderBottom: `1px solid ${colors.muted}` }}>
         <span style={{ fontFamily: "BaskervilleStudy", fontSize: 32, letterSpacing: "-2px" }}>Porch Light.</span>
-        <span style={{ fontSize: 17, letterSpacing: "2px", color: colors.accent }}>THE RESPONSE ATLAS / MANATEE</span>
+        <span style={{ fontSize: 17, letterSpacing: "2px", color: colors.accent }}>STORM WARNING / CARE FACILITIES</span>
       </div>
       <div style={{ display: "flex", flex: 1, paddingTop: 32, gap: 32 }}>
         <div style={{ display: "flex", flexDirection: "column", width: 540 }}>
           <span style={{ fontSize: 14, color: colors.muted, letterSpacing: "2px" }}>HURRICANE MILTON / RETROSPECTIVE 2024</span>
-          <span style={{ fontFamily: "BaskervilleStudy", fontSize: 64, letterSpacing: "-4px", lineHeight: 1.12, marginTop: 28, marginBottom: 10 }}>One light on.</span>
-          <span style={{ fontSize: 23, color: colors.accent, marginBottom: 30 }}>Who to call first, and why.</span>
+          <span style={{ fontFamily: "BaskervilleStudy", fontSize: 52, letterSpacing: "-3px", lineHeight: 1.15, marginTop: 24, marginBottom: 14 }}>Storm warning. Clear first call.</span>
+          <span style={{ fontSize: 23, color: colors.accent, marginBottom: 24 }}>Dialysis centers. Nursing homes. A sourced call sheet.</span>
           {snapshot.facilities.slice(0, 3).map(row => (
             <div key={row.id} style={{ display: "flex", alignItems: "center", gap: 16, borderTop: `1px solid ${colors.surface}`, padding: "14px 0", color: row.rank === 1 ? colors.accent : colors.text }}>
               <span style={{ fontSize: 23, width: 30 }}>{String(row.rank).padStart(2, "0")}</span>
@@ -34,8 +35,9 @@ export const renderShareImage = async (): Promise<Response> => {
           ))}
         </div>
         <div style={{ display: "flex", flexDirection: "column", width: 440, borderLeft: `1px solid ${colors.muted}`, paddingLeft: 24 }}>
-          <span style={{ color: colors.accent, fontSize: 15, marginBottom: 20 }}>THE BRASS INDEX / 01</span>
-          <svg width="408" height="300" viewBox="0 0 600 400" style={{ background: colors.surface }}>
+          <span style={{ color: colors.accent, fontSize: 15, marginBottom: 14 }}>HURRICANE MILTON / NASA / OCT 8, 2024</span>
+          <img src={`data:image/jpeg;base64,${stormImage.toString("base64")}`} width={408} height={170} style={{ width: 408, height: 170, objectFit: "cover", flexShrink: 0 }} alt="Archived NASA satellite image of Hurricane Milton" />
+          <svg width="408" height="110" viewBox="0 0 600 400" style={{ background: colors.surface, marginTop: 12, flexShrink: 0 }}>
             <defs><clipPath id="share-clip"><rect width="600" height="400" /></clipPath></defs>
             <g clipPath="url(#share-clip)">
               {paths.map((d, i) => <path key={i} d={d} fill={colors.background} fillRule="evenodd" stroke={colors.focus} strokeWidth="1.5" />)}

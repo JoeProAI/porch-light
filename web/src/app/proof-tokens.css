@@ -1,10 +1,10 @@
 :root {
-  --color-bg: #121613;
-  --color-surface: #212420;
-  --color-text: #ebe4cf;
-  --color-muted: #908d80;
-  --color-accent: #d8a83e;
-  --color-focus: #7b9d8b;
+  --color-bg: #081c26;
+  --color-surface: #112d3a;
+  --color-text: #f3eee3;
+  --color-muted: #abbcc2;
+  --color-accent: #efb45e;
+  --color-focus: #92c6d1;
   --radius-system: 0px;
   --space-unit: 4px;
   --type-volume: 72;
@@ -19,9 +19,9 @@
   --ink: var(--color-text);
   --muted: var(--color-muted);
   --quiet-ink: var(--color-muted);
-  --line: #3b4035;
+  --line: #3b5561;
   --amber: var(--color-accent);
-  --amber-ink: #171b13;
+  --amber-ink: #081c26;
   --success: #b7cdb5;
   --danger: #efb49d;
   --display: "Libre Baskerville", Baskerville, "Palatino Linotype", serif;
