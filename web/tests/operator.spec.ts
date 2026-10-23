@@ -37,6 +37,77 @@ test("storm-care direction drives typography and real archived imagery", async (
   expect(createHash("sha256").update(await material.body()).digest("hex")).toBe(satelliteProvenance.sha256);
 });
 
+test("storm watch uses the night masthead, type, and a solid radar bar", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/watch");
+  await expect(page.locator("header.masthead")).toBeVisible();
+  await expect(page.locator("header.entry-header")).toHaveCount(0);
+  const nav = await page.locator("header nav a").allTextContents();
+  expect(nav).toEqual(["Project home", "US county runs", "Storm Watch", "Source map", "Call order"]);
+  await expect(page.getByRole("link", { name: "About the project" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Manatee call sheet" })).toHaveCount(0);
+  await expect(page.locator(".radar-controls")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Play radar" })).toBeVisible();
+  await expect(page.getByLabel("Radar frame")).toBeVisible();
+  await expect(page.getByLabel("Radar opacity")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Radar layer/ })).toBeVisible();
+  await expect(page.locator(".watch-map-frame .bezel-circular")).toHaveCount(0);
+  const paint = await page.evaluate(() => {
+    const bg = (selector: string) => getComputedStyle(document.querySelector(selector)!).backgroundColor;
+    const style = getComputedStyle(document.documentElement);
+    return {
+      ground: style.getPropertyValue("--color-bg").trim(),
+      surface: style.getPropertyValue("--color-surface").trim(),
+      body: getComputedStyle(document.body).fontFamily,
+      display: getComputedStyle(document.querySelector("h1")!).fontFamily,
+      mono: getComputedStyle(document.querySelector(".radar-readout span")!).fontFamily,
+      pane: bg(".watch-alert-pane"),
+      bar: bg(".radar-controls"),
+      button: bg(".watch-map-frame .map-toolbar button"),
+      play: bg(".radar-play"),
+    };
+  });
+  expect(paint.ground).toBe(projectDirection.tokens.background);
+  expect(paint.surface).toBe(projectDirection.tokens.surface);
+  expect(paint.body).toContain("Atkinson Hyperlegible");
+  expect(paint.display).toContain("Libre Baskerville");
+  expect(paint.mono).toContain("IBM Plex Mono");
+  for (const value of [paint.pane, paint.bar, paint.button, paint.play]) expect(value).toBe("rgb(5, 7, 11)");
+});
+
+test("the call sheet has no canvas-gray band across the workspace", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/operate");
+  await expect(page.locator(".facility-row")).toHaveCount(18);
+  const paint = await page.evaluate(() => {
+    const bg = (selector: string) => getComputedStyle(document.querySelector(selector)!).backgroundColor;
+    const samples = [540, 640, 760, 820].map(y => {
+      const el = document.elementFromPoint(720, y) as HTMLElement | null;
+      let node: HTMLElement | null = el;
+      const chain: string[] = [];
+      while (node && chain.length < 6) {
+        chain.push(`${node.tagName}.${String(node.className).slice(0, 40)}:${getComputedStyle(node).backgroundColor}`);
+        node = node.parentElement;
+      }
+      return { y, chain };
+    });
+    return {
+      html: getComputedStyle(document.documentElement).backgroundColor,
+      workspace: bg(".workspace"),
+      list: bg(".facility-list"),
+      rail: bg(".operator-rail"),
+      samples,
+    };
+  });
+  expect(paint.html).toBe("rgb(5, 7, 11)");
+  expect(paint.workspace).toBe("rgb(5, 7, 11)");
+  expect(paint.list).toBe("rgb(5, 7, 11)");
+  expect(paint.rail).toBe("rgb(5, 7, 11)");
+  for (const sample of paint.samples) {
+    expect(sample.chain.join(" "), `y=${sample.y}`).not.toContain("rgb(18, 18, 18)");
+  }
+});
+
 test("project entry explains the storm and care-facility use case and opens the real tool", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Storm warning. Clear first call." })).toBeVisible();

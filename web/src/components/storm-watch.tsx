@@ -178,10 +178,17 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
   return (
     <div className={`watch-shell${flash ? " is-lightning" : ""}`}>
       <a className="skip-link" href="#storm-chart">Skip to chart</a>
-      <header className="entry-header watch-header">
-        <Link href="/" className="wordmark"><LogoMark />Porch Light<span className="wordmark-period">.</span></Link>
-        <span className="entry-category">Storm Watch</span>
-        <nav aria-label="Project navigation"><Link href="/">About the project</Link><Link href="/operate">Manatee call sheet</Link></nav>
+      <header className="masthead">
+        <Link href="/" className="wordmark" aria-label="Porch Light call sheet"><LogoMark />Porch Light<span className="wordmark-period">.</span></Link>
+        <span className="masthead-descriptor">Emergency facility outreach</span>
+        <nav className="workspace-nav" aria-label="Workspace sections">
+          <Link href="/">Project home</Link>
+          <Link href="/nationwide">US county runs</Link>
+          <Link href="/watch">Storm Watch</Link>
+          <Link href="/operate#source-atlas">Source map</Link>
+          <Link href="/operate#call-ledger">Call order</Link>
+        </nav>
+        <span className="edition">NWS / US</span>
       </header>
       <main>
         <div className="watch-stage">
