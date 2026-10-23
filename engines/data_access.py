@@ -8,6 +8,7 @@ from typing import Protocol
 
 from data.snapshot.reader import query
 from engines.zetaris_client import audited_query, jdbc_query
+from engines.zetaris_chain import ZetarisChainRepository
 
 
 class ManateeRepository(Protocol):
@@ -135,6 +136,8 @@ class ZetarisRepository:
 
 
 def repository_for_mode(mode: str) -> ManateeRepository:
+    if mode == "zetaris_chain":
+        return ZetarisChainRepository(zetaris_names()[0])
     if mode == "zetaris":
         return ZetarisRepository()
     if mode == "postgis_development":

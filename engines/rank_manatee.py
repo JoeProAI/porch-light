@@ -13,9 +13,10 @@ from pypdf import PdfReader
 
 from data.adapters.us.county_sources import selected_sources
 from data.provenance.sidecar import sha256_of, verify, write_sidecar
-from engines.data_access import ManateeRepository, register_zetaris_bundle_view, repository_for_mode
+from engines.data_access import ManateeRepository, register_zetaris_bundle_view, repository_for_mode, zetaris_names
 from engines.meterless import explain
 from engines.ranking import POLICY_VERSION, TYPE_WEIGHTS, WEIGHTS, score_manatee
+from engines.zetaris_chain import register_chain_views
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -87,12 +88,18 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=ROOT / "engines/snapshots/manatee-ranked.json")
     parser.add_argument("--explain-top", type=int, default=0)
     parser.add_argument(
-        "--data-access", choices=("zetaris", "postgis_development"),
+        "--data-access", choices=("zetaris", "zetaris_chain", "postgis_development"),
         default=os.environ.get("PORCHLIGHT_DATA_ACCESS_MODE", "zetaris"),
     )
     parser.add_argument("--register-zetaris-view", action="store_true")
+    parser.add_argument("--register-zetaris-chain", action="store_true")
     parser.add_argument("--reuse-model-snapshot", type=Path)
     args = parser.parse_args()
+    if args.register_zetaris_chain:
+        receipts = register_chain_views(zetaris_names()[0])
+        print(json.dumps({"registered": [{"view": row["view"], "query_id": row["audit"]["query_id"]}
+                                        for row in receipts]}, indent=2))
+        return 0
     if args.register_zetaris_view:
         print(json.dumps(register_zetaris_bundle_view(), indent=2))
         return 0
@@ -145,7 +152,7 @@ def main() -> int:
     write_sidecar(
         args.output, (
             os.environ.get("PORCHLIGHT_ZETARIS_JDBC_URL", "jdbc:zetaris:lightning@localhost:10000")
-            if args.data_access == "zetaris" else "postgresql://porchlight-postgis:5432/porchlight"
+            if args.data_access in ("zetaris", "zetaris_chain") else "postgresql://porchlight-postgis:5432/porchlight"
         ),
         "Derived from public CMS/Census/CDC/HHS/NWS and archived plan records; original terms retained",
         shlex.join([sys.executable, "-m", "engines.rank_manatee", *sys.argv[1:]]),
