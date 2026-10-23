@@ -89,12 +89,11 @@ last update: Thu Oct 22 2026 9:42 AM ET
 
 ## Area: Engines
 owner now: Devin, takeover approved by Joe
-state: Nightshift NVIDIA key saved to its daemon keystore through the local Windows control pipe. NVIDIA catalog GET returns 200. Read-only route previews now select Lightning for fast and Super VL 3.5 for deep, matching KICKOFF-PROMPT.md; the older Super 3 route was enabled initially, then corrected without inference. Authenticated Meterless discovery returns 200; unauthenticated discovery returns 401.
-next step: Joe approves a suitable local Nemotron download and local smoke test; verify generation, receipts and offline replay before closing G3. Keep application client changes on a separate devin/engines-* branch.
-branch: no engine implementation branch or new PR yet; this data branch changes HANDOFF only for the setup receipt.
-how to run: use http://127.0.0.1:8088/v1 with METERLESS_TOKEN_FILE pointing to Nightshift's existing proxy-token; meterless-app: porch-light on requests, meterless-scope: user on chat, 180-second timeout.
-blocked: no installed local Nemotron lane. The bundled 30B local candidates exceed the laptop's 16 GB VRAM before context overhead. No cloud generation or local model download is approved by this setup pass.
-last update: Wed Oct 21 2026 10:35 PM ET
+state: real cross-source Zetaris chain, seven distinct audited statements; SQL counts reproduce 18 ranks and two refusals.
+branch: devin/engines-manatee, PR18; Joe merges.
+how to run: engines/README.md; original bundle mode remains explicit, with no fallback.
+next step: all-row grounded drafts and live call scripts. Joe approved at most seven new Meterless/Nemotron requests, 4096 output tokens each, no retries or Modal.
+blocked: local GPU inference is unverified; all source relations currently share one physical PostGIS datasource.
 
 ### Nightshift setup and operator use
 

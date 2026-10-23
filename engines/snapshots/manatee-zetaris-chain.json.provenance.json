@@ -1,0 +1,7 @@
+{
+  "source_url": "jdbc:zetaris:lightning@localhost:10000",
+  "fetched_at_utc": "2026-10-23T18:54:53+00:00",
+  "sha256": "9ff112259aea5f9955545bbaec21557e5885db96be82c608ddcae059488ed959",
+  "license": "Derived from public CMS/Census/CDC/HHS/NWS and archived plan records; original terms retained",
+  "fetch_command": "'C:\\Python314\\python.exe' -m engines.rank_manatee --data-access zetaris_chain --output engines/snapshots/manatee-zetaris-chain.json --reuse-model-snapshot engines/snapshots/manatee-ranked.json"
+}

@@ -118,7 +118,7 @@ def score_manatee(bundle: dict, plan_text: str) -> tuple[list[dict], list[dict]]
                     "fetched_at": artifact["fetched_at"],
                     "snapshot_id": bundle["snapshot_hash"], "stale": True,
                 }],
-                "join_path": [],
+                "join_path": list(bundle.get("join_path", [])),
                 "dq_results": [
                     {"rule": "current_zone_geometry_covers_point", "passed": True},
                     {"rule": "sourced_phone_present", "passed": True},
@@ -128,7 +128,8 @@ def score_manatee(bundle: dict, plan_text: str) -> tuple[list[dict], list[dict]]
                 "failed_joins": [],
                 "facts": [{
                     "name": name, "value": value,
-                    "query_id": bundle["read_receipt"]["zetaris_query_ids"][0],
+                    "query_id": bundle.get("fact_query_ids", {}).get(
+                        name, bundle["read_receipt"]["zetaris_query_ids"][0]),
                 } for name, value in {
                     "facility_type": kind,
                     "svi_pct": float(inputs["svi_pct"]),
@@ -154,6 +155,21 @@ def score_manatee(bundle: dict, plan_text: str) -> tuple[list[dict], list[dict]]
             ),
             "development_only": bundle["read_receipt"]["data_access_mode"] != "zetaris",
         })
+        if bundle.get("join_path"):
+            evidence = ranked[-1]["evidence"]
+            for name, path in (
+                ("CDC/ATSDR SVI", row["svi_source_artifact_path"]),
+                ("Census geography", row["geography_artifact_path"]),
+                ("HHS emPOWER ZIP aggregate", row.get("empower_source_artifact_path")),
+            ):
+                if not path or path not in bundle["artifacts"]:
+                    raise ValueError("A joined source lacks immutable provenance")
+                source = bundle["artifacts"][path]
+                evidence["sources"].append({"name": name, "url": source["source_url"], "license": source["license"]})
+                evidence["data_as_of"].append({
+                    "source": name, "fetched_at": source["fetched_at"],
+                    "snapshot_id": bundle["snapshot_hash"], "stale": True,
+                })
     ranked.sort(key=lambda row: (-row["score"]["total"], row["type"], row["ccn"]))
     for rank, row in enumerate(ranked, 1):
         row["rank"] = rank
