@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { contactLabels, type Contacts, type ContactStatus, type Provenance, type Snapshot } from "@/lib/types";
-import { createCsv, formatDate, formatPhone, parseContacts } from "@/lib/operator";
+import { createCsv, formatDateEt, formatFigure, formatPhone, parseContacts } from "@/lib/operator";
 import { CoverageMap } from "./coverage-map";
 import { EvidenceDrawer } from "./evidence-drawer";
 import { CallScript } from "./call-script";
+import { WatchBezel } from "./watch-bezel";
 
-export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, sourceRunId }: {
-  snapshot: Snapshot; provenance: Provenance; initialEvidenceOpen?: boolean; sourceRunId?: string;
+export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, initialRank, sourceRunId }: {
+  snapshot: Snapshot; provenance: Provenance; initialEvidenceOpen?: boolean; initialRank?: number; sourceRunId?: string;
 }) => {
   const [selectedId, setSelectedId] = useState(snapshot.facilities[0]?.id ?? "");
   const [contacts, setContacts] = useState<Contacts>({});
@@ -32,8 +33,9 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, so
     try {
       const stored = parseContacts(localStorage.getItem(storageKey), snapshot.facilities);
       setContacts(stored);
-      setSelectedId(initialEvidenceOpen ? snapshot.facilities[0]?.id ?? "" :
-        snapshot.facilities.find(item => !stored[item.id] || stored[item.id].status === "uncontacted")?.id ?? snapshot.facilities[0]?.id ?? "");
+      const ranked = snapshot.facilities.find(item => item.rank === initialRank);
+      setSelectedId(ranked?.id ?? (initialEvidenceOpen ? snapshot.facilities[0]?.id ?? "" :
+        snapshot.facilities.find(item => !stored[item.id] || stored[item.id].status === "uncontacted")?.id ?? snapshot.facilities[0]?.id ?? ""));
     }
     catch { setStorageError("Local contact records couldn't be read. No stored statuses have been assumed; new changes may only last for this session."); }
     setReady(true);
@@ -44,7 +46,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, so
     window.addEventListener("online", updateConnection);
     window.addEventListener("offline", updateConnection);
     return () => { window.clearInterval(timer); window.removeEventListener("online", updateConnection); window.removeEventListener("offline", updateConnection); };
-  }, [snapshot.facilities, storageKey, initialEvidenceOpen]);
+  }, [snapshot.facilities, storageKey, initialEvidenceOpen, initialRank]);
 
   const selectRow = (id: string) => {
     setSelectedId(id);
@@ -116,7 +118,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, so
           <div className="edition-note">
             <span className="eyebrow">{national ? "Audited source run" : "Retrospective / source snapshot"}</span>
             <p>{national ? "Directory and area context. No verified facility operating conditions." : <>Not a live warning.<br />Not current facility conditions.</>}</p>
-            <div className="snapshot-date"><span className="muted">Snapshot generated</span><time dateTime={snapshot.generated_at}>{formatDate(snapshot.generated_at)}</time><span className="age">{age}</span></div>
+            <div className="snapshot-date"><span className="muted">Snapshot generated</span><time dateTime={snapshot.generated_at}>{formatDateEt(snapshot.generated_at)}</time><span className="age">{age}</span></div>
           </div>
         </section>
         <div className="source-strip"><span><i className="source-dot" /> {isZetaris ? "Zetaris JDBC" : "Development PostGIS"} <span className="muted">/ {isZetaris ? "audit verified" : "Zetaris pending"}</span></span><span>Fixed policy · not clinically validated</span><span>{offline ? "Offline · loaded snapshot only" : "Local snapshot · no live refresh"}</span></div>
@@ -126,7 +128,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, so
         </div>
         <div className="sheet-meta"><p><strong>{snapshot.counts.ranked_rows}</strong> ranked <span>/</span> {snapshot.counts.refused_rows} refused <span>/</span> {snapshot.counts.source_rows} source records</p><p>{ready ? `${recorded} / ${snapshot.facilities.length} contact outcomes recorded` : "Loading local contact records…"}</p></div>
         {storageError && <p className="storage-warning" role="alert">{storageError}</p>}
-        {snapshot.selected_alert && <p className="watch-error">Official alert captured {formatDate(snapshot.selected_alert.captured_at)}. Expires {formatDate(snapshot.selected_alert.expires)}. It may expire while processing. <a href={snapshot.selected_alert.id} target="_blank" rel="noreferrer">Use the current NWS record for instructions.</a></p>}
+        {snapshot.selected_alert && <p className="watch-error">Official alert captured {formatDateEt(snapshot.selected_alert.captured_at)}. Expires {formatDateEt(snapshot.selected_alert.expires)}. It may expire while processing. <a href={snapshot.selected_alert.id} target="_blank" rel="noreferrer">Use the current NWS record for instructions.</a></p>}
         <div className="workspace">
           <section id="call-ledger" className="ledger" aria-label="Ordered facility call ledger" tabIndex={-1}>
             <div className="pane-heading"><span className="eyebrow">01 / Call order</span><span className="mono">{snapshot.facilities.length} records</span></div>
@@ -138,23 +140,26 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, so
                   const contact = contacts[item.id];
                   return <li key={item.id} data-selected={active}>
                     <button className="facility-row" onClick={() => selectRow(item.id)} aria-pressed={active}
-                      aria-label={`Rank ${item.rank}: ${item.name}, phone ${formatPhone(item.phone.value)}, score ${item.score.total.toFixed(4)}, ${contactLabels[contact?.status ?? "uncontacted"]}`}>
+                      aria-label={`Rank ${item.rank}: ${item.name}, phone ${formatPhone(item.phone.value)}, score ${formatFigure(item.score.total)}, ${contactLabels[contact?.status ?? "uncontacted"]}`}>
                       <span className="rank mono">{String(item.rank).padStart(2, "0")}</span>
-                      <span className="facility-info"><span className="facility-type">{item.type === "dialysis" ? "Dialysis" : "Nursing home"} <span>· CCN {item.ccn}</span></span><span className="facility-name">{item.name}</span><span className="facility-phone">{formatPhone(item.phone.value)}</span><span className={`contact-state ${contact && contact.status !== "uncontacted" ? "recorded" : ""}`}>{!ready ? "Loading contact status…" : contactLabels[contact?.status ?? "uncontacted"]}{active && <span className="selection-label"> · Selected call</span>}</span>{contact && <time className="contact-time" dateTime={contact.updatedAt}>{formatDate(contact.updatedAt)}</time>}</span>
-                      <span className="score mono" title={String(item.score.total)}>{item.score.total.toFixed(4)}<span className="score-bar"><i style={{ width: `${item.score.total * 100}%` }} /></span></span>
+                      <span className="facility-info"><span className="facility-type">{item.type === "dialysis" ? "Dialysis" : "Nursing home"} <span>· CCN {item.ccn}</span></span><span className="facility-name">{item.name}</span><span className="facility-phone">{formatPhone(item.phone.value)}</span><span className={`contact-state ${contact && contact.status !== "uncontacted" ? "recorded" : ""}`}>{!ready ? "Loading contact status…" : contactLabels[contact?.status ?? "uncontacted"]}{active && <span className="selection-label"> · Selected call</span>}</span>{contact && <time className="contact-time" dateTime={contact.updatedAt}>{formatDateEt(contact.updatedAt)}</time>}</span>
+                      <span className="score mono" title={String(item.score.total)}>{formatFigure(item.score.total)}<span className="score-bar"><i style={{ width: `${item.score.total * 100}%` }} /></span></span>
                     </button>
                   </li>;
                 })}
               </ol>}
-            <div className="ledger-footnote">Descending fixed score, 0–1. Prototype weights, not a prediction of harm. Manual outcomes do not reorder the list.</div>
+            <div className="ledger-footnote">Descending fixed score, 0–1, shown to 2 decimals. The evidence drawer keeps the source figure. Prototype weights, not a prediction of harm. Manual outcomes do not reorder the list.</div>
           </section>
           <section className="atlas-column" id="source-atlas" aria-label="Source response atlas">
             <CoverageMap geometry={snapshot.warning_geometry} facilities={snapshot.facilities} selectedId={selectedId} onSelect={selectRow}
               contextLabel={national ? snapshot.scenario.geometry_mode === "official_alert_polygon" ? "Official NWS alert polygon" : snapshot.selected_alert ? "County context, not the warning boundary" : "Official county boundaries, not a warning" : undefined} />
             {row && <div className="atlas-index-strip">
               <span className="index-numeral" aria-hidden="true">{String(row.rank).padStart(2, "0")}</span>
-              <div><span className="eyebrow">Selected care facility</span><strong>{row.name}</strong><span className="mono">CCN {row.ccn} / {row.lat?.toFixed(5)}, {row.lon?.toFixed(5)}</span></div>
+              <div><span className="eyebrow">Selected care facility</span><strong>{row.name}</strong><span className="mono" title={`${row.lat}, ${row.lon}`}>CCN {row.ccn} / {formatFigure(row.lat)}, {formatFigure(row.lon)}</span></div>
             </div>}
+            {row && <div className="atlas-bezel"><WatchBezel label="Ranked call order" ticks={snapshot.facilities.map(item => ({ id: item.id, label: `Jump to rank ${item.rank}, ${item.name}`, mark: String(item.rank) }))}
+              selectedId={row.id} onSelect={selectRow} centerLabel={`Focus rank ${row.rank} in the ledger`} centerMark={String(row.rank).padStart(2, "0")}
+              onCenter={() => document.querySelector<HTMLElement>(".facility-row[aria-pressed='true']")?.focus()} /></div>}
             <div className="atlas-provenance">
               <span className="eyebrow">{isZetaris ? "Source query, not model confidence" : "Source integration state"}</span>
               <p>{isZetaris ? <>Zetaris audit <code>{snapshot.data_access.zetaris_query_ids.join(", ")}</code> carries this snapshot.</> : "Direct development data. Zetaris audit attribution is not claimed."}</p>
@@ -180,16 +185,15 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, so
                   {Object.entries(contactLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                 </select>
                 <button className="primary-button" type="submit" disabled={!ready}>{ready ? "Record & next uncontacted" : "Loading local records…" }<span aria-hidden="true">→</span></button>
-                <p className="fineprint">Recorded now: {ready ? contactLabels[contacts[row.id]?.status ?? "uncontacted"] : "Loading…"}{contacts[row.id] && ` · ${formatDate(contacts[row.id].updatedAt)}`}</p>
+                <p className="fineprint">Recorded now: {ready ? contactLabels[contacts[row.id]?.status ?? "uncontacted"] : "Loading…"}{contacts[row.id] && ` · ${formatDateEt(contacts[row.id].updatedAt)}`}</p>
               </form>
             </section>}
             <p className={`action-notice ${notice ? "has-notice" : ""}`} role="status" aria-live="polite" aria-atomic="true">{notice}</p>
           </aside>
         </div>
         {snapshot.model_report && <details className="limits"><summary>Grounded drafts and retained failures</summary><p>{snapshot.model_report.accepted_facilities} grounded facility drafts. {snapshot.model_report.unresolved_facilities} unresolved. {snapshot.model_report.not_attempted_budget} not attempted because of the approved cap. {snapshot.model_report.provider_requests} Meterless requests. {snapshot.model_report.retry_recoveries} retry recoveries.</p><p>Draft failure reasons</p><pre>{JSON.stringify(snapshot.model_report.failure_reasons, null, 2)}</pre></details>}
-        <details className="limits source-limits" id="source-limits"><summary>Source limits &amp; integration state</summary><ul>{snapshot.limits.map(limit => <li key={limit}>{limit}</li>)}</ul><p>{national ? "The national fixed policy omits county plans. No archived Manatee plan or guessed plan value is applied." : "Current published NWS shapes are used; equivalence to the 2024 boundary is unverified."} ZIP DME context is not a facility patient count.</p></details>
         <section className="refusals" aria-labelledby="refusals-title"><div><span className="eyebrow">Withheld, not forgotten</span><h2 id="refusals-title">{snapshot.refused.length} records refused.</h2><p>Missing or disqualifying evidence keeps these records out of the call order.</p></div><ul>{snapshot.refused.map(item => <li key={item.ccn}><span>{item.name}</span><code>CCN {item.ccn} / {item.reason}</code></li>)}</ul></section>
-        <div className="print-limits"><h2>Snapshot limits</h2><ul>{snapshot.limits.map(limit => <li key={limit}>{limit}</li>)}</ul></div>
+        <section className="limits source-limits print-limits" id="source-limits"><h2>Snapshot limits</h2><ul>{snapshot.limits.map(limit => <li key={limit}>{limit}</li>)}</ul><p>{national ? "The national fixed policy omits county plans. No archived Manatee plan or guessed plan value is applied." : "Current published NWS shapes are used; equivalence to the 2024 boundary is unverified."} ZIP DME context is not a facility patient count.</p></section>
       </main>
       <footer className="site-footer">
         <span className="wordmark">Porch Light.</span>
@@ -198,7 +202,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, so
           <details><summary>Technology and sponsor evidence</summary>
             <p>Meterless and NVIDIA Nemotron: {snapshot.model_executions.length > 0 ? "Actual stored model drafts are identified in the row evidence drawer." : "No completed model execution in this snapshot."}</p>
             <p>Zetaris: {isZetaris ? "This snapshot carries real query references confirmed against the vendor audit database." : "Integration and query IDs are pending. This screen uses a direct PostGIS development snapshot."}</p>
-            <p>Cursor: this web implementation was built by Devin. Required Cursor build evidence isn't attached to this checkout.</p>
+            <p>Cursor: PR22 supplies the Storm Watch map and shared controls. Devin integrates the audited national workflow.</p>
           </details>
         </div>
         <span className="mono">{snapshot.county.name.toUpperCase()} / {snapshot.county.state}<br />{snapshot.scenario.event}</span>

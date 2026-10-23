@@ -51,8 +51,8 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
           <div className="table-scroll">
             <table className="terms-table"><caption className="sr-only">Actual weighted scoring terms</caption>
               <thead><tr><th>Term</th><th>Input</th><th>Weight</th><th>Contribution</th></tr></thead>
-              <tbody>{row.score.terms.map(term => <tr key={term.name}><th scope="row">{termLabels[term.name] ?? term.name}</th><td title={String(term.input)}>{term.input.toFixed(6)}</td><td>{term.weight.toFixed(2)}</td><td title={String(term.weighted)}>{term.weighted.toFixed(6)}</td></tr>)}</tbody>
-              <tfoot><tr><th colSpan={3}>Total · rank {row.rank}</th><td title={String(row.score.total)}>{row.score.total.toFixed(6)}</td></tr></tfoot>
+              <tbody>{row.score.terms.map(term => <tr key={term.name}><th scope="row">{termLabels[term.name] ?? term.name}</th><td title={String(term.input)}>{term.input.toFixed(2)}<span className="source-figure">source {term.input.toFixed(6)}</span></td><td>{term.weight.toFixed(2)}</td><td title={String(term.weighted)}>{term.weighted.toFixed(2)}<span className="source-figure">source {term.weighted.toFixed(6)}</span></td></tr>)}</tbody>
+              <tfoot><tr><th colSpan={3}>Total · rank {row.rank}</th><td title={String(row.score.total)}>{row.score.total.toFixed(2)}<span className="source-figure">source {row.score.total.toFixed(6)}</span></td></tr></tfoot>
             </table>
           </div>
           <p className="fineprint">Policy: <code>{row.score.formula_version}</code></p>
@@ -81,7 +81,7 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
             <dt>SVI artifact</dt><dd><code>{row.evidence.svi_artifact_path}</code></dd>
             <dt>Geography artifact</dt><dd><code>{row.evidence.geography_artifact_path}</code></dd>
             <dt>Location method</dt><dd>{String(geography.coordinate_source ?? "Not provided")}. Address-match quality: {String(geography.address_match_quality ?? "not provided")}. Operator review required.</dd>
-            <dt>Coordinates</dt><dd>{row.lat ?? "unknown"}, {row.lon ?? "unknown"}</dd>
+            <dt>Coordinates</dt><dd>{typeof row.lat === "number" ? row.lat.toFixed(2) : "unknown"}, {typeof row.lon === "number" ? row.lon.toFixed(2) : "unknown"}<span className="source-figure">source {row.lat ?? "unknown"}, {row.lon ?? "unknown"}</span></dd>
           </dl>
           <ul className="dq-list">{row.evidence.dq_results.map(result => <li key={result.rule}><span>{result.passed ? "Pass" : "Unverified"}</span><code>{result.rule}</code></li>)}</ul>
         </section>

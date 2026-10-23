@@ -118,13 +118,13 @@ blocked: none
 last update: Wed Oct 21 2026 8:20 PM ET
 
 ## Area: Web
-owner now: Devin, continuing Joe's approved implementation lane; Cursor build evidence isn't claimed
-state: local Manatee walkthrough, source evidence, contact records, CSV/print and Storm Watch remain intact. Added /nationwide and local same-origin /api/national for actual county or captured-alert jobs, with visible source failures and no sample fallback. Source selection can return a real empty call sheet. National scoring omits county plans. The original eighteen-row walkthrough now shows 15 grounded drafts and three retained failures, not eighteen claimed successes.
-next step: finish actual desktop/mobile browser verification, commit and push the web feature batches, then attach the completed county/model sweep report. The full 3,235-county sweep is still running.
-branch: devin/web-manatee, private PR21 stacked on engine PR18 and data PR23. Joe owns all merges.
-how to run: build/typecheck from web, then Start-Local.ps1 with -EngineRoot pointing to the integrated engine checkout. The launcher checks the existing listener and weather worker before starting anything. POST model operations require matching loopback Host and Origin. Long source/model jobs publish checksummed checkpoints instead of holding a page request open.
-blocked: continuous hosting, shared multi-operator coordination, verified facility conditions, clinical validation, operator usefulness and genuine Cursor development evidence aren't established. No public deployment or paid calls.
-last update: Fri Oct 23 2026, local national workflow verification in progress
+owner now: Devin integrates the national workflow and verifies the local runtime; Cursor authored PR22's MapLibre map and shared controls
+state: PR22's real NWS alert panel opens on desktop and mobile with original instructions, source IDs and keyboard focus. Cursor's Storm Glass Desk direction remains shared across home, call sheet and Storm Watch. IEM radar PNGs and clock metadata now use captured original bytes, checksums and actual Zetaris receipts instead of direct browser data reads. A source selector provides accessible evidence when mobile pins overlap. Spatial membership remains in the actual national PostGIS/Zetaris chain, not a browser estimate. National selection, honest empty counties, source-gap recovery, contact records, CSV/print and live call scripts remain intact. Manatee retains 18 ranks, two refusals, 15 accepted drafts and three retained failures.
+next step: finish the full post-integration browser suite and push the reviewed branch, then attach the completed county/model sweep report. The full 3,235-county sweep is still running.
+branch: devin/web-manatee integrates cursor/stormwatch-design from private PR22 and remains stacked on engine PR18 and data PR23. Joe owns the main-branch merge.
+how to run: build/typecheck from web, then Start-Local.ps1 with -EngineRoot pointing to the integrated engine checkout. Register the radar source projection once as documented in engines/README.md. The launcher checks the listener and weather worker before starting anything. POST model operations require matching loopback Host and Origin. Long jobs publish checksummed checkpoints instead of holding a page request open.
+blocked: continuous hosting, shared multi-operator coordination, verified facility conditions, clinical validation and measured operator usefulness aren't established. Basemap cartography is external reference, not cited hazard or facility evidence. No public deployment or paid calls.
+last update: Fri Oct 23 2026, real alert interaction verified at 1280px and 375px; post-integration suite in progress
 
 ## Area: Docs
 owner now: Devin for the bounded private documentation pass; Hackathon Desk remains primary

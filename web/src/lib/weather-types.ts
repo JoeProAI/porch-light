@@ -15,6 +15,7 @@ export type RadarMaps = {
 };
 
 export type OfficialAlert = {
+  status?: string | null;
   id: string;
   event: string | null;
   severity: string | null;

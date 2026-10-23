@@ -61,7 +61,7 @@ export const CoverageMap = ({ geometry, facilities, selectedId, onSelect, contex
           <g className="atlas-compass" aria-hidden="true"><path d="M 36 70 V 36 M 31 43 L 36 36 L 41 43" /><text x="32" y="27">N</text></g>
           {[100, 200, 300, 400, 500].map(x => {
             const [lon] = projection.unproject([x, 400]);
-            return Number.isFinite(lon) ? <text key={x} x={x} y="473" textAnchor="middle" className="map-axis">{Math.abs(lon).toFixed(3)} {lon < 0 ? "W" : "E"}</text> : null;
+            return Number.isFinite(lon) ? <text key={x} x={x} y="473" textAnchor="middle" className="map-axis">{Math.abs(lon).toFixed(2)} {lon < 0 ? "W" : "E"}</text> : null;
           })}
           <text x="27" y="447" className="map-direction">SOURCE GEOMETRY / NOT RADAR</text>
           {selected && <g className="source-index-plate" aria-hidden="true">

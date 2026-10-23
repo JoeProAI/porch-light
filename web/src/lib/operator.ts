@@ -4,6 +4,17 @@ export const formatDate = (value: string): string => new Intl.DateTimeFormat("en
   dateStyle: "medium", timeStyle: "short", timeZone: "UTC",
 }).format(new Date(value)) + " UTC";
 
+export const formatDateEt = (value: string): string => {
+  const parsed = Date.parse(value);
+  if (!Number.isFinite(parsed)) return "Time unavailable";
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium", timeStyle: "short", timeZone: "America/New_York",
+  }).format(parsed) + " ET";
+};
+
+export const formatFigure = (value: number | null | undefined): string =>
+  typeof value === "number" && Number.isFinite(value) ? value.toFixed(2) : "unknown";
+
 export const formatPhone = (value?: string): string => {
   if (!value) return "Phone unavailable";
   const digits = value.replace(/\D/g, "");

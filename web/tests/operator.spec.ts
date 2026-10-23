@@ -75,11 +75,11 @@ test("main site acknowledges sponsor roles and independent resources without fal
   await expect(page.getByRole("heading", { name: "Built with Zetaris, Meterless and Nemotron." })).toBeVisible();
   await expect(page.locator(".sponsor-ledger")).toContainText("7 distinct audited statements");
   await expect(page.locator(".sponsor-ledger")).toContainText("15 actual stored texts / 18 ranked facilities");
-  await expect(page.locator(".sponsor-ledger")).toContainText("authored by Devin");
+  await expect(page.locator(".sponsor-ledger")).toContainText("Cursor's cloud agent authored");
   await expect(page.locator(".sponsor-ledger")).toContainText("joined in Zetaris SQL");
   await expect(page.locator(".sponsor-ledger")).toContainText("15 grounded, 3 unresolved");
   await expect(page.locator(".sponsor-ledger")).toContainText("retained failures");
-  await expect(page.locator(".sponsor-ledger")).toContainText("Required build evidence remains missing");
+  await expect(page.locator(".sponsor-ledger")).toContainText("Actual Cursor-authored code and cloud build evidence");
   await expect(page.locator("#resources")).toContainText("not partnerships, endorsements or integrations");
   await expect(page.locator(".resource-list > li")).toHaveCount(6);
   const targets = await page.locator(".resource-list a").evaluateAll(links => links.map(link => ({

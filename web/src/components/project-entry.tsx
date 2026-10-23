@@ -4,6 +4,7 @@ import { createProjection, formatPhone, hasCoordinates } from "@/lib/operator";
 import type { Snapshot } from "@/lib/types";
 import { ResourceLinks } from "./resource-links";
 import { SponsorEvidence } from "./sponsor-evidence";
+import { WatchBezel } from "./watch-bezel";
 
 export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
   const first = snapshot.facilities[0];
@@ -40,6 +41,8 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
               <h2>{first.name}</h2>
               <p className="preview-phone">{formatPhone(first.phone.value)}</p>
               <p className="preview-context">First in this prototype snapshot. Inspect its source records and score before acting.</p>
+              <WatchBezel label="Open a ranked facility on the call sheet" ticks={snapshot.facilities.map(item => ({ id: item.id, label: `Open rank ${item.rank}, ${item.name}`, mark: String(item.rank), href: `/operate?rank=${item.rank}` }))}
+                selectedId={first.id} centerHref={`/operate?rank=${first.rank}`} centerLabel={`Open rank ${first.rank}, ${first.name}`} centerMark={String(first.rank).padStart(2, "0")} />
               <div className="preview-map" aria-label="Actual facility and warning-zone geometry">
                 <svg viewBox="0 0 600 400" role="img" aria-label="Published NWS zone shapes and real facility source points">
                   <defs><clipPath id="entry-map-clip"><rect width="600" height="400" /></clipPath></defs>
