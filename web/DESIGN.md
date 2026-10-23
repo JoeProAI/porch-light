@@ -67,9 +67,8 @@ No purple. No white SaaS gradient. No gradient used as a brand.
 
 It is a ring of real ticks with a center control. On a narrow viewport the same ticks become a horizontal row of 44-pixel targets so the hit size survives. Arrow keys move along the ticks. The active tick is the lamp.
 
-- **Storm Watch.** Each tick is one Iowa Environmental Mesonet radar layer, from 50 minutes before the latest composite through the latest composite. The center plays or pauses the loop. The clock beside it shows Eastern Time derived only when the IEM scan time was actually read: scan time minus that layer’s offset, labeled as a derivation. If the clock cannot be read, the page shows the layer offset and says the composite time is unavailable. It does not invent a timestamp.
-- **Call sheet.** Each tick is one ranked facility from the snapshot. Choosing a tick selects that row, the same selection the ledger uses. The center numeral is the selected rank.
-- **Home.** Each tick is a link to `/operate?rank=N` for a real ranked row. The center opens rank 01. The preview does not invent a nineteenth facility.
+- **Storm Watch.** Each tick is one Iowa Environmental Mesonet radar layer, from 50 minutes before the latest composite through the latest composite. Eleven ticks fit a ring at 768 and wider, with a 44-pixel hit and a gap so the targets do not cover each other. Under 768 the same ticks are a row. The center plays or pauses the loop. The clock beside it shows Eastern Time derived only when the IEM scan time was actually read: scan time minus that layer’s offset, labeled as a derivation. If the clock cannot be read, the page shows the layer offset and says the composite time is unavailable. It does not invent a timestamp.
+- **Call sheet and home.** Eighteen ranked rows do not fit a ring without overlapping hits, so the same tick grammar stays a row at every width. On the call sheet, choosing a tick selects that row. The center numeral returns focus to the selected ledger row. On the home page each tick is a link to `/operate?rank=N` for a real ranked row, and the center opens rank 01. The preview does not invent a nineteenth facility.
 
 The bezel is the only ornament, and it is a control. It is not a spinner, a chatbot, or a decorative orbit.
 

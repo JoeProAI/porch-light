@@ -30,7 +30,7 @@ export const renderShareImage = async (): Promise<Response> => {
             <div key={row.id} style={{ display: "flex", alignItems: "center", gap: 16, borderTop: `1px solid ${colors.surface}`, padding: "14px 0", color: row.rank === 1 ? colors.accent : colors.text }}>
               <span style={{ fontSize: 23, width: 30 }}>{String(row.rank).padStart(2, "0")}</span>
               <span style={{ fontSize: 16, flex: 1 }}>{row.name}</span>
-              <span style={{ fontSize: 18 }}>{row.score.total.toFixed(4)}</span>
+              <span style={{ fontSize: 18 }}>{row.score.total.toFixed(2)}</span>
             </div>
           ))}
         </div>

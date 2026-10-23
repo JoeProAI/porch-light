@@ -8,7 +8,10 @@ export default defineConfig({
   reporter: "list",
   use: {
     baseURL: "http://127.0.0.1:3101",
-    launchOptions: { executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe" },
+    launchOptions: {
+      executablePath: process.env.PLAYWRIGHT_CHROME ?? "C:/Program Files/Google/Chrome/Application/chrome.exe",
+      args: process.env.PLAYWRIGHT_CHROME ? ["--use-gl=angle", "--use-angle=swiftshader"] : [],
+    },
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     contextOptions: { reducedMotion: "reduce" },

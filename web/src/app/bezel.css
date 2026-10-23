@@ -1,0 +1,29 @@
+.watch-bezel { min-width: 0; max-width: 100%; }
+.bezel-circular { position: relative; width: 240px; height: 240px; }
+.bezel-plot { position: absolute; inset: 0; width: 100%; height: 100%; }
+.bezel-plot circle { fill: none; stroke: var(--line); stroke-width: 1; }
+.bezel-plot line { stroke: var(--color-accent); stroke-width: 2; }
+.bezel-plot g { transition: transform var(--duration-base) var(--ease-out); }
+.bezel-tick, .bezel-step, .bezel-center {
+  display: grid; place-items: center; min-width: 44px; min-height: 44px; padding: 0;
+  border: 1px solid var(--line); background: var(--color-bg); color: var(--color-text);
+  font: 12px/1 var(--font-mono); text-decoration: none;
+}
+.bezel-tick { position: absolute; width: 44px; height: 44px; transform: translate(-50%, -50%); }
+.bezel-center { position: absolute; left: 50%; top: 50%; width: 72px; height: 72px; transform: translate(-50%, -50%); z-index: 1; font: 16px/1 var(--font-display); letter-spacing: -.04em; background: var(--color-surface); }
+.bezel-linear .bezel-center { position: static; transform: none; width: auto; min-width: 64px; height: 44px; }
+.bezel-tick[aria-pressed="true"], .bezel-step[aria-pressed="true"], .bezel-tick[aria-current="true"], .bezel-step[aria-current="true"], .bezel-center[aria-pressed="true"] {
+  background: var(--color-accent); color: var(--color-bg); border-color: var(--color-accent);
+}
+.bezel-tick:hover, .bezel-step:hover, .bezel-center:hover { border-color: var(--color-accent); }
+.bezel-tick:active, .bezel-step:active, .bezel-center:active { background: var(--color-focus); color: var(--color-bg); }
+.bezel-center:disabled { opacity: .5; }
+.bezel-linear { display: none; gap: 6px; overflow-x: auto; padding: 4px 2px 10px; scrollbar-width: thin; }
+.watch-bezel.is-row .bezel-circular { display: none; }
+.watch-bezel.is-row .bezel-linear { display: flex; }
+@media (max-width: 767px) {
+  .watch-bezel.is-ring .bezel-circular { display: none; }
+  .watch-bezel.is-ring .bezel-linear { display: flex; }
+}
+.atlas-bezel { min-width: 0; max-width: 100%; padding: 8px 0 4px; border-bottom: 1px solid var(--line); }
+.first-call-preview .watch-bezel { margin-top: 16px; }
