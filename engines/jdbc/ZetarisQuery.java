@@ -1,7 +1,9 @@
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,9 +18,11 @@ import java.util.Properties;
 
 public class ZetarisQuery {
     public static void main(String[] args) {
+        System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
+        System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
         Gson gson = new Gson();
         try {
-            JsonObject request = gson.fromJson(new InputStreamReader(System.in), JsonObject.class);
+            JsonObject request = gson.fromJson(new InputStreamReader(System.in, StandardCharsets.UTF_8), JsonObject.class);
             Properties credentials = new Properties();
             credentials.setProperty("user", System.getenv("PORCHLIGHT_ZETARIS_USER"));
             credentials.setProperty("password", System.getenv("PORCHLIGHT_ZETARIS_PASSWORD"));

@@ -1,13 +1,36 @@
 """Local licensed JDBC bridge. Credentials never enter SQL, JSON or process arguments."""
 
 import json
+import hashlib
 import os
 import subprocess
+import tempfile
+import threading
 import time
 from pathlib import Path
 from uuid import uuid4
 
 ROOT = Path(__file__).resolve().parents[1]
+BRIDGE_LOCK = threading.Lock()
+
+
+def compiled_bridge(jar: Path) -> Path:
+    source = ROOT / "engines/jdbc/ZetarisQuery.java"
+    identity = hashlib.sha256(source.read_bytes() + str(jar.resolve()).encode() +
+                              str(jar.stat().st_mtime_ns).encode()).hexdigest()
+    target = Path.home() / ".porchlight/jdbc-cache" / identity
+    target.mkdir(parents=True, exist_ok=True)
+    with BRIDGE_LOCK:
+        if not (target / "ZetarisQuery.class").exists():
+            with tempfile.TemporaryDirectory(dir=target, prefix="compile-") as temporary:
+                result = subprocess.run(
+                    ["javac", "-encoding", "UTF-8", "-cp", str(jar), "-d", temporary, str(source)],
+                    capture_output=True, timeout=60,
+                )
+                if result.returncode:
+                    raise RuntimeError("The licensed JDBC bridge couldn't compile; private output withheld")
+                os.replace(Path(temporary) / "ZetarisQuery.class", target / "ZetarisQuery.class")
+    return target
 
 
 def private_settings() -> dict[str, str]:
@@ -40,7 +63,7 @@ def jdbc_query(sql: str) -> dict:
     }
     try:
         result = subprocess.run(
-            ["java", "--class-path", str(jar), str(ROOT / "engines/jdbc/ZetarisQuery.java")],
+            ["java", "--class-path", os.pathsep.join((str(compiled_bridge(jar)), str(jar))), "ZetarisQuery"],
             input=json.dumps({"sql": sql}), capture_output=True, text=True,
             encoding="utf-8", env=environment, timeout=180,
         )
@@ -77,7 +100,7 @@ def audit_rows(correlation: str) -> list[dict]:
     result = subprocess.run([
         "docker", "exec", "zetaris-postgres-1", "psql", "-X", "-U", user,
         "-d", "audit", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-c", sql,
-    ], capture_output=True, text=True, timeout=20)
+    ], capture_output=True, text=True, encoding="utf-8", timeout=20)
     if result.returncode:
         raise RuntimeError("Zetaris audit lookup failed; private output withheld")
     return json.loads(result.stdout)
