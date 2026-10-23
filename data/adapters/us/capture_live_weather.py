@@ -13,6 +13,7 @@ from uuid import uuid4
 
 from data.provenance.sidecar import sha256_of, verify, write_sidecar
 from data.snapshot.db import psql
+from data.adapters.us.capture_radar_maps import capture_maps
 
 ALERT_URL = "https://api.weather.gov/alerts/active"
 RADAR_URL = "https://radar.weather.gov/ridge/standard/CONUS-LARGE_loop.gif"
@@ -120,6 +121,13 @@ def capture() -> dict:
             "Follow the original official warning instructions.",
         ],
     }
+    try:
+        payload["radar_maps"] = capture_maps(folder)
+    except Exception as error:
+        payload["radar_maps"] = {
+            "available": False, "error_type": type(error).__name__,
+            "detail": "Transparent radar source unavailable; original official loop remains separate.",
+        }
     payload_hex = json.dumps(payload, ensure_ascii=True).encode().hex()
     psql(
         "BEGIN;"
