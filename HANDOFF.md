@@ -89,11 +89,11 @@ last update: Thu Oct 22 2026 9:42 AM ET
 
 ## Area: Engines
 owner now: Devin, takeover approved by Joe
-state: real cross-source Zetaris chain, seven distinct audited statements; SQL counts reproduce 18 ranks and two refusals.
+state: Manatee retains 18 deterministic ranks and two refusals with seven distinct audited statements. Every ranked facility has a grounding result: 15 accepted drafts, three retained failures that exhausted their sole retry. National county discovery and official-alert point coverage are implemented against separately projected CMS, Census, SVI and emPOWER relations, with individual audit IDs and SQL match counts.
 branch: devin/engines-manatee, PR18; Joe merges.
-how to run: engines/README.md; original bundle mode remains explicit, with no fallback.
-next step: all-row grounded drafts and live call scripts. Joe approved at most seven new Meterless/Nemotron requests, 4096 output tokens each, no retries or Modal.
-blocked: local GPU inference is unverified; all source relations currently share one physical PostGIS datasource.
+how to run: engines/README.md; national_jobs supplies asynchronous county/alert jobs and source-verified live call scripts. The JDBC bridge preserves UTF-8 and caches compiled bytecode outside Git. Original bundle mode remains explicit, with no fallback.
+next step: finish the full 3,235-county sweep, including all 639 counties mapped to its frozen active-alert feed and 500 seeded random additional counties. Preserve per-county timings, source refusals, unmapped alerts and every failed draft. The run isn't complete yet.
+blocked: local GPU inference and clinical validation remain unverified; all source relations currently share one physical PostGIS datasource. Joe approved up to 2,000 total Meterless request attempts, including retries, on the free NVIDIA Nemotron route. Each failed draft gets at most one linked retry. Provider/cost violations block further calls. OpenRouter backup stays disabled because no enforceable paid fallback was enabled. No Modal or paid execution.
 
 ### Nightshift setup and operator use
 
