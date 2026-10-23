@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import re
 
 from engines.zetaris_client import audited_query
 
@@ -16,15 +17,27 @@ def register_view() -> dict:
         "SELECT payload_json FROM porch_light.live_weather_capture "
         "ORDER BY captured_at DESC LIMIT 1"
     )
-    return {"view": VIEW, "setup_audit": response["audit"]}
+    assets = audited_query(
+        "CREATE DATASOURCE VIEW porchlight_weather_captures_v1 FROM porchlight_postgis AS "
+        "SELECT capture_id,payload_json FROM porch_light.live_weather_capture"
+    )
+    return {"view": VIEW, "setup_audit": response["audit"], "asset_setup_audit": assets["audit"]}
 
 
-def read_live_weather() -> dict:
-    response = audited_query(STATEMENT)
+def read_live_weather(capture_id: str | None = None) -> dict:
+    if capture_id is not None and not re.fullmatch(r"[a-f0-9]{64}", capture_id):
+        raise ValueError("Invalid immutable capture reference")
+    statement = STATEMENT if capture_id is None else (
+        "SELECT payload_json FROM porchlight_postgis.porchlight_weather_captures_v1 "
+        f"WHERE capture_id='{capture_id}'"
+    )
+    response = audited_query(statement)
     rows = response.get("rows", [])
     if len(rows) != 1 or not isinstance(rows[0].get("payload_json"), str):
         raise RuntimeError("No real published weather capture is available")
     weather = json.loads(rows[0]["payload_json"])
+    if capture_id is not None and weather.get("capture_id") != capture_id:
+        raise RuntimeError("Weather source identity differs from requested capture")
     if weather.get("schema_version") != "porch-light.live-weather.v1":
         raise RuntimeError("Unexpected weather publication schema")
     if not isinstance(weather.get("alerts"), list) or not weather.get("capture_id"):
@@ -47,9 +60,10 @@ def read_live_weather() -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--register-view", action="store_true")
+    parser.add_argument("--capture-id")
     args = parser.parse_args()
     try:
-        result = register_view() if args.register_view else read_live_weather()
+        result = register_view() if args.register_view else read_live_weather(args.capture_id)
     except Exception as error:
         print(json.dumps({
             "error": "Live weather data unavailable. No source or data-access fallback.",
