@@ -1,12 +1,22 @@
 param(
     [ValidateRange(1, 288)][int]$Captures = 288,
     [ValidateRange(300, 3600)][int]$Interval = 300,
+    [string]$EngineRoot,
     [switch]$SkipWeather
 )
 
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 $web = Join-Path $root "web"
+if (-not $EngineRoot) {
+    $EngineRoot = if (Test-Path (Join-Path $root "engines\national_jobs.py")) { $root } else {
+        Join-Path (Split-Path $root -Parent) "porch-light-engines"
+    }
+}
+if (-not (Test-Path (Join-Path $EngineRoot "engines\national_jobs.py"))) {
+    throw "The national engine source isn't available. Set -EngineRoot to the integrated engine checkout."
+}
+$env:PORCHLIGHT_ENGINE_ROOT = (Resolve-Path $EngineRoot).Path
 if (-not (Test-Path (Join-Path $web ".next\BUILD_ID"))) {
     throw "A production build is required. Run npm run build from $web, then run this launcher again."
 }
@@ -36,7 +46,7 @@ if (-not $SkipWeather) {
         $python = (Get-Command python -ErrorAction Stop).Source
         $capture = Start-Process -FilePath $python `
             -ArgumentList @("-u", "-m", "data.adapters.us.capture_live_weather", "--interval", "$Interval", "--max-captures", "$Captures") `
-            -WorkingDirectory $root -WindowStyle Hidden -PassThru `
+            -WorkingDirectory $env:PORCHLIGHT_ENGINE_ROOT -WindowStyle Hidden -PassThru `
             -RedirectStandardOutput (Join-Path $logs "$stamp-weather.out.log") `
             -RedirectStandardError (Join-Path $logs "$stamp-weather.err.log")
         Write-Output "Started official weather worker $($capture.Id): $Captures attempts, at least $Interval seconds apart."

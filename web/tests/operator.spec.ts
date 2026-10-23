@@ -27,6 +27,7 @@ test("storm-care direction drives typography and real archived imagery", async (
   expect(actual.display).toContain("Libre Baskerville");
   expect(actual.body).toContain("Alegreya Sans");
   if (await page.evaluate(() => innerWidth < 768)) {
+    await expect(page.locator(".phone-line")).toBeVisible();
     const phone = await page.locator(".phone-line").boundingBox();
     expect(phone).not.toBeNull();
     expect(phone!.y + phone!.height).toBeLessThan(812);
@@ -73,10 +74,11 @@ test("main site acknowledges sponsor roles and independent resources without fal
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Built with Zetaris, Meterless and Nemotron." })).toBeVisible();
   await expect(page.locator(".sponsor-ledger")).toContainText("7 distinct audited statements");
-  await expect(page.locator(".sponsor-ledger")).toContainText("3 actual stored drafts / 18 ranked facilities");
+  await expect(page.locator(".sponsor-ledger")).toContainText("15 actual stored texts / 18 ranked facilities");
   await expect(page.locator(".sponsor-ledger")).toContainText("authored by Devin");
   await expect(page.locator(".sponsor-ledger")).toContainText("joined in Zetaris SQL");
-  await expect(page.locator(".sponsor-ledger")).toContainText("One stored model call produced drafts for ranks 1 to 3");
+  await expect(page.locator(".sponsor-ledger")).toContainText("15 grounded, 3 unresolved");
+  await expect(page.locator(".sponsor-ledger")).toContainText("retained failures");
   await expect(page.locator(".sponsor-ledger")).toContainText("Required build evidence remains missing");
   await expect(page.locator("#resources")).toContainText("not partnerships, endorsements or integrations");
   await expect(page.locator(".resource-list > li")).toHaveCount(6);
@@ -85,7 +87,7 @@ test("main site acknowledges sponsor roles and independent resources without fal
   })));
   expect(targets.every(link => link.href.startsWith("https://") && link.target === "_blank" && link.rel?.includes("noreferrer"))).toBe(true);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.getByRole("link", { name: "Read a genuine draft" }).click();
+  await page.getByRole("link", { name: "Inspect draft status and trace" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.getByRole("dialog")).toContainText("Zetaris audit verified");
   await expect(page.getByRole("dialog")).toContainText("Seven statements. Seven audit records.");
@@ -96,7 +98,14 @@ test("actual bytes, deterministic terms, projection and local record validation"
   expect(createHash("sha256").update(await readFile("data/manatee-ranked.json")).digest("hex")).toBe(provenance.sha256);
   expect(snapshot.facilities).toHaveLength(18);
   expect(snapshot.refused).toHaveLength(2);
-  expect(snapshot.facilities.filter(row => row.evidence.model_explanation != null)).toHaveLength(3);
+  const modelRecords = snapshot.facilities.map(row => row.evidence.model_explanation as Record<string, unknown>);
+  expect(modelRecords.filter(row => row.status === "passed")).toHaveLength(15);
+  const rejected = modelRecords.filter(row => row.status === "failed");
+  expect(rejected).toHaveLength(3);
+  for (const record of rejected) {
+    expect(record.text).toBeNull();
+    expect(record.attempts).toHaveLength(2);
+  }
   expect(snapshot.facilities.map(row => row.rank)).toEqual(Array.from({ length: 18 }, (_, i) => i + 1));
   for (const row of snapshot.facilities) {
     expect(row.score.terms.reduce((sum, term) => sum + term.weighted, 0)).toBeCloseTo(row.score.total, 12);
@@ -144,7 +153,7 @@ test("real ledger, synchronized selection, keyboard evidence and no browser erro
   } else {
     await expect(dialog).toContainText("Zetaris integration pending");
   }
-  await expect(dialog).toContainText("Draft / operator review required");
+  await expect(dialog).toContainText("No approved draft / failure retained");
   await expect(dialog).toContainText("nvidia/nemotron-3.5-super-vl-120b-a12b");
   for (const source of snapshot.facilities[2].evidence.sources) await expect(dialog.getByRole("link", { name: source.name })).toHaveAttribute("href", source.url);
   await page.keyboard.press("Escape");
