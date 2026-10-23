@@ -26,6 +26,9 @@ test("zoomable radar assets close actual source hashes and Zetaris receipts with
   for (const key of ["nexrad-n0q-900913/4/16/0.png", "nexrad-n0q-900913-m01m/4/1/1.png"]) {
     expect((await request.get(`/api/weather/radar-assets/${key}`)).status()).toBe(400);
   }
+  for (const key of ["constructor", "__proto__", "unknown.mjs"]) {
+    expect((await request.get(`/vendor/${key}`)).status()).toBe(404);
+  }
 });
 
 const waitForChart = async (page: import("@playwright/test").Page) => {

@@ -11,8 +11,8 @@ const files: Record<string, string> = {
 
 export const GET = async (_request: Request, context: { params: Promise<{ file: string }> }): Promise<Response> => {
   const { file } = await context.params;
+  if (!Object.hasOwn(files, file)) return new Response("Unknown map library file.", { status: 404 });
   const name = files[file];
-  if (!name) return new Response("Unknown map library file.", { status: 404 });
   const bytes = await readFile(/* turbopackIgnore: true */ join(process.cwd(), "node_modules/maplibre-gl/dist", name));
   return new Response(new Uint8Array(bytes), {
     headers: {
