@@ -44,6 +44,8 @@ Results stay under `%USERPROFILE%\.porchlight\national\sweeps`. `report.json`, `
 
 Checks: `python -m unittest engines.test_grounded_drafts engines.test_national engines.test_zetaris -v`. Live tests require the actual licensed local Zetaris installation. They don't fabricate data or provider success.
 
+`python -m engines.sweep_report --folder <existing-private-sweep-folder> --output engines/reports/national-sweep-2026-10-23.md --wait` summarizes the source phase without waiting for model generation. It requires every county in the real catalog, verifies checkpoint checksums and distinct closed statement audits, and refuses to publish a partial result as final. The Markdown contains aggregate outcomes, facility coverage, p50/p95 timings, SQL join counts and honest gaps. Raw checkpoints remain private. Its pass rate measures completed source chains, not successful ranking or clinical usefulness.
+
 ## Audited Map Radar
 
 The MapLibre integration uses IEM NEXRAD tiles and a separate scan clock. `python -m engines.radar_assets --register` captures the real clock and registers its read-only source projection once. Runtime asset batches capture up to forty allowlisted source keys, publish immutable hashes/paths, then read them through Zetaris. The app verifies bytes and provenance again before serving local PNGs. No browser reads radar or scan data directly from the upstream provider. Source caches last at most five minutes; missing assets fail visibly without replacement echoes.
