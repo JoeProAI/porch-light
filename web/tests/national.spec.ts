@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import snapshot from "../data/manatee-ranked.json";
+import { searchCounties, type CountyRecord } from "../src/lib/county-search";
 
 test("national source catalog exposes real geography and closed audit references", async ({ page, request }) => {
   test.setTimeout(180000);
@@ -9,10 +10,14 @@ test("national source catalog exposes real geography and closed audit references
   expect(value).toMatchObject({
     catalog: { data_access: { data_access_mode: "zetaris" } },
   });
-  const catalog = value as { catalog: { counties: { fips: string; name: string }[]; data_access: { zetaris_query_ids: string[] } } };
+  const catalog = value as { catalog: { counties: CountyRecord[]; data_access: { zetaris_query_ids: string[] } } };
   expect(catalog.catalog.counties).toHaveLength(3235);
   expect(catalog.catalog.counties.find(row => row.fips === "35013")?.name).toBe("Doña Ana");
   expect(catalog.catalog.data_access.zetaris_query_ids.every(id => /^\d+$/.test(id))).toBe(true);
+  expect(searchCounties(catalog.catalog.counties, "Dona Ana County").map(row => row.fips)).toEqual(["35013"]);
+  expect(searchCounties(catalog.catalog.counties, "Jefferson").length).toBeGreaterThan(1);
+  expect(searchCounties(catalog.catalog.counties, "01003").map(row => row.fips)).toEqual(["01003"]);
+  expect(searchCounties(catalog.catalog.counties, "No such county in this real source")).toEqual([]);
   await page.goto("/nationwide");
   await expect(page.getByLabel("State or territory")).toBeEnabled({ timeout: 160000 });
   await page.getByLabel("State or territory").selectOption("CT");
@@ -23,6 +28,10 @@ test("national source catalog exposes real geography and closed audit references
   await expect(page.getByLabel("County or county-equivalent")).toBeFocused();
   const focus = await page.getByLabel("County or county-equivalent").evaluate(node => getComputedStyle(node).outlineStyle);
   expect(focus).not.toBe("none");
+  await page.getByRole("searchbox", { name: "Search US counties by name or FIPS" }).fill("Dona Ana County");
+  await page.getByRole("button", { name: "Doña Ana, NM / 35013", exact: true }).click();
+  await expect(page.getByLabel("State or territory")).toHaveValue("NM");
+  await expect(page.getByLabel("County or county-equivalent")).toHaveValue("35013");
 });
 
 test("a real empty county stays empty and source failures have recovery", async ({ page }) => {
@@ -70,8 +79,8 @@ test("a sourced Alabama county runs the actual ranked workflow outside the Manat
   page.on("pageerror", error => errors.push(error.message));
   await page.goto("/nationwide");
   await expect(page.getByLabel("State or territory")).toBeEnabled({ timeout: 160000 });
-  await page.getByLabel("State or territory").selectOption("AL");
-  await page.getByLabel("County or county-equivalent").selectOption("01003");
+  await page.getByRole("searchbox", { name: "Search US counties by name or FIPS" }).fill("Baldwin");
+  await page.getByRole("button", { name: "Baldwin, AL / 01003", exact: true }).click();
   await page.getByRole("button", { name: "Build sourced call sheet and grounded drafts" }).click();
   await expect(page.locator(".facility-row")).toHaveCount(8, { timeout: 380000 });
   await expect(page.locator(".sheet-meta")).toContainText("12 source records");
@@ -88,6 +97,31 @@ test("a sourced Alabama county runs the actual ranked workflow outside the Manat
   expect(await page.locator(".facility-row strong").allTextContents()).toEqual(ranks);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(errors).toEqual([]);
+});
+
+test("a real active NWS alert runs in the nationwide app without a Manatee substitute", async ({ page, request }) => {
+  test.setTimeout(420000);
+  const response = await request.get("/api/national", { timeout: 190000 });
+  expect(response.ok()).toBe(true);
+  const catalog = await response.json() as { weather: { status: string; alerts: {
+    id: string; event: string; expires: string; county_fips: string[];
+  }[] } };
+  expect(catalog.weather.status).toBe("available");
+  const selected = catalog.weather.alerts.find(alert => alert.county_fips.length === 1 &&
+    alert.county_fips[0] !== "12081" && Date.parse(alert.expires) > Date.now() + 300000);
+  expect(selected).toBeTruthy();
+  await page.goto("/nationwide");
+  await expect(page.getByLabel("Captured live alert", { exact: true })).toBeEnabled({ timeout: 160000 });
+  await page.getByLabel("Captured live alert", { exact: true }).check();
+  await page.getByLabel("Official NWS alert", { exact: true }).selectOption(selected!.id);
+  await page.getByRole("button", { name: "Build sourced call sheet and grounded drafts" }).click();
+  const sheet = page.getByRole("region", { name: "Verified care-facility call sheet" });
+  await expect(sheet).toBeVisible({ timeout: 380000 });
+  await expect(sheet.locator(".intro")).toContainText(selected!.event);
+  await expect(sheet.locator(".watch-error a")).toHaveAttribute("href", selected!.id);
+  await expect(sheet.locator(".source-strip")).toContainText("audit verified");
+  await expect(sheet.locator(".edition")).not.toContainText("MANATEE");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
 test("live Nemotron call script carries source grounding and is retained without placing calls", async ({ page }) => {

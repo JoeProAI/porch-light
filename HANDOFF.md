@@ -229,3 +229,13 @@ Coverage: 62 source facilities, 58 geography rows, 57 current-zone covered point
 Checks: all 90 pass, including seven real SQL checks and two Git-byte regressions; secret scans and known-credential audit pass. No public port or deployment.
 Privacy: technical details remain private; approved generic HackOS copy is not posted and Mintlify is not published.
 Blocked: actual Zetaris bundle/JDBC audit, normalized policy/contract, local Nemotron, operator quality review and missing/uncertain source coverage.
+
+### Nationwide App Milestone, Oct 23 at 6:22 PM ET
+
+- `/nationwide` now supports county-name, state-abbreviation and FIPS search across the actual audited 3,235-entry source catalog. Diacritics are normalized for search; ambiguous county names require an explicit source selection.
+- Verified real Baldwin County, Alabama runs from name search, with 12 CMS rows, eight ranked facilities and four honest refusals. Verified captured active NWS warning selection in the same app on desktop and mobile, with no Manatee substitute.
+- Alert results retain separate catalog, weather-read, county-mapping, source-join and facility-warning audit receipts. Actual unmapped marine alerts produce an audited source gap instead of invented counties or facilities.
+- Source results are published before Nemotron processing completes. Model failures don't discard an already verified ranking. Meterless plus Nemotron remains exclusive, with the free NVIDIA route and a shared 2,000-attempt limit including retries.
+- Verification: production build and strict TypeScript pass; 12 nationwide browser checks and two real unmapped-alert checks pass across desktop/mobile; seven engine source/grounding/budget tests pass. No map, radar or styling implementation was changed for this milestone.
+- The full county sweep is still running. Intermediate results are not final pass rates. A separate provenance-checked source-summary observer can report the source phase without waiting for the later model phase. Raw national sources and run checkpoints stay outside Git.
+- Remaining gates: finish and commit the full measured sweep summary, verify arbitrary national top-row call scripts with retained attempt reasons, publish exact request/failure accounting, then obtain operator-usefulness evidence. No deployment, clinical validation or verified facility conditions are claimed.

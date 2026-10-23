@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import type { Provenance, Snapshot } from "@/lib/types";
 import { formatDate } from "@/lib/operator";
+import { searchCounties, type CountyRecord } from "@/lib/county-search";
 import { Operator } from "./operator";
 
-type County = { fips: string; name: string; state: string; geometry_valid?: boolean };
 type Alert = { id: string; event: string; areaDesc: string; expires: string; county_fips: string[]; mapping_status: string };
 type Catalog = {
-  catalog: { counties: County[]; data_access: { zetaris_query_ids: string[] } };
+  catalog: { counties: CountyRecord[]; data_access: { zetaris_query_ids: string[] } };
   weather: { status: string; capture_id?: string; captured_at?: string; alerts?: Alert[]; message?: string };
 };
 type Job = {
@@ -29,6 +29,7 @@ export const Nationwide = () => {
   const [job, setJob] = useState<Job | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [countyQuery, setCountyQuery] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -100,15 +101,16 @@ export const Nationwide = () => {
   };
   const states = [...new Set(catalog?.catalog.counties.map(row => row.state) ?? [])].sort();
   const counties = catalog?.catalog.counties.filter(row => row.state === state) ?? [];
+  const countyMatches = searchCounties(catalog?.catalog.counties ?? [], countyQuery);
   const selectedAlert = catalog?.weather.alerts?.find(row => row.id === alert);
   const busy = submitting || !!polling;
-  const snapshot = job?.phase === "completed" ? job.snapshot : undefined;
+  const snapshot = job?.snapshot;
   const Content = snapshot && snapshot.state !== "source_gap" ? "section" : "main";
   useEffect(() => {
-    if (job?.phase === "completed" && job.snapshot?.state !== "source_gap") {
+    if (job?.snapshot && job.snapshot.state !== "source_gap") {
       document.getElementById("national-result")?.focus();
     }
-  }, [job?.phase, job?.id, job?.snapshot?.state]);
+  }, [job?.id, !!job?.snapshot, job?.snapshot?.state]);
 
   return <>
     <div className="app-shell national-controls">
@@ -129,18 +131,33 @@ export const Nationwide = () => {
         {error && <div className="watch-error" role="alert"><p>{error}</p><button onClick={() => setRefreshKey(key => key + 1)} disabled={loading}>Retry verified source catalog</button></div>}
         {catalog && <>
           <p className="fineprint">{catalog.catalog.counties.length} official Census county entries. Zetaris catalog query {catalog.catalog.data_access.zetaris_query_ids.join(", ")}. Ranking depends on the source joins, not merely being on this list.</p>
+          {mode === "county" && <section className="contact-form" aria-label="Search the audited county catalog">
+            <label htmlFor="county-search">Search US counties by name or FIPS</label>
+            <input id="county-search" type="search" value={countyQuery} disabled={busy}
+              onChange={event => setCountyQuery(event.target.value)} placeholder="Baldwin, Doña Ana, or 01003" />
+            {!!countyQuery.trim() && <>
+              <p role="status">{countyMatches.length} matching source counties. Select the state and county you mean.</p>
+              <ul>{countyMatches.slice(0, 20).map(item => <li key={item.fips}>
+                <button type="button" disabled={busy} onClick={() => {
+                  setState(item.state); setCounty(item.fips); setCountyQuery(""); setJob(null);
+                }}>{item.name}, {item.state} / {item.fips}</button>
+              </li>)}</ul>
+              {countyMatches.length > 20 && <p className="fineprint">Showing the first 20 source matches. Add a state abbreviation to narrow the search.</p>}
+              {!countyMatches.length && <p>No source county matches this name or FIPS. Try another name or use the state list. No county is guessed.</p>}
+            </>}
+          </section>}
           <form className="contact-form" onSubmit={event => { event.preventDefault(); void start(); }}>
             <fieldset disabled={busy}><legend>Choose source scope</legend>
-              <label><input type="radio" name="source-mode" checked={mode === "county"} onChange={() => setMode("county")} /> County discovery</label>
-              <label><input type="radio" name="source-mode" checked={mode === "alert"} onChange={() => setMode("alert")} /> Captured live alert</label>
+              <label><input type="radio" name="source-mode" checked={mode === "county"} onChange={() => { setMode("county"); setJob(null); }} /> County discovery</label>
+              <label><input type="radio" name="source-mode" checked={mode === "alert"} onChange={() => { setMode("alert"); setJob(null); }} /> Captured live alert</label>
             </fieldset>
             {mode === "county" ? <>
               <label htmlFor="national-state">State or territory</label>
-              <select id="national-state" value={state} onChange={event => { setState(event.target.value); setCounty(""); }} disabled={busy} required>
+              <select id="national-state" value={state} onChange={event => { setState(event.target.value); setCounty(""); setJob(null); }} disabled={busy} required>
                 <option value="">Choose a state or territory</option>{states.map(code => <option key={code}>{code}</option>)}
               </select>
               <label htmlFor="national-county">County or county-equivalent</label>
-              <select id="national-county" value={county} onChange={event => setCounty(event.target.value)} disabled={!state || busy} required>
+              <select id="national-county" value={county} onChange={event => { setCounty(event.target.value); setJob(null); }} disabled={!state || busy} required>
                 <option value="">Choose an official county record</option>
                 {counties.map(row => <option key={row.fips} value={row.fips}>{row.name} / {row.fips}{row.geometry_valid ? "" : " / geometry unavailable"}</option>)}
               </select>
@@ -148,7 +165,7 @@ export const Nationwide = () => {
             </> : <>
               {catalog.weather.status !== "available" ? <p className="watch-error" role="alert">{catalog.weather.message} Use the official source links or choose county discovery.</p> :
                 <><label htmlFor="national-alert">Official NWS alert</label>
-                  <select id="national-alert" value={alert} onChange={event => setAlert(event.target.value)} disabled={busy} required>
+                  <select id="national-alert" value={alert} onChange={event => { setAlert(event.target.value); setJob(null); }} disabled={busy} required>
                     <option value="">Choose a captured source alert</option>
                     {catalog.weather.alerts?.map(row => <option key={row.id} value={row.id}>{row.event} / {row.areaDesc}</option>)}
                   </select>
@@ -157,7 +174,7 @@ export const Nationwide = () => {
                 </>}
             </>}
             <button className="primary-button" type="submit" disabled={busy || loading ||
-              (mode === "county" ? !county : !selectedAlert || !selectedAlert.county_fips.length)}>
+              (mode === "county" ? !county : !selectedAlert)}>
               {busy ? "Processing verified sources..." : "Build sourced call sheet and grounded drafts"}
             </button>
             <p className="fineprint">Nemotron only, through Meterless. Approved free NVIDIA route only. A failed draft is kept, retried at most once and never replaced with invented text. The shared call cap can leave drafts unattempted.</p>
@@ -168,6 +185,7 @@ export const Nationwide = () => {
             {job.total_counties !== undefined && <> {job.completed_counties} of {job.total_counties} affected counties read.</>}
             {job.eligible_facilities !== undefined && <> {job.eligible_facilities} source-eligible facilities.</>}</p>
           {job.message && <p role="alert">{job.message} No source or model fallback was fabricated.</p>}
+          {job.phase === "grounding_nemotron_drafts" && snapshot && <p>The audited call sheet is ready below. Nemotron drafts are still processing; they don't determine the ranking.</p>}
         </section>}
         {snapshot?.state === "source_gap" && <section className="watch-error" role="alert"><h2>Source gap, no ranking invented.</h2>
           <p>{snapshot.county.name}: {snapshot.reason}</p><p>Audited query {snapshot.data_access.zetaris_query_ids.join(", ")}.</p></section>}

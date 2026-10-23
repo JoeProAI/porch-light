@@ -116,9 +116,14 @@ export const readNationalRun = async (id: string): Promise<unknown> => {
     throw new Error("No verified local run checkpoint is available");
   }
   if (!record(status) || status.id !== id || typeof status.phase !== "string") throw new Error("Invalid run checkpoint");
-  if (status.phase !== "completed") return status;
-  const result = await readVerified(path.join(root, id, "snapshot.json"));
-  return { ...status, snapshot: validateResult(result.value), provenance: result.provenance };
+  if (!["grounding_nemotron_drafts", "completed", "failed"].includes(status.phase)) return status;
+  try {
+    const result = await readVerified(path.join(root, id, "snapshot.json"));
+    return { ...status, snapshot: validateResult(result.value), provenance: result.provenance };
+  } catch {
+    if (status.phase === "completed") throw new Error("The completed source result failed verification");
+    return status;
+  }
 };
 
 export const requestCallScript = async (ccn: string, run?: string): Promise<unknown> => {
