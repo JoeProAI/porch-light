@@ -3,7 +3,7 @@ import { Nationwide } from "@/components/nationwide";
 
 export const metadata: Metadata = {
   title: "National Care-Facility Outreach | Porch Light",
-  description: "Run the real audited source chain for a US county or captured NWS alert. Inspect the ranked call sheet, grounded Nemotron drafts, refusals and missing data.",
+  description: "Search any US county or an active NWS alert. Inspect the ranked call sheet, Zetaris query IDs, source gaps, and grounded Nemotron drafts.",
 };
 export const dynamic = "force-dynamic";
 export const Page = () => <Nationwide />;

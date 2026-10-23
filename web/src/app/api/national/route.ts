@@ -1,4 +1,5 @@
-import { readNationalCatalog, readNationalRun, requestCallScript, startNationalRun, validRun } from "@/lib/national-server";
+import { UNREACHABLE_MESSAGE } from "@/lib/national-gaps";
+import { NationalEngineError, readNationalCatalog, readNationalRun, requestCallScript, startNationalRun, validRun } from "@/lib/national-server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,15 +15,19 @@ const localOrigin = (request: Request): boolean => {
   return !!target && request.headers.get("origin") === target.origin &&
     !["cross-site", "same-site"].includes(request.headers.get("sec-fetch-site") ?? "");
 };
+const failed = (error: unknown, fallback: string): Response => {
+  const unreachable = error instanceof NationalEngineError && error.unreachable;
+  return Response.json({ error: unreachable ? UNREACHABLE_MESSAGE : fallback, unreachable }, { status: 503, headers });
+};
 
 export const GET = async (request: Request): Promise<Response> => {
   if (!localHost(request) || request.headers.get("sec-fetch-site") === "cross-site") return Response.json({ error: "Local-origin access required." }, { status: 403, headers });
   const id = new URL(request.url).searchParams.get("job");
   if (id !== null && !validRun(id)) return Response.json({ error: "Invalid run reference." }, { status: 400, headers });
   try { return Response.json(id ? await readNationalRun(id) : await readNationalCatalog(), { headers }); }
-  catch {
-    return Response.json({ error: id ? "No verified run result is available. No substitute data was returned." :
-      "The audited national source catalog is unavailable. No sample counties are substituted." }, { status: 503, headers });
+  catch (error) {
+    return failed(error, id ? "No verified run result is available. No substitute data was returned." :
+      "The audited national source catalog is unavailable. No sample counties are substituted.");
   }
 };
 
@@ -36,6 +41,10 @@ export const POST = async (request: Request): Promise<Response> => {
   if (!body || typeof body !== "object" || Array.isArray(body)) return Response.json({ error: "A source selection is required." }, { status: 400, headers });
   const value = body as Record<string, unknown>;
   try {
+    if (value.action === "refresh_alerts") {
+      if (Object.keys(value).length !== 1) return Response.json({ error: "Only actual source identifiers are accepted." }, { status: 400, headers });
+      return Response.json(await readNationalCatalog(true), { headers });
+    }
     if (value.action === "call_script") {
       if (typeof value.ccn !== "string" || value.run !== undefined && typeof value.run !== "string") {
         return Response.json({ error: "Select a verified facility." }, { status: 400, headers });
@@ -46,7 +55,7 @@ export const POST = async (request: Request): Promise<Response> => {
       Object.values(value).some(entry => typeof entry !== "string")) return Response.json({ error: "Only actual source identifiers are accepted." }, { status: 400, headers });
     const id = startNationalRun(value as { county?: string; alert?: string; capture?: string });
     return Response.json({ id, phase: "starting" }, { status: 202, headers });
-  } catch {
-    return Response.json({ error: "The verified operation couldn't start or complete. No fabricated model reply was substituted." }, { status: 503, headers });
+  } catch (error) {
+    return failed(error, "The verified operation couldn't start or complete. No fabricated model reply was substituted.");
   }
 };

@@ -1,53 +1,70 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Provenance, Snapshot } from "@/lib/types";
-import { formatDate } from "@/lib/operator";
+import { looksUnreachable, parseCatalog, UNREACHABLE_MESSAGE, type NationalCatalog } from "@/lib/national-gaps";
 import { Operator } from "./operator";
+import { AlertEntry } from "./national/alert-entry";
+import { CountySearch } from "./national/county-search";
+import { CatalogFailure } from "./national/engine-unreachable";
+import { JobProgress, type NationalJob } from "./national/job-progress";
+import { SourceGaps } from "./national/source-gaps";
+import "./national/national.css";
 
-type County = { fips: string; name: string; state: string; geometry_valid?: boolean };
-type Alert = { id: string; event: string; areaDesc: string; expires: string; county_fips: string[]; mapping_status: string };
-type Catalog = {
-  catalog: { counties: County[]; data_access: { zetaris_query_ids: string[] } };
-  weather: { status: string; capture_id?: string; captured_at?: string; alerts?: Alert[]; message?: string };
-};
-type Job = {
-  id: string; phase: string; message?: string; completed_counties?: number; total_counties?: number;
-  eligible_facilities?: number; snapshot?: Snapshot & { state?: string; reason?: string }; provenance?: Provenance;
-};
+type Job = NationalJob & { snapshot?: Snapshot & { state?: string; reason?: string }; provenance?: Provenance };
+type Selection = { county?: string; alert?: string; capture?: string };
 const object = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === "object" && !Array.isArray(value);
+const startedDeepLinks = new Set<string>();
+let autoAlertRefreshStarted = false;
 
 export const Nationwide = () => {
-  const [catalog, setCatalog] = useState<Catalog | null>(null);
+  const [catalog, setCatalog] = useState<NationalCatalog | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [state, setState] = useState("");
+  const [unreachable, setUnreachable] = useState(false);
   const [county, setCounty] = useState("");
   const [alert, setAlert] = useState("");
+  const [scope, setScope] = useState("combined");
   const [mode, setMode] = useState<"county" | "alert">("county");
   const [job, setJob] = useState<Job | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [runNote, setRunNote] = useState("");
+  const refreshingRef = useRef(false);
 
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
     setError("");
+    setUnreachable(false);
     void (async () => {
       try {
         const response = await fetch("/api/national", { cache: "no-store", signal: controller.signal });
         const value: unknown = await response.json();
-        if (!response.ok || !object(value) || !object(value.catalog) || !Array.isArray(value.catalog.counties)) {
-          throw new Error(object(value) && typeof value.error === "string" ? value.error : "The verified national catalog couldn't be read.");
+        const parsed = parseCatalog(value);
+        if (!response.ok || !parsed) {
+          const message = object(value) && typeof value.error === "string" ? value.error : "The verified national catalog couldn't be read.";
+          if (!controller.signal.aborted) {
+            setUnreachable(object(value) && value.unreachable === true || looksUnreachable(message));
+            setError(message);
+          }
+          return;
         }
-        setCatalog(value as unknown as Catalog);
+        if (controller.signal.aborted) return;
+        setCatalog(parsed);
         const query = new URLSearchParams(window.location.search);
         const saved = query.get("run");
+        const fips = query.get("county");
+        if (fips && /^\d{5}$/.test(fips)) setCounty(fips);
         if (saved && /^[a-f0-9]{32}$/.test(saved)) setJob({ id: saved, phase: "checking_saved_run" });
         if (query.get("alert")) { setMode("alert"); setAlert(query.get("alert")!); }
       } catch (failure) {
-        if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : "The source service is unavailable.");
+        if (!controller.signal.aborted) {
+          setUnreachable(true);
+          setError(failure instanceof Error ? failure.message : UNREACHABLE_MESSAGE);
+        }
       } finally { if (!controller.signal.aborted) setLoading(false); }
     })();
     return () => controller.abort();
@@ -63,10 +80,10 @@ export const Nationwide = () => {
         const response = await fetch(`/api/national?job=${polling}`, { cache: "no-store", signal: controller.signal });
         const value: unknown = await response.json();
         if (!response.ok || !object(value) || value.id !== polling || typeof value.phase !== "string") {
-          throw new Error("The verified job checkpoint couldn't be read. No substitute result was loaded.");
+          throw new Error(object(value) && typeof value.error === "string" ? value.error : "The verified job checkpoint couldn't be read. No substitute result was loaded.");
         }
         if (controller.signal.aborted) return;
-        setJob(value as Job);
+        setJob(current => ({ ...current, ...(value as Job) }));
         setError("");
         if (!["completed", "failed"].includes(value.phase)) timer = setTimeout(() => void poll(), 2000);
       } catch (failure) {
@@ -80,35 +97,101 @@ export const Nationwide = () => {
     return () => { controller.abort(); clearTimeout(timer); };
   }, [polling]);
 
-  const start = async () => {
-    setSubmitting(true);
+  const refreshAlerts = async () => {
+    if (refreshingRef.current) return;
+    refreshingRef.current = true;
+    setRefreshing(true);
     setError("");
     try {
-      const selection = mode === "county" ? { county } : { alert, capture: catalog?.weather.capture_id };
+      const response = await fetch("/api/national", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "refresh_alerts" }),
+      });
+      const value: unknown = await response.json();
+      const parsed = parseCatalog(value);
+      if (!response.ok || !parsed) {
+        const message = object(value) && typeof value.error === "string" ? value.error : "Active NWS alerts could not be read.";
+        setUnreachable(object(value) && value.unreachable === true || looksUnreachable(message));
+        setError(message);
+        return;
+      }
+      setUnreachable(false);
+      setCatalog(parsed);
+      setAlert(current => parsed.weather.alerts.some(row => row.id === current) ? current : "");
+    } catch (failure) {
+      setUnreachable(true);
+      setError(failure instanceof Error ? failure.message : UNREACHABLE_MESSAGE);
+    } finally {
+      refreshingRef.current = false;
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    if (autoAlertRefreshStarted || mode !== "alert" || !catalog || catalog.weather.status === "available") return;
+    autoAlertRefreshStarted = true;
+    void refreshAlerts();
+  }, [mode, catalog]);
+
+  const start = async (selection: Selection, note = "") => {
+    setSubmitting(true);
+    setError("");
+    setRunNote(note);
+    try {
       const response = await fetch("/api/national", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(selection),
       });
       const value: unknown = await response.json();
       if (!response.ok || !object(value) || typeof value.id !== "string") {
-        throw new Error(object(value) && typeof value.error === "string" ? value.error : "The source run couldn't start.");
+        const message = object(value) && typeof value.error === "string" ? value.error : "The source run couldn't start.";
+        setUnreachable(object(value) && value.unreachable === true || looksUnreachable(message));
+        throw new Error(message);
       }
       setJob({ id: value.id, phase: "starting" });
-      const query = new URLSearchParams({ run: value.id });
-      window.history.replaceState(null, "", `/nationwide?${query}`);
+      const params = new URLSearchParams({ run: value.id });
+      if (selection.county) params.set("county", selection.county);
+      if (selection.alert) params.set("alert", selection.alert);
+      window.history.replaceState(null, "", `/nationwide?${params}`);
     } catch (failure) { setError(failure instanceof Error ? failure.message : "The source run is unavailable."); }
     finally { setSubmitting(false); }
   };
-  const states = [...new Set(catalog?.catalog.counties.map(row => row.state) ?? [])].sort();
-  const counties = catalog?.catalog.counties.filter(row => row.state === state) ?? [];
-  const selectedAlert = catalog?.weather.alerts?.find(row => row.id === alert);
+
+  useEffect(() => {
+    if (!catalog) return;
+    const params = new URLSearchParams(window.location.search);
+    const fips = params.get("county");
+    if (!fips || params.get("run") || startedDeepLinks.has(fips)) return;
+    if (!/^\d{5}$/.test(fips) || !catalog.counties.some(row => row.fips === fips)) {
+      setError(`${fips} is not in the official Census catalog. No Manatee sheet was substituted.`);
+      return;
+    }
+    startedDeepLinks.add(fips);
+    setMode("county");
+    setCounty(fips);
+    void start({ county: fips });
+  }, [catalog]);
+
+  const selectedAlert = catalog?.weather.alerts.find(row => row.id === alert);
   const busy = submitting || !!polling;
   const snapshot = job?.phase === "completed" ? job.snapshot : undefined;
-  const Content = snapshot && snapshot.state !== "source_gap" ? "section" : "main";
+  const sheet = snapshot && snapshot.state !== "source_gap" && snapshot.schema_version !== "porch-light.national-gap.v1";
+  const Content = sheet ? "section" : "main";
+  const canSubmit = mode === "county" ? /^\d{5}$/.test(county) : !!selectedAlert && selectedAlert.county_fips.length > 0 &&
+    (scope === "combined" ? /^[a-f0-9]{64}$/.test(catalog?.weather.capture_id ?? "") : selectedAlert.county_fips.includes(scope));
   useEffect(() => {
-    if (job?.phase === "completed" && job.snapshot?.state !== "source_gap") {
-      document.getElementById("national-result")?.focus();
+    if (sheet) document.getElementById("national-result")?.focus();
+  }, [sheet, job?.id]);
+
+  const submit = () => {
+    if (!catalog) return;
+    if (mode === "county") { void start({ county }); return; }
+    if (!selectedAlert) return;
+    if (scope === "combined") {
+      void start({ alert: selectedAlert.id, capture: catalog.weather.capture_id });
+      return;
     }
-  }, [job?.phase, job?.id, job?.snapshot?.state]);
+    void start({ county: scope }, `This run is county discovery for ${scope}. It does not apply the alert polygon. The combined call sheet is the alert-coverage run.`);
+  };
 
   return <>
     <div className="app-shell national-controls">
@@ -119,62 +202,39 @@ export const Nationwide = () => {
       </header>
       <Content>
         <section className="intro" aria-labelledby="national-title">
-          <div className="intro-heading"><p className="eyebrow">County discovery / Official alert captures</p>
+          <div className="intro-heading"><p className="eyebrow">County discovery / Active NWS alerts</p>
             <h1 id="national-title">Find the next <em>care-facility call.</em></h1>
-            <p className="intro-description">Choose a US county or a current captured NWS alert. The real CMS, Census, SVI and emPOWER chain returns an inspectable call sheet, or the exact source gaps.</p>
+            <p className="intro-description">Search any US county, or choose a county mapped from an active NWS alert. The audited chain returns the ranked call sheet, or the exact source gaps.</p>
           </div>
           <div className="edition-note"><p>Directory records, not verified facility conditions. Prototype ranking, not clinical urgency.</p><a href="https://api.weather.gov/alerts/active" target="_blank" rel="noreferrer">Current official NWS alerts</a></div>
         </section>
         {loading && <p role="status">Reading the audited national source catalog. No sample counties are loaded.</p>}
-        {error && <div className="watch-error" role="alert"><p>{error}</p><button onClick={() => setRefreshKey(key => key + 1)} disabled={loading}>Retry verified source catalog</button></div>}
+        {!catalog && (error || unreachable) && !loading && <CatalogFailure unreachable={unreachable || looksUnreachable(error)} message={error} onRetry={() => setRefreshKey(key => key + 1)} disabled={loading} />}
+        {catalog && error && <div className="watch-error" role="alert"><p>{error} No Manatee data was substituted.</p></div>}
         {catalog && <>
-          <p className="fineprint">{catalog.catalog.counties.length} official Census county entries. Zetaris catalog query {catalog.catalog.data_access.zetaris_query_ids.join(", ")}. Ranking depends on the source joins, not merely being on this list.</p>
-          <form className="contact-form" onSubmit={event => { event.preventDefault(); void start(); }}>
+          <p className="fineprint">{catalog.counties.length.toLocaleString("en-US")} official Census county entries. Zetaris catalog query {catalog.queryIds.join(", ")}. Being listed is not a ranking.</p>
+          <form className="contact-form" onSubmit={event => { event.preventDefault(); submit(); }}>
             <fieldset disabled={busy}><legend>Choose source scope</legend>
               <label><input type="radio" name="source-mode" checked={mode === "county"} onChange={() => setMode("county")} /> County discovery</label>
-              <label><input type="radio" name="source-mode" checked={mode === "alert"} onChange={() => setMode("alert")} /> Captured live alert</label>
+              <label><input type="radio" name="source-mode" checked={mode === "alert"} onChange={() => setMode("alert")} /> Active NWS alert</label>
             </fieldset>
-            {mode === "county" ? <>
-              <label htmlFor="national-state">State or territory</label>
-              <select id="national-state" value={state} onChange={event => { setState(event.target.value); setCounty(""); }} disabled={busy} required>
-                <option value="">Choose a state or territory</option>{states.map(code => <option key={code}>{code}</option>)}
-              </select>
-              <label htmlFor="national-county">County or county-equivalent</label>
-              <select id="national-county" value={county} onChange={event => setCounty(event.target.value)} disabled={!state || busy} required>
-                <option value="">Choose an official county record</option>
-                {counties.map(row => <option key={row.fips} value={row.fips}>{row.name} / {row.fips}{row.geometry_valid ? "" : " / geometry unavailable"}</option>)}
-              </select>
-              <p className="fineprint">County discovery doesn't assert an active storm. Missing joins, masked counts, closed-source records and non-exact geocodes remain explicit refusals.</p>
-            </> : <>
-              {catalog.weather.status !== "available" ? <p className="watch-error" role="alert">{catalog.weather.message} Use the official source links or choose county discovery.</p> :
-                <><label htmlFor="national-alert">Official NWS alert</label>
-                  <select id="national-alert" value={alert} onChange={event => setAlert(event.target.value)} disabled={busy} required>
-                    <option value="">Choose a captured source alert</option>
-                    {catalog.weather.alerts?.map(row => <option key={row.id} value={row.id}>{row.event} / {row.areaDesc}</option>)}
-                  </select>
-                  {catalog.weather.captured_at && <p className="fineprint">Feed captured {formatDate(catalog.weather.captured_at)}. Alerts can expire after capture.</p>}
-                  {selectedAlert && <p className="fineprint">{selectedAlert.county_fips.length} source-mapped counties. Mapping: {selectedAlert.mapping_status}. <a href={selectedAlert.id} target="_blank" rel="noreferrer">Inspect the original NWS record</a></p>}
-                </>}
-            </>}
-            <button className="primary-button" type="submit" disabled={busy || loading ||
-              (mode === "county" ? !county : !selectedAlert || !selectedAlert.county_fips.length)}>
+            {mode === "county" ? <CountySearch counties={catalog.counties} fips={county} onSelect={setCounty} disabled={busy} /> :
+              <AlertEntry weather={catalog.weather} counties={catalog.counties} alertId={alert} onAlert={id => { setAlert(id); setScope("combined"); }}
+                scope={scope} onScope={setScope} disabled={busy} refreshing={refreshing} onRefresh={() => void refreshAlerts()} />}
+            <button className="primary-button" type="submit" disabled={busy || loading || (mode === "alert" && refreshing) || !canSubmit}>
               {busy ? "Processing verified sources..." : "Build sourced call sheet and grounded drafts"}
             </button>
-            <p className="fineprint">Nemotron only, through Meterless. Approved free NVIDIA route only. A failed draft is kept, retried at most once and never replaced with invented text. The shared call cap can leave drafts unattempted.</p>
+            <p className="fineprint">Nemotron only, through Meterless, with thinking disabled. A failed draft is kept, retried at most once, and never replaced with invented text. The shared call cap can leave drafts unattempted.</p>
           </form>
         </>}
-        {job && <section className="source-strip" role="status" aria-live="polite">
-          <p>Run {job.id}. {job.phase.replaceAll("_", " ")}.
-            {job.total_counties !== undefined && <> {job.completed_counties} of {job.total_counties} affected counties read.</>}
-            {job.eligible_facilities !== undefined && <> {job.eligible_facilities} source-eligible facilities.</>}</p>
-          {job.message && <p role="alert">{job.message} No source or model fallback was fabricated.</p>}
-        </section>}
-        {snapshot?.state === "source_gap" && <section className="watch-error" role="alert"><h2>Source gap, no ranking invented.</h2>
-          <p>{snapshot.county.name}: {snapshot.reason}</p><p>Audited query {snapshot.data_access.zetaris_query_ids.join(", ")}.</p></section>}
+        {job && <JobProgress job={job} />}
+        {runNote && <p className="fineprint">{runNote}</p>}
+        {snapshot && !sheet && <SourceGaps value={snapshot} />}
       </Content>
     </div>
-    {snapshot && snapshot.state !== "source_gap" && job?.provenance &&
+    {sheet && job?.provenance && snapshot &&
       <div id="national-result" tabIndex={-1} role="region" aria-label="Verified care-facility call sheet">
+        <div className="app-shell"><SourceGaps value={snapshot} /></div>
         <Operator key={job.id} snapshot={snapshot} provenance={job.provenance} sourceRunId={job.id} />
       </div>}
   </>;

@@ -99,7 +99,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
         <a href="/" className="wordmark" aria-label="Porch Light call sheet">Porch Light<span className="wordmark-period">.</span></a>
         <span className="masthead-descriptor">Emergency facility outreach</span>
         <nav className="workspace-nav" aria-label="Workspace sections">
-          <a href="/">Project home</a><a href="/nationwide">US county runs</a><a href="/watch">Storm Watch</a><a href="#source-atlas">Source map</a><a href="#call-ledger">Call order</a>
+          <a href="/">Project home</a><a href="/nationwide">Pick any US county</a><a href="/watch">Storm Watch</a><a href="#source-atlas">Source map</a><a href="#call-ledger">Call order</a>
         </nav>
         <span className="edition">{snapshot.county.name.toUpperCase()} / {snapshot.county.state} <span className="edition-number">01</span></span>
       </header>
@@ -109,6 +109,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
             <div className="eyebrow"><span className="status-line" />{national ? snapshot.selected_alert ? "Captured NWS alert / " + snapshot.selected_alert.event : "County source discovery / no warning asserted" : "Retrospective · Hurricane Milton / 2024"}</div>
             <h1 id="page-title">Who to call <em>first.</em></h1>
             <p className="intro-description">{national ? `Dialysis centers and nursing homes. ${snapshot.county.name}, ${snapshot.county.state}. Source gaps stay visible.` : "Dialysis centers and nursing homes in the Manatee warning area."}</p>
+            {!national && <p className="fineprint"><a href="/nationwide">Pick any US county</a>. This demonstration stays Manatee County, Florida.</p>}
           </div>
           <div className="intro-index" aria-label="Selected call index">
             <span className="eyebrow">Selected call</span>

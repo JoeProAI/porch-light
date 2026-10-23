@@ -1,5 +1,12 @@
-import { test, expect } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import snapshot from "../data/manatee-ranked.json";
+
+const chooseCounty = async (page: Page, query: string, option: RegExp) => {
+  const search = page.getByLabel("Search by county name or state");
+  await expect(search).toBeEnabled({ timeout: 160000 });
+  await search.fill(query);
+  await page.getByRole("option", { name: option }).click();
+};
 
 test("national source catalog exposes real geography and closed audit references", async ({ page, request }) => {
   test.setTimeout(180000);
@@ -14,28 +21,28 @@ test("national source catalog exposes real geography and closed audit references
   expect(catalog.catalog.counties.find(row => row.fips === "35013")?.name).toBe("Doña Ana");
   expect(catalog.catalog.data_access.zetaris_query_ids.every(id => /^\d+$/.test(id))).toBe(true);
   await page.goto("/nationwide");
-  await expect(page.getByLabel("State or territory")).toBeEnabled({ timeout: 160000 });
-  await page.getByLabel("State or territory").selectOption("CT");
-  await expect(page.getByLabel("County or county-equivalent")).toContainText("Capitol");
+  await expect(page.getByLabel("Search by county name or state")).toBeEnabled({ timeout: 160000 });
+  await page.getByLabel("Search by county name or state").fill("CT");
+  await expect(page.getByRole("option", { name: /Capitol/ })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.getByLabel("State or territory").focus();
+  await page.getByLabel("Search by county name or state").focus();
   await page.keyboard.press("Tab");
-  await expect(page.getByLabel("County or county-equivalent")).toBeFocused();
-  const focus = await page.getByLabel("County or county-equivalent").evaluate(node => getComputedStyle(node).outlineStyle);
+  await expect(page.getByRole("option").first()).toBeFocused();
+  const focus = await page.getByRole("option").first().evaluate(node => getComputedStyle(node).outlineStyle);
   expect(focus).not.toBe("none");
 });
 
 test("a real empty county stays empty and source failures have recovery", async ({ page }) => {
   test.setTimeout(240000);
   await page.goto("/nationwide");
-  await expect(page.getByLabel("State or territory")).toBeEnabled({ timeout: 160000 });
-  await page.getByLabel("State or territory").selectOption("HI");
-  await page.getByLabel("County or county-equivalent").selectOption("15005");
+  await chooseCounty(page, "15005", /15005/);
   await page.getByRole("button", { name: "Build sourced call sheet and grounded drafts" }).click();
   await expect(page.getByRole("heading", { name: "No ranked facilities." })).toBeVisible({ timeout: 160000 });
   await expect(page.locator(".sheet-meta")).toContainText("0 source records");
   await expect(page.locator(".facility-row")).toHaveCount(0);
   await expect(page.locator("#source-limits")).toContainText("not proof that a county has no care facilities");
+  await expect(page.getByRole("region", { name: "Source gaps and audit evidence" })).toContainText("no CMS facilities in this county");
+  await expect(page.getByRole("region", { name: "Source gaps and audit evidence" })).toContainText("no county plan captured");
   expect(await page.evaluate(() => document.querySelectorAll("main").length)).toBe(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.reload();
@@ -45,7 +52,7 @@ test("a real empty county stays empty and source failures have recovery", async 
   await expect(page.locator(".watch-error[role=alert]")).toBeVisible();
   await page.unroute("**/api/national");
   await page.getByRole("button", { name: "Retry verified source catalog" }).click();
-  await expect(page.getByLabel("State or territory")).toBeEnabled({ timeout: 160000 });
+  await expect(page.getByLabel("Search by county name or state")).toBeEnabled({ timeout: 160000 });
 });
 
 test("local model operations reject cross-site requests and unverified client facts", async ({ request }) => {
@@ -69,13 +76,13 @@ test("a sourced Alabama county runs the actual ranked workflow outside the Manat
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
   await page.goto("/nationwide");
-  await expect(page.getByLabel("State or territory")).toBeEnabled({ timeout: 160000 });
-  await page.getByLabel("State or territory").selectOption("AL");
-  await page.getByLabel("County or county-equivalent").selectOption("01003");
+  await chooseCounty(page, "01003", /01003/);
   await page.getByRole("button", { name: "Build sourced call sheet and grounded drafts" }).click();
   await expect(page.locator(".facility-row")).toHaveCount(8, { timeout: 380000 });
   await expect(page.locator(".sheet-meta")).toContainText("12 source records");
   await expect(page.locator(".source-limits")).toContainText("No archived Manatee plan or guessed plan value is applied");
+  await expect(page.getByRole("region", { name: "Source gaps and audit evidence" })).toContainText("no county plan captured");
+  await expect(page.getByRole("region", { name: "Source gaps and audit evidence" })).toContainText("Zetaris query IDs");
   await page.getByRole("button", { name: "Why this rank / inspect evidence" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog.locator(".terms-table tbody tr")).toHaveCount(4);
