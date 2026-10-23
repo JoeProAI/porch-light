@@ -83,14 +83,23 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
         </section>
         <section className="integration-state">
           <span className="eyebrow">{isZetaris ? "Zetaris audit verified" : "Zetaris integration pending"}</span>
-          <h3>{isZetaris ? "Audited Zetaris JDBC bundle read." : "Development PostGIS read."}</h3>
+          <h3>{snapshot.data_access.chain_steps ? "Audited cross-source Zetaris chain." : isZetaris ? "Audited Zetaris JDBC bundle read." : "Development PostGIS read."}</h3>
           <p>{isZetaris ? "This row's query references resolve to a successful Zetaris audit execution. The underlying source remains PostGIS; the application data path is Zetaris." : "No completed Zetaris integration or Zetaris query reference is claimed. SQL receipt is a direct development database read."}</p>
           {isZetaris && <dl className="provenance-list">
-            <dt>Shared bundle query IDs</dt><dd><code>{row.evidence.zetaris_query_ids.join(", ")}</code></dd>
+            <dt>Source statement query IDs</dt><dd><code>{row.evidence.zetaris_query_ids.join(", ")}</code></dd>
             <dt>Audit source</dt><dd>{snapshot.data_access.zetaris_audit?.source}</dd>
             <dt>Vendor query hash</dt><dd><code>{snapshot.data_access.zetaris_audit?.query_hash}</code></dd>
             <dt>Audited statement</dt><dd><code>{snapshot.data_access.zetaris_audit?.sql_query}</code></dd>
           </dl>}
+          {snapshot.data_access.chain_steps && <div className="chain-evidence">
+            <h3>Seven statements. Seven audit records.</h3>
+            <p className="fineprint">{snapshot.data_access.source_topology}. SQL counts include all source rows, not just the accepted ranks. Source registration IDs aren't reused as read evidence.</p>
+            <ol>{snapshot.data_access.chain_steps.map(step => <li key={step.query_ids[0]}>
+              <strong>{step.name}</strong><p>Query <code>{step.query_ids[0]}</code>. Returned {step.row_count} rows.
+                {step.candidate_count !== undefined && <> SQL measured {step.matched_count} matches among {step.candidate_count} candidates.</>}</p>
+              <details><summary>Actual audited SQL and receipt</summary><pre>{step.audit.sql_query}</pre><p>Vendor query hash: <code>{step.audit.query_hash}</code></p><p>Completed: {formatDate(step.audit.end_time)}</p></details>
+            </li>)}</ol>
+          </div>}
           <dl className="provenance-list">
             <dt>Executed</dt><dd>{formatDate(snapshot.data_access.executed_at)}</dd>
             <dt>Transaction</dt><dd>{snapshot.data_access.transaction_id}</dd>

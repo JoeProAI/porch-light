@@ -2,6 +2,14 @@ export type Coordinate = [number, number];
 export type Geometry = { type: "MultiPolygon"; coordinates: Coordinate[][][] };
 export type Source = { name: string; url: string; license: string };
 export type Term = { name: string; input: number; weight: number; weighted: number };
+export type QueryAudit = {
+  source: string; query_id: string; query_hash: string; start_time: string;
+  end_time: string; finish_successfully: boolean; sql_query: string; driver_version?: string;
+};
+export type ChainStep = {
+  name: string; query_ids: string[]; row_count: number; audit: QueryAudit;
+  candidate_count?: number; matched_count?: number;
+};
 export type Facility = {
   id: string;
   ccn: string;
@@ -27,6 +35,7 @@ export type Facility = {
     operator_geocode_review_required: boolean;
     model_explanation: unknown;
     zetaris_query_ids: string[];
+    join_path?: { from_key: string; to_key: string; method: string; match_rate: number; query_id: string }[];
   };
 };
 export type Snapshot = {
@@ -37,10 +46,9 @@ export type Snapshot = {
   data_access: {
     executed_at: string; data_access_mode: string; statement_sha256: string;
     zetaris_query_ids: string[]; transaction_id: string;
-    zetaris_audit?: {
-      source: string; query_id: string; query_hash: string; start_time: string;
-      end_time: string; finish_successfully: boolean; sql_query: string; driver_version?: string;
-    };
+    zetaris_audit?: QueryAudit;
+    chain_steps?: ChainStep[];
+    source_topology?: string;
   };
   source_snapshot_hash: string;
   warning_geometry: Geometry;

@@ -45,6 +45,15 @@ export const readSnapshot = async (): Promise<{ snapshot: Snapshot; provenance: 
         row.evidence.zetaris_query_ids.some(id => !ids.includes(id)))) {
       throw new Error("Zetaris mode requires a successful audit receipt and closed row references.");
     }
+    const steps = snapshot.data_access.chain_steps;
+    if (steps && (steps.length !== 7 || new Set(ids).size !== 7 ||
+      steps.some(step => step.query_ids.length !== 1 || !ids.includes(step.query_ids[0]) ||
+        step.audit.query_id !== step.query_ids[0] || !step.audit.finish_successfully || !step.audit.end_time) ||
+      new Set(steps.map(step => step.query_ids[0])).size !== 7 ||
+      snapshot.facilities.some(row => row.evidence.join_path?.length !== 3 ||
+        row.evidence.join_path.some(hop => !ids.includes(hop.query_id) || hop.match_rate < 0 || hop.match_rate > 1)))) {
+      throw new Error("Cross-source chain audit closure failed.");
+    }
   }
   return { snapshot, provenance };
 };

@@ -22,7 +22,7 @@
   "sponsors": {
     "zetaris": {
       "status": "working",
-      "how": "Licensed JDBC reads a pre-joined PostGIS facility bundle and captured weather views. Facility rows share actual bundle query audit ID 80. The web call sheet reads the exported snapshot. Cross-source joins inside Zetaris and a Unified Semantic Layer are not demonstrated.",
+      "how": "Seven independently audited statements join separate CMS, Census, SVI and emPOWER relations in Zetaris SQL, with SQL-measured match counts. All source relations currently share one read-only PostGIS datasource; spatial predicates stay in PostGIS. The UI reads the audited export. A Unified Semantic Layer and multiple physical live systems are not claimed.",
       "interface": "jdbc",
       "deployment": "local-docker",
       "data_sources": [

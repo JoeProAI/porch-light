@@ -33,14 +33,14 @@ The call sheet renders from committed real-source snapshots without live data cr
 
 | Sponsor | Where it's used | How |
 |---|---|---|
-| Zetaris | `engines/data_access.py`, `engines/zetaris_client.py` | Licensed JDBC read of a pre-joined PostGIS bundle. Actual audit ID `80` is shared by the ranked rows, not 18 independent queries. Cross-source joins inside Zetaris are not demonstrated. |
+| Zetaris | `engines/zetaris_chain.py`, `engines/zetaris_client.py` | Seven independently audited statements, including CMS/Census/SVI/emPOWER joins and SQL-measured match counts. The source relations share one physical read-only PostGIS datasource; spatial predicates stay in PostGIS. |
 | Meterless | `engines/meterless.py`, snapshot `model_executions` | One stored `meterless/deep` execution routed a genuine Nemotron response with thinking disabled. No Scout Intent, H-MEM or World Model implementation is claimed. |
 | NVIDIA Nemotron | `engines/snapshots/manatee-zetaris.json` | One stored Super VL execution produced three explanation drafts. The audited snapshot reused them after input equality checks. Other rows have computed reasons. Nemotron does not rank, and local GPU inference is not verified. |
 | Cursor | Build evidence missing from this checkout | This web implementation was authored by Devin. Rules on a separate contract branch are not evidence of a Cursor build. Eligibility evidence must be produced through genuine Cursor work. |
 
 ## Feature to engine
 
-The ranking code and evidence are in `engines/`; the operator interface, source map and weather interface are in `web/`. `web/data/manatee-ranked.json` contains the UI's actual Zetaris-audited exported snapshot, copied from `engines/snapshots/manatee-zetaris.json`. The UI does not issue facility queries when a row is selected.
+The ranking code and evidence are in `engines/`; the operator interface, source map and weather interface are in `web/`. `web/data/manatee-ranked.json` contains the actual audited chain snapshot from `engines/snapshots/manatee-zetaris-chain.json`. Historical single-bundle query `80` remains in the older snapshot; the active chain has a distinct audit ID for each statement. Selecting a row does not issue a new facility query.
 
 ## Data credits
 
@@ -50,7 +50,7 @@ External resources, including emPOWER, are complementary systems, not partners o
 
 ## Submission Gaps
 
-The video, slide deck and written submission explanation are not packaged here. Cursor build evidence, actual cross-source Zetaris joins, a measured operator baseline and release/deployment review remain outstanding. National and international facility ranking, shared multi-operator coordination and live facility conditions are not implemented.
+The video, slide deck and written submission explanation are not packaged here. Cursor build evidence, a measured operator baseline and release/deployment review remain outstanding. Nationwide source loading, county/live-alert execution and a measured coverage sweep are the current implementation target, not completed coverage claims. International facility ranking, shared multi-operator coordination and live facility conditions are not implemented.
 
 ## Privacy
 

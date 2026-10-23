@@ -72,10 +72,10 @@ test("source atlas and contact workbench stay ordered across desktop and tablet"
 test("main site acknowledges sponsor roles and independent resources without false integration claims", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Built with Zetaris, Meterless and Nemotron." })).toBeVisible();
-  await expect(page.locator(".sponsor-ledger")).toContainText("Actual shared bundle query: 80");
+  await expect(page.locator(".sponsor-ledger")).toContainText("7 distinct audited statements");
   await expect(page.locator(".sponsor-ledger")).toContainText("3 actual stored drafts / 18 ranked facilities");
   await expect(page.locator(".sponsor-ledger")).toContainText("authored by Devin");
-  await expect(page.locator(".sponsor-ledger")).toContainText("Cross-source joins inside Zetaris aren't demonstrated");
+  await expect(page.locator(".sponsor-ledger")).toContainText("joined in Zetaris SQL");
   await expect(page.locator(".sponsor-ledger")).toContainText("One stored model call produced drafts for ranks 1 to 3");
   await expect(page.locator(".sponsor-ledger")).toContainText("Required build evidence remains missing");
   await expect(page.locator("#resources")).toContainText("not partnerships, endorsements or integrations");
@@ -88,6 +88,7 @@ test("main site acknowledges sponsor roles and independent resources without fal
   await page.getByRole("link", { name: "Read a genuine draft" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.getByRole("dialog")).toContainText("Zetaris audit verified");
+  await expect(page.getByRole("dialog")).toContainText("Seven statements. Seven audit records.");
   await expect(page.getByRole("dialog")).toContainText("nvidia/nemotron");
 });
 
