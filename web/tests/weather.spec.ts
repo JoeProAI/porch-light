@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { createHash } from "node:crypto";
 import { weatherFreshness, type LiveWeather } from "../src/lib/weather-types";
-import { createRadarProjection } from "../src/lib/radar-map";
+import { createRadarProjection, initialRadarView, zoomRadarView } from "../src/lib/radar-map";
 
 test("actual national weather API has closed audit references and original radar bytes", async ({ request }) => {
   const response = await request.get("/api/weather");
@@ -97,4 +97,94 @@ test("night and chart maps preserve radar colors and support regions, zoom and k
   await expect(page.locator(".interactive-radar-map")).toHaveAccessibleName("Alaska observed radar and actual NWS warning polygons");
   await expect(page.locator(".radar-frame-time")).toContainText("Observed NOAA frame");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("geographic labels, source-bound fitting and cursor-centered navigation identify actual places", async ({ page, request }, testInfo) => {
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  const weather = await (await request.get("/api/weather")).json() as LiveWeather;
+  const region = weather.radar_maps!.regions!.conus;
+  const projection = createRadarProjection(region);
+  const florida = weather.radar_maps!.states!.features.find(state => state.properties.STUSAB === "FL")!;
+  const point = projection.labelPoint(florida.geometry)!;
+  expect(point).not.toBeNull();
+  const lonlat = projection.unproject(...point);
+  const roundtrip = projection.project(lonlat);
+  expect(roundtrip[0]).toBeCloseTo(point[0]);
+  expect(roundtrip[1]).toBeCloseTo(point[1]);
+  const fitted = projection.fitGeometry(florida.geometry)!;
+  expect(fitted.width).toBeLessThan(1200);
+  expect(fitted.x).toBeGreaterThanOrEqual(0);
+  expect(fitted.y + fitted.height).toBeLessThanOrEqual(700);
+  const zoomed = zoomRadarView(initialRadarView, 2, { x: .2, y: .3 });
+  expect(zoomed.x + zoomed.width * .2).toBeCloseTo(1200 * .2);
+  expect(zoomed.y + zoomed.height * .3).toBeCloseTo(700 * .3);
+  expect(zoomRadarView(initialRadarView, 1000).width).toBe(150);
+  expect(zoomRadarView(initialRadarView, .001)).toEqual(initialRadarView);
+  await page.goto("/watch");
+  await expect(page.locator(".interactive-radar-map")).toBeVisible({ timeout: 30000 });
+  await expect(page.locator(".map-place-labels")).toContainText("FL");
+  await page.getByLabel("Find state or territory").selectOption("FL");
+  await expect(page.locator(".map-place-labels")).toContainText("Florida");
+  await expect(page.locator(".radar-navigation-strip")).toContainText("North up");
+  const map = page.locator(".interactive-radar-map");
+  const stateView = await map.getAttribute("viewBox");
+  await map.focus();
+  await page.keyboard.press("ArrowLeft");
+  expect(await map.getAttribute("viewBox")).not.toBe(stateView);
+  await page.getByRole("button", { name: "Radar layer: on", exact: true }).click();
+  await expect(page.locator(".noaa-radar-overlay")).toHaveAttribute("visibility", "hidden");
+  await page.getByRole("button", { name: "Radar layer: off", exact: true }).click();
+  await expect(page.locator(".noaa-radar-overlay")).toHaveAttribute("visibility", "visible");
+  await page.getByRole("button", { name: "Expand map", exact: true }).click();
+  await expect(page.locator(".radar-map-panel")).toHaveClass(/expanded/);
+  const dialog = page.getByRole("dialog", { name: "Expanded geographic radar map" });
+  await expect(dialog).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(dialog.getByLabel("NOAA region")).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(dialog.getByRole("link", { name: "Other emergency resources" })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".radar-map-panel")).not.toHaveClass(/expanded/);
+  await page.getByRole("button", { name: "Reset view", exact: true }).click();
+  await expect(map).toHaveAttribute("viewBox", "0 0 1200 700");
+  await expect(page.getByRole("button", { name: "Zoom out radar map" })).toBeDisabled();
+  if (testInfo.project.name === "mobile") {
+    await map.scrollIntoViewIfNeeded();
+    const box = (await map.boundingBox())!;
+    const session = await page.context().newCDPSession(page);
+    const points = (spread: number) => [
+      { x: box.x + box.width * (.5 - spread), y: box.y + box.height / 2, id: 1 },
+      { x: box.x + box.width * (.5 + spread), y: box.y + box.height / 2, id: 2 },
+    ];
+    await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: points(.15) });
+    await session.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: points(.3) });
+    await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+    await expect(map).not.toHaveAttribute("viewBox", "0 0 1200 700");
+    await session.detach();
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(errors).toEqual([]);
+  await page.locator(".radar-map-panel").screenshot({ path: testInfo.outputPath("geographic-map.png") });
+});
+
+test("a failed source overlay stays explicit and can retry without substituting imagery", async ({ page }) => {
+  await page.route("**/api/weather/maps?**", route =>
+    new URL(route.request().url()).searchParams.get("asset") === "frame" ? route.abort("failed") : route.continue());
+  await page.goto("/watch");
+  await expect(page.getByRole("heading", { name: "The verified radar overlay couldn't load." })).toBeVisible({ timeout: 30000 });
+  await page.unroute("**/api/weather/maps?**");
+  await page.getByRole("button", { name: "Retry verified overlay" }).click();
+  await expect(page.locator(".interactive-radar-map")).toBeVisible();
+  await expect(page.locator(".noaa-radar-overlay")).toHaveAttribute("href", /\/api\/weather\/maps\?capture=[a-f0-9]{64}/);
+});
+
+test("aging a real capture preserves the stale warning and explains how to restart ingestion", async ({ page, request }) => {
+  const weather = await (await request.get("/api/weather")).json() as LiveWeather;
+  await page.clock.setFixedTime(Date.parse(weather.captured_at) + 1800000);
+  await page.goto("/watch");
+  await expect(page.locator(".watch-error")).toContainText("Don't treat the displayed weather or alert list as current");
+  await expect(page.locator(".watch-error")).toContainText("Refreshing this page only rereads the stored capture");
+  await expect(page.locator(".watch-error code")).toHaveText(".\\Start-Local.ps1");
+  await expect(page.getByRole("link", { name: "Check current NWS warnings" })).toHaveAttribute("href", "https://www.weather.gov/");
 });

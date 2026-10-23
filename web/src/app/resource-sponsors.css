@@ -37,6 +37,22 @@
 .radar-map-controls [role="group"] { display: flex; gap: 6px; }
 .radar-map-controls button { padding-inline: 12px; font-size: 13px; }
 .radar-frame-time { font: 11px/1.8 var(--mono); color: var(--color-focus); margin-bottom: 14px; }
+.radar-atlas-heading { display: flex; align-items: end; justify-content: space-between; gap: 28px; padding: 20px 0 26px; }
+.radar-atlas-heading .eyebrow { color: var(--amber); }
+.radar-atlas-heading h3 { margin: 10px 0 0; font: clamp(28px, 3vw, 43px)/1.15 var(--display); letter-spacing: -.035em; }
+.radar-atlas-heading > p { max-width: 340px; color: var(--muted); font-size: 16px; line-height: 1.65; }
+.radar-map-panel.expanded { position: fixed; inset: 0; z-index: 100; overflow: auto; background: var(--bg); padding: 24px 40px; }
+.radar-map-panel.expanded .interactive-radar-map { width: min(100%, 120vh); margin-inline: auto; }
+.radar-map-panel.expanded .radar-atlas-heading { padding-top: 0; }
+.radar-map-panel.expanded .radar-atlas-heading h3 { font-size: 26px; }
+.radar-map-controls select { max-width: 270px; }
+.radar-map-controls button:disabled { opacity: .45; cursor: not-allowed; }
+.radar-navigation-strip { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; padding: 14px 16px; border: 1px solid var(--line); border-top: 0; color: var(--muted); font: 11px/1.6 var(--mono); }
+.radar-navigation-strip > span:first-child { color: var(--amber); }
+.radar-location-detail { display: grid; grid-template-columns: minmax(160px, .4fr) 1fr; gap: 8px 24px; padding: 20px 16px; border: 1px solid var(--line); border-top: 0; }
+.radar-location-detail strong { color: var(--amber); font-size: 18px; font-weight: 500; }
+.radar-location-detail span, .radar-location-detail small { color: var(--muted); font-size: 15px; line-height: 1.6; }
+.radar-location-detail small { grid-column: 1 / -1; }
 .interactive-radar-map { display: block; width: 100%; aspect-ratio: 12/7; border: 1px solid var(--line); touch-action: none; cursor: grab; }
 .interactive-radar-map:active { cursor: grabbing; }
 .interactive-radar-map:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
@@ -44,6 +60,9 @@
 .radar-map-panel.chart { --map-water: #d3e7ea; --map-land: #f1eee5; --map-boundary: #536d78; --map-alert: #784607; --map-severe: #b4321a; --map-selected: #102e3c; }
 .map-ocean { fill: var(--map-water); }
 .map-state { fill: var(--map-land); stroke: var(--map-boundary); stroke-width: .7; vector-effect: non-scaling-stroke; }
+.map-graticule { fill: none; stroke: var(--map-boundary); opacity: .15; pointer-events: none; }
+.map-graticule path { stroke-width: .5; vector-effect: non-scaling-stroke; }
+.map-place-labels { fill: var(--map-selected); stroke: var(--map-land); paint-order: stroke; text-anchor: middle; dominant-baseline: middle; font-family: var(--mono); letter-spacing: .035em; pointer-events: none; }
 .noaa-radar-overlay { pointer-events: none; filter: none; opacity: 1; }
 .warning-map-shape { fill: transparent; stroke: var(--map-alert); stroke-width: 1.5; vector-effect: non-scaling-stroke; cursor: pointer; }
 .warning-map-shape[data-severity="Extreme"], .warning-map-shape[data-severity="Severe"] { stroke: var(--map-severe); }
@@ -70,6 +89,12 @@
   .radar-map-controls { gap: 12px; }
   .radar-map-controls label { width: 100%; }
   .radar-map-controls select { width: 100%; }
+  .radar-map-controls select { max-width: none; }
+  .radar-atlas-heading { display: block; padding-top: 12px; }
+  .radar-atlas-heading > p { max-width: none; font-size: 15px; }
+  .radar-map-panel.expanded { padding: 16px; }
+  .radar-location-detail { grid-template-columns: 1fr; padding: 16px 12px; }
+  .radar-navigation-strip { padding: 12px; font-size: 10px; }
   .radar-map-controls > [role="group"] { flex-wrap: wrap; }
   .radar-view-toggle button { flex: 1; min-width: 130px; font-size: 14px; }
   .radar-map-caption { display: block; }
