@@ -17,4 +17,5 @@
 - The verified call sheet appears as soon as the source chain finishes, before model processing completes. A model failure doesn't replace the ranking or hide an already verified source result.
 - Unmapped alerts return an audited source gap with no facilities invented. Missing joins and excluded source rows remain explicit refusals.
 - Ranked facilities can request a grounded live call script. Runtime remains Meterless plus Nemotron on the approved free NVIDIA route, with a shared 2,000-attempt cap including retries. Provider failures and budget omissions are not successful drafts.
+- Call scripts show retained attempt IDs, failure reasons, the linked sole retry and available route/cost receipts. The local worker allows both bounded provider attempts to finish rather than terminating the retry at the catalog timeout. Model polling preserves the operator's selected facility.
 - Use `PORCHLIGHT_ENGINE_ROOT` for the engine worktree, or run from the integrated repository with its `engines` module. Jobs and provenance-checked snapshots remain under `%USERPROFILE%/.porchlight/national/jobs`, outside Git.

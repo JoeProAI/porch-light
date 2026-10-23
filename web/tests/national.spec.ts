@@ -133,8 +133,9 @@ test("live Nemotron call script carries source grounding and is retained without
   await expect(page.getByRole("button", { name: "Call-script result retained" })).toBeVisible({ timeout: 380000 });
   const script = page.getByRole("region", { name: "Grounded live call script" });
   await expect(script).toContainText("Grounding passed / operator review required");
-  expect(await script.locator("ol li").count()).toBeGreaterThanOrEqual(2);
-  expect(await script.locator("ol li").count()).toBeLessThanOrEqual(4);
+  const questions = script.getByRole("list", { name: "Source-grounded verification questions" }).getByRole("listitem");
+  expect(await questions.count()).toBeGreaterThanOrEqual(2);
+  expect(await questions.count()).toBeLessThanOrEqual(4);
   await script.getByText("Actual model identity and trace").click();
   await expect(script).toContainText("nemotron");
   await expect(script).toContainText("chatcmpl-");

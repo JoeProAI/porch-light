@@ -239,3 +239,12 @@ Blocked: actual Zetaris bundle/JDBC audit, normalized policy/contract, local Nem
 - Verification: production build and strict TypeScript pass; 12 nationwide browser checks and two real unmapped-alert checks pass across desktop/mobile; seven engine source/grounding/budget tests pass. No map, radar or styling implementation was changed for this milestone.
 - The full county sweep is still running. Intermediate results are not final pass rates. A separate provenance-checked source-summary observer can report the source phase without waiting for the later model phase. Raw national sources and run checkpoints stay outside Git.
 - Remaining gates: finish and commit the full measured sweep summary, verify arbitrary national top-row call scripts with retained attempt reasons, publish exact request/failure accounting, then obtain operator-usefulness evidence. No deployment, clinical validation or verified facility conditions are claimed.
+
+### Live National Scripts, Oct 23 at 6:44 PM ET
+
+- Forty desktop/mobile checks pass against the production build, including the actual top-three script requests in Baldwin, Alabama and Providence, Rhode Island. These are four app runs, six distinct facilities and 12 script outcomes, not nationwide model coverage.
+- Ten scripts passed grounding on the first request. Two Providence scripts failed both permitted attempts and remain failed. Four failed attempts record `Extra data: line 1 column 2 (char 1)`. Nothing was repaired, hidden, retried a third time or replaced with prose.
+- Fourteen script requests have matching Meterless free NVIDIA Nemotron receipts, with actual cost $0. The shared approval ledger separately showed 61 completed reservations and no unresolved reservations at the observation time.
+- The call-script UI exposes retained request IDs, failure reasons, linked retries and available route/cost receipts. Cached re-requests preserve the same event IDs. Source/model polling preserves the selected facility rather than rehydrating operator state on every new row-array reference.
+- The call-script worker timeout now accommodates both bounded provider attempts. The prompt describes verified directory/area context rather than mislabeling national live workflows as a retrospective example.
+- The detailed aggregate check is `engines/reports/national-script-verification-2026-10-23.md`. Exact artifacts and failed provider content stay outside Git. The full source/model sweep is still running and must be reported independently.
