@@ -90,7 +90,7 @@ export const StormWatch = () => {
           </div>
         </section>
         {error && <p className="watch-error" role="alert">{error}</p>}
-        {data && freshness !== "recent" && <p className="watch-error" role="alert">This capture isn't recent. Don't treat the displayed weather or alert list as current. Use the official source links.</p>}
+        {data && freshness !== "recent" && <div className="watch-error" role="alert"><p>This capture isn't recent. Don't treat the displayed weather or alert list as current. Use the official source links.</p><p>The local capture worker may be stopped or an upstream source may be unavailable. Refreshing this page only rereads the stored capture. On this machine, run <code>.\Start-Local.ps1</code> from the repository root to start a bounded worker if none is running.</p><a href="https://www.weather.gov/" target="_blank" rel="noreferrer">Check current NWS warnings</a></div>}
         {!data && loading && <section className="watch-loading" aria-busy="true"><span className="eyebrow">Reading through Zetaris</span><h2>Checking the national source capture.</h2><p>No sample warnings or replacement radar are used.</p></section>}
         {!data && !loading && <section className="watch-loading"><h2>Weather data is unavailable.</h2><p>The local ingest worker, Zetaris connection or source verification needs attention. No cached example is passed off as live.</p><button onClick={() => void refresh()}>Retry audited weather</button></section>}
         {data && <>
