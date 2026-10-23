@@ -43,3 +43,9 @@ Run `python -u -m engines.national_sweep --all --sample 500 --workers 4 --drafts
 Results stay under `%USERPROFILE%\.porchlight\national\sweeps`. `report.json`, `county-timings.csv`, per-county snapshots, unassigned source records, model batch results and progress files have provenance sidecars. Reports distinguish completed chains, genuine no-matching-source results, refusals, source gaps and runtime failures. They include model calls, first-pass requests, retries, recoveries, unresolved failures, cap omissions and the global approval ledger. Frozen alerts may expire during a sweep; they aren't relabeled current.
 
 Checks: `python -m unittest engines.test_grounded_drafts engines.test_national engines.test_zetaris -v`. Live tests require the actual licensed local Zetaris installation. They don't fabricate data or provider success.
+
+## Audited Map Radar
+
+The MapLibre integration uses IEM NEXRAD tiles and a separate scan clock. `python -m engines.radar_assets --register` captures the real clock and registers its read-only source projection once. Runtime asset batches capture up to forty allowlisted source keys, publish immutable hashes/paths, then read them through Zetaris. The app verifies bytes and provenance again before serving local PNGs. No browser reads radar or scan data directly from the upstream provider. Source caches last at most five minutes; missing assets fail visibly without replacement echoes.
+
+Tile capture time isn't observation time. Relative layer offsets aren't verified per-tile scan timestamps. The separate NOAA observation loop retains its own source capture and audit. External OpenFreeMap basemap tiles are cartographic reference, not facility conditions or hazard evidence.
