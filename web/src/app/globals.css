@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./proof-tokens.css";
 @import "./project-entry.css";
+@import "./storm-watch.css";
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }

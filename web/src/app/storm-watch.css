@@ -1,0 +1,81 @@
+.watch-shell main { max-width: 1600px; margin: auto; padding: 0 48px 60px; }
+.watch-intro { display: grid; grid-template-columns: 1.5fr 1fr; gap: 60px; padding: 44px 0; border-top: 1px solid var(--line); }
+.watch-intro .eyebrow { color: var(--amber); }
+.watch-intro h1 { font-size: clamp(36px, 3.4vw, 58px); line-height: 1.18; }
+.watch-intro p:last-child { max-width: 660px; color: var(--muted); font-size: 19px; }
+.watch-status { align-self: center; display: grid; gap: 14px; border-left: 1px solid var(--line); padding-left: 28px; font-size: 14px; color: var(--muted); }
+.watch-status time { font: 12px/1.6 var(--mono); color: var(--ink); }
+.watch-status button { justify-self: start; }
+.weather-state { font-size: 13px; color: var(--danger); text-transform: uppercase; letter-spacing: .09em; }
+.weather-state.recent { color: var(--color-focus); }
+.watch-error { border-left: 3px solid var(--danger); padding: 16px 20px; background: var(--surface); color: var(--ink); }
+.watch-loading { min-height: 300px; padding: 40px 0; border-block: 1px solid var(--line); }
+.watch-loading h2 { font: 32px/1.4 var(--display); max-width: 650px; }
+.watch-loading p { color: var(--muted); }
+.radar-stage { border-block: 1px solid var(--line); padding: 26px 0 30px; }
+.radar-heading { display: flex; justify-content: space-between; align-items: center; gap: 30px; margin-bottom: 24px; }
+.radar-heading .eyebrow { color: var(--amber); }
+.radar-heading h2 { font: 30px/1.4 var(--display); margin: 12px 0 0; letter-spacing: -.04em; }
+.radar-coverage { max-width: 330px; font-size: 14px; color: var(--muted); }
+.radar-image { min-height: 360px; background: var(--surface); position: relative; display: grid; place-items: center; overflow: hidden; }
+.radar-image > img { display: block; width: 100%; height: auto; }
+.radar-placeholder { padding: 48px 30px; max-width: 650px; text-align: center; }
+.radar-placeholder h3 { font: 26px/1.4 var(--display); }
+.radar-placeholder p { color: var(--muted); }
+.radar-loading { position: absolute; left: 20px; top: 20px; background: var(--bg); padding: 10px 14px; font-size: 14px; }
+.radar-source-line { display: flex; justify-content: space-between; align-items: center; gap: 20px; font: 11px/1.7 var(--mono); color: var(--muted); margin-top: 12px; }
+.radar-source-line a { display: inline-flex; min-height: 44px; align-items: center; color: var(--amber); }
+.national-alerts { display: grid; grid-template-columns: minmax(280px, .85fr) minmax(0, 1.15fr); gap: 50px; padding-top: 40px; }
+.alert-list-heading .eyebrow { color: var(--amber); }
+.alert-list-heading h2 { font: 32px/1.4 var(--display); margin: 16px 0; }
+.alert-list-heading p { color: var(--muted); font-size: 16px; max-width: 450px; }
+.alert-search { display: grid; gap: 10px; margin: 26px 0 16px; font-size: 15px; }
+.alert-search input { width: 100%; min-height: 48px; border: 1px solid var(--line); padding: 12px 14px; color: var(--ink); background: var(--bg); font: inherit; border-radius: 0; }
+.alert-search input:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.official-alert-list { list-style: none; padding: 0; margin: 0; max-height: 720px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line) var(--bg); }
+.official-alert-list li { border-top: 1px solid var(--line); }
+.official-alert-list button { display: grid; gap: 8px; width: 100%; padding: 18px 14px; border: 0; border-left: 2px solid transparent; text-align: left; }
+.official-alert-list button[aria-pressed="true"] { border-left-color: var(--amber); background: var(--surface); }
+.official-alert-list strong { font-size: 21px; font-weight: 500; line-height: 1.3; }
+.official-alert-list button > span:last-child { color: var(--muted); font-size: 14px; }
+.alert-severity { font: 10px/1.6 var(--mono); text-transform: uppercase; color: var(--color-focus); }
+.alert-severity[data-severity="Extreme"], .alert-severity[data-severity="Severe"] { color: var(--danger); }
+.official-alert-detail { min-width: 0; border-left: 1px solid var(--line); padding-left: 40px; }
+.official-alert-detail > .eyebrow { color: var(--amber); }
+.official-alert-detail h2 { font: 34px/1.3 var(--display); letter-spacing: -.04em; margin: 20px 0; }
+.official-alert-detail > h3 { font-size: 21px; line-height: 1.5; margin-top: 30px; }
+.official-alert-detail > p { color: var(--muted); }
+.official-alert-detail > .alert-area { color: var(--ink); font-size: 20px; }
+.alert-times { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 12px 18px; margin: 26px 0; font: 11px/1.7 var(--mono); }
+.alert-times dt { color: var(--muted); }
+.alert-times dd { margin: 0; overflow-wrap: anywhere; }
+.official-instructions { white-space: pre-wrap; font-size: 16px; line-height: 1.7; overflow-wrap: anywhere; }
+.official-alert-detail .entry-secondary { margin-top: 20px; }
+.watch-evidence { border-top: 1px solid var(--line); margin-top: 45px; padding-top: 30px; }
+.watch-evidence > .eyebrow { color: var(--amber); }
+.watch-evidence p, .watch-evidence li { color: var(--muted); font-size: 14px; line-height: 1.7; }
+.watch-evidence ul { padding-left: 20px; }
+@media (max-width: 1100px) {
+  .watch-shell main { padding-inline: 32px; }
+  .watch-intro { gap: 32px; }
+  .national-alerts { gap: 28px; }
+  .official-alert-detail { padding-left: 26px; }
+}
+@media (max-width: 767px) {
+  .watch-shell main { padding: 0 20px 40px; }
+  .watch-intro { grid-template-columns: 1fr; gap: 20px; padding: 26px 0; }
+  .watch-intro h1 { font-size: 31px; }
+  .watch-intro p:last-child { font-size: 17px; }
+  .watch-status { border-left: 0; border-top: 1px solid var(--line); padding: 20px 0 0; gap: 10px; }
+  .radar-heading { display: block; }
+  .radar-heading h2 { font-size: 25px; }
+  .radar-coverage { display: block; margin-top: 14px; }
+  .radar-image { min-height: 200px; }
+  .radar-placeholder { padding: 28px 18px; }
+  .radar-source-line { flex-direction: column; gap: 8px; align-items: start; }
+  .national-alerts { grid-template-columns: 1fr; gap: 28px; }
+  .official-alert-list { max-height: 440px; }
+  .official-alert-detail { border-left: 0; border-top: 1px solid var(--line); padding: 26px 0 0; }
+  .official-alert-detail h2 { font-size: 28px; }
+  .official-alert-detail .entry-secondary { padding-inline: 14px; font-size: 16px; }
+}

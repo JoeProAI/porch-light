@@ -15,6 +15,10 @@
 .entry-primary { background: var(--amber); color: var(--amber-ink); }
 .entry-primary:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .entry-primary:active { background: var(--color-focus); }
+.watch-entry-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 14px; font-size: 15px; color: var(--amber); text-decoration-thickness: 1px; }
+.watch-entry-link:hover { color: var(--ink); }
+.first-call-preview { position: relative; }
+.first-call-preview::after { content: ""; position: absolute; right: 0; bottom: 0; width: 24px; height: 24px; background: linear-gradient(135deg, #d1d9cf 50%, var(--bg) 51%); }
 .entry-secondary { color: var(--amber); }
 .entry-secondary:hover { background: var(--surface); color: var(--ink); }
 .mission-limit { max-width: 510px; font-size: 13px; line-height: 1.7; color: #d1d9d9; margin: 20px 0 0; }

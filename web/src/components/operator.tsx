@@ -92,7 +92,7 @@ export const Operator = ({ snapshot, provenance }: { snapshot: Snapshot; provena
         <a href="/" className="wordmark" aria-label="Porch Light call sheet">Porch Light<span className="wordmark-period">.</span></a>
         <span className="masthead-descriptor">Emergency facility outreach</span>
         <nav className="workspace-nav" aria-label="Workspace sections">
-          <a href="/">Project home</a><a href="#source-atlas">Warning map</a><a href="#call-ledger">Call order</a>
+          <a href="/">Project home</a><a href="/watch">Storm Watch</a><a href="#source-atlas">Warning map</a><a href="#call-ledger">Call order</a>
         </nav>
         <span className="edition">MANATEE / FL <span className="edition-number">01</span></span>
       </header>
