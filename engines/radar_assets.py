@@ -22,7 +22,8 @@ def read(keys: list[str]) -> dict:
     capture(keys)
     literals = ",".join("'" + key + "'" for key in dict.fromkeys(keys))
     response = audited_query(f"SELECT capture_id,source_key,payload_json FROM {VIEW} WHERE source_key IN ({literals})")
-    if {row["source_key"] for row in response["rows"]} != set(keys):
+    if (len(response["rows"]) != len(set(keys))
+            or {row["source_key"] for row in response["rows"]} != set(keys)):
         raise RuntimeError("The audited radar read didn't close every requested source")
     assets = []
     for row in response["rows"]:
