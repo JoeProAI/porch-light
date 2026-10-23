@@ -34,12 +34,15 @@ export const createCsv = (snapshot: Snapshot, contacts: Contacts): string => {
   };
   const header = ["Rank", "CCN", "Facility", "Type", "Phone", "Address", "ZIP", "Score (0–1)", "Contact status", "Recorded at UTC",
     ...snapshot.facilities[0]?.score.terms.map(term => `${term.name} weighted`) ?? [],
-    "Snapshot generated UTC", "Source snapshot SHA256", "Data access", "Scenario", "Location review required", "Reason"];
+    "Snapshot generated UTC", "Source snapshot SHA256", "Data access", "Scenario", "Location review required", "Reason",
+    "Zetaris query IDs", "Source artifact SHA256", "Data-quality outcomes", "Model record"];
   const rows = snapshot.facilities.map(row => [row.rank, row.ccn, row.name, row.type, row.phone.value, row.address, row.zip,
     row.score.total, contactLabels[contacts[row.id]?.status ?? "uncontacted"], contacts[row.id]?.updatedAt ?? "",
     ...row.score.terms.map(term => term.weighted), snapshot.generated_at, snapshot.source_snapshot_hash,
-    snapshot.data_access.data_access_mode, `${snapshot.scenario.event} ${snapshot.scenario.warning_year} retrospective`,
-    row.evidence.operator_geocode_review_required, row.computed_reason]);
+    snapshot.data_access.data_access_mode, `${snapshot.scenario.event} ${snapshot.scenario.warning_year} ${snapshot.scenario.mode}`,
+    row.evidence.operator_geocode_review_required, row.computed_reason,
+    row.evidence.zetaris_query_ids.join(";"), row.evidence.source_sha256,
+    JSON.stringify(row.evidence.dq_results), JSON.stringify(row.evidence.model_explanation)]);
   return "\uFEFF" + [header, ...rows].map(row => row.map(cell).join(",")).join("\r\n");
 };
 
@@ -62,7 +65,8 @@ export const createProjection = (geometry: Geometry, facilities: Facility[], sco
     paths: [] as string[],
   };
   const xs = points.map(point => point[0]), ys = points.map(point => point[1]);
-  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+  const minX = xs.reduce((a, b) => Math.min(a, b), Infinity), maxX = xs.reduce((a, b) => Math.max(a, b), -Infinity);
+  const minY = ys.reduce((a, b) => Math.min(a, b), Infinity), maxY = ys.reduce((a, b) => Math.max(a, b), -Infinity);
   const scale = Math.min(520 / Math.max(maxX - minX, 0.00001), 310 / Math.max(maxY - minY, 0.00001));
   const project = (point: Coordinate): Coordinate => {
     const [x, y] = mercator(point);

@@ -42,7 +42,7 @@ export type Snapshot = {
   schema_version: string;
   generated_at: string;
   county: { name: string; fips: string; state: string };
-  scenario: { event: string; warning_year: number; mode: string; zone_geometry_vintage: string; historical_2024_boundary_equivalence_verified: boolean };
+  scenario: { event: string; warning_year: number; mode: string; zone_geometry_vintage: string; historical_2024_boundary_equivalence_verified: boolean; geometry_mode?: string };
   data_access: {
     executed_at: string; data_access_mode: string; statement_sha256: string;
     zetaris_query_ids: string[]; transaction_id: string;
@@ -52,12 +52,17 @@ export type Snapshot = {
   };
   source_snapshot_hash: string;
   warning_geometry: Geometry;
-  policy: { version: string; clinical_validation: boolean; plan_year: number; plan_flag: string; empower_density_pct: string; cms_risk: string; plan_artifact: string; plan_sha256: string; plan_current_applicability_verified: boolean };
+  policy: { version: string; clinical_validation: boolean; plan_year: number | null; plan_flag: string; empower_density_pct: string; cms_risk: string; plan_artifact: string | null; plan_sha256: string | null; plan_current_applicability_verified: boolean };
   counts: { source_rows: number; ranked_rows: number; refused_rows: number };
   facilities: Facility[];
   refused: { ccn: string; name: string; reason: string }[];
   model_executions: unknown[];
   limits: string[];
+  selected_alert?: { id: string; event: string; captured_at: string; expires: string; capture_id: string };
+  model_report?: {
+    accepted_facilities: number; unresolved_facilities: number; not_attempted_budget: number;
+    provider_requests: number; retry_recoveries: number; failure_reasons: Record<string, number>;
+  };
 };
 export type Provenance = { source_url: string; fetched_at_utc: string; sha256: string; license: string; fetch_command: string };
 export const contactLabels = {

@@ -134,7 +134,8 @@ export const StormWatch = () => {
                 <p className="official-instructions">{selected.description ?? "No description supplied."}</p>
                 <h3>Official instructions</h3><p className="official-instructions">{selected.instruction ?? "No instructions supplied in this source record. Consult the issuing NWS office."}</p>
                 <a href={selected.id} target="_blank" rel="noreferrer" className="entry-secondary">Inspect original NWS record</a><p className="fineprint">Zetaris query {selected.zetaris_query_ids.join(", ")}</p>
-                <p className="fineprint">This national weather view hasn't generated a care-facility ranking for the selected alert. The Manatee call sheet is a separate retrospective example.</p>
+                {freshness === "recent" && !expired && <a className="entry-secondary" href={`/nationwide?alert=${encodeURIComponent(selected.id)}`}>Build the sourced care-facility call sheet</a>}
+                <p className="fineprint">The care-facility workbench checks actual alert geometry and source joins. A mapped alert doesn't guarantee rankable facility data. Manatee remains a separate retrospective walkthrough.</p>
               </> : <><h2>No alert selected.</h2><p>Select an actual source alert from the list. No warning text is synthesized.</p></>}
             </aside>
           </section>

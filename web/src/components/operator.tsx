@@ -6,9 +6,10 @@ import { contactLabels, type Contacts, type ContactStatus, type Provenance, type
 import { createCsv, formatDate, formatPhone, parseContacts } from "@/lib/operator";
 import { CoverageMap } from "./coverage-map";
 import { EvidenceDrawer } from "./evidence-drawer";
+import { CallScript } from "./call-script";
 
-export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false }: {
-  snapshot: Snapshot; provenance: Provenance; initialEvidenceOpen?: boolean;
+export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, sourceRunId }: {
+  snapshot: Snapshot; provenance: Provenance; initialEvidenceOpen?: boolean; sourceRunId?: string;
 }) => {
   const [selectedId, setSelectedId] = useState(snapshot.facilities[0]?.id ?? "");
   const [contacts, setContacts] = useState<Contacts>({});
@@ -22,7 +23,8 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false }: 
   const [clock, setClock] = useState<number | null>(null);
   const reducedMotion = useReducedMotion();
   const isZetaris = snapshot.data_access.data_access_mode === "zetaris";
-  const storageKey = `porch-light:contacts:v1:${snapshot.source_snapshot_hash}`;
+  const national = snapshot.schema_version === "porch-light.national-run.v1";
+  const storageKey = `porch-light:contacts:v1:${snapshot.source_snapshot_hash}${national ? ":" + (snapshot.selected_alert?.id ?? snapshot.county.fips) : ""}`;
   const row = snapshot.facilities.find(item => item.id === selectedId);
   const recorded = snapshot.facilities.filter(item => contacts[item.id] && contacts[item.id].status !== "uncontacted").length;
 
@@ -79,7 +81,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false }: 
     try {
       const url = URL.createObjectURL(new Blob([createCsv(snapshot, contacts)], { type: "text/csv;charset=utf-8" }));
       const anchor = document.createElement("a");
-      anchor.href = url; anchor.download = `porch-light-manatee-${snapshot.generated_at.slice(0, 10)}.csv`;
+      anchor.href = url; anchor.download = `porch-light-${snapshot.county.fips.replaceAll(",", "_")}-${snapshot.generated_at.slice(0, 10)}.csv`;
       anchor.click(); window.setTimeout(() => URL.revokeObjectURL(url), 1000);
       setNotice(`Exported ${snapshot.facilities.length} ranked rows with the current manual contact records.`);
     } catch { setNotice("CSV export failed. Use Print sheet to save the current rows instead."); }
@@ -95,16 +97,16 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false }: 
         <a href="/" className="wordmark" aria-label="Porch Light call sheet">Porch Light<span className="wordmark-period">.</span></a>
         <span className="masthead-descriptor">Emergency facility outreach</span>
         <nav className="workspace-nav" aria-label="Workspace sections">
-          <a href="/">Project home</a><a href="/watch">Storm Watch</a><a href="#source-atlas">Warning map</a><a href="#call-ledger">Call order</a>
+          <a href="/">Project home</a><a href="/nationwide">US county runs</a><a href="/watch">Storm Watch</a><a href="#source-atlas">Source map</a><a href="#call-ledger">Call order</a>
         </nav>
-        <span className="edition">MANATEE / FL <span className="edition-number">01</span></span>
+        <span className="edition">{snapshot.county.name.toUpperCase()} / {snapshot.county.state} <span className="edition-number">01</span></span>
       </header>
       <main>
         <section className="intro" aria-labelledby="page-title">
           <div className="intro-heading">
-            <div className="eyebrow"><span className="status-line" />Retrospective · Hurricane Milton / 2024</div>
+            <div className="eyebrow"><span className="status-line" />{national ? snapshot.selected_alert ? "Captured NWS alert / " + snapshot.selected_alert.event : "County source discovery / no warning asserted" : "Retrospective · Hurricane Milton / 2024"}</div>
             <h1 id="page-title">Who to call <em>first.</em></h1>
-            <p className="intro-description">Dialysis centers and nursing homes in the Manatee warning area.</p>
+            <p className="intro-description">{national ? `Dialysis centers and nursing homes. ${snapshot.county.name}, ${snapshot.county.state}. Source gaps stay visible.` : "Dialysis centers and nursing homes in the Manatee warning area."}</p>
           </div>
           <div className="intro-index" aria-label="Selected call index">
             <span className="eyebrow">Selected call</span>
@@ -112,8 +114,8 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false }: 
             <span>Selected of {snapshot.facilities.length} ranked records</span>
           </div>
           <div className="edition-note">
-            <span className="eyebrow">Retrospective / source snapshot</span>
-            <p>Not a live warning.<br />Not current facility conditions.</p>
+            <span className="eyebrow">{national ? "Audited source run" : "Retrospective / source snapshot"}</span>
+            <p>{national ? "Directory and area context. No verified facility operating conditions." : <>Not a live warning.<br />Not current facility conditions.</>}</p>
             <div className="snapshot-date"><span className="muted">Snapshot generated</span><time dateTime={snapshot.generated_at}>{formatDate(snapshot.generated_at)}</time><span className="age">{age}</span></div>
           </div>
         </section>
@@ -124,6 +126,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false }: 
         </div>
         <div className="sheet-meta"><p><strong>{snapshot.counts.ranked_rows}</strong> ranked <span>/</span> {snapshot.counts.refused_rows} refused <span>/</span> {snapshot.counts.source_rows} source records</p><p>{ready ? `${recorded} / ${snapshot.facilities.length} contact outcomes recorded` : "Loading local contact records…"}</p></div>
         {storageError && <p className="storage-warning" role="alert">{storageError}</p>}
+        {snapshot.selected_alert && <p className="watch-error">Official alert captured {formatDate(snapshot.selected_alert.captured_at)}. Expires {formatDate(snapshot.selected_alert.expires)}. It may expire while processing. <a href={snapshot.selected_alert.id} target="_blank" rel="noreferrer">Use the current NWS record for instructions.</a></p>}
         <div className="workspace">
           <section id="call-ledger" className="ledger" aria-label="Ordered facility call ledger" tabIndex={-1}>
             <div className="pane-heading"><span className="eyebrow">01 / Call order</span><span className="mono">{snapshot.facilities.length} records</span></div>
@@ -146,7 +149,8 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false }: 
             <div className="ledger-footnote">Descending fixed score, 0–1. Prototype weights, not a prediction of harm. Manual outcomes do not reorder the list.</div>
           </section>
           <section className="atlas-column" id="source-atlas" aria-label="Source response atlas">
-            <CoverageMap geometry={snapshot.warning_geometry} facilities={snapshot.facilities} selectedId={selectedId} onSelect={selectRow} />
+            <CoverageMap geometry={snapshot.warning_geometry} facilities={snapshot.facilities} selectedId={selectedId} onSelect={selectRow}
+              contextLabel={national ? snapshot.scenario.geometry_mode === "official_alert_polygon" ? "Official NWS alert polygon" : snapshot.selected_alert ? "County context, not the warning boundary" : "Official county boundaries, not a warning" : undefined} />
             {row && <div className="atlas-index-strip">
               <span className="index-numeral" aria-hidden="true">{String(row.rank).padStart(2, "0")}</span>
               <div><span className="eyebrow">Selected care facility</span><strong>{row.name}</strong><span className="mono">CCN {row.ccn} / {row.lat?.toFixed(5)}, {row.lon?.toFixed(5)}</span></div>
@@ -168,6 +172,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false }: 
                 <p className="reason">{row.computed_reason}</p>
               </motion.div>
               <button className="evidence-trigger" onClick={() => setEvidenceOpen(true)}>Why this rank / inspect evidence <span aria-hidden="true">↗</span></button>
+              <CallScript key={`${sourceRunId ?? "demo"}:${row.ccn}`} ccn={row.ccn} sourceRunId={sourceRunId} />
               <form className="contact-form" onSubmit={event => { event.preventDefault(); recordContact(); }}>
                 <label htmlFor="contact-status">Manually record an outcome</label>
                 <p className="fineprint">This device only. No calls or messages are sent. No patient information.</p>
@@ -181,21 +186,22 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false }: 
             <p className={`action-notice ${notice ? "has-notice" : ""}`} role="status" aria-live="polite" aria-atomic="true">{notice}</p>
           </aside>
         </div>
-        <details className="limits source-limits" id="source-limits"><summary>Source limits &amp; integration state</summary><ul>{snapshot.limits.map(limit => <li key={limit}>{limit}</li>)}</ul><p>Current published NWS shapes are used; equivalence to the 2024 boundary is unverified. ZIP DME context is not a facility patient count.</p></details>
+        {snapshot.model_report && <details className="limits"><summary>Grounded drafts and retained failures</summary><p>{snapshot.model_report.accepted_facilities} grounded facility drafts. {snapshot.model_report.unresolved_facilities} unresolved. {snapshot.model_report.not_attempted_budget} not attempted because of the approved cap. {snapshot.model_report.provider_requests} Meterless requests. {snapshot.model_report.retry_recoveries} retry recoveries.</p><p>Draft failure reasons</p><pre>{JSON.stringify(snapshot.model_report.failure_reasons, null, 2)}</pre></details>}
+        <details className="limits source-limits" id="source-limits"><summary>Source limits &amp; integration state</summary><ul>{snapshot.limits.map(limit => <li key={limit}>{limit}</li>)}</ul><p>{national ? "The national fixed policy omits county plans. No archived Manatee plan or guessed plan value is applied." : "Current published NWS shapes are used; equivalence to the 2024 boundary is unverified."} ZIP DME context is not a facility patient count.</p></details>
         <section className="refusals" aria-labelledby="refusals-title"><div><span className="eyebrow">Withheld, not forgotten</span><h2 id="refusals-title">{snapshot.refused.length} records refused.</h2><p>Missing or disqualifying evidence keeps these records out of the call order.</p></div><ul>{snapshot.refused.map(item => <li key={item.ccn}><span>{item.name}</span><code>CCN {item.ccn} / {item.reason}</code></li>)}</ul></section>
         <div className="print-limits"><h2>Snapshot limits</h2><ul>{snapshot.limits.map(limit => <li key={limit}>{limit}</li>)}</ul></div>
       </main>
       <footer className="site-footer">
         <span className="wordmark">Porch Light.</span>
         <div>
-          <p>Public source records. Transparent priorities.<br />A retrospective prototype, not emergency or clinical guidance.</p>
+          <p>Public source records. Transparent priorities.<br />{national ? "An additional outreach resource, not emergency or clinical guidance." : "A retrospective prototype, not emergency or clinical guidance."}</p>
           <details><summary>Technology and sponsor evidence</summary>
             <p>Meterless and NVIDIA Nemotron: {snapshot.model_executions.length > 0 ? "Actual stored model drafts are identified in the row evidence drawer." : "No completed model execution in this snapshot."}</p>
             <p>Zetaris: {isZetaris ? "This snapshot carries real query references confirmed against the vendor audit database." : "Integration and query IDs are pending. This screen uses a direct PostGIS development snapshot."}</p>
             <p>Cursor: this web implementation was built by Devin. Required Cursor build evidence isn't attached to this checkout.</p>
           </details>
         </div>
-        <span className="mono">MANATEE / 12081<br />MILTON · 2024</span>
+        <span className="mono">{snapshot.county.name.toUpperCase()} / {snapshot.county.state}<br />{snapshot.scenario.event}</span>
         <a className="design-credit mono" href="/">About Porch Light</a>
       </footer>
       {row && <EvidenceDrawer row={row} snapshot={snapshot} provenance={provenance} open={evidenceOpen} onClose={() => setEvidenceOpen(false)} />}

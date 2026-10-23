@@ -28,6 +28,9 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
   const modelRecord = explanation && typeof explanation === "object" ? explanation as Record<string, unknown> : null;
   const modelText = typeof explanation === "string" ? explanation :
     modelRecord && typeof modelRecord.text === "string" ? modelRecord.text : null;
+  const grounding = modelRecord?.grounding && typeof modelRecord.grounding === "object" ?
+    modelRecord.grounding as Record<string, unknown> : null;
+  const rejected = modelRecord?.status === "failed" || modelRecord?.status === "not_attempted_budget";
   return (
     <dialog ref={ref} className="evidence-drawer" aria-labelledby="evidence-title"
       onCancel={onClose} onClose={onClose} onClick={event => { if (event.target === ref.current) onClose(); }}>
@@ -40,7 +43,7 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
           <li><span>01</span><div><strong>Observed</strong><small>CMS / CCN {row.ccn}</small></div></li>
           <li data-verified={isZetaris}><span>02</span><div><strong>{isZetaris ? "Audited" : "Development"}</strong><small>{isZetaris ? `Zetaris ${row.evidence.zetaris_query_ids.join(", ")}` : "No vendor audit claimed"}</small></div></li>
           <li><span>03</span><div><strong>Fixed policy</strong><small>{row.score.formula_version}</small></div></li>
-          <li><span>04</span><div><strong>{modelText ? "Model draft" : "Computed reason"}</strong><small>{modelText ? "Genuine stored Nemotron output" : "No model output claimed"}</small></div></li>
+          <li><span>04</span><div><strong>{rejected ? "No approved draft" : modelText ? "Model draft" : "Computed reason"}</strong><small>{rejected ? "Failed or unattempted status retained" : grounding?.passed ? "Source-clause grounding passed" : modelText ? "Stored model draft; current grounding not checked" : "No model output claimed"}</small></div></li>
         </ol>
         <section>
           <h3>Deterministic, not clinical</h3>
@@ -53,17 +56,18 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
             </table>
           </div>
           <p className="fineprint">Policy: <code>{row.score.formula_version}</code></p>
-          <details><summary>Policy mapping &amp; limits</summary><p>{snapshot.policy.empower_density_pct}</p><p>CMS risk: {snapshot.policy.cms_risk}</p><p>{snapshot.policy.plan_flag}</p><p>Plan year: {snapshot.policy.plan_year}. Current applicability not verified.</p><code>{snapshot.policy.plan_artifact}</code><p className="fineprint">Plan SHA256</p><code>{snapshot.policy.plan_sha256}</code></details>
+          <details><summary>Policy mapping &amp; limits</summary><p>{snapshot.policy.empower_density_pct}</p><p>CMS risk: {snapshot.policy.cms_risk}</p><p>{snapshot.policy.plan_flag}</p>{snapshot.policy.plan_year !== null && <><p>Plan year: {snapshot.policy.plan_year}. Current applicability not verified.</p><code>{snapshot.policy.plan_artifact}</code><p className="fineprint">Plan SHA256</p><code>{snapshot.policy.plan_sha256}</code></>}</details>
         </section>
         <section>
           <h3>Model explanation</h3>
           {explanation == null ? <p className="muted">No model explanation in this row. The reason above is computed from the source terms, not a Nemotron reply.</p> :
-            <><p className="eyebrow model-draft">Draft / operator review required</p><p className="fineprint">Actual stored model explanation. Review against source terms; it does not set the rank.</p>
+            <><p className="eyebrow model-draft">{rejected ? "No approved draft / failure retained" : "Draft / operator review required"}</p><p className="fineprint">{rejected ? "No replacement prose was invented. Inspect the retained attempt history." : grounding?.passed ? "Nemotron selected and ordered exact source clauses and approved verification questions. The constrained renderer adds no model-supplied facts. This isn't clinical validation." : "Actual stored model prose. The current clause-grounding checker hasn't validated this legacy draft."}</p>
               {modelText ? <p className="model-reply">{modelText}</p> : <pre className="model-reply">{JSON.stringify(explanation, null, 2)}</pre>}
               {modelRecord && <dl className="provenance-list">
-                {["model_id", "mode", "trace_id"].map(key => typeof modelRecord[key] === "string" ?
-                  <div key={key}><dt>{key.replaceAll("_", " ")}</dt><dd><code>{modelRecord[key]}</code></dd></div> : null)}
+                {["model_id", "mode", "effective_mode", "trace_id"].map(key => typeof modelRecord[key] === "string" ?
+                  <div key={key}><dt>{key === "mode" ? "requested mode" : key.replaceAll("_", " ")}</dt><dd><code>{modelRecord[key]}</code></dd></div> : null)}
               </dl>}
+              {modelRecord && <details><summary>Grounding result and retained attempt history</summary><pre>{JSON.stringify(modelRecord, null, 2)}</pre></details>}
             </>}
           {explanation != null && <details><summary>Model execution provenance</summary><pre>{JSON.stringify(snapshot.model_executions, null, 2)}</pre></details>}
         </section>
@@ -92,7 +96,7 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
             <dt>Audited statement</dt><dd><code>{snapshot.data_access.zetaris_audit?.sql_query}</code></dd>
           </dl>}
           {snapshot.data_access.chain_steps && <div className="chain-evidence">
-            <h3>Seven statements. Seven audit records.</h3>
+            <h3>{snapshot.data_access.chain_steps.length === 7 ? "Seven statements. Seven audit records." : `${snapshot.data_access.chain_steps.length} statements with distinct audit records.`}</h3>
             <p className="fineprint">{snapshot.data_access.source_topology}. SQL counts include all source rows, not just the accepted ranks. Source registration IDs aren't reused as read evidence.</p>
             <ol>{snapshot.data_access.chain_steps.map(step => <li key={step.query_ids[0]}>
               <strong>{step.name}</strong><p>Query <code>{step.query_ids[0]}</code>. Returned {step.row_count} rows.
