@@ -192,7 +192,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false }: 
           <details><summary>Technology and sponsor evidence</summary>
             <p>Meterless and NVIDIA Nemotron: {snapshot.model_executions.length > 0 ? "Actual stored model drafts are identified in the row evidence drawer." : "No completed model execution in this snapshot."}</p>
             <p>Zetaris: {isZetaris ? "This snapshot carries real query references confirmed against the vendor audit database." : "Integration and query IDs are pending. This screen uses a direct PostGIS development snapshot."}</p>
-            <p>Cursor: the project follows the shared .cursor/rules. This web implementation was built by Devin; no Cursor-run claim is made.</p>
+            <p>Cursor: this web implementation was built by Devin. Required Cursor build evidence isn't attached to this checkout.</p>
           </details>
         </div>
         <span className="mono">MANATEE / 12081<br />MILTON · 2024</span>

@@ -83,10 +83,10 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
         </section>
         <section className="integration-state">
           <span className="eyebrow">{isZetaris ? "Zetaris audit verified" : "Zetaris integration pending"}</span>
-          <h3>{isZetaris ? "Real federated JDBC read." : "Development PostGIS read."}</h3>
+          <h3>{isZetaris ? "Audited Zetaris JDBC bundle read." : "Development PostGIS read."}</h3>
           <p>{isZetaris ? "This row's query references resolve to a successful Zetaris audit execution. The underlying source remains PostGIS; the application data path is Zetaris." : "No completed Zetaris integration or Zetaris query reference is claimed. SQL receipt is a direct development database read."}</p>
           {isZetaris && <dl className="provenance-list">
-            <dt>Row query IDs</dt><dd><code>{row.evidence.zetaris_query_ids.join(", ")}</code></dd>
+            <dt>Shared bundle query IDs</dt><dd><code>{row.evidence.zetaris_query_ids.join(", ")}</code></dd>
             <dt>Audit source</dt><dd>{snapshot.data_access.zetaris_audit?.source}</dd>
             <dt>Vendor query hash</dt><dd><code>{snapshot.data_access.zetaris_audit?.query_hash}</code></dd>
             <dt>Audited statement</dt><dd><code>{snapshot.data_access.zetaris_audit?.sql_query}</code></dd>
