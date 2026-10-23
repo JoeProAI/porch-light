@@ -121,9 +121,9 @@ export const Nationwide = () => {
         <section className="intro" aria-labelledby="national-title">
           <div className="intro-heading"><p className="eyebrow">County discovery / Official alert captures</p>
             <h1 id="national-title">Find the next <em>care-facility call.</em></h1>
-            <p className="intro-description">Choose a US county or a current captured NWS alert. The real CMS, Census, SVI and emPOWER chain returns an inspectable call sheet, or the exact source gaps.</p>
+            <p className="intro-description">Choose a US county or a captured weather alert. Medicare, Census, and power-outage records build a call sheet, or show exactly what is missing.</p>
           </div>
-          <div className="edition-note"><p>Directory records, not verified facility conditions. Prototype ranking, not clinical urgency.</p><a href="https://api.weather.gov/alerts/active" target="_blank" rel="noreferrer">Current official NWS alerts</a></div>
+          <div className="edition-note"><p>Directory records, not verified facility conditions. Prototype ranking, not clinical urgency.</p><a href="https://api.weather.gov/alerts/active" target="_blank" rel="noreferrer">Current official weather alerts</a></div>
         </section>
         {loading && <p role="status">Reading the audited national source catalog. No sample counties are loaded.</p>}
         {error && <div className="watch-error" role="alert"><p>{error}</p><button onClick={() => setRefreshKey(key => key + 1)} disabled={loading}>Retry verified source catalog</button></div>}

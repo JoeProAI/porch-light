@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { formatDate, formatDateEt, parseContacts } from "@/lib/operator";
 import { hasAlertShape } from "@/lib/geo";
-import { derivedFrameTime, IEM_CLOCK_URL, parseIemClock, radarFrames, type IemClock } from "@/lib/radar-frames";
+import { derivedFrameTime, IEM_CLOCK_URL, parseIemClock, radarFrames, type IemClock, type RadarFrame } from "@/lib/radar-frames";
 import { weatherFreshness, type LiveWeather, type OfficialAlert } from "@/lib/weather-types";
 import type { Provenance, Snapshot } from "@/lib/types";
 import { EvidenceDrawer } from "./evidence-drawer";
@@ -29,7 +29,6 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
   const [frameIndex, setFrameIndex] = useState(radarFrames.length - 1);
   const [playing, setPlaying] = useState(false);
   const [clock, setClock] = useState<IemClock | null>(null);
-  const [clockError, setClockError] = useState("");
   const [clockLoading, setClockLoading] = useState(true);
   const [reduced, setReduced] = useState(false);
   const [radarVisible, setRadarVisible] = useState(true);
@@ -65,7 +64,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
       setNow(Date.now());
     } catch (failure) {
       if (!(failure instanceof DOMException && failure.name === "AbortError")) {
-        setError("The latest audited feed couldn't be read. Any retained observations below keep their original capture time.");
+        setError("The latest weather feed couldn't be read. Anything still on screen keeps its original capture time.");
       }
     } finally { setLoading(false); }
   }, []);
@@ -103,11 +102,9 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
         if (!parsed) throw new Error("clock");
         setClock(parsed);
         setRadarRetry(value => value + 1);
-        setClockError("");
       } catch (failure) {
         if (failure instanceof DOMException && failure.name === "AbortError") return;
         setClock(null);
-        setClockError("IEM composite time unavailable. The frame label is the layer offset only.");
       } finally { setClockLoading(false); }
     };
     void load();
@@ -156,6 +153,12 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
 
   const frame = radarFrames[frameIndex] ?? radarFrames[radarFrames.length - 1];
   const derived = clock ? derivedFrameTime(clock.latest, frame.offsetMinutes) : null;
+  const frameClock = frameClockLabel(derived);
+  const radarStatusLine = clockLoading
+    ? `${playing ? "Playing" : "Paused"} · checking radar time`
+    : frameClock
+      ? `${playing ? "Playing" : "Paused"} · ${frameClock} frame`
+      : `${playing ? "Playing" : "Paused"} · radar time unknown`;
   const freshness = data ? weatherFreshness(data.captured_at, now || Date.now()) : "unverified";
   const filtered = data?.alerts.filter(alert => (
     `${alert.event ?? ""} ${alert.areaDesc ?? ""} ${alert.headline ?? ""}`
@@ -188,7 +191,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
           <Link href="/operate#source-atlas">Source map</Link>
           <Link href="/operate#call-ledger">Call order</Link>
         </nav>
-        <span className="edition">NWS / US</span>
+        <span className="edition">US weather</span>
       </header>
       <main>
         <div className="watch-stage">
@@ -199,22 +202,16 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
                 <h1>Watch the weather. <em>Keep the source in view.</em></h1>
               </div>
               <div className="watch-status" role="status" aria-live="polite">
-                <span className={`weather-state ${freshness}`}>{!data ? (loading ? "Connecting to audited feed" : "Audited feed unavailable") : freshness === "recent" ? "Recent official capture" : "Stale or unverified capture"}</span>
+                <span className={`weather-state ${freshness}`}>{!data ? (loading ? "Connecting to the weather feed" : "Weather feed unavailable") : freshness === "recent" ? "Recent official capture" : "This capture is out of date"}</span>
                 {offline && <span>Offline. No new source updates are available.</span>}
                 {data && <><time dateTime={data.captured_at}>{formatDateEt(data.captured_at)}</time><span>Source capture age: {Math.max(0, Math.floor(((now || Date.now()) - Date.parse(data.captured_at)) / 60000))} minutes</span></>}
-                <button type="button" onClick={() => void refresh()} disabled={loading} aria-busy={loading}>{loading ? "Reading sources..." : "Refresh displayed feed"}</button>
+                <button type="button" onClick={() => void refresh()} disabled={loading} aria-busy={loading}>{loading ? "Reading sources..." : "Refresh weather"}</button>
               </div>
             </div>
             {error && <p className="watch-error" role="alert">{error}</p>}
-            {data && freshness !== "recent" && <div className="watch-error" role="alert"><p>This capture isn't recent. Don't treat the displayed weather or alert list as current. Use the official source links.</p><p>The local capture worker may be stopped or an upstream source may be unavailable. Refreshing this page only rereads the stored capture. On this machine, run <code>.\Start-Local.ps1</code> from the repository root to start a bounded worker if none is running.</p><a href="https://www.weather.gov/" target="_blank" rel="noreferrer">Check current NWS warnings</a></div>}
+            {data && freshness !== "recent" && <div className="watch-error" role="alert"><p>This capture isn't recent. Don't treat the displayed weather or alert list as current. Use the official source links.</p><p>The local capture worker may be stopped or an upstream source may be unavailable. Refreshing this page only rereads the stored capture. On this machine, run <code>.\Start-Local.ps1</code> from the repository root to start a bounded worker if none is running.</p><a href="https://www.weather.gov/" target="_blank" rel="noreferrer">Check current weather warnings</a></div>}
             <div className="watch-map-frame" id="storm-chart">
               <h2 id="radar-title" className="radar-title">Observed radar. Real warning shapes.</h2>
-              <StormMap key={mapGeneration} ref={mapApi} alerts={data?.alerts ?? []} facilities={facilities}
-                selectedAlertId={selectedId} selectedFacilityId={facilityId} frameId={frame.id}
-                radarVisible={radarVisible} radarOpacity={radarOpacity} playing={playing} porchId={porchId}
-                alertsVisible={alertsVisible} radarRetry={radarRetry} reducedMotion={reduced}
-                onSelectAlert={chooseAlert} onSelectFacility={openEvidence}
-                onBasemapStatus={setBasemapStatus} onRadarStatus={setRadarStatus} onLocateResult={setLocateMessage} />
               <div className="map-toolbar" role="toolbar" aria-label="Chart controls">
                 <button type="button" onClick={() => mapApi.current?.national()} disabled={basemapStatus !== "ready"}>National view</button>
                 <button type="button" onClick={() => selected && hasAlertShape(selected.geometry) && mapApi.current?.fitGeometry(selected.geometry)} disabled={!selected || !hasAlertShape(selected?.geometry)}>Fit selected alert</button>
@@ -224,23 +221,29 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
                 <button type="button" onClick={() => mapApi.current?.zoomBy(1 / 1.6)} disabled={basemapStatus !== "ready"} aria-label="Zoom out">Zoom out</button>
                 <button type="button" aria-pressed={alertsVisible} onClick={() => setAlertsVisible(value => !value)}>Alert shapes: {alertsVisible ? "on" : "off"}</button>
               </div>
+              <div className="storm-stage">
+                <StormMap key={mapGeneration} ref={mapApi} alerts={data?.alerts ?? []} facilities={facilities}
+                  selectedAlertId={selectedId} selectedFacilityId={facilityId} frameId={frame.id}
+                  radarVisible={radarVisible} radarOpacity={radarOpacity} playing={playing} porchId={porchId}
+                  alertsVisible={alertsVisible} radarRetry={radarRetry} reducedMotion={reduced}
+                  onSelectAlert={chooseAlert} onSelectFacility={openEvidence}
+                  onBasemapStatus={setBasemapStatus} onRadarStatus={setRadarStatus} onLocateResult={setLocateMessage} />
+                {basemapStatus === "loading" && <p className="map-status-note" role="status">Opening the night chart.</p>}
+                {basemapStatus === "error" && <div className="map-failure" role="alert"><h3>The base map didn't load.</h3><p>The street map didn't return. No substitute imagery is drawn.</p><button type="button" onClick={() => { setBasemapStatus("loading"); setMapGeneration(value => value + 1); }}>Retry base map</button></div>}
+                {basemapStatus === "ready" && radarVisible && radarStatus === "error" && <div className="map-failure radar-failure" role="alert"><h3>Radar tiles didn't load.</h3><p>The national radar service didn't return this frame. No substitute image is drawn.</p><button type="button" onClick={() => setRadarRetry(value => value + 1)}>Retry radar tiles</button></div>}
+              </div>
               <div className="radar-controls">
                 <button type="button" className="radar-play" aria-pressed={playing} aria-label={playing ? "Pause radar" : "Play radar"}
                   disabled={!radarVisible || radarStatus === "error" || basemapStatus !== "ready"}
                   onClick={() => setPlaying(value => !value)}>{playing ? "Pause" : "Play"}</button>
-                <p className="radar-readout" role="status">
-                  <span>{playing ? "Playing" : "Paused"} · {frame.label}</span>
-                  {derived && clock ? <time dateTime={derived}>{formatDateEt(derived)}</time> : <span>{clockLoading ? "Reading the IEM composite clock." : clockError}</span>}
-                  {frame.offsetMinutes > 0 && derived && <span>Offset-based estimate. The source layer is {frame.offsetMinutes} minutes before the latest composite. This isn't a verified per-tile observation time.</span>}
-                  {clock && <span>Clock source captured {formatDateEt(clock.capturedAt)}. Zetaris query {clock.queryIds.join(", ")}.</span>}
-                </p>
+                <p className="radar-readout" role="status"><span>{radarStatusLine}</span></p>
                 <label className="radar-frame">Radar frame
                   <select value={frame.id} onChange={event => {
                     setPlaying(false);
                     const index = radarFrames.findIndex(item => item.id === event.target.value);
                     if (index >= 0) setFrameIndex(index);
                   }}>
-                    {radarFrames.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}
+                    {radarFrames.map(item => <option key={item.id} value={item.id}>{frameOptionLabel(item, clock?.latest ?? null)}</option>)}
                   </select>
                 </label>
                 <label className="radar-opacity">Radar opacity
@@ -252,19 +255,16 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
                 </label>
                 <button type="button" aria-pressed={radarVisible} onClick={() => setRadarVisible(value => !value)}>Radar layer: {radarVisible ? "on" : "off"}</button>
                 <ul className="severity-legend" aria-label="Alert severity colors">{severities.map(severity => <li key={severity}><i data-severity={severity} />{severity}</li>)}</ul>
-                <p className="radar-coverage">Iowa Environmental Mesonet NEXRAD composite, contiguous US only. County lines, cities, and roads stay visible. Not a forecast, and not a care-facility ranking.</p>
-                {reduced && <p className="radar-note">Reduced motion is on. The loop stays parked until you press Play.</p>}
+                <p className="radar-coverage">National radar, contiguous US only. Roads stay visible. Not a forecast or a call ranking.</p>
+                {reduced && <p className="radar-note">Reduced motion is on. Press Play to move the radar.</p>}
                 {locateMessage && <p className="radar-note">{locateMessage}</p>}
                 {sheetError && <p className="radar-note">{sheetError}</p>}
               </div>
-              {basemapStatus === "loading" && <p className="map-status-note" role="status">Opening the night chart.</p>}
-              {basemapStatus === "error" && <div className="map-failure" role="alert"><h3>The base map didn't load.</h3><p>OpenFreeMap didn't return the night style. No substitute imagery is drawn.</p><button type="button" onClick={() => { setBasemapStatus("loading"); setMapGeneration(value => value + 1); }}>Retry base map</button></div>}
-              {basemapStatus === "ready" && radarVisible && radarStatus === "error" && <div className="map-failure radar-failure" role="alert"><h3>Radar tiles didn't load.</h3><p>Iowa Environmental Mesonet didn't return this NEXRAD frame. No substitute echo is drawn.</p><button type="button" onClick={() => setRadarRetry(value => value + 1)}>Retry radar tiles</button></div>}
             </div>
           </section>
           <aside className="watch-alert-pane" aria-label="Official alerts">
-            {!data && loading && <section className="watch-loading" aria-busy="true"><span className="eyebrow">Reading through Zetaris</span><h2>Checking the national source capture.</h2><p>No sample warnings or replacement radar are used.</p></section>}
-            {!data && !loading && <section className="watch-loading"><h2>Weather data is unavailable.</h2><p>The local ingest worker, Zetaris connection or source verification needs attention. No cached example is passed off as live.</p><button type="button" onClick={() => void refresh()}>Retry audited weather</button></section>}
+            {!data && loading && <section className="watch-loading" aria-busy="true"><span className="eyebrow">Checking the weather source</span><h2>Checking the saved weather capture.</h2><p>No sample warnings or replacement radar are used.</p></section>}
+            {!data && !loading && <section className="watch-loading"><h2>Weather data is unavailable.</h2><p>The weather connection needs attention. No cached example is passed off as live.</p><button type="button" onClick={() => void refresh()}>Retry weather</button></section>}
             {data && <>
               <div className="alert-list-heading"><span className="eyebrow">US National Weather Service feed</span><h2 id="national-alerts-title">{data.alerts.length} source alerts.</h2><p>Warnings, watches and advisories as published at capture time. Alerts may expire between captures. Times below are Eastern. The evidence clock keeps UTC.</p></div>
               <label className="alert-search">Find a place or event<input value={search} onChange={event => setSearch(event.target.value)} placeholder="Try Florida, flood or wind" type="search" /></label>
@@ -298,7 +298,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
                   <h3>Official instructions</h3>
                   <p className="official-instructions">{selected.instruction ?? "No instructions supplied in this source record. Consult the issuing NWS office."}</p>
                   <h3>Care-facility source chain</h3>
-                  <p>The national workbench verifies actual warning coverage in PostGIS and source joins in Zetaris. The retrospective Manatee pins aren't a current-alert facility match.</p>
+                  <p>Warning coverage and the care-facility sources are checked against the audited data connection. The Manatee pins are a past example, not a match to this alert.</p>
                   {freshness === "recent" && !expired && <Link className="entry-secondary" href={`/nationwide?alert=${encodeURIComponent(selected.id)}`}>Build the sourced care-facility call sheet</Link>}
                   <a href={selected.id} target="_blank" rel="noreferrer" className="entry-secondary">Inspect original NWS record</a>
                   <p className="fineprint">Zetaris query {selected.zetaris_query_ids.join(", ")}</p>
@@ -318,10 +318,10 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
           </details>}
           {data ? <>
             <p>Zetaris query <code>{data.data_access.zetaris_query_ids.join(", ")}</code> / automatic view refresh every minute / source ingestion targets five-minute captures.</p>
-            <p>Map radar uses captured Iowa Environmental Mesonet NEXRAD assets, read through Zetaris with checksums. These aren't the separate NOAA observation loop. Alert text and shapes keep their own source audit.</p>
+            <p>Map radar uses captured national radar images, checked against the audited source. These aren't a separate observation loop. Alert text and shapes keep their own source record.</p>
             <ul>{data.limits.map(limit => <li key={limit}>{limit}</li>)}</ul>
             <p className="fineprint">National weather isn't proof of rankable care-facility coverage. Run the actual source chain for a county or alert. Manatee remains the separate retrospective walkthrough.</p>
-          </> : <p>No audited alert capture is loaded. The public base map and separately audited radar can remain available. Manatee pins are retrospective, not current facility conditions. No alerts are invented.</p>}
+          </> : <p>No audited capture is loaded. The street map can stay up. Manatee pins are a past example, not current facility conditions. No alerts are invented.</p>}
         </section>
       </main>
       <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Follow official warnings. No patient tracking. No inferred outages or facility conditions.</p><Link href="/#resources">Related official resources</Link></footer>
@@ -331,6 +331,21 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
       }} />}
     </div>
   );
+};
+
+const frameClockLabel = (iso: string | null): string | null => {
+  if (!iso) return null;
+  const parsed = Date.parse(iso);
+  if (!Number.isFinite(parsed)) return null;
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric", minute: "2-digit", timeZone: "America/New_York",
+  }).format(parsed) + " ET";
+};
+
+const frameOptionLabel = (item: RadarFrame, latest: string | null): string => {
+  const time = latest ? frameClockLabel(derivedFrameTime(latest, item.offsetMinutes)) : null;
+  if (item.offsetMinutes === 0) return time ? `${time} (latest)` : "Latest";
+  return time ? `${time} (${item.offsetMinutes} min ago)` : `${item.offsetMinutes} min ago`;
 };
 
 const AlertButton = ({ alert, selected, onChoose, shapeless = false }: {

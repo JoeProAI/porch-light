@@ -69,16 +69,16 @@
   .workflow-chain img { width: 120px; height: 88px; }
 }
 @media (max-width: 767px) {
-  .entry-header { padding: 16px 20px; gap: 14px; }
+  .entry-header { flex-wrap: wrap; padding: 16px 20px; gap: 8px 14px; }
   .entry-category { display: none; }
-  .entry-header nav { gap: 14px; }
-  .entry-header nav a { font-size: 16px; }
+  .entry-header nav { flex-basis: 100%; margin-left: 0; gap: 18px; }
+  .entry-header nav a { font-size: 16px; white-space: nowrap; }
   .entry-header nav a:first-child { display: none; }
   .mission { display: flex; flex-direction: column; align-items: stretch; padding: 28px 20px 88px; min-height: 100dvh; gap: 24px; }
   .storm-photo img, .storm-photo video { object-position: 78% center; }
   .mission::before { background: linear-gradient(180deg, #05070be8 0%, #05070b88 42%, #05070bf2 100%); }
   .mission-copy { padding: 8px 0 0; background: transparent; }
-  .mission h1 { font-size: clamp(3.2rem, 16vw, 4.6rem); }
+  .mission h1 { font-size: clamp(2.9rem, 13vw, 3.4rem); }
   .mission-description { font-size: 18px; }
   .mission-limit { font-size: 16px; }
   .entry-primary { gap: 16px; font-size: 18px; padding-inline: 18px; }

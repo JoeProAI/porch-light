@@ -14,7 +14,7 @@ export const CoverageMap = ({ geometry, facilities, selectedId, onSelect, contex
   const selectedPoint = selected ? projection.project([selected.lon, selected.lat]) : null;
   return (
     <section className="map-section" aria-labelledby="map-title">
-      <div className="pane-heading"><span className="eyebrow">02 / {contextLabel ? "Source-area facilities" : "Warning-area facilities"}</span><span className="mono">{contextLabel ?? "Published NWS geometry"}</span></div>
+      <div className="pane-heading"><span className="eyebrow">02 / {contextLabel ? "Source-area facilities" : "Warning-area facilities"}</span><span className="mono">{contextLabel ?? "Official warning area"}</span></div>
       <div className="section-heading">
         <h2 id="map-title">{contextLabel ? "Care facilities in the source area" : "Care facilities in the warning area"}</h2>
         <span className="mono muted">{located.length}/{facilities.length} located</span>

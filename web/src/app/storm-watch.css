@@ -13,21 +13,24 @@
 .watch-error { margin: 0 20px 8px; border-left: 3px solid var(--color-danger); padding: 12px 16px; background: var(--color-surface); color: var(--color-text); }
 .watch-error p { margin: 0 0 8px; }
 .watch-map-frame { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; background: #05070b; }
-.storm-map { position: relative; flex: 1; min-height: 420px; background: #05070b; }
+.storm-stage { position: relative; flex: 1; min-height: 420px; background: #05070b; }
+.storm-map { position: absolute; inset: 0; min-height: 0; overflow: hidden; background: #05070b; }
 .storm-map-canvas, .storm-map .maplibregl-map { position: absolute; inset: 0; width: 100%; height: 100%; }
 .radar-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .radar-controls { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; padding: 12px 14px; background: #05070b; border-top: 1px solid var(--line); color: var(--ink); }
 .radar-play { min-width: 88px; font-weight: 700; }
 .radar-controls button { background: #05070b; }
-.radar-readout { margin: 0; display: grid; gap: 2px; font-size: 16px; line-height: 1.35; flex: 1 1 220px; }
-.radar-readout time, .radar-readout span { font-family: var(--mono); font-size: 15px; }
-.radar-frame, .radar-opacity { display: grid; gap: 4px; font-size: 14px; color: var(--muted); flex: 1 1 180px; }
-.radar-frame select, .radar-opacity input { width: 100%; min-height: 44px; background: #0b0f16; color: var(--ink); border: 1px solid var(--line); }
+.radar-controls button:disabled { opacity: 1; color: #8b95a3; background: #05070b; border-color: #2a3340; }
+.radar-readout { margin: 0; font-size: 16px; line-height: 1.35; flex: 1 1 180px; white-space: nowrap; }
+.radar-readout span { font-family: var(--mono); font-size: 15px; }
+.radar-frame, .radar-opacity { display: grid; gap: 4px; font-size: 14px; color: var(--muted); flex: 1 1 220px; }
+.radar-frame select, .radar-opacity input { width: 100%; min-width: 0; min-height: 44px; background: #0b0f16; color: var(--ink); border: 1px solid var(--line); }
 .radar-opacity { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .radar-opacity input { flex: 1 1 140px; }
 .radar-coverage, .radar-note, .severity-legend { flex: 1 1 100%; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.45; }
-.watch-map-frame .map-toolbar { position: absolute; z-index: 4; top: 8px; left: 8px; right: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+.watch-map-frame .map-toolbar { position: static; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 8px 12px; background: #05070b; border-bottom: 1px solid var(--line); }
 .watch-map-frame .map-toolbar button { min-height: 44px; padding: 8px 12px; background: #05070b; font-size: 14px; }
+.watch-map-frame .map-toolbar button:disabled { opacity: 1; color: #8b95a3; background: #0b0f16; border-color: #2a3340; }
 .watch-map-frame .map-toolbar button[aria-pressed="true"] { border-color: var(--color-focus); color: var(--color-focus); }
 .severity-legend { display: flex; flex-wrap: wrap; gap: 6px 10px; list-style: none; padding: 0; background: #05070b; }
 .severity-legend li { display: flex; align-items: center; gap: 6px; font: 14px/1.2 var(--font-mono); color: var(--color-text); }
@@ -104,9 +107,14 @@
   .watch-map-bar h1 { font-size: 28px; max-width: none; }
   .watch-status { justify-content: flex-start; max-width: none; }
   .watch-map-frame { flex: none; }
-  .storm-map { order: 1; height: 62dvh; min-height: 320px; flex: none; }
-  .map-toolbar { top: 8px; }
+  .watch-map-frame .map-toolbar { order: 0; }
+  .storm-stage { order: 1; display: flex; flex-direction: column; flex: none; height: auto; min-height: 0; }
+  .storm-stage .storm-map { position: relative; inset: auto; order: 1; height: 52dvh; min-height: 280px; }
+  .storm-stage .map-failure,
+  .storm-stage .map-status-note { position: relative; order: 0; top: auto; left: auto; right: auto; width: auto; max-width: none; margin: 0 0 8px; }
+  .storm-stage .map-failure.radar-failure { top: auto; left: auto; right: auto; width: auto; }
   .radar-controls { order: 2; }
+  .radar-readout { white-space: normal; }
   .watch-alert-pane { max-height: none; border-left: 0; border-top: 1px solid var(--line); padding: 20px 16px 32px; }
   .watch-evidence { padding-inline: 16px; }
 }
@@ -114,16 +122,7 @@
   .watch-stage { grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr); }
   .watch-alert-pane { padding-inline: 16px; }
 }
-@media (max-width: 1100px) {
-  .watch-map-frame .map-failure,
-  .watch-map-frame .map-status-note {
-    position: relative;
-    top: auto;
-    right: auto;
-    left: auto;
-    width: auto;
-    max-width: none;
-    margin: 0 12px 12px;
-    order: 3;
-  }
+@media (min-width: 768px) {
+  .storm-stage .map-failure,
+  .storm-stage .map-status-note { top: 12px; }
 }

@@ -10,6 +10,12 @@ import { CallScript } from "./call-script";
 import { LogoMark } from "./logo-mark";
 import { WatchBezel } from "./watch-bezel";
 
+const plainReason = (value: string) => value
+  .replaceAll("National tract SVI", "Neighborhood vulnerability")
+  .replaceAll("CMS stars", "Medicare star rating")
+  .replaceAll("published ZIP DME", "medical-equipment orders in this ZIP")
+  .replaceAll("ZIP context is not a facility patient count.", "ZIP totals are not a count of this facility's patients.");
+
 export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, initialRank, sourceRunId }: {
   snapshot: Snapshot; provenance: Provenance; initialEvidenceOpen?: boolean; initialRank?: number; sourceRunId?: string;
 }) => {
@@ -124,7 +130,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
             <div className="snapshot-date"><span className="muted">Snapshot generated</span><time dateTime={snapshot.generated_at}>{formatDateEt(snapshot.generated_at)}</time><span className="age">{age}</span></div>
           </div>
         </section>
-        <div className="source-strip"><span><i className="source-dot" /> {isZetaris ? "Zetaris JDBC" : "Development PostGIS"} <span className="muted">/ {isZetaris ? "audit verified" : "Zetaris pending"}</span></span><span>Fixed policy · not clinically validated</span><span>{offline ? "Offline · loaded snapshot only" : "Local snapshot · no live refresh"}</span></div>
+        <div className="source-strip"><span><i className="source-dot" /> {isZetaris ? "Audited source connection" : "Development database"} <span className="muted">/ {isZetaris ? "verified" : "audit pending"}</span></span><span>Fixed ranking · not clinically validated</span><span>{offline ? "Offline · saved snapshot only" : "Saved snapshot · no live refresh"}</span></div>
         <div className="workspace-heading">
           <div><span className="eyebrow">Care-facility call sheet</span><h2>Contact. Record. Next.</h2></div>
           <div className="export-actions"><button onClick={exportCsv} disabled={!ready || !snapshot.facilities.length}>Export CSV <span aria-hidden="true">↓</span></button><button onClick={() => window.print()} disabled={!snapshot.facilities.length}>Print sheet <span aria-hidden="true">↗</span></button></div>
@@ -148,7 +154,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
                       data-porch={lit ? "true" : "false"} data-rank={item.rank}
                       aria-label={`Rank ${item.rank}: ${item.name}, phone ${formatPhone(item.phone.value)}, score ${formatFigure(item.score.total)}, ${contactLabels[status]}`}>
                       <span className="rank mono">{String(item.rank).padStart(2, "0")}</span>
-                      <span className="facility-info"><span className="facility-type">{item.type === "dialysis" ? "Dialysis" : "Nursing home"} <span>· CCN {item.ccn}</span></span><span className="facility-name">{item.name}</span><span className="facility-phone">{formatPhone(item.phone.value)}</span><span className={`contact-state${status === "reached" ? " is-answered" : ""}${status !== "uncontacted" ? " is-recorded" : ""}`}>{!ready ? "Loading contact status…" : contactLabels[status]}{active && <span className="selection-label"> · Selected call</span>}</span>{contact && <time className="contact-time" dateTime={contact.updatedAt}>{formatDateEt(contact.updatedAt)}</time>}</span>
+                      <span className="facility-info"><span className="facility-type">{item.type === "dialysis" ? "Dialysis" : "Nursing home"} <span>· Provider no. {item.ccn}</span></span><span className="facility-name">{item.name}</span><span className="facility-phone">{formatPhone(item.phone.value)}</span><span className={`contact-state${status === "reached" ? " is-answered" : ""}${status !== "uncontacted" ? " is-recorded" : ""}`}>{!ready ? "Loading contact status…" : contactLabels[status]}{active && <span className="selection-label"> · Selected call</span>}</span>{contact && <time className="contact-time" dateTime={contact.updatedAt}>{formatDateEt(contact.updatedAt)}</time>}</span>
                       <span className="score mono" title={String(item.score.total)}>{formatFigure(item.score.total)}<span className="score-bar"><i style={{ width: `${item.score.total * 100}%` }} /></span></span>
                     </button>
                   </li>;
@@ -161,7 +167,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
               contextLabel={national ? snapshot.scenario.geometry_mode === "official_alert_polygon" ? "Official NWS alert polygon" : snapshot.selected_alert ? "County context, not the warning boundary" : "Official county boundaries, not a warning" : undefined} />
             {row && <div className={`atlas-index-strip${porch && row.id === porch.id ? " is-porch" : ""}`}>
               <span className="index-numeral" aria-hidden="true">{String(row.rank).padStart(2, "0")}</span>
-              <div><span className="eyebrow">Selected care facility</span><strong>{row.name}</strong><span className="mono" title={`${row.lat}, ${row.lon}`}>CCN {row.ccn} / {formatFigure(row.lat)}, {formatFigure(row.lon)}</span></div>
+              <div><span className="eyebrow">Selected care facility</span><strong>{row.name}</strong><span className="mono" title={`${row.lat}, ${row.lon}`}>Provider no. {row.ccn} / {formatFigure(row.lat)}, {formatFigure(row.lon)}</span></div>
             </div>}
             {row && <div className="atlas-bezel"><WatchBezel label="Ranked call order" ticks={snapshot.facilities.map(item => ({ id: item.id, label: `Jump to rank ${item.rank}, ${item.name}`, mark: String(item.rank) }))}
               selectedId={row.id} litId={porch?.id} onSelect={selectRow} centerLabel={`Focus rank ${row.rank} in the ledger`} centerMark={String(row.rank).padStart(2, "0")}
@@ -180,7 +186,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
                 <h2 id="next-call-title" tabIndex={-1}>{row.name}</h2>
                 <p className="call-address">{row.address} · {row.zip}</p>
                 <div className="phone-line"><span className="phone-number">{formatPhone(row.phone.value)}</span><button onClick={copyPhone} disabled={!row.phone.value || copying} aria-label={`Copy phone for ${row.name}`}>{copying ? "Copying…" : "Copy"}</button></div>
-                <p className="reason">{row.computed_reason}</p>
+                <p className="reason">{plainReason(row.computed_reason)}</p>
               </motion.div>
               <button className="evidence-trigger" onClick={() => setEvidenceOpen(true)}>Why this rank / inspect evidence <span aria-hidden="true">↗</span></button>
               <CallScript key={`${sourceRunId ?? "demo"}:${row.ccn}`} ccn={row.ccn} sourceRunId={sourceRunId} />
@@ -198,8 +204,8 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
           </aside>
         </div>
         {snapshot.model_report && <details className="limits"><summary>Grounded drafts and retained failures</summary><p>{snapshot.model_report.accepted_facilities} grounded facility drafts. {snapshot.model_report.unresolved_facilities} unresolved. {snapshot.model_report.not_attempted_budget} not attempted because of the approved cap. {snapshot.model_report.provider_requests} Meterless requests. {snapshot.model_report.retry_recoveries} retry recoveries.</p><p>Draft failure reasons</p><pre>{JSON.stringify(snapshot.model_report.failure_reasons, null, 2)}</pre></details>}
-        <section className="refusals" aria-labelledby="refusals-title"><div><span className="eyebrow">Withheld, not forgotten</span><h2 id="refusals-title">{snapshot.refused.length} records refused.</h2><p>Missing or disqualifying evidence keeps these records out of the call order.</p></div><ul>{snapshot.refused.map(item => <li key={item.ccn}><span>{item.name}</span><code>CCN {item.ccn} / {item.reason}</code></li>)}</ul></section>
-        <section className="limits source-limits print-limits" id="source-limits"><h2>Snapshot limits</h2><ul>{snapshot.limits.map(limit => <li key={limit}>{limit}</li>)}</ul><p>{national ? "The national fixed policy omits county plans. No archived Manatee plan or guessed plan value is applied." : "Current published NWS shapes are used; equivalence to the 2024 boundary is unverified."} ZIP DME context is not a facility patient count.</p></section>
+        <section className="refusals" aria-labelledby="refusals-title"><div><span className="eyebrow">Withheld, not forgotten</span><h2 id="refusals-title">{snapshot.refused.length} records refused.</h2><p>Missing or disqualifying evidence keeps these records out of the call order.</p></div><ul>{snapshot.refused.map(item => <li key={item.ccn}><span>{item.name}</span><code>Provider no. {item.ccn} / {item.reason}</code></li>)}</ul></section>
+        <section className="limits source-limits print-limits" id="source-limits"><h2>Snapshot limits</h2><ul>{snapshot.limits.map(limit => <li key={limit}>{limit}</li>)}</ul><p>{national ? "The national fixed policy omits county plans. No archived Manatee plan or guessed plan value is applied." : "Current published weather-service shapes are used; equivalence to the 2024 boundary is unverified."} Medical-equipment ZIP totals are not a count of this facility's patients.</p></section>
       </main>
       <footer className="site-footer">
         <span className="wordmark">Porch Light.</span>

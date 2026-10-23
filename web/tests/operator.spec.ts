@@ -63,7 +63,7 @@ test("storm watch uses the night masthead, type, and a solid radar bar", async (
       mono: getComputedStyle(document.querySelector(".radar-readout span")!).fontFamily,
       pane: bg(".watch-alert-pane"),
       bar: bg(".radar-controls"),
-      button: bg(".watch-map-frame .map-toolbar button"),
+      toolbar: bg(".watch-map-frame .map-toolbar"),
       play: bg(".radar-play"),
     };
   });
@@ -72,7 +72,8 @@ test("storm watch uses the night masthead, type, and a solid radar bar", async (
   expect(paint.body).toContain("Atkinson Hyperlegible");
   expect(paint.display).toContain("Libre Baskerville");
   expect(paint.mono).toContain("IBM Plex Mono");
-  for (const value of [paint.pane, paint.bar, paint.button, paint.play]) expect(value).toBe("rgb(5, 7, 11)");
+  for (const value of [paint.pane, paint.bar, paint.toolbar, paint.play]) expect(value).toBe("rgb(5, 7, 11)");
+  await expect(page.locator(".radar-readout")).toContainText(/Paused · (checking radar time|radar time unknown|\d{1,2}:\d{2} [AP]M ET frame)/);
 });
 
 test("the call sheet has no canvas-gray band across the workspace", async ({ page }) => {
@@ -103,6 +104,14 @@ test("the call sheet has no canvas-gray band across the workspace", async ({ pag
   expect(paint.workspace).toBe("rgb(5, 7, 11)");
   expect(paint.list).toBe("rgb(5, 7, 11)");
   expect(paint.rail).toBe("rgb(5, 7, 11)");
+  await expect(page.getByText("01 / Call order")).toBeVisible();
+  await expect(page.getByText("02 / Warning-area facilities")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Care facilities in the warning area" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Facility extent" })).toBeVisible();
+  const phone = page.locator(".facility-row[data-porch='true'] .facility-phone");
+  await expect(phone).toBeVisible();
+  const phoneBox = await phone.boundingBox();
+  expect(phoneBox && phoneBox.height).toBeLessThan(32);
   for (const sample of paint.samples) {
     expect(sample.chain.join(" "), `y=${sample.y}`).not.toContain("rgb(18, 18, 18)");
   }
