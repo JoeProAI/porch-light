@@ -50,3 +50,23 @@ Paid fallback remains disabled.
 
 The full 3,235-county source/model sweep is still running and must be reported separately.
 Exact run artifacts, source snapshots, failed content, route/cost receipts and checksum sidecars remain in the private national filestore.
+
+## Single-Phase Denver Verification, 10:40 PM ET
+
+After identifying Meterless's planner rewrite, requests now set JSON-object response format and `meterless-tier-split: off`.
+The planner otherwise turns this structured-output task into numbered planning prose.
+No failed response is repaired or stripped to manufacture JSON.
+
+Two additional real app runs in Denver County, Colorado verify the top three rows at 1280px and 375px.
+All six scripts passed on their first request, with six matching free NVIDIA receipts, no retry and actual cost $0.
+Four requests used Nemotron 3.5 Lightning 30B A3B; two used Nemotron 3.5 Super VL 120B A12B.
+The browser checks also verify retained event IDs, cached replay without another provider call, no page errors and no horizontal overflow.
+
+The combined scoped checks now cover three counties, six app runs and nine distinct source facilities.
+Across 18 script outcomes, 16 passed and the original two Providence failures remain failed and retained.
+There are 20 script provider attempts, including the original two sole retries.
+These are still bounded live checks, not the full national model result.
+
+An additional Windows sharing violation in the exclusive audit lock was caught before a provider call.
+Bounded contention retries now handle that Windows error without deleting another worker's lock or weakening the shared attempt cap.
+Twelve deterministic grounding, retention, locking and report checks pass, alongside the real audited source-chain tests.
