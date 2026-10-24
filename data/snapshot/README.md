@@ -51,7 +51,7 @@ docker compose -f data/snapshot/compose.yaml config --no-interpolate --no-env-re
 ## Load And Verify Real Inputs
 
 ```powershell
-python -m data.snapshot.load_snapshot --county manatee --county sarasota
+python -m data.snapshot.load_snapshot --county manatee
 python -m data.snapshot.reader
 python -m unittest data.snapshot.test_database -v
 ```
@@ -62,10 +62,13 @@ metadata, and use a hash of the selected inputs and transformation code to ident
 the loaded snapshot. Loading the same inputs again does not duplicate records.
 An existing source identity with changed content is refused, not overwritten.
 
-The current snapshot contains 20 Manatee source rows and 42 Sarasota source rows.
-Actual SQL confirms 18 and 40 geography observations, respectively. Current
-published warning-zone unions cover 18 and 39 points. These are not verified
-historical 2024 boundaries or clinical priorities.
+The checked-in load profile is Manatee only. `data/snapshot/test_database.py`
+asserts 20 Manatee source rows, 18 geography observations, and 18 points covered
+by the current published zone union, plus 18 SVI and 18 HHS context rows.
+An earlier two-county pass also loaded Sarasota (42 source rows, 40 geography,
+39 zone-covered). Those capture files are not in this branch, and the test
+no longer asserts them. These figures are not verified historical 2024
+boundaries or clinical priorities.
 
 The private reader credential file is `.porchlight/postgis-read.env` under the
 user's home, outside Git. TCP password authentication is tested inside the

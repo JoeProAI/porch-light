@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
   "name": "Porch Light",
-  "description": "Who to call first when a storm warning drops — local Zetaris, Meterless, and Nemotron on a night desk.",
+  "description": "Who to call first when a storm warning drops. Local Zetaris, Meterless, and Nemotron on a night desk.",
   "colors": {
     "primary": "#f2a93b",
     "light": "#ffb547",
@@ -58,6 +58,7 @@
         "group": "Get started",
         "pages": [
           "index",
+          "quickstart",
           "local-run",
           "manatee-walkthrough",
           "nationwide",
@@ -65,9 +66,65 @@
         ]
       },
       {
+        "group": "Product",
+        "pages": [
+          "architecture",
+          "ranking",
+          "evidence-trail",
+          "eoc-snapshot-mode"
+        ]
+      },
+      {
+        "group": "Data",
+        "pages": [
+          "data-sources",
+          "zetaris-federation",
+          "country-adapters"
+        ]
+      },
+      {
+        "group": "Models",
+        "pages": [
+          "meterless-and-nemotron",
+          "eval"
+        ]
+      },
+      {
+        "group": "Trust",
+        "pages": [
+          "privacy",
+          "license"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": [
+          "deploy"
+        ]
+      },
+      {
         "group": "Sponsors",
         "pages": [
           "sponsors"
+        ]
+      },
+      {
+        "group": "API reference",
+        "openapi": "/contract/openapi.yaml",
+        "pages": [
+          "api-reference/introduction",
+          "GET /alerts/archived",
+          "GET /alerts/active",
+          "POST /runs",
+          "GET /runs/{id}",
+          "GET /runs/{id}/facilities",
+          "GET /runs/{id}/joins",
+          "GET /runs/{id}/trace",
+          "GET /runs/{id}/checkins",
+          "POST /runs/{id}/checkins",
+          "POST /runs/{id}/export",
+          "GET /runs/{id}/exports/{export_id}/artifacts/{format}",
+          "GET /health"
         ]
       }
     ]

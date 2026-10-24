@@ -1,0 +1,25 @@
+---
+description: Area owners, backups and branch prefixes for Porch Light
+alwaysApply: true
+---
+
+# Paths: who owns what
+
+Stay inside your area. Every PR keeps its area's section of HANDOFF.md
+current and ends with the HANDOFF block.
+
+| Area | Paths | Branch prefix | Primary | Backup |
+|---|---|---|---|---|
+| Contract | `contract/`, `.cursor/rules/` | `contract/*` | Joe in Cursor | Devin |
+| Data | `data/` | `devin/data-*` (backup `cursor-data/*`) | Devin | Cursor cloud agent (data) |
+| Integration and review | PR reviews, merge list | n/a | Devin (Devin Review) | Codex review; the Wringer adds an adversarial pass |
+| Engines | `engines/` | `claude/engines-*` | Claude Code | Devin |
+| Eval and CI | `eval/`, `.github/workflows/` | `codex/eval-*` | Codex | Claude Code |
+| Web | `web/` | `cursor-web/*` | Cursor cloud agents | Codex |
+| Docs | `docs/` | `desk/docs-*` | Hackathon Desk docs seat (Grok Bot) | Claude Code |
+| Front matter and ops | `README.md`, `metadata.json`, `DECLARED_PREEXISTING.md`, `LICENSE`, `NOTICE`, `ops/` | `desk/ops-*` | Hackathon Desk (Grok Bot) | Devin |
+| Deck, script, explanation | `ops/narrative/` | `desk/ops-*` | Hackathon Desk (Grok Bot) | Claude Code |
+
+Contract changes go in their own PR on a `contract/*` branch. Joe presses
+merge at the merge windows, about 1 PM and 10 PM ET, in the order data,
+engines, eval, web, docs.

@@ -14,7 +14,7 @@ The ranking formula is a published prototype over captured public records. Opera
 
 Joe Gaither directed the project: decisions, review, and merges.
 
-Devin built the data adapters, the engines, and most of the web application, including the Manatee call sheet.
+Devin wrote the contract (PR #14), the data adapters, the engines, and most of the web application, including the Manatee call sheet.
 
 Cursor cloud agents built [Storm Watch v2 and the Storm Glass Desk design (PR #22)](https://github.com/JoeProAI/porch-light/pull/22) and [the national web wiring (PR #24)](https://github.com/JoeProAI/porch-light/pull/24): county search, active-alert runs, source gaps, and the smoke script. Both pull requests are merged. What that evidence includes, and what it does not count, is in `ops/build-log/cursor/README.md`. Later-edit rules are in `.cursor/rules/`. This repository does not record Cursor token counts or spend.
 
@@ -87,7 +87,7 @@ It calls `engines.national_run`, so it does not spend the Meterless draft budget
 | Zetaris | `engines/zetaris_chain.py`, `engines/zetaris_client.py`, `engines/national_run.py` | Audited SQL joins CMS, Census, SVI, and emPOWER, with measured match counts. Source relations share one read-only PostGIS datasource. The Manatee page can read the audited export. National runs query Zetaris directly. |
 | Meterless | `engines/meterless.py`, `engines/scout_intent.py`, `engines/draft_jobs.py` | Nemotron requests use the Nightshift `meterless/deep` route with thinking disabled. Scout Intent gates the live call-script path with a signed execution contract that the draft executor verifies before any provider call (see `engines/README.md`, Scout Intent gate). H-MEM, World Model and Markovian are not claimed. |
 | NVIDIA Nemotron | `engines/snapshots/manatee-zetaris.json`, `engines/national_jobs.py` | Stored Super VL drafts explain the top Manatee rows. National call scripts are requested per run through Meterless after the Scout Intent contract is verified. Nemotron does not rank. Local GPU inference is not verified. |
-| Cursor | [PR #22](https://github.com/JoeProAI/porch-light/pull/22), [PR #24](https://github.com/JoeProAI/porch-light/pull/24), `ops/build-log/cursor/README.md` | Cursor cloud agents wrote Storm Watch v2 and the shared design, and the national web wiring. Both pull requests are merged. Devin wrote the data, engines, and most of the web. Joe directed the work. No token count or spend total is recorded. |
+| Cursor | [PR #22](https://github.com/JoeProAI/porch-light/pull/22), [PR #24](https://github.com/JoeProAI/porch-light/pull/24), `.cursor/rules/`, `ops/build-log/cursor/README.md` | Cursor cloud agents wrote Storm Watch v2 and the shared design, and the national web wiring. Both pull requests are merged. Cursor also supplies the `.cursor/rules/` files. Devin wrote the contract (PR #14), the data, the engines, and most of the web. Joe directed the work. No token count or spend total is recorded. |
 
 ## Data credits
 

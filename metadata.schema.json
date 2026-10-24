@@ -57,6 +57,8 @@
       }
     },
     "repository": { "type": "string", "format": "uri" },
+    "demo_url": { "description": "Live demo URL. Empty string until a demo is hosted.", "type": "string" },
+    "built_window": { "description": "Build window as stated in the hackathon rules.", "type": "string" },
     "submission": {
       "type": "object",
       "additionalProperties": false,
