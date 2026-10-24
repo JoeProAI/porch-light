@@ -440,3 +440,8 @@ a:hover, summary:hover { color: var(--ink); }
   .print-limits h2 { font-size: 18px; }
   .site-footer { padding: 20px 0; }
 }
+
+.verified-local-runs h2 { font-family: var(--display); font-size: 28px; font-weight: 400; letter-spacing: -.04em; margin: 0 0 8px; }
+.verified-run-list { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 8px; }
+.verified-run-list a { color: var(--amber); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.verified-run-list li { line-height: 1.35; }

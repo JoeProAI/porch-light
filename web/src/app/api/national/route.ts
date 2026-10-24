@@ -1,5 +1,5 @@
 import { UNREACHABLE_MESSAGE } from "@/lib/national-gaps";
-import { NationalEngineError, readNationalCatalog, readNationalRun, requestCallScript, startNationalRun, validRun } from "@/lib/national-server";
+import { listRecentCompletedNationalRuns, NationalEngineError, readNationalCatalog, readNationalRun, requestCallScript, startNationalRun, validRun } from "@/lib/national-server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,11 +22,23 @@ const failed = (error: unknown, fallback: string): Response => {
 
 export const GET = async (request: Request): Promise<Response> => {
   if (!localHost(request) || request.headers.get("sec-fetch-site") === "cross-site") return Response.json({ error: "Local-origin access required." }, { status: 403, headers });
-  const id = new URL(request.url).searchParams.get("job");
+  const params = new URL(request.url).searchParams;
+  const id = params.get("job");
+  const recent = params.get("recent");
+  if (id !== null && recent !== null) {
+    return Response.json({ error: "Choose either a run reference or recent completed runs." }, { status: 400, headers });
+  }
   if (id !== null && !validRun(id)) return Response.json({ error: "Invalid run reference." }, { status: 400, headers });
-  try { return Response.json(id ? await readNationalRun(id) : await readNationalCatalog(), { headers }); }
-  catch (error) {
+  if (recent !== null && recent !== "1") {
+    return Response.json({ error: "Use recent=1 for completed local runs." }, { status: 400, headers });
+  }
+  try {
+    if (id) return Response.json(await readNationalRun(id), { headers });
+    if (recent === "1") return Response.json({ recent: await listRecentCompletedNationalRuns(20) }, { headers });
+    return Response.json(await readNationalCatalog(), { headers });
+  } catch (error) {
     return failed(error, id ? "No verified run result is available. No substitute data was returned." :
+      recent === "1" ? "Completed local runs couldn't be listed. No sample counties were substituted." :
       "The audited national source catalog is unavailable. No sample counties are substituted.");
   }
 };

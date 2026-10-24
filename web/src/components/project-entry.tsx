@@ -27,7 +27,7 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
             <p className="mission-description">An emergency-operations call sheet for dialysis centers and nursing homes in a storm-warning area. Real phone numbers. A transparent order of outreach. Evidence behind every priority.</p>
             <Link className="entry-primary" href="/nationwide">Pick any US county <span aria-hidden="true">↗</span></Link>
             <Link className="entry-secondary" href="/operate">See the Hurricane Milton walkthrough</Link>
-            <p className="mission-limit">Verified example: Hurricane Milton, 2024. Retrospective, not a live warning or current facility conditions.</p>
+            <p className="mission-limit">Manatee is the Hurricane Milton walkthrough. Retrospective, not a live warning or current facility conditions. Nationwide is the multi-county product: verified local runs, with gaps left visible.</p>
             <a className="mission-sponsor-proof" href="#sponsor-title">Built with Zetaris, Meterless and NVIDIA Nemotron. <span>Inspect the proof.</span></a>
             <Link className="watch-entry-link" href="/watch">For current official weather, open Storm Watch</Link>
           </div>
@@ -58,11 +58,11 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
           <p className="satellite-credit">Demonstration: Hurricane Milton, October 8, 2024. The picture is project key art of a night storm and one porch light. It is not a NASA satellite image and not a live warning.</p>
         </section>
         <section className="demonstration-scope" aria-label="What this example contains">
-          <div><span className="eyebrow">One real warning area</span><h2>Manatee County,<br />Florida.</h2></div>
+          <div><span className="eyebrow">Golden-path walkthrough</span><h2>Manatee County,<br />Florida.</h2></div>
           <p><strong>{dialysis}</strong> ranked dialysis centers</p>
           <p><strong>{nursing}</strong> ranked nursing homes</p>
           <p><strong>{snapshot.refused.length}</strong> refused source records</p>
-          <span className="scope-note">The demonstration is local and retrospective. Nationwide and international coverage aren't claimed by this example.</span>
+          <span className="scope-note">Manatee is the inspectable Milton retrospective. The product path for more counties is the nationwide workbench: completed local runs from verified CMS, Census, SVI and emPOWER joins, with source gaps left visible. Model draft coverage is still incomplete and is not claimed finished for every US county.</span>
         </section>
         <section className="project-workflow" id="workflow" aria-labelledby="workflow-title">
           <div className="workflow-intro"><p className="eyebrow">From warning to outreach</p><h2 id="workflow-title">Less searching.<br />A call sheet you can inspect.</h2><p>Porch Light brings fragmented public records into one working order. It doesn't decide clinical urgency, place calls or invent missing evidence.</p></div>

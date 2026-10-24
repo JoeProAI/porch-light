@@ -1,6 +1,6 @@
 import { execFile, spawn } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { access, readdir, readFile, stat } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
@@ -139,6 +139,68 @@ const validateResult = (value: unknown): Snapshot | Record<string, unknown> => {
   return snapshot;
 };
 
+
+export type RecentNationalRun = {
+  id: string;
+  county_name: string;
+  state: string;
+  fips: string;
+  facility_count: number;
+  alert_event: string | null;
+  generated_at: string;
+};
+
+const summarizeCompletedSnapshot = (id: string, value: unknown): RecentNationalRun | null => {
+  if (!record(value) || !record(value.county) || !record(value.counts) || !record(value.scenario)) return null;
+  const county = value.county;
+  const counts = value.counts;
+  const scenario = value.scenario;
+  if (typeof county.name !== "string" || typeof county.state !== "string" || typeof county.fips !== "string") return null;
+  if (typeof value.generated_at !== "string" || typeof counts.ranked_rows !== "number" || !Number.isFinite(counts.ranked_rows)) return null;
+  const facilities = Array.isArray(value.facilities) ? value.facilities.length : counts.ranked_rows;
+  // Prefer the ranked cardinality when present; never invent a higher count.
+  const facility_count = value.state === "source_gap" ? 0 : Math.max(0, Math.trunc(counts.ranked_rows || facilities));
+  const alert_event = typeof scenario.event === "string" && scenario.event.trim() ? scenario.event : null;
+  return {
+    id,
+    county_name: county.name,
+    state: county.state,
+    fips: county.fips,
+    facility_count,
+    alert_event,
+    generated_at: value.generated_at,
+  };
+};
+
+export const listRecentCompletedNationalRuns = async (limit = 20): Promise<RecentNationalRun[]> => {
+  const cap = Math.min(Math.max(1, Math.trunc(limit)), 20);
+  let entries: string[] = [];
+  try { entries = await readdir(root); }
+  catch { return []; }
+  const ranked: { id: string; mtime: number }[] = [];
+  for (const name of entries) {
+    if (!validRun(name)) continue;
+    try {
+      const info = await stat(path.join(root, name));
+      if (!info.isDirectory()) continue;
+      ranked.push({ id: name, mtime: info.mtimeMs });
+    } catch { /* missing entry */ }
+  }
+  ranked.sort((a, b) => b.mtime - a.mtime);
+  const recent: RecentNationalRun[] = [];
+  for (const item of ranked) {
+    if (recent.length >= cap) break;
+    try {
+      const status = (await readVerified(path.join(root, item.id, "status.json"))).value;
+      if (!record(status) || status.id !== item.id || status.phase !== "completed") continue;
+      const snapshot = (await readVerified(path.join(root, item.id, "snapshot.json"))).value;
+      const summary = summarizeCompletedSnapshot(item.id, snapshot);
+      if (summary) recent.push(summary);
+    } catch { /* incomplete or unverified job folder */ }
+  }
+  return recent;
+};
+
 export const readNationalRun = async (id: string): Promise<unknown> => {
   if (!validRun(id)) throw new Error("Invalid local run ID");
   const state = children.get(id);
@@ -147,6 +209,10 @@ export const readNationalRun = async (id: string): Promise<unknown> => {
   catch {
     if (state?.error) return { id, phase: "failed", message: state.error };
     if (state?.live) return { id, phase: "starting" };
+    // A bookmarked run with no folder can never complete; a non-terminal error would keep the
+    // client polling and leave the whole nationwide form disabled.
+    try { await access(path.join(root, id)); }
+    catch { return { id, phase: "failed", message: "No verified checkpoint exists for this run reference. Start a new county or alert run." }; }
     throw new Error("No verified local run checkpoint is available");
   }
   if (!record(status) || status.id !== id || typeof status.phase !== "string") throw new Error("Invalid run checkpoint");
