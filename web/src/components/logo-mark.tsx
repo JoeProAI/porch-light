@@ -1,10 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 
 export const LogoMark = () => {
   const reduced = useReducedMotion();
-  if (reduced !== false) {
+  // The server can't read the motion preference, so it always renders the still frame. Switch to the loop only after hydration.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+  if (!hydrated || reduced !== false) {
     return <img className="logo-mark" src="/art/logo-mark-64.png" alt="" width={36} height={36} />;
   }
   return (
