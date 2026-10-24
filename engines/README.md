@@ -38,6 +38,14 @@ Meterless credentials come only from its private proxy-token file. Every request
 
 `python -m engines.national_jobs --call-script <source-ccn> [--source-run <local-run-id>]` requests a source-grounded operator script. Results and failures are cached with provenance. No call or message is placed; conditions remain unknown until verified.
 
+## Scout Intent Gate
+
+`engines/scout_intent.py` is a fresh implementation of the Meterless Scout Intent engine spec (`engines/scout-intent/AGENTS.md` upstream): Sense -> Interpret -> Guard -> Route -> ExecutionContract. The live call-script path (`national_jobs --call-script`) calls `Scout.decide` before any provider work. The request is scored against a versioned intent registry (`outreach.call_script`, `callsheet.export_csv`, `callsheet.print`, `contact.record_outcome`, the always-denied high-risk `facility.condition_claim`, and the `GENERAL` fallback) using the spec's confidence bands; required parameters (the CCN) must bind from context; five guard layers (injection, policy, scope, sensitivity, rate limit) each return pass, warn or block; routing refuses rather than substitutes when the Meterless Runtime token is absent.
+
+A proceed decision issues an execution contract: ULID `contractId`, `traceId`, bound intent and parameters, risk, tool plan, `modelProfile`, scope capabilities, 5 minute TTL, registry and policy-pack versions, and an HMAC-SHA256 signature over the canonical JSON of the contract without its signature. `request_selections` with purpose `call_script` calls `Scout.enforce` and refuses unsigned, tampered, expired, wrong-intent, wrong-capability or wrong-CCN contracts before reserving a budget attempt. The sole retry is a `replan` child contract on the same trace. Decisions and `contract.issued` / `contract.verified` / `contract.refused` / `contract.expired` events append to `%USERPROFILE%\.porchlight\scout-intent\events.jsonl`; the signing key lives beside it and never enters Git.
+
+Honest scope: Stage 1 deterministic lexical scoring only (the optional local embedding stage is not installed and is reported as `stage2: skipped`); the key is a per-machine integrity secret, not a shared trust root; batch explanation drafts (`explanation_batch`) are not yet contract-gated. Checks: `python -m unittest engines.test_scout_intent -v`.
+
 ## Measured Sweep
 
 Run `python -u -m engines.national_sweep --all --sample 500 --workers 4 --drafts`. The scope freezes the actual alert capture, records all mapped active-alert counties, selects a seeded sample from the remainder, and optionally executes every remaining canonical county. `--resume <existing-sweep-directory>` verifies completed checkpoints and preserves their actual timings and source IDs.

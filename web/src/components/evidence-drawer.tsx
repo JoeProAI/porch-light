@@ -5,8 +5,8 @@ import { formatDate } from "@/lib/operator";
 import type { Facility, Provenance, Snapshot } from "@/lib/types";
 
 const termLabels: Record<string, string> = {
-  type_weight: "Facility type", svi_pct: "National tract SVI", empower_density_pct: "ZIP DME ratio percentile",
-  cms_risk: "CMS rating risk", plan_flag: "Archived plan mention",
+  type_weight: "Facility type", svi_pct: "Neighborhood vulnerability", empower_density_pct: "Medical-equipment orders in this ZIP",
+  cms_risk: "Medicare rating risk", plan_flag: "Archived plan mention",
 };
 const safeSourceUrl = (url: string): string | undefined => {
   try { const parsed = new URL(url); return ["http:", "https:"].includes(parsed.protocol) ? url : undefined; } catch { return undefined; }
@@ -40,7 +40,7 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
         <p className="drawer-facility">{row.name}</p>
         <p className="reason">{row.computed_reason}</p>
         <ol className="proof-spine" aria-label="Evidence lineage">
-          <li><span>01</span><div><strong>Observed</strong><small>CMS / CCN {row.ccn}</small></div></li>
+          <li><span>01</span><div><strong>Observed</strong><small>Medicare provider number {row.ccn}</small></div></li>
           <li data-verified={isZetaris}><span>02</span><div><strong>{isZetaris ? "Audited" : "Development"}</strong><small>{isZetaris ? `Zetaris ${row.evidence.zetaris_query_ids.join(", ")}` : "No vendor audit claimed"}</small></div></li>
           <li><span>03</span><div><strong>Fixed policy</strong><small>{row.score.formula_version}</small></div></li>
           <li><span>04</span><div><strong>{rejected ? "No approved draft" : modelText ? "Model draft" : "Computed reason"}</strong><small>{rejected ? "Failed or unattempted status retained" : grounding?.passed ? "Source-clause grounding passed" : modelText ? "Stored model draft; current grounding not checked" : "No model output claimed"}</small></div></li>
@@ -78,7 +78,7 @@ export const EvidenceDrawer = ({ row, snapshot, provenance, open, onClose }: {
           <dl className="provenance-list">
             <dt>Source artifact</dt><dd><code>{row.evidence.source_artifact_path}</code></dd>
             <dt>Artifact SHA256</dt><dd><code>{row.evidence.source_sha256}</code></dd>
-            <dt>SVI artifact</dt><dd><code>{row.evidence.svi_artifact_path}</code></dd>
+            <dt>Vulnerability source file</dt><dd><code>{row.evidence.svi_artifact_path}</code></dd>
             <dt>Geography artifact</dt><dd><code>{row.evidence.geography_artifact_path}</code></dd>
             <dt>Location method</dt><dd>{String(geography.coordinate_source ?? "Not provided")}. Address-match quality: {String(geography.address_match_quality ?? "not provided")}. Operator review required.</dd>
             <dt>Coordinates</dt><dd>{typeof row.lat === "number" ? row.lat.toFixed(2) : "unknown"}, {typeof row.lon === "number" ? row.lon.toFixed(2) : "unknown"}<span className="source-figure">source {row.lat ?? "unknown"}, {row.lon ?? "unknown"}</span></dd>

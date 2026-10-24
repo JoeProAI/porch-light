@@ -61,8 +61,8 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "demo_video": { "description": "Link to the 1-4 minute video.", "type": ["string", "null"], "format": "uri" },
-        "slide_deck": { "description": "Link or repository path.", "type": ["string", "null"] }
+        "demo_video": { "description": "Link to the 1-4 minute video, or an empty string when none is packaged.", "type": ["string", "null"] },
+        "slide_deck": { "description": "Link or repository path, or an empty string when none is packaged.", "type": ["string", "null"] }
       }
     },
     "sponsors": {
@@ -107,8 +107,8 @@
   },
   "$defs": {
     "status": {
-      "description": "Be honest: 'working' only if a judge can see it run.",
-      "enum": ["planned", "in-progress", "working"]
+      "description": "Be honest. 'used' means the tool was used to build the submission and the evidence links show that work. 'working' only if a judge can see it run.",
+      "enum": ["planned", "in-progress", "used", "working"]
     },
     "usage": {
       "type": "object",
