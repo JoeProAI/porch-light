@@ -130,8 +130,10 @@ export const POST = async (request: Request): Promise<Response> => {
     }
     if (Object.keys(value).some(key => !["county", "alert", "capture"].includes(key)) ||
       Object.values(value).some(entry => typeof entry !== "string")) return Response.json({ error: "Only actual source identifiers are accepted." }, { status: 400, headers });
-    const try { id = startNationalRun(value as { county?: string; alert?: string; capture?: string }); }
-    catch (error) {
+    let id: string;
+    try {
+      id = startNationalRun(value as { county?: string; alert?: string; capture?: string });
+    } catch (error) {
       // Selection and concurrency refusals are operator-facing text, not engine internals.
       return Response.json({ error: error instanceof Error ? error.message : "The selection couldn't start.", unreachable: false }, { status: 409, headers });
     }
