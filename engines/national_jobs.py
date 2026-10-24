@@ -15,6 +15,7 @@ from engines.model_budget import BudgetExceeded
 from engines.national_alerts import active_scope, warning_matches
 from engines.national_run import Chain, county_catalog, run_county
 from engines.national_sweep import save
+from engines.scout_intent import Scout, ScoutRefusal, public_decision
 
 ROOT = Path.home() / ".porchlight/national/jobs"
 DEMO = Path(__file__).parent / "snapshots/manatee-zetaris-chain.json"
@@ -181,17 +182,31 @@ def call_script(ccn: str, run_id: str | None) -> dict:
         if not verify(output):
             raise RuntimeError("The retained call-script artifact failed integrity verification")
         return json.loads(output.read_text())
+    scout = Scout()
+    decision = scout.decide({"prompt": "Generate live Nemotron call script", "user": "operator", "surface": "operate",
+                             "context": {"ccn": ccn, "run_id": run_id or "", "facility_name": rows[0]["name"],
+                                         "facility_address": rows[0].get("address", "")}})
+    scout_public = public_decision(decision)
+    if decision["action"] != "proceed":
+        # A refusal is not cached: rate limits and route availability can change, and no attempt was made.
+        return {"status": "refused_by_scout", "attempts": [], "fabricated_fallback": False, "scout": scout_public,
+                "message": "Scout Intent did not issue an execution contract: " + str(decision.get("reason") or
+                           decision.get("clarification", {}).get("question", "clarification required")) +
+                           " No model call was made and no script was substituted."}
+    contract = decision["contract"]
     lock = output.with_suffix(".lock")
     with lock.open("x"):
         pass
     try:
         attempts, parent = [], None
-        for _ in range(2):
+        for attempt in range(2):
+            if attempt:
+                contract = scout.replan(contract, reason="sole_retry")
             try:
-                result = request_selections(rows, "call_script", retry_of=parent, run_id=operation)
+                result = request_selections(rows, "call_script", retry_of=parent, run_id=operation, contract=contract)
                 attempts.append(result["execution"])
                 accepted = {"status": "passed", "draft": result["drafts"][0],
-                            "execution": result["execution"], "attempts": attempts,
+                            "execution": result["execution"], "attempts": attempts, "scout": scout_public,
                             "limits": "Operator review required. No call was placed. No facility condition is inferred."}
                 save(output, accepted)
                 return accepted
@@ -200,11 +215,15 @@ def call_script(ccn: str, run_id: str | None) -> dict:
                 parent = error.event.get("response_id", error.event["event_id"])
             except BudgetExceeded:
                 omitted = {"status": "not_attempted_budget" if not attempts else "failed",
-                           "attempts": attempts, "fabricated_fallback": False,
+                           "attempts": attempts, "fabricated_fallback": False, "scout": scout_public,
                            "message": "The approved request cap prevented this call or its sole retry. No script was substituted."}
                 save(output, omitted)
                 return omitted
-        failed = {"status": "failed", "attempts": attempts, "fabricated_fallback": False,
+            except ScoutRefusal as refusal:
+                return {"status": "refused_by_scout", "attempts": attempts, "fabricated_fallback": False,
+                        "scout": {**scout_public, "refusal": refusal.reason},
+                        "message": str(refusal) + ". No script was substituted."}
+        failed = {"status": "failed", "attempts": attempts, "fabricated_fallback": False, "scout": scout_public,
                   "message": "Grounding or provider validation failed. Each failed attempt is retained; no script was substituted."}
         save(output, failed)
         return failed

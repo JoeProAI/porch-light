@@ -13,6 +13,7 @@ from uuid import uuid4
 
 from engines.runtime_config import BASE_URL, MODEL
 from engines.model_budget import finish, reserve, runtime_receipt
+from engines.scout_intent import Scout
 
 QUESTIONS = {
     "contact": "Is this the correct facility contact, and who should receive a follow-up?",
@@ -117,9 +118,16 @@ def _write_audit(event: dict) -> None:
 
 
 def request_selections(rows: list[dict], purpose: str, retry_of: str | None = None,
-                       run_id: str | None = None) -> dict:
+                       run_id: str | None = None, contract: dict | None = None) -> dict:
     if not 1 <= len(rows) <= 10 or purpose not in ("explanation_batch", "call_script"):
         raise ValueError("Only bounded facility draft requests are permitted")
+    verified_contract = None
+    if purpose == "call_script":
+        # Scout Intent gate: no signed, unexpired, in-scope contract means no provider call and no budget use.
+        if len(rows) != 1:
+            raise ValueError("A call script covers exactly one facility")
+        verified_contract = Scout().enforce(contract, engine="grounded_drafts", capability="model.draft",
+                                            intent_id="outreach.call_script", parameters={"ccn": rows[0]["ccn"]})
     catalogs = [source_catalog(row) for row in rows]
     payload_hash = hashlib.sha256(json.dumps(catalogs, sort_keys=True).encode()).hexdigest()
     audit_path = Path.home() / ".porchlight/model-events.jsonl"
@@ -174,6 +182,8 @@ def request_selections(rows: list[dict], purpose: str, retry_of: str | None = No
         "thinking_disabled": True, "status": "failed",
         "meterless_tier_split": False,
         "retry_of": retry_of, "paid_fallback_enabled": False, "run_id": run_id,
+        "scout_contract_id": verified_contract["contractId"] if verified_contract else None,
+        "scout_trace_id": verified_contract["traceId"] if verified_contract else None,
     }
     started = time.monotonic()
     try:

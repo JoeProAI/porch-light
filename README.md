@@ -59,7 +59,7 @@ On Windows, `.\Start-Local.ps1` from the repository root starts that built app w
 1. `/` explains the project, sponsors, and independent emergency resources. **Pick any US county** opens the national run. **See the Hurricane Milton walkthrough** opens the saved Manatee demonstration.
 2. `/operate` is the Manatee sheet. Select a facility and read source facts, score terms, and the audit reference. Record a contact outcome, export CSV, or print.
 3. `/nationwide` searches the Census county catalog by name, state, or FIPS, and lists active NWS alerts from the audited feed. A county job or a combined alert job runs through `engines.national_jobs`. The page shows job progress, the ranked sheet, Zetaris query IDs, and per-source gaps. `/operate?county=<FIPS>` opens that nationwide run. A FIPS or alert id that fails validation does not load the Manatee sheet.
-4. On a national row, **Generate live Nemotron call script** sends that job id through Meterless. Grounding failures stay visible. `/operate` can request a script for the stored Manatee snapshot.
+4. On a national row, **Generate live Nemotron call script** is classified by Scout Intent first. A proceed decision issues a signed execution contract; the draft executor verifies it before that job id is sent through Meterless. A refusal returns `refused_by_scout` and shows no substitute script. Grounding failures stay visible. `/operate` can request a script for the stored Manatee snapshot.
 5. `/watch` shows the captured official weather feed, with source times and stale or offline states.
 
 If Zetaris cannot be reached, the national page says `Zetaris unreachable on this machine` and returns no rows.
@@ -85,8 +85,8 @@ It calls `engines.national_run`, so it does not spend the Meterless draft budget
 | Sponsor | Where it's used | How |
 |---|---|---|
 | Zetaris | `engines/zetaris_chain.py`, `engines/zetaris_client.py`, `engines/national_run.py` | Audited SQL joins CMS, Census, SVI, and emPOWER, with measured match counts. Source relations share one read-only PostGIS datasource. The Manatee page can read the audited export. National runs query Zetaris directly. |
-| Meterless | `engines/meterless.py`, `engines/draft_jobs.py` | Nemotron requests use the Nightshift `meterless/deep` route with thinking disabled. |
-| NVIDIA Nemotron | `engines/snapshots/manatee-zetaris.json`, `engines/national_jobs.py` | Stored Super VL drafts explain the top Manatee rows. National call scripts are requested per run through Meterless. Nemotron does not rank. |
+| Meterless | `engines/meterless.py`, `engines/scout_intent.py`, `engines/draft_jobs.py` | Nemotron requests use the Nightshift `meterless/deep` route with thinking disabled. Scout Intent gates the live call-script path with a signed execution contract that the draft executor verifies before any provider call (see `engines/README.md`, Scout Intent gate). H-MEM, World Model and Markovian are not claimed. |
+| NVIDIA Nemotron | `engines/snapshots/manatee-zetaris.json`, `engines/national_jobs.py` | Stored Super VL drafts explain the top Manatee rows. National call scripts are requested per run through Meterless after the Scout Intent contract is verified. Nemotron does not rank. Local GPU inference is not verified. |
 | Cursor | [PR #22](https://github.com/JoeProAI/porch-light/pull/22), [PR #24](https://github.com/JoeProAI/porch-light/pull/24) | Cursor cloud agents wrote Storm Watch v2 and the shared design, and the national web wiring. Devin wrote the data, engines, and most of the web. Joe directed the work. |
 
 ## Data credits

@@ -1,0 +1,247 @@
+{
+  "note": "Retained output of `python -m engines.national_jobs --call-script 102853` on 2026-10-23 (ET night) against the live local Meterless Runtime. Copied verbatim from the private call-script cache; no secrets (the HMAC key is not included).",
+  "status": "passed",
+  "draft": {
+    "ccn": "102853",
+    "text": "CMS source rating: 3.0 stars. Source tract SVI percentile: 0.9722. This describes area context, not clinical urgency. Published ZIP context reports 276 DME beneficiaries among 7016 Medicare beneficiaries. These are ZIP aggregates, not facility patient counts.",
+    "questions": [
+      "Is this the correct facility contact, and who should receive a follow-up?",
+      "Is power available, and is any backup-power support needed?"
+    ],
+    "grounding": {
+      "passed": true,
+      "method": "exact_source_clause_catalog_v1",
+      "catalog_sha256": "402b4d1ee01d2cd7c6a37490b51fb65637cfd4f6d8d34924578d8a2b72387520",
+      "source_sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
+      "clause_ids": [
+        "cms_rating",
+        "tract_svi",
+        "zip_context"
+      ],
+      "fact_ids": [
+        "cms_star_rating",
+        "svi_pct",
+        "empower_dme_count",
+        "empower_medicare_beneficiaries"
+      ],
+      "query_ids": [
+        "648",
+        "649",
+        "650"
+      ],
+      "question_ids": [
+        "contact",
+        "power"
+      ],
+      "scope": "Exact source-clause identity and closed query references, not clinical validation"
+    },
+    "trace_id": "chatcmpl-251ed6f8-8118-4de8-b036-a6edda57a5d1",
+    "model_id": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "mode": "meterless/deep",
+    "draft": true,
+    "effective_mode": "auto",
+    "provider": "nvidia",
+    "actual_usd": 0
+  },
+  "execution": {
+    "event_id": "964428a05ee74139b81ae596e352aab1",
+    "started_at": "2026-10-24T03:39:30.886489+00:00",
+    "purpose": "call_script",
+    "requested_model": "meterless/deep",
+    "mode": "meterless/deep",
+    "execution_location": "nvidia_cloud",
+    "input_sha256": "6c843f1d194b325204cce23651197ea49684fe33c0396e85d76612140c0b79d4",
+    "facility_ccns": [
+      "102853"
+    ],
+    "max_tokens": 4096,
+    "thinking_disabled": true,
+    "status": "grounding_passed",
+    "meterless_tier_split": false,
+    "retry_of": null,
+    "paid_fallback_enabled": false,
+    "run_id": "call-script:3487853191f654185326130fcf9281af66e00482f23e347102665e796a6d2f6f:102853",
+    "scout_contract_id": "01M5NZW047TK9BE2HZQBQVB931",
+    "scout_trace_id": "trace-90b00d38e32b467f8aba7aea13f2e100",
+    "response_id": "chatcmpl-251ed6f8-8118-4de8-b036-a6edda57a5d1",
+    "reported_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 982,
+      "completion_tokens": 1999,
+      "total_tokens": 2981
+    },
+    "endpoint": "http://127.0.0.1:8088/v1",
+    "provider_content": "{\"drafts\":[{\"ccn\":\"102853\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]}]}",
+    "meterless_receipt": {
+      "request_id": "chatcmpl-251ed6f8-8118-4de8-b036-a6edda57a5d1",
+      "receipt_id": "rcpt_req_qsa07grv",
+      "winning_route": {
+        "kind": "cloud",
+        "label": "Nemotron 3.5 Lightning 30B A3B",
+        "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "provider": "nvidia",
+        "tier": "A"
+      },
+      "actual_usd": 0,
+      "effective_mode": "auto",
+      "requested_mode": "meterless/auto"
+    },
+    "provider_output": {
+      "drafts": [
+        {
+          "ccn": "102853",
+          "clause_ids": [
+            "cms_rating",
+            "tract_svi",
+            "zip_context"
+          ],
+          "question_ids": [
+            "contact",
+            "power"
+          ]
+        }
+      ]
+    },
+    "selection_sha256": "dc22c3f5ef8bf1d6d4cfca7d85bf3004a95f5b89562328bd0b6287b8456de479",
+    "latency_ms": 19487,
+    "ended_at": "2026-10-24T03:39:50.373735+00:00",
+    "approval": "porch-light-national-20261023",
+    "budget_attempt": 586
+  },
+  "attempts": [
+    {
+      "event_id": "964428a05ee74139b81ae596e352aab1",
+      "started_at": "2026-10-24T03:39:30.886489+00:00",
+      "purpose": "call_script",
+      "requested_model": "meterless/deep",
+      "mode": "meterless/deep",
+      "execution_location": "nvidia_cloud",
+      "input_sha256": "6c843f1d194b325204cce23651197ea49684fe33c0396e85d76612140c0b79d4",
+      "facility_ccns": [
+        "102853"
+      ],
+      "max_tokens": 4096,
+      "thinking_disabled": true,
+      "status": "grounding_passed",
+      "meterless_tier_split": false,
+      "retry_of": null,
+      "paid_fallback_enabled": false,
+      "run_id": "call-script:3487853191f654185326130fcf9281af66e00482f23e347102665e796a6d2f6f:102853",
+      "scout_contract_id": "01M5NZW047TK9BE2HZQBQVB931",
+      "scout_trace_id": "trace-90b00d38e32b467f8aba7aea13f2e100",
+      "response_id": "chatcmpl-251ed6f8-8118-4de8-b036-a6edda57a5d1",
+      "reported_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "usage": {
+        "prompt_tokens": 982,
+        "completion_tokens": 1999,
+        "total_tokens": 2981
+      },
+      "endpoint": "http://127.0.0.1:8088/v1",
+      "provider_content": "{\"drafts\":[{\"ccn\":\"102853\",\"clause_ids\":[\"cms_rating\",\"tract_svi\",\"zip_context\"],\"question_ids\":[\"contact\",\"power\"]}]}",
+      "meterless_receipt": {
+        "request_id": "chatcmpl-251ed6f8-8118-4de8-b036-a6edda57a5d1",
+        "receipt_id": "rcpt_req_qsa07grv",
+        "winning_route": {
+          "kind": "cloud",
+          "label": "Nemotron 3.5 Lightning 30B A3B",
+          "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+          "provider": "nvidia",
+          "tier": "A"
+        },
+        "actual_usd": 0,
+        "effective_mode": "auto",
+        "requested_mode": "meterless/auto"
+      },
+      "provider_output": {
+        "drafts": [
+          {
+            "ccn": "102853",
+            "clause_ids": [
+              "cms_rating",
+              "tract_svi",
+              "zip_context"
+            ],
+            "question_ids": [
+              "contact",
+              "power"
+            ]
+          }
+        ]
+      },
+      "selection_sha256": "dc22c3f5ef8bf1d6d4cfca7d85bf3004a95f5b89562328bd0b6287b8456de479",
+      "latency_ms": 19487,
+      "ended_at": "2026-10-24T03:39:50.373735+00:00",
+      "approval": "porch-light-national-20261023",
+      "budget_attempt": 586
+    }
+  ],
+  "scout": {
+    "engine": "Scout Intent",
+    "spec": "github.com/meterless/meterless engines/scout-intent",
+    "stage2": "skipped",
+    "trace_id": "trace-90b00d38e32b467f8aba7aea13f2e100",
+    "action": "proceed",
+    "intent": {
+      "primary": "outreach.call_script",
+      "confidence": 0.8931,
+      "band": "high",
+      "parameters": {
+        "ccn": "102853"
+      },
+      "alternates": [
+        "callsheet.export_csv",
+        "callsheet.print"
+      ]
+    },
+    "risk": {
+      "level": "medium",
+      "flags": []
+    },
+    "latency_ms": 12.04,
+    "contract": {
+      "contractId": "01M5NZW047TK9BE2HZQBQVB931",
+      "parentId": null,
+      "traceId": "trace-90b00d38e32b467f8aba7aea13f2e100",
+      "intent": {
+        "primary": "outreach.call_script",
+        "parameters": {
+          "ccn": "102853"
+        },
+        "references": {},
+        "confidence": 0.8931,
+        "alternates": []
+      },
+      "risk": {
+        "level": "medium",
+        "flags": [],
+        "redactions": [],
+        "approvals": []
+      },
+      "toolPlan": [
+        {
+          "tool": "meterless.chat_completions",
+          "input": {
+            "model": "meterless/deep",
+            "thinking": false
+          }
+        }
+      ],
+      "modelProfile": "meterless-deep",
+      "scope": {
+        "user": "operator",
+        "surface": "operate",
+        "capabilities": [
+          "model.draft",
+          "source.read"
+        ]
+      },
+      "issuedAt": "2026-10-24T03:39:30Z",
+      "expiresAt": "2026-10-24T03:44:30Z",
+      "registryVersion": 1,
+      "policyPackVersion": "porch-light-1",
+      "signedBy": "scout",
+      "signature": "9a5f7858c3709694428a97a3be12c0483fe7ab998188bb6c76f107c69a550370"
+    }
+  },
+  "limits": "Operator review required. No call was placed. No facility condition is inferred."
+}
