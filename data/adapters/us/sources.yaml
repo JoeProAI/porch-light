@@ -1,0 +1,74 @@
+# Frozen core sources (SPEC section 4 is authoritative; confirm URLs there).
+# Each entry maps to one adapter under data/adapters/us/ and one raw cache dir
+# under data/snapshot/raw/<key>/ with .provenance.json sidecars.
+
+sources:
+  nws_alerts:
+    kind: api
+    url: https://api.weather.gov/alerts/active
+    notes: live feed; also captured into fixture for the live event replay
+  iem_archive:
+    kind: api
+    url: https://mesonet.agron.iastate.edu/api/1/nwstext/
+    notes: golden Hurricane Milton alert for Manatee County FL (FIPS 12081)
+  nws_zones:
+    kind: file
+    url: https://www.weather.gov/gis/ZoneCounty
+    notes: zone-based alerts carry no polygon; join zone ids to shapes
+  cms_nursing_homes:
+    kind: provider_data_datastore
+    url: https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0
+    notes: county field is an SSA county code; map to FIPS via nber_ssa_fips;
+      each sidecar records the exact query URL used
+  cms_dialysis:
+    kind: provider_data_datastore
+    url: https://data.cms.gov/provider-data/api/1/datastore/query/23ew-n7w9/0
+    notes: no lat/long; geocode each address via census_geocoder; each
+      sidecar records the exact query URL used
+  svi_2022:
+    kind: file
+    url: https://svi.cdc.gov/Documents/Data/2022/csv/states/SVI_2022_US.csv
+    notes: tract-level social vulnerability, joined by GEOID
+  empower:
+    kind: api
+    url: https://services2.arcgis.com/ZQ4jTQn6k7VPXEwO/arcgis/rest/services/HHS_emPOWER_REST_Service_Public/FeatureServer
+    notes: >-
+      counts are Medicare beneficiaries who use electricity-dependent DME
+      or devices, not all patients; each service layer counts DME users who
+      also receive that service. ZIP level layers in the official HHS emPOWER
+      FeatureServer (layer list checked HTTP 200 on 2026-10-22), names exact
+      except the official en dashes written here as hyphens:
+      Electricity Dependent DME - ALL - ZipLevel (1),
+      Facility ESRD Dialysis Any DME - ZipLevel (5),
+      O2 Services Any DME - ZipLevel (9),
+      Home Health Services Any DME - ZipLevel (13),
+      At-Home Hospice Any DME - ZipLevel (17),
+      Any Healthcare Service Any DME - ZipLevel (21);
+      CountyLevel and StateLevel are the next two ids after each ZipLevel id.
+      Label definitions: https://empowerprogram.hhs.gov/empowermap (HTTP 200).
+      The geohealth.hhs.gov MapServer copy of this service uses different
+      group ids (0, 4, 8, 12, 16, 20) and timed out from the build box.
+  census_geocoder:
+    kind: api
+    url: https://geocoding.geo.census.gov/geocoder/geographies/address
+    notes: batch mode available; keep raw responses for audit
+  nber_ssa_fips:
+    kind: file
+    url: https://data.nber.org/ssa-fips-state-county-crosswalk/
+    notes: SSA county code to FIPS crosswalk; per-year CSVs under <year>/
+      (for example 2024/ssa_fips_state_county_2024.csv); public data files
+      hosted by NBER, maintained by Jean Roth, source data from CMS
+  tiger_tracts_2024:
+    kind: file
+    url: https://www2.census.gov/geo/tiger/TIGER2024/TRACT/
+    notes: tract polygons for SVI join and facility geocode confirmation
+  cms_ep_rule:
+    kind: cite
+    url: https://www.ecfr.gov/current/title-42
+    notes: 42 CFR 483.73 and 494.62, cited on the call sheet evidence
+  manatee_cemp:
+    kind: pdf
+    url: https://www.mymanatee.org/departments/public_safety/emergency_management
+    notes: county plan PDF; parsed by Nemotron Parse into plan_sections
+
+# Stretch or cut: ACS, EIA, OpenFEMA, home health, hospitals, Apify.

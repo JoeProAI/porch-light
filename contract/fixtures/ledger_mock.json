@@ -1,0 +1,907 @@
+{
+  "entries": [
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_106901",
+      "id": "tl-mock-000a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-001",
+        "zq-mock-002",
+        "zq-mock-003",
+        "zq-mock-004",
+        "zq-mock-005",
+        "zq-mock-006"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_106901",
+      "id": "tl-mock-000b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-001",
+        "zq-mock-002",
+        "zq-mock-003",
+        "zq-mock-004",
+        "zq-mock-005",
+        "zq-mock-006"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_107754",
+      "id": "tl-mock-001a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-007",
+        "zq-mock-008",
+        "zq-mock-009",
+        "zq-mock-010",
+        "zq-mock-011",
+        "zq-mock-012"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_107754",
+      "id": "tl-mock-001b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-007",
+        "zq-mock-008",
+        "zq-mock-009",
+        "zq-mock-010",
+        "zq-mock-011",
+        "zq-mock-012"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_103693",
+      "id": "tl-mock-002a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-013",
+        "zq-mock-014",
+        "zq-mock-015",
+        "zq-mock-016",
+        "zq-mock-017",
+        "zq-mock-018"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_103693",
+      "id": "tl-mock-002b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-013",
+        "zq-mock-014",
+        "zq-mock-015",
+        "zq-mock-016",
+        "zq-mock-017",
+        "zq-mock-018"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_105455",
+      "id": "tl-mock-003a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-019",
+        "zq-mock-020",
+        "zq-mock-021",
+        "zq-mock-022",
+        "zq-mock-023",
+        "zq-mock-024"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_105455",
+      "id": "tl-mock-003b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-019",
+        "zq-mock-020",
+        "zq-mock-021",
+        "zq-mock-022",
+        "zq-mock-023",
+        "zq-mock-024"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_108860",
+      "id": "tl-mock-004a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-025",
+        "zq-mock-026",
+        "zq-mock-027",
+        "zq-mock-028",
+        "zq-mock-029",
+        "zq-mock-030"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_108860",
+      "id": "tl-mock-004b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-025",
+        "zq-mock-026",
+        "zq-mock-027",
+        "zq-mock-028",
+        "zq-mock-029",
+        "zq-mock-030"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_101740",
+      "id": "tl-mock-005a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-031",
+        "zq-mock-032",
+        "zq-mock-033",
+        "zq-mock-034",
+        "zq-mock-035",
+        "zq-mock-036"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_101740",
+      "id": "tl-mock-005b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-031",
+        "zq-mock-032",
+        "zq-mock-033",
+        "zq-mock-034",
+        "zq-mock-035",
+        "zq-mock-036"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_107053",
+      "id": "tl-mock-006a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-037",
+        "zq-mock-038",
+        "zq-mock-039",
+        "zq-mock-040",
+        "zq-mock-041",
+        "zq-mock-042"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_107053",
+      "id": "tl-mock-006b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-037",
+        "zq-mock-038",
+        "zq-mock-039",
+        "zq-mock-040",
+        "zq-mock-041",
+        "zq-mock-042"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_100812",
+      "id": "tl-mock-007a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-043",
+        "zq-mock-044",
+        "zq-mock-045",
+        "zq-mock-046",
+        "zq-mock-047",
+        "zq-mock-048"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_100812",
+      "id": "tl-mock-007b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-043",
+        "zq-mock-044",
+        "zq-mock-045",
+        "zq-mock-046",
+        "zq-mock-047",
+        "zq-mock-048"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_100413",
+      "id": "tl-mock-008a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-049",
+        "zq-mock-050",
+        "zq-mock-051",
+        "zq-mock-052",
+        "zq-mock-053",
+        "zq-mock-054"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_100413",
+      "id": "tl-mock-008b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-049",
+        "zq-mock-050",
+        "zq-mock-051",
+        "zq-mock-052",
+        "zq-mock-053",
+        "zq-mock-054"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_102351",
+      "id": "tl-mock-009a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-055",
+        "zq-mock-056",
+        "zq-mock-057",
+        "zq-mock-058",
+        "zq-mock-059",
+        "zq-mock-060"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_102351",
+      "id": "tl-mock-009b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-055",
+        "zq-mock-056",
+        "zq-mock-057",
+        "zq-mock-058",
+        "zq-mock-059",
+        "zq-mock-060"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_108797",
+      "id": "tl-mock-010a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-061",
+        "zq-mock-062",
+        "zq-mock-063",
+        "zq-mock-064",
+        "zq-mock-065",
+        "zq-mock-066"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_108797",
+      "id": "tl-mock-010b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-061",
+        "zq-mock-062",
+        "zq-mock-063",
+        "zq-mock-064",
+        "zq-mock-065",
+        "zq-mock-066"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_107738",
+      "id": "tl-mock-011a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-067",
+        "zq-mock-068",
+        "zq-mock-069",
+        "zq-mock-070",
+        "zq-mock-071",
+        "zq-mock-072"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_107738",
+      "id": "tl-mock-011b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-067",
+        "zq-mock-068",
+        "zq-mock-069",
+        "zq-mock-070",
+        "zq-mock-071",
+        "zq-mock-072"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_102781",
+      "id": "tl-mock-012a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-073",
+        "zq-mock-074",
+        "zq-mock-075",
+        "zq-mock-076",
+        "zq-mock-077",
+        "zq-mock-078"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "star_rating",
+        "staffing_rn_hours"
+      ],
+      "facility_id": "fac_mock_102781",
+      "id": "tl-mock-012b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-073",
+        "zq-mock-074",
+        "zq-mock-075",
+        "zq-mock-076",
+        "zq-mock-077",
+        "zq-mock-078"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_101356",
+      "id": "tl-mock-013a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-079",
+        "zq-mock-080",
+        "zq-mock-081",
+        "zq-mock-082",
+        "zq-mock-083"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_101356",
+      "id": "tl-mock-013b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-079",
+        "zq-mock-080",
+        "zq-mock-081",
+        "zq-mock-082",
+        "zq-mock-083"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_108385",
+      "id": "tl-mock-014a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-084",
+        "zq-mock-085",
+        "zq-mock-086",
+        "zq-mock-087",
+        "zq-mock-088"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_108385",
+      "id": "tl-mock-014b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-084",
+        "zq-mock-085",
+        "zq-mock-086",
+        "zq-mock-087",
+        "zq-mock-088"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_102633",
+      "id": "tl-mock-015a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-089",
+        "zq-mock-090",
+        "zq-mock-091",
+        "zq-mock-092",
+        "zq-mock-093"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_102633",
+      "id": "tl-mock-015b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-089",
+        "zq-mock-090",
+        "zq-mock-091",
+        "zq-mock-092",
+        "zq-mock-093"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_100295",
+      "id": "tl-mock-016a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-094",
+        "zq-mock-095",
+        "zq-mock-096",
+        "zq-mock-097",
+        "zq-mock-098"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_100295",
+      "id": "tl-mock-016b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-094",
+        "zq-mock-095",
+        "zq-mock-096",
+        "zq-mock-097",
+        "zq-mock-098"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_100092",
+      "id": "tl-mock-017a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-099",
+        "zq-mock-100",
+        "zq-mock-101",
+        "zq-mock-102",
+        "zq-mock-103"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_100092",
+      "id": "tl-mock-017b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-099",
+        "zq-mock-100",
+        "zq-mock-101",
+        "zq-mock-102",
+        "zq-mock-103"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_106445",
+      "id": "tl-mock-018a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-104",
+        "zq-mock-105",
+        "zq-mock-106",
+        "zq-mock-107",
+        "zq-mock-108"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_106445",
+      "id": "tl-mock-018b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-104",
+        "zq-mock-105",
+        "zq-mock-106",
+        "zq-mock-107",
+        "zq-mock-108"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_106669",
+      "id": "tl-mock-019a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-109",
+        "zq-mock-110",
+        "zq-mock-111",
+        "zq-mock-112",
+        "zq-mock-113"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_106669",
+      "id": "tl-mock-019b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-109",
+        "zq-mock-110",
+        "zq-mock-111",
+        "zq-mock-112",
+        "zq-mock-113"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_107692",
+      "id": "tl-mock-020a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-114",
+        "zq-mock-115",
+        "zq-mock-116",
+        "zq-mock-117",
+        "zq-mock-118"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_107692",
+      "id": "tl-mock-020b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-114",
+        "zq-mock-115",
+        "zq-mock-116",
+        "zq-mock-117",
+        "zq-mock-118"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_100608",
+      "id": "tl-mock-021a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-119",
+        "zq-mock-120",
+        "zq-mock-121",
+        "zq-mock-122",
+        "zq-mock-123"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_100608",
+      "id": "tl-mock-021b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-119",
+        "zq-mock-120",
+        "zq-mock-121",
+        "zq-mock-122",
+        "zq-mock-123"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_102856",
+      "id": "tl-mock-022a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-124",
+        "zq-mock-125",
+        "zq-mock-126",
+        "zq-mock-127",
+        "zq-mock-128"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_102856",
+      "id": "tl-mock-022b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-124",
+        "zq-mock-125",
+        "zq-mock-126",
+        "zq-mock-127",
+        "zq-mock-128"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_100673",
+      "id": "tl-mock-023a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-129",
+        "zq-mock-130",
+        "zq-mock-131",
+        "zq-mock-132",
+        "zq-mock-133"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_100673",
+      "id": "tl-mock-023b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-129",
+        "zq-mock-130",
+        "zq-mock-131",
+        "zq-mock-132",
+        "zq-mock-133"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_108637",
+      "id": "tl-mock-024a",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-134",
+        "zq-mock-135",
+        "zq-mock-136",
+        "zq-mock-137",
+        "zq-mock-138"
+      ]
+    },
+    {
+      "claims": [
+        "svi_pct",
+        "empower_dme_count",
+        "late_shift"
+      ],
+      "facility_id": "fac_mock_108637",
+      "id": "tl-mock-024b",
+      "mock": true,
+      "query_ids": [
+        "zq-mock-134",
+        "zq-mock-135",
+        "zq-mock-136",
+        "zq-mock-137",
+        "zq-mock-138"
+      ]
+    }
+  ],
+  "run_id": "run_milton_12081_mock"
+}

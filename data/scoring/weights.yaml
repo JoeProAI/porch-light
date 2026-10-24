@@ -1,0 +1,13 @@
+# Fixed, transparent scoring weights for the call-first ranking.
+# The formula is fixed: same inputs always give the same rank. Nemotron writes
+# the explanation; it never changes the score.
+# Term names must match the contract ScoreTerm enum (contract/openapi.yaml).
+
+version: 0.1.0
+terms:
+  # placeholder structure; real weights land with data/scoring/score.py
+  type_weight: 0.0
+  svi_pct: 0.0
+  empower_density_pct: 0.0
+  cms_risk: 0.0
+  plan_flag: 0.0
