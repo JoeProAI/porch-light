@@ -1,0 +1,7 @@
+{
+  "source_url": "file:///C:/Users/Joseph/.porchlight/national/sweeps/20261023T200048Z-78a426ba/county-22033.json",
+  "fetched_at_utc": "2026-10-24T16:47:04.394911+00:00",
+  "sha256": "4a2ba97d4a76d1670a5e4153ee3bd6f592b737a4d8c0b9b9b431e7914286e919",
+  "license": "Derived public-source evidence; original source licenses retained",
+  "fetch_command": "python build_published_national.py"
+}

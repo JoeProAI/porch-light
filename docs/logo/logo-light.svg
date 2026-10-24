@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" role="img" aria-label="Porch Light">
+  <rect width="220" height="48" fill="#f3eee3"/>
+  <circle cx="22" cy="24" r="10" fill="none" stroke="#b8913a" stroke-width="1.5"/>
+  <circle cx="22" cy="24" r="3.5" fill="#f2a93b"/>
+  <text x="40" y="31" fill="#05070b" font-family="Georgia, 'Libre Baskerville', serif" font-size="22" letter-spacing="0.5">Porch Light</text>
+</svg>

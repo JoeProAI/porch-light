@@ -1,0 +1,11 @@
+---
+description: Refuse invented data, sample counties, and invented sponsor usage.
+alwaysApply: true
+---
+
+# Honesty
+
+- Do not invent facilities, contacts, alerts, scores, timestamps, or counties.
+- Do not add sample counties or sample reached rows. An empty county stays empty. A source gap stays a source gap.
+- Manatee is a retrospective real-source snapshot, not a template for other counties.
+- Do not invent pull requests, cloud-agent runs, token counts, or spend. Sponsor notes cite only links that already exist.

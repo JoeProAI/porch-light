@@ -1,0 +1,10 @@
+{
+  "source_url": "https://modis.gsfc.nasa.gov/gallery/images/image10102024_1km.jpg",
+  "source_page": "https://modis.gsfc.nasa.gov/gallery/individual.php?db_date=2024-10-10",
+  "fetched_at_utc": "2026-10-23T00:03:07+00:00",
+  "sha256": "19ff3c1da3a331cbbc0b43128648fd0a9d1552f0107d1f7e59ed1227f9f34c77",
+  "license": "NASA imagery, generally not subject to US copyright; credit MODIS Land Rapid Response Team, NASA GSFC. NASA identity does not imply endorsement.",
+  "fetch_command": "urllib GET https://modis.gsfc.nasa.gov/gallery/images/image10102024_1km.jpg",
+  "acquired_date": "2024-10-08",
+  "role": "Actual archived Hurricane Milton satellite image; visual context, not live radar or current conditions"
+}

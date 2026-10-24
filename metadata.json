@@ -3,7 +3,7 @@
   "schema_version": "0.1-community",
   "project": {
     "name": "Porch Light",
-    "summary": "emPOWER tells you how many. Porch Light tells you who to call first, and why: when a hurricane or tornado warning drops, it gives a county emergency manager a ranked, explained call sheet of the dialysis centers and nursing homes inside the warning area, with proof of where every number came from.",
+    "summary": "A care-facility outreach workbench for dialysis centers and nursing homes: an operator opens any of the 3,235 Census catalog counties, or a captured NWS alert, and gets a deterministically ranked call sheet with sourced contacts, inspectable score terms, recorded refusals and optional grounded Nemotron call scripts. Every catalog county has been source-audited through local Zetaris at least once (2,491 return ranked rows), grounded drafts are in progress on free Nemotron routes and are not complete for every county, and current facility conditions, clinical validation and offline or local GPU inference are not claimed.",
     "licence": "AGPL-3.0-only"
   },
   "track": "Solving Fragmented Intelligence",
@@ -11,74 +11,109 @@
     "name": "Burden of Proof",
     "solo": true,
     "builders": [
-      { "name": "Joe Gaither", "role": "owner: decides, reviews and merges; agents write the code", "github": "JoeProAI" }
+      {
+        "name": "Joe Gaither",
+        "role": "owner: decides, reviews and merges; agents write the code",
+        "github": "JoeProAI"
+      }
     ]
   },
   "repository": "https://github.com/JoeProAI/porch-light",
   "demo_url": "",
   "built_window": "2026-10-22T00:00Z to 2026-10-27T23:45Z",
   "submission": {
-    "demo_video": null,
-    "slide_deck": "TODO: deck link or repo path (Mon Oct 26)"
+    "demo_video": "",
+    "slide_deck": ""
   },
   "sponsors": {
     "zetaris": {
-      "status": "planned",
-      "how": "Zetaris is the only door to data. Every read is federated SQL through the Query Director over a Unified Semantic Layer (porch_light_usl) with declared relationships and DQ rules; Nemotron proposes joins, Zetaris SQL measures each one's match rate, and only measured joins become USL relationships. Every fact on the call sheet carries its Zetaris query id and audit row.",
-      "interface": "rest",
+      "status": "working",
+      "how": "Seven independently audited statements join separate CMS, Census, SVI and emPOWER relations in Zetaris SQL, with SQL-measured match counts. All source relations currently share one read-only PostGIS datasource; spatial predicates stay in PostGIS. The UI reads the audited export. A Unified Semantic Layer and multiple physical live systems are not claimed.",
+      "interface": "jdbc",
       "deployment": "local-docker",
       "data_sources": [
-        "NWS alerts API",
-        "Iowa Environmental Mesonet NWS warning archive",
-        "NWS zone shapes",
-        "CMS Nursing Homes Provider Information (4pq5-n9py)",
-        "CMS Dialysis Facility Listing (23ew-n7w9)",
-        "CDC/ATSDR SVI 2022",
-        "Census Geocoder",
-        "NBER SSA to FIPS crosswalk",
-        "HHS emPOWER REST Service",
-        "Census TIGER/Line 2024 tracts",
-        "CMS Emergency Preparedness rule (42 CFR 483.73, 494.62)",
-        "Manatee County CEMP (county plan PDF)",
-        "Postgres + PostGIS EOC snapshot (JDBC datasource)"
+        "porchlight_postgis: read-only PostgreSQL/PostGIS source containing captured public records and pre-joined exports"
       ],
-      "where": ["TODO: data/ paths after build"],
-      "evidence": ["TODO: evidence drawer demo moment, export receipt, Zetaris audit log cross-reference"],
-      "decisions": ["TODO: ADR or docs/zetaris-federation.mdx"]
+      "where": [
+        "engines/data_access.py",
+        "engines/zetaris_client.py",
+        "engines/live_weather.py"
+      ],
+      "evidence": [
+        "engines/snapshots/manatee-zetaris.json",
+        "web/src/components/evidence-drawer.tsx",
+        "engines/test_zetaris.py"
+      ],
+      "decisions": []
     },
     "meterless": {
-      "status": "planned",
-      "how": "Meterless is the only model path: the app talks to one OpenAI-compatible base URL on Meterless Runtime (Nightshift), routing meterless/deep, fast and local. Scout Intent guards the export and signs an execution contract; H-MEM with TrustLedger remembers measured join outcomes and links every claim to fact and query ids; a minimal World Model holds alert, area, check-in, network and provider state. Markovian and Swarm are not used.",
-      "engines": ["Scout Intent", "H-MEM", "World Model"],
+      "status": "working",
+      "how": "Two Meterless uses. Runtime: one stored Nemotron execution used the meterless/deep route through the local Nightshift gateway with thinking disabled; its response produced three drafts. Engine: a fresh Scout Intent implementation (engines/scout_intent.py) gates the live call-script path. Each operator request is classified against a versioned intent registry, bound to its facility parameter, passed through injection, policy, scope, sensitivity and rate-limit guards, routed only when the Meterless Runtime token exists, and issued an HMAC-SHA256 signed execution contract with a 5 minute TTL. The grounded-draft executor refuses unsigned, tampered, expired or out-of-scope contracts before any provider call or budget reservation; the sole retry is a replan on the same trace. Honest limits: Stage 1 deterministic scoring only (no local embedding stage), the signing key is a local integrity secret, and batch explanation drafts are not yet contract-gated. Optional OpenRouter Nemotron backup for call_script only when OPENROUTER_API_KEY and PORCHLIGHT_OPENROUTER_BACKUP are set; OPENROUTER_MAX_SPEND_USD hard-caps paid spend. OpenRouter is not a scoring sponsor. H-MEM, World Model, Markovian and local model execution are not implemented claims.",
+      "engines": [
+        "Scout Intent"
+      ],
       "provider": "nightshift",
-      "where": ["TODO: engines/ paths after build"],
-      "evidence": ["TODO: contract hash on the call sheet, TrustLedger entries, offline unplug beat"],
-      "decisions": ["TODO: Thursday Nightshift local-Nemotron spike decision in HANDOFF.md"]
+      "where": [
+        "engines/scout_intent.py",
+        "engines/grounded_drafts.py",
+        "engines/national_jobs.py",
+        "web/src/components/call-script.tsx",
+        "engines/openrouter_backup.py",
+        "engines/model_budget.py"
+      ],
+      "evidence": [
+        "engines/test_scout_intent.py",
+        "engines/reports/scout-intent-live-2026-10-23.json",
+        "engines/snapshots/manatee-ranked.json",
+        "engines/snapshots/manatee-zetaris.json",
+        "engines/test_openrouter_backup.py",
+        "engines/reports/nemotron-offline-proof-2026-10-23.md"
+      ],
+      "decisions": []
     },
     "cursor": {
-      "status": "planned",
-      "how": "Cursor supplies the .cursor/rules/ files: the rules every agent (Cursor included) follows to stay inside its area, follow the house rules and keep HANDOFF.md current. Cursor also runs the cloud agents for the web UI seat and the data backup seat. The contract (PR #14) was written by Devin, not by a Cursor run.",
-      "models": ["TODO: fill from the Cursor usage CSV"],
-      "surfaces": ["ide", "background-agents"],
-      "where": [".cursor/rules/"],
-      "evidence": ["TODO: cloud agent PR links, exported transcripts, Cursor usage CSV"],
+      "status": "used",
+      "how": "Cursor cloud agents wrote Storm Watch v2 and the Storm Glass Desk design, and the national county and alert web wiring. Both pull requests are merged. Cursor also supplies the .cursor/rules/ files. Devin wrote the contract (PR #14), the data, the engines, and most of the web. Joe directed the work. No token count or spend is recorded.",
+      "models": [],
+      "surfaces": [
+        "background-agents"
+      ],
+      "where": [
+        "web/src/components/storm-watch.tsx",
+        "web/src/app/watch/page.tsx",
+        "web/src/components/nationwide.tsx",
+        "web/src/components/national/",
+        "scripts/smoke-national.py",
+        ".cursor/rules/",
+        "ops/build-log/cursor/"
+      ],
+      "evidence": [
+        "https://github.com/JoeProAI/porch-light/pull/22",
+        "https://github.com/JoeProAI/porch-light/pull/24",
+        "ops/build-log/cursor/README.md"
+      ],
       "decisions": []
     },
     "nvidia": {
-      "status": "planned",
-      "how": "Nemotron is the only model family in the runtime path. It proposes join paths and writes every call-first explanation and call script (it never ranks; a fixed formula does). Super VL and Lightning run on NIM through Meterless; Nano 9B v2 and Nano 4B run locally on the RTX 5080 for EOC snapshot mode; Content Safety screens scripts; Parse splits the county plan PDF.",
+      "status": "working",
+      "how": "Two Nemotron ids appear in retained receipts, both on free routes through Meterless meterless/deep with thinking disabled. Super VL: one stored call produced the Manatee drafts for ranks 1 to 3, reused by the Zetaris snapshot after source and policy input equality checks; remaining Manatee rows use computed reasons. Lightning: the retained Scout Intent live call-script receipt (CCN 102853, $0) and most national sweep batch executions. The national draft sweep is in progress and not finished; accepted drafts, retained failures and policy-blocked batches are reported separately with an as-of time in submission/README.md. Nemotron does not rank; join proposals, local GPU or offline inference, Parse and Content Safety are not demonstrated. OpenRouter backup, when enabled, also calls Nemotron only. Local Nano offline proof and Content Safety / Parse are not claimed.",
       "models": [
         "nvidia/nemotron-3.5-super-vl-120b-a12b",
-        "nvidia/nemotron-3.5-lightning-30b-a3b",
-        "Nemotron Nano 9B v2 (local, GGUF)",
-        "Nemotron 3 Nano 4B (local, GGUF)",
-        "Nemotron 3.5 Embed 1B (TODO: confirm NIM model id)",
-        "nvidia/nemotron-3.5-content-safety",
-        "nvidia/nemotron-parse-2.0"
+        "nvidia/nemotron-3.5-lightning-30b-a3b"
       ],
       "route": "via-meterless",
-      "where": ["TODO: engines/model_client/ after build"],
-      "evidence": ["TODO: trace panel and Who answered badge, local vs cloud eval results"],
+      "where": [
+        "engines/grounded_drafts.py",
+        "engines/national_jobs.py",
+        "engines/national_sweep.py",
+        "engines/openrouter_backup.py"
+      ],
+      "evidence": [
+        "engines/snapshots/manatee-zetaris.json",
+        "engines/reports/scout-intent-live-2026-10-23.json",
+        "engines/reports/national-script-verification-2026-10-23.md",
+        "engines/test_openrouter_backup.py"
+      ],
       "decisions": []
     }
   },
@@ -86,35 +121,47 @@
     {
       "name": "Proof Desk (proof.joepro.systems)",
       "what": "Joe Gaither's own design-direction tool, built before the hackathon. Used on Oct 21 to produce the Porch Light design brief, direction, dial settings and one background plate. Dev tooling only; no Proof Desk source code is in the product.",
-      "where": ["not in this repository"]
+      "where": [
+        "not in this repository"
+      ]
     },
     {
       "name": "Design contract and tokens",
       "what": "Outputs of Proof Desk: the design contract JSON and CSS custom properties (--pd-* values from Proof Desk's dial-to-CSS formulas).",
-      "where": ["design/proof-desk-contract.json", "design/design-tokens.css"],
+      "where": [
+        "design/proof-desk-contract.json",
+        "design/design-tokens.css"
+      ],
       "since": "2026-10-21"
     },
     {
       "name": "Generated design assets",
       "what": "Hero key art, deck plates, OG card, logo mark and hero and logo video loops generated through OpenRouter before the build window. Models, prompts and costs are in the manifest. No people, no third-party marks.",
-      "where": ["design/art/", "design/art/manifest.json"],
+      "where": [
+        "design/art/",
+        "design/art/manifest.json"
+      ],
       "since": "2026-10-21"
     },
     {
       "name": "Meterless engine specs (open-source reference)",
       "what": "engines/*/AGENTS.md specs from github.com/meterless/meterless (Apache-2.0); engines are implemented fresh from them.",
-      "where": ["not in this repository"]
+      "where": [
+        "not in this repository"
+      ]
     },
     {
       "name": "Zetaris getting-started patterns (open-source reference)",
       "what": "Zetaris getting-started patterns (Apache-2.0), credited in NOTICE.",
-      "where": ["not in this repository"]
+      "where": [
+        "not in this repository"
+      ]
     }
   ],
   "run": {
-    "setup": "README.md Quickstart and docs/quickstart.mdx (TODO: write after build). Judges get Replay mode without credentials; live mode needs local Zetaris and Nightshift.",
+    "setup": "README.md Setup, Usage, and Smoke script, plus web/README.md. The committed Manatee call sheet renders without live data credentials. County runs, active alerts, and Storm Watch need local Zetaris, PostGIS, and the files under %USERPROFILE%\\.porchlight. Nemotron drafts use the Meterless Nightshift route.",
     "sample_mode": true,
     "secrets": []
   },
-  "evidence_logs": "TODO: audit_events export path (hash-chained JSONL) and eval/results/"
+  "evidence_logs": "engines/snapshots/manatee-zetaris.json retains shared query audit evidence and the stored Meterless model execution. Scout Intent decisions and contract events are appended locally to ~/.porchlight/scout-intent/events.jsonl."
 }

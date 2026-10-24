@@ -1,5 +1,77 @@
 ---
 title: "Porch Light"
+description: "Who to call first when a storm warning drops: honest local docs for the night desk."
+keywords: ["porch light", "call sheet", "NWS", "Zetaris", "Meterless", "Nemotron"]
 ---
 
-Coming soon.
+emPOWER tells you how many. Porch Light tells you who to call first, and why.
+
+<Frame>
+  <img src="/images/hero-key-art.webp" alt="Night storm over land with one amber porch light on" />
+</Frame>
+
+Porch Light is a county emergency operator's **call-first** workflow. Pick a real warning area, get a ranked facility list with phones and reasons, inspect the evidence, mark contact status yourself, and export. No call or message is sent automatically. The priority formula is a transparent prototype heuristic, not a clinically validated order.
+
+## Two doors
+
+| Door | What it is | What it is not |
+| --- | --- | --- |
+| [Manatee walkthrough](/manatee-walkthrough) | Saved Hurricane Milton sheet for Manatee County, FL: audited ranks, evidence drawer, operator contact states | Proof that every US county already runs the same path |
+| [Any US county](/nationwide) | Local nationwide job against the Census catalog when Zetaris is up on this machine | A finished national offline product or fabricated coverage |
+
+PR #24 flips home primary to **Pick any US county** with Milton as secondary. The live :3101 shot below still shows Manatee as the primary button until that branch is rebuilt onto the running app.
+
+## Live product shots
+
+These are captures from the local app at `http://127.0.0.1:3101` on Joe's machine (America/New_York). They are not stock photography.
+
+<Frame>
+  <img src="/images/screenshot-home.jpg" alt="Porch Light home on :3101: night hero, amber first-call card; current build still leads with Manatee walkthrough while PR #24 flips primary to any county" />
+</Frame>
+
+<Frame>
+  <img src="/images/screenshot-nationwide.jpg" alt="Nationwide county picker with night map and search" />
+</Frame>
+
+<Frame>
+  <img src="/images/screenshot-operate.jpg" alt="Operator call sheet with Not contacted default and evidence drawer" />
+</Frame>
+
+## Design plates
+
+Declared pre-existing art from the design folder: night land, warning in, evidence, call-first ranking.
+
+<Columns cols={3}>
+  <Frame>
+    <img src="/images/section-warning-in.jpg" alt="Design plate: warning in" />
+  </Frame>
+  <Frame>
+    <img src="/images/section-evidence.jpg" alt="Design plate: evidence trail" />
+  </Frame>
+  <Frame>
+    <img src="/images/section-call-first.jpg" alt="Design plate: who to call first" />
+  </Frame>
+</Columns>
+
+## Start here
+
+<Columns cols={2}>
+  <Card title="Local run" icon="terminal" href="/local-run">
+    Bring up the web app, Zetaris, and Meterless/Nemotron on this machine.
+  </Card>
+  <Card title="Sponsors" icon="handshake" href="/sponsors">
+    Zetaris, Meterless, Nemotron, Cursor, and Devin: purpose, proof, and gaps.
+  </Card>
+  <Card title="Manatee walkthrough" icon="list-ordered" href="/manatee-walkthrough">
+    Hurricane Milton saved sheet for judges and operators.
+  </Card>
+  <Card title="Limits" icon="triangle-alert" href="/limits">
+    What we do not claim yet, including national coverage and contact outcomes.
+  </Card>
+</Columns>
+
+## Honest bar
+
+- Contact status defaults to **Not contacted**. **Reached** is stored only when an operator chooses it.
+- Rank order comes from a fixed formula. Nemotron does not set the order.
+- Sponsor labels link only to work that actually ran. See [Sponsors](/sponsors) and repo `metadata.json`.

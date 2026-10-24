@@ -10,3 +10,7 @@ terms:
   empower_density_pct: 0.20
   cms_risk: 0.15
   plan_flag: 0.10
+
+# National county screen. engines/national_run.py checks this object against
+# data/scoring/national_weights.json. County plans are not guessed.
+national_source_screen: {"version":"national-source-screen-v1","terms":{"type_weight":"0.35","svi_pct":"0.30","empower_density_pct":"0.20","cms_risk":"0.15"}}

@@ -1,0 +1,7 @@
+{
+  "source_url": "http://127.0.0.1:8088/v1/chat/completions",
+  "fetched_at_utc": "2026-10-23T20:25:15+00:00",
+  "sha256": "f76504be59ff7bf6c419ee70abfbdfb46feee13df6ea9ca98c9bd1e1bc52d377",
+  "license": "Derived from real public-source records and genuine Nemotron selections; source licenses retained",
+  "fetch_command": "python -m engines.generate_drafts --snapshot engines/snapshots/manatee-zetaris-chain.json --all"
+}
