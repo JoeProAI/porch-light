@@ -43,14 +43,18 @@ export const createCsv = (snapshot: Snapshot, contacts: Contacts): string => {
     const text = String(value ?? "");
     return `"${(/^[=+\-@\t\r]/.test(text) ? "'" + text : text).replaceAll('"', '""')}"`;
   };
+  const alert = snapshot.selected_alert;
   const header = ["Rank", "CCN", "Facility", "Type", "Phone", "Address", "ZIP", "Score (0–1)", "Contact status", "Recorded at UTC",
     ...snapshot.facilities[0]?.score.terms.map(term => `${term.name} weighted`) ?? [],
-    "Snapshot generated UTC", "Source snapshot SHA256", "Data access", "Scenario", "Location review required", "Reason",
+    "Snapshot generated UTC", "Source snapshot SHA256", "Data access", "Scenario",
+    "NWS alert URL", "Alert captured at UTC", "Alert expires at UTC",
+    "Location review required", "Reason",
     "Zetaris query IDs", "Source artifact SHA256", "Data-quality outcomes", "Model record"];
   const rows = snapshot.facilities.map(row => [row.rank, row.ccn, row.name, row.type, row.phone.value, row.address, row.zip,
     row.score.total, contactLabels[contacts[row.id]?.status ?? "uncontacted"], contacts[row.id]?.updatedAt ?? "",
     ...row.score.terms.map(term => term.weighted), snapshot.generated_at, snapshot.source_snapshot_hash,
     snapshot.data_access.data_access_mode, `${snapshot.scenario.event} ${snapshot.scenario.warning_year} ${snapshot.scenario.mode}`,
+    alert?.id ?? "", alert?.captured_at ?? "", alert?.expires ?? "",
     row.evidence.operator_geocode_review_required, row.computed_reason,
     row.evidence.zetaris_query_ids.join(";"), row.evidence.source_sha256,
     JSON.stringify(row.evidence.dq_results), JSON.stringify(row.evidence.model_explanation)]);

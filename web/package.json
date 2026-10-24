@@ -7,10 +7,12 @@
     "build": "next build",
     "start": "next start --hostname 127.0.0.1 --port 3101",
     "typecheck": "tsc --noEmit",
+    "test:unit": "node --experimental-strip-types --experimental-detect-module --test src/lib/national-gaps.test.ts",
     "test": "playwright test"
   },
   "dependencies": {
-    "@fontsource/alegreya-sans": "5.3.0",
+    "@fontsource/atkinson-hyperlegible": "^5.2.8",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
     "@fontsource/libre-baskerville": "5.3.0",
     "framer-motion": "12.34.3",
     "maplibre-gl": "6.15.0",
