@@ -1,0 +1,54 @@
+---
+title: "Local run"
+description: "Run Porch Light on this machine with Zetaris, Meterless Nightshift, and the web app."
+keywords: ["local", "zetaris", "meterless", "nightshift", "start-local"]
+---
+
+Porch Light is built to run on the dedicated operator PC. Public cloud substitutes for Zetaris or Meterless are not the demo path.
+
+## What you need
+
+| Piece | Expected local address | Notes |
+| --- | --- | --- |
+| Web app | `http://127.0.0.1:3101` | Next.js in `web/` |
+| Zetaris (Docker) | UI `http://localhost:3000`, JDBC `jdbc:zetaris:lightning@localhost:10000`, REST `http://localhost:8888/api/v1.0` | From the licensed local bundle, not a managed AWS cluster |
+| Meterless Nightshift | `http://127.0.0.1:8088/v1` | NVIDIA key stays in Nightshift Providers, not in the web app |
+| PostGIS | private read-only datasource | Registered into Zetaris; facility/geo joins |
+
+Copy `env.example` at the repo root into a local env file **outside git**. Never commit tokens.
+
+## Start the web app
+
+From the repo root on Windows:
+
+```powershell
+.\Start-Local.ps1
+```
+
+Or from `web/`:
+
+```powershell
+npm install
+npm run dev -- --port 3101
+```
+
+Open `http://127.0.0.1:3101`. If Zetaris is down, nationwide jobs fail closed with a clear unreachable message — they do not invent facilities.
+
+## Model lanes (honest)
+
+Correct NVIDIA model ids from the Participant Setup Guide:
+
+- Fast: `nvidia/nemotron-3.5-lightning-30b-a3b`
+- Deep: `nvidia/nemotron-3.5-super-vl-120b-a12b`
+
+Verified to date (see `metadata.json` / `SPONSOR-SETUP.md`): stored `meterless/deep` → Super VL drafts for the top Manatee rows, and Scout Intent on the live call-script path before any provider call. The only runtime model route is that Meterless Nightshift path. Local GPU `meterless/local`, H-MEM, Parse, and Content Safety are **not** claimed as implemented.
+
+## Preview docs
+
+From `docs/`:
+
+```bash
+npx mint dev
+```
+
+Then open the printed local URL (usually `http://localhost:3000`). Docs stay private until Joe publishes at submission.
