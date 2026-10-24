@@ -57,6 +57,9 @@ const paintSafe = (map: MapLibreMap, id: string, name: string, value: unknown) =
   try { map.setPaintProperty(id, name as never, value as never); } catch { /* this layer does not use the property */ }
 };
 
+const PATTERN_PROPS = ["fill-pattern", "fill-extrusion-pattern", "line-pattern"] as const;
+const VEGETATION = /wood|forest|grass|park|garden|scrub|wetland|pitch|vegetation|landcover_wood|landuse_park/;
+
 const restyleNight = (map: MapLibreMap) => {
   const layers = map.getStyle()?.layers ?? [];
   const sample = layers.find(layer => layer.type === "symbol" && Array.isArray(layer.layout?.["text-font"]));
@@ -65,12 +68,16 @@ const restyleNight = (map: MapLibreMap) => {
     : ["Noto Sans Regular"]) as string[];
   for (const layer of layers) {
     const id = layer.id.toLowerCase();
+    for (const prop of PATTERN_PROPS) paintSafe(map, layer.id, prop, null);
+    const icon = layer.type === "symbol" ? layer.layout?.["icon-image"] : undefined;
+    if (typeof icon === "string" && VEGETATION.test(icon) && !/parking/.test(icon)) paintSafe(map, layer.id, "icon-opacity", 0);
     if (layer.type === "background") paintSafe(map, layer.id, "background-color", "#05070b");
     if (layer.type === "fill" || layer.type === "fill-extrusion") {
       const key = layer.type === "fill" ? "fill-color" : "fill-extrusion-color";
+      const vegetation = VEGETATION.test(id) && !/parking|water/.test(id);
       if (/water|ocean|sea|river|lake/.test(id)) paintSafe(map, layer.id, key, "#070b12");
-      else if (/park|landcover|wood|grass|forest|pitch|garden|scrub|wetland|sand|national/.test(id)) paintSafe(map, layer.id, key, "#10151d");
       else paintSafe(map, layer.id, key, "#121820");
+      if (vegetation) paintSafe(map, layer.id, layer.type === "fill" ? "fill-opacity" : "fill-extrusion-opacity", 1);
     }
     if (layer.type === "line") {
       if (/water/.test(id)) paintSafe(map, layer.id, "line-color", "#121820");
@@ -266,6 +273,10 @@ export const StormMap = forwardRef<StormMapApi, {
         if (!map || cancelled) return;
         window.clearTimeout(loadTimer);
         const textFont = restyleNight(map);
+        let woodPattern: unknown;
+        try { woodPattern = map.getLayer("landcover_wood") ? map.getPaintProperty("landcover_wood", "fill-pattern") : undefined; }
+        catch { woodPattern = undefined; }
+        shellNode.dataset.woodPattern = woodPattern ? String(woodPattern) : "off";
         const severe = {
           Extreme: readToken("--color-severity-extreme", "#ff5a36"),
           Severe: readToken("--color-severity-severe", "#ef7a5f"),
