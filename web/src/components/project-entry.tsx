@@ -25,8 +25,8 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
             <p className="eyebrow mission-kicker">Storm preparedness / Care facilities</p>
             <h1 id="mission-title">Storm warning.<br /><em>Clear first call.</em></h1>
             <p className="mission-description">An emergency-operations call sheet for dialysis centers and nursing homes in a storm-warning area. Real phone numbers. A transparent order of outreach. Evidence behind every priority.</p>
-            <Link className="entry-primary" href="/operate">Open the Manatee call sheet <span aria-hidden="true">↗</span></Link>
-            <Link className="entry-secondary" href="/nationwide">Pick any US county</Link>
+            <Link className="entry-primary" href="/nationwide">Pick any US county <span aria-hidden="true">↗</span></Link>
+            <Link className="entry-secondary" href="/operate">See the Hurricane Milton walkthrough</Link>
             <p className="mission-limit">Verified example: Hurricane Milton, 2024. Retrospective, not a live warning or current facility conditions.</p>
             <a className="mission-sponsor-proof" href="#sponsor-title">Built with Zetaris, Meterless and NVIDIA Nemotron. <span>Inspect the proof.</span></a>
             <Link className="watch-entry-link" href="/watch">For current official weather, open Storm Watch</Link>

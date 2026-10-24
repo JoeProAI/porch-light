@@ -11,6 +11,6 @@ export const SourceGaps = ({ value }: { value: unknown }) => {
       <strong>{gap.text}</strong>
       {gap.detail && <p className="fineprint">{gap.detail}</p>}
     </li>)}</ul>
-    {ids.length > 0 && <p className="fineprint">Zetaris query IDs <code>{ids.join(", ")}</code>. These are the audit receipts returned with this run.</p>}
+    {ids.length > 0 && <p className="fineprint">Zetaris query IDs <code>{ids.join(", ")}</code>.</p>}
   </section>;
 };

@@ -136,7 +136,10 @@ test("project entry explains the storm and care-facility use case and opens the 
   await expect(page.locator(".first-call-preview")).toContainText(snapshot.facilities[0].name);
   await expect(page.locator(".satellite-credit")).toContainText("October 8, 2024");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.getByRole("link", { name: "Open the Manatee call sheet" }).click();
+  await page.getByRole("link", { name: "Pick any US county" }).click();
+  await expect(page).toHaveURL(/\/nationwide$/);
+  await page.goto("/");
+  await page.getByRole("link", { name: "See the Hurricane Milton walkthrough" }).click();
   await expect(page).toHaveURL(/\/operate$/);
   await expect(page.locator(".facility-row")).toHaveCount(18);
 });

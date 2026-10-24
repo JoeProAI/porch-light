@@ -2,7 +2,7 @@
 
 Porch Light is a care-facility outreach workbench. It shows sourced contacts, the ranking terms behind each row, and the facts that are still unknown.
 
-The home page opens a retrospective Manatee County, Florida call sheet: 18 ranked dialysis and nursing-home records and 2 refusals, from a fixed published formula over captured public CMS, Census, SVI, and emPOWER records. Operators can inspect the evidence, record a contact outcome on their own device, export CSV, and print. The app does not place calls or send messages.
+The home page opens on any US county. The Hurricane Milton walkthrough is the saved Manatee County, Florida example: 18 ranked dialysis and nursing-home records and 2 refusals, from a fixed published formula over captured public CMS, Census, SVI, and emPOWER records. Operators can inspect the evidence, record a contact outcome on their own device, export CSV, and print. The app does not place calls or send messages.
 
 `/nationwide` runs the same engine for a Census county or a current National Weather Service alert when local Zetaris is available. Each county run reports that county’s audited rows and source gaps. Storm Watch (`/watch`) shows captured official alerts and NOAA radar for the provider regions that published frames.
 
@@ -56,7 +56,7 @@ On Windows, `.\Start-Local.ps1` from the repository root starts that built app w
 
 ## Usage
 
-1. `/` explains the project, sponsors, and independent emergency resources. **Pick any US county** opens the national run. **Open the Manatee call sheet** opens the retrospective demonstration.
+1. `/` explains the project, sponsors, and independent emergency resources. **Pick any US county** opens the national run. **See the Hurricane Milton walkthrough** opens the saved Manatee demonstration.
 2. `/operate` is the Manatee sheet. Select a facility and read source facts, score terms, and the audit reference. Record a contact outcome, export CSV, or print.
 3. `/nationwide` searches the Census county catalog by name, state, or FIPS, and lists active NWS alerts from the audited feed. A county job or a combined alert job runs through `engines.national_jobs`. The page shows job progress, the ranked sheet, Zetaris query IDs, and per-source gaps. `/operate?county=<FIPS>` opens that nationwide run. A FIPS or alert id that fails validation does not load the Manatee sheet.
 4. On a national row, **Generate live Nemotron call script** sends that job id through Meterless. Grounding failures stay visible. `/operate` can request a script for the stored Manatee snapshot.

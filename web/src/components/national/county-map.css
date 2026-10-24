@@ -1,0 +1,38 @@
+.county-map-frame {
+  margin: 20px 0;
+  background: #05070b;
+  border: 1px solid var(--line);
+  padding: 12px 12px 8px;
+}
+
+.county-map-frame figcaption {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.county-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #05070b;
+}
+
+.county-map path {
+  fill: transparent;
+  stroke: #8fd3ff;
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+}
+
+.county-map path:hover {
+  stroke: #d7f0ff;
+}
+
+.county-map path.is-selected {
+  fill: #f2a93b;
+  fill-opacity: 0.85;
+  stroke: #f2a93b;
+  stroke-width: 1.4;
+}

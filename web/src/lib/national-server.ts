@@ -17,7 +17,6 @@ const engineRoot = () => process.env.PORCHLIGHT_ENGINE_ROOT ?? path.resolve(proc
 const record = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 
-<<<<<<< HEAD
 export class NationalEngineError extends Error {
   readonly unreachable: boolean;
   constructor(message: string, unreachable: boolean) {
@@ -39,17 +38,10 @@ const runPython = async (args: string[], timeout: number): Promise<string> => {
     const unreachable = failed.code === "ENOENT" || failed.code === "ETIMEDOUT" || looksUnreachable(detail);
     throw new NationalEngineError(unreachable ? UNREACHABLE_MESSAGE : "The verified national operation failed. No substitute data was returned.", unreachable);
   }
-=======
-const command = async (args: string[], timeout = 190000): Promise<unknown> => {
-  const { stdout } = await execute(python(), ["-m", "engines.national_jobs", ...args], {
-    cwd: engineRoot(), timeout, maxBuffer: 48 * 1024 * 1024, windowsHide: true,
-    encoding: "utf8",
-  });
-  return JSON.parse(stdout) as unknown;
->>>>>>> origin/devin/web-manatee
 };
 
-const command = async (args: string[]): Promise<unknown> => JSON.parse(await runPython(["-m", "engines.national_jobs", ...args], 190000)) as unknown;
+const command = async (args: string[], timeout = 190000): Promise<unknown> =>
+  JSON.parse(await runPython(["-m", "engines.national_jobs", ...args], timeout)) as unknown;
 
 const publishActiveAlerts = async (): Promise<void> => {
   await runPython(["-m", "data.adapters.us.capture_live_weather", "--interval", "300", "--max-captures", "1"], 180000);
