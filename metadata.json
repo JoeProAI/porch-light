@@ -16,8 +16,8 @@
   },
   "repository": "https://github.com/JoeProAI/porch-light",
   "submission": {
-    "demo_video": null,
-    "slide_deck": null
+    "demo_video": "",
+    "slide_deck": ""
   },
   "sponsors": {
     "zetaris": {
@@ -42,12 +42,21 @@
       "decisions": []
     },
     "cursor": {
-      "status": "planned",
-      "how": "This web implementation was authored by Devin. Genuine Cursor build evidence is missing from this checkout; a rules folder on a separate contract branch does not establish eligibility.",
+      "status": "used",
+      "how": "Cursor cloud agents wrote Storm Watch v2 and the Storm Glass Desk design, and the national county and alert web wiring. Devin wrote the data, engines, and most of the web. Joe directed the work.",
       "models": [],
-      "surfaces": [],
-      "where": [],
-      "evidence": [],
+      "surfaces": ["background-agents"],
+      "where": [
+        "web/src/components/storm-watch.tsx",
+        "web/src/app/watch/page.tsx",
+        "web/src/components/nationwide.tsx",
+        "web/src/components/national/",
+        "scripts/smoke-national.py"
+      ],
+      "evidence": [
+        "https://github.com/JoeProAI/porch-light/pull/22",
+        "https://github.com/JoeProAI/porch-light/pull/24"
+      ],
       "decisions": []
     },
     "nvidia": {
@@ -92,7 +101,7 @@
     }
   ],
   "run": {
-    "setup": "README.md Run Locally and web/README.md. The committed real-source call sheet needs no live data credentials. Live weather needs licensed local Zetaris and the external capture cache. No verified cold-offline application or local GPU inference.",
+    "setup": "README.md Setup, Usage, and Smoke script, plus web/README.md. The committed Manatee call sheet renders without live data credentials. County runs, active alerts, and Storm Watch need local Zetaris, PostGIS, and the files under %USERPROFILE%\\.porchlight. Nemotron drafts use the Meterless Nightshift route.",
     "sample_mode": true,
     "secrets": []
   },

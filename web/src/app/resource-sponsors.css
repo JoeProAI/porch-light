@@ -56,15 +56,17 @@
 .interactive-radar-map { display: block; width: 100%; aspect-ratio: 12/7; border: 1px solid var(--line); touch-action: none; cursor: grab; }
 .interactive-radar-map:active { cursor: grabbing; }
 .interactive-radar-map:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
-.radar-map-panel.night { --map-water: #061821; --map-land: #183643; --map-boundary: #7896a0; --map-alert: #efb45e; --map-severe: #ff997e; --map-selected: #fff; }
-.radar-map-panel.chart { --map-water: #d3e7ea; --map-land: #f1eee5; --map-boundary: #536d78; --map-alert: #784607; --map-severe: #b4321a; --map-selected: #102e3c; }
+.radar-map-panel.night { --map-water: #070b12; --map-land: #121820; --map-boundary: #3a4556; --map-alert: #ef7a5f; --map-severe: #ff5a36; --map-selected: #f2a93b; }
+.radar-map-panel.chart { --map-water: #e6e1d4; --map-land: #f7f4ee; --map-boundary: #5c564c; --map-alert: #9a3412; --map-severe: #b4321a; --map-selected: #111111; }
 .map-ocean { fill: var(--map-water); }
 .map-state { fill: var(--map-land); stroke: var(--map-boundary); stroke-width: .7; vector-effect: non-scaling-stroke; }
 .map-graticule { fill: none; stroke: var(--map-boundary); opacity: .15; pointer-events: none; }
 .map-graticule path { stroke-width: .5; vector-effect: non-scaling-stroke; }
-.map-place-labels { fill: var(--map-selected); stroke: var(--map-land); paint-order: stroke; text-anchor: middle; dominant-baseline: middle; font-family: var(--mono); letter-spacing: .035em; pointer-events: none; }
-.noaa-radar-overlay { pointer-events: none; filter: none; opacity: 1; }
-.warning-map-shape { fill: transparent; stroke: var(--map-alert); stroke-width: 1.5; vector-effect: non-scaling-stroke; cursor: pointer; }
+.map-place-labels { fill: #f7f2e8; stroke: #05070b; stroke-width: 4; paint-order: stroke; text-anchor: middle; dominant-baseline: middle; font-family: var(--mono); letter-spacing: .035em; pointer-events: none; }
+.radar-map-panel.chart .map-place-labels { fill: #111; stroke: #fff; }
+.noaa-radar-overlay { pointer-events: none; filter: none; opacity: .45; }
+.warning-map-halo { fill: none; stroke: #05070b; stroke-width: 7; vector-effect: non-scaling-stroke; pointer-events: none; }
+.warning-map-shape { fill: transparent; stroke: var(--map-alert); stroke-width: 2.4; vector-effect: non-scaling-stroke; cursor: pointer; }
 .warning-map-shape[data-severity="Extreme"], .warning-map-shape[data-severity="Severe"] { stroke: var(--map-severe); }
 .warning-map-shape.selected { stroke: var(--map-selected); stroke-width: 3; }
 .interactive-radar-map [data-warning]:hover .warning-map-shape, .interactive-radar-map [data-warning]:focus-visible .warning-map-shape { stroke-width: 4; stroke: var(--map-selected); }

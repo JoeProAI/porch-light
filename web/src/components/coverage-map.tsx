@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 import { createProjection, hasCoordinates } from "@/lib/operator";
 import type { Facility, Geometry } from "@/lib/types";
 
-export const CoverageMap = ({ geometry, facilities, selectedId, onSelect, contextLabel }: {
-  geometry: Geometry; facilities: Facility[]; selectedId: string; onSelect: (id: string) => void; contextLabel?: string;
+export const CoverageMap = ({ geometry, facilities, selectedId, onSelect, contextLabel, porchId = "" }: {
+  geometry: Geometry; facilities: Facility[]; selectedId: string; onSelect: (id: string) => void; contextLabel?: string; porchId?: string;
 }) => {
   const [scope, setScope] = useState<"coverage" | "facilities">("facilities");
   const projection = useMemo(() => createProjection(geometry, facilities, scope), [geometry, facilities, scope]);
@@ -14,7 +14,7 @@ export const CoverageMap = ({ geometry, facilities, selectedId, onSelect, contex
   const selectedPoint = selected ? projection.project([selected.lon, selected.lat]) : null;
   return (
     <section className="map-section" aria-labelledby="map-title">
-      <div className="pane-heading"><span className="eyebrow">02 / {contextLabel ? "Source-area facilities" : "Warning-area facilities"}</span><span className="mono">{contextLabel ?? "Published NWS geometry"}</span></div>
+      <div className="pane-heading"><span className="eyebrow">02 / {contextLabel ? "Source-area facilities" : "Warning-area facilities"}</span><span className="mono">{contextLabel ?? "Official warning area"}</span></div>
       <div className="section-heading">
         <h2 id="map-title">{contextLabel ? "Care facilities in the source area" : "Care facilities in the warning area"}</h2>
         <span className="mono muted">{located.length}/{facilities.length} located</span>
@@ -46,7 +46,7 @@ export const CoverageMap = ({ geometry, facilities, selectedId, onSelect, contex
               const active = row.id === selectedId;
               return (
                 <g key={row.id} role="button" tabIndex={0} aria-label={`Select rank ${row.rank}, ${row.name}`}
-                  aria-pressed={active} className={`map-point ${active ? "selected" : ""}`}
+                  aria-pressed={active} className={`map-point ${active ? "selected" : ""} ${row.id === porchId ? "is-porch" : ""}`}
                   transform={`translate(${x.toFixed(2)},${y.toFixed(2)})`} onClick={() => onSelect(row.id)}
                   onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect(row.id); } }}>
                   <title>{`${row.rank}. ${row.name} · location review required`}</title>
@@ -64,7 +64,7 @@ export const CoverageMap = ({ geometry, facilities, selectedId, onSelect, contex
             return Number.isFinite(lon) ? <text key={x} x={x} y="473" textAnchor="middle" className="map-axis">{Math.abs(lon).toFixed(2)} {lon < 0 ? "W" : "E"}</text> : null;
           })}
           <text x="27" y="447" className="map-direction">SOURCE GEOMETRY / NOT RADAR</text>
-          {selected && <g className="source-index-plate" aria-hidden="true">
+          {selected && <g className={`source-index-plate${selected.id === porchId ? " is-porch" : ""}`} aria-hidden="true">
             <text x="564" y="47" textAnchor="end" className="map-direction">SELECTED CALL</text>
             <text x="570" y="128" textAnchor="end" className="map-index-number">{String(selected.rank).padStart(2, "0")}</text>
           </g>}
