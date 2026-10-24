@@ -4,6 +4,7 @@ import argparse
 import csv
 import json
 import random
+import re
 import shutil
 import time
 from collections import Counter
@@ -20,12 +21,20 @@ from engines.national_sources import DB
 
 ROOT = Path.home() / ".porchlight/national/sweeps"
 SOURCE = "jdbc:zetaris:lightning@localhost:10000"
+BATCH_FILE = re.compile(r"^model-batch-(\d{5})\.json$")
+IDENTITY_ERROR = "A model batch changed source facility identity"
+MODEL_BATCH_SIZE = 10
 
 
 def save(path: Path, document: dict) -> None:
-    path.write_text(json.dumps(document, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
-    write_sidecar(path, SOURCE, "Derived public-source evidence; original source licenses retained",
-                  "python -m engines.national_sweep", datetime.now(timezone.utc).isoformat())
+    # The web poller and call-script reader verify these bytes against the sidecar while a job is
+    # still running. A direct overwrite exposes a partial file, so publish complete files by rename.
+    temporary = path.with_name(path.name + "." + uuid4().hex + ".tmp")
+    temporary.write_text(json.dumps(document, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+    sidecar = write_sidecar(temporary, SOURCE, "Derived public-source evidence; original source licenses retained",
+                            "python -m engines.national_sweep", datetime.now(timezone.utc).isoformat())
+    temporary.replace(path)
+    sidecar.replace(path.with_name(path.name + ".provenance.json"))
 
 
 def classify(snapshot: dict) -> str:
@@ -43,6 +52,138 @@ def paused_before_provider(snapshot: dict) -> bool:
             and all(attempt.get("status") == "failed_before_provider_call"
                     and attempt.get("reason") == "Model calls are blocked by a retained provider/cost policy violation"
                     for attempt in histories))
+
+
+def facility_ccn(row: dict) -> str:
+    ccn = row.get("ccn") if isinstance(row, dict) else None
+    if not isinstance(ccn, str) or not ccn:
+        raise RuntimeError(IDENTITY_ERROR)
+    return ccn
+
+
+def index_cached_batches(documents: list[dict]) -> tuple[dict[str, dict], dict[str, dict]]:
+    """Index completed checkpoint facilities by CCN, ignoring file and list order."""
+    facility_by_ccn, document_by_ccn = {}, {}
+    for document in documents:
+        rows = document.get("facilities") if isinstance(document, dict) else None
+        if not isinstance(rows, list) or not rows:
+            raise RuntimeError(IDENTITY_ERROR)
+        seen = set()
+        for row in rows:
+            ccn = facility_ccn(row)
+            if ccn in seen or ccn in facility_by_ccn:
+                raise RuntimeError(IDENTITY_ERROR)
+            seen.add(ccn)
+            facility_by_ccn[ccn] = row
+            document_by_ccn[ccn] = document
+    return facility_by_ccn, document_by_ccn
+
+
+def bind_cached_facilities(eligible: list[tuple[str, dict]],
+                           facility_by_ccn: dict[str, dict]) -> list[dict | None]:
+    """Align cached facilities to a rebuilt eligible list by CCN.
+
+    A facility with no checkpoint yet stays None so resume can generate only the
+    remainder. A cached CCN missing from the rebuilt list, a duplicated source CCN,
+    or a cached record whose CCN differs from its source row is refused.
+    """
+    source_ccns, seen = [], set()
+    for _, row in eligible:
+        ccn = facility_ccn(row)
+        if ccn in seen:
+            raise RuntimeError(IDENTITY_ERROR)
+        seen.add(ccn)
+        source_ccns.append(ccn)
+    if set(facility_by_ccn) - seen:
+        raise RuntimeError(IDENTITY_ERROR)
+    bound = []
+    for ccn in source_ccns:
+        generated = facility_by_ccn.get(ccn)
+        if generated is not None and facility_ccn(generated) != ccn:
+            raise RuntimeError(IDENTITY_ERROR)
+        bound.append(generated)
+    return bound
+
+
+def load_model_checkpoints(folder: Path) -> tuple[list[tuple[Path, dict]], set[Path]]:
+    """Load completed model batches. Provider-pause files are archived, not reused as results."""
+    completed, paused = [], set()
+    paths = sorted(path for path in folder.glob("model-batch-*.json") if BATCH_FILE.match(path.name))
+    for path in paths:
+        if not verify(path):
+            raise RuntimeError("A model batch checkpoint failed its checksum")
+        cached = json.loads(path.read_text())
+        if paused_before_provider(cached):
+            archive = folder / "paused-before-provider"
+            archive.mkdir(exist_ok=True)
+            for file in (path, path.with_name(path.name + ".provenance.json")):
+                target = archive / file.name
+                if not target.exists():
+                    shutil.copyfile(file, target)
+            paused.add(path)
+            continue
+        completed.append((path, cached))
+    return completed, paused
+
+
+def model_batch_path(folder: Path, index: int) -> Path:
+    return folder / f"model-batch-{index:05d}.json"
+
+
+def _checkpoint_path_free(path: Path, used: set[Path], reusable: set[Path]) -> bool:
+    if path in used:
+        return False
+    return not path.exists() or path in reusable
+
+
+def assign_checkpoint_paths(folder: Path, pending: list[tuple[int, list]],
+                            blocked: set[Path], reusable: set[Path]) -> list[tuple[Path, int, list]]:
+    """Choose paths for new batches without replacing a checkpoint for a different facility set."""
+    used = set(blocked)
+    cursor = 0
+    assigned = []
+    for index, batch in pending:
+        preferred = model_batch_path(folder, index)
+        if _checkpoint_path_free(preferred, used, reusable):
+            path = preferred
+        else:
+            while not _checkpoint_path_free(model_batch_path(folder, cursor), used, reusable):
+                cursor += 1
+            path = model_batch_path(folder, cursor)
+            cursor += 1
+        used.add(path)
+        assigned.append((path, index, batch))
+    return assigned
+
+
+def record_model_facility(snapshots: dict, folder: Path, fips: str, row: dict,
+                          generated: dict, executions: list) -> None:
+    if facility_ccn(row) != facility_ccn(generated):
+        raise RuntimeError(IDENTITY_ERROR)
+    row["evidence"]["model_explanation"] = generated["evidence"]["model_explanation"]
+    prior = {event["event_id"] for event in snapshots[fips]["model_executions"]}
+    snapshots[fips]["model_executions"].extend(
+        event for event in executions if event["event_id"] not in prior)
+    save(folder / f"county-{fips}.json", snapshots[fips])
+
+
+def apply_cached_bindings(snapshots: dict, folder: Path, eligible: list[tuple[str, dict]],
+                          bound: list[dict | None], document_by_ccn: dict[str, dict]) -> list[tuple[str, dict]]:
+    """Copy cached explanations onto source rows by CCN. Return facilities that still need generation."""
+    pending = []
+    for (fips, row), cached in zip(eligible, bound, strict=True):
+        if cached is None:
+            pending.append((fips, row))
+            continue
+        record_model_facility(snapshots, folder, fips, row, cached,
+                              document_by_ccn[facility_ccn(row)]["model_executions"])
+    return pending
+
+
+def pending_model_batches(pending: list[tuple[str, dict]]) -> list[tuple[int, list]]:
+    """Pack facilities that still need a draft into the usual groups of ten."""
+    return [(index, pending[start:start + MODEL_BATCH_SIZE])
+            for index, start in enumerate(range(0, len(pending), MODEL_BATCH_SIZE))]
 
 
 def unassigned(capture: str) -> dict:
@@ -150,45 +291,48 @@ def execute(folder: Path, sample: int, seed: int, all_counties: bool, workers: i
     model_reports = []
     if drafts:
         eligible = [(fips, row) for fips, snapshot in sorted(snapshots.items()) for row in snapshot["facilities"]]
-        batches = [eligible[index:index + 10] for index in range(0, len(eligible), 10)]
+        completed_checkpoints, paused = load_model_checkpoints(folder)
+        facility_by_ccn, document_by_ccn = index_cached_batches(
+            [document for _, document in completed_checkpoints])
+        bound = bind_cached_facilities(eligible, facility_by_ccn)
+        for _, document in completed_checkpoints:
+            model_reports.append(document["model_report"])
+        pending = pending_model_batches(
+            apply_cached_bindings(snapshots, folder, eligible, bound, document_by_ccn))
+        jobs = assign_checkpoint_paths(
+            folder, pending, {path for path, _ in completed_checkpoints}, paused)
+        completed_count = len(completed_checkpoints)
+        total_batches = completed_count + len(jobs)
 
-        def model_run(index: int, batch: list) -> tuple[list, dict]:
-            path = folder / f"model-batch-{index:05}.json"
-            if path.exists():
-                if not verify(path):
-                    raise RuntimeError("A model batch checkpoint failed its checksum")
-                cached = json.loads(path.read_text())
-                if not paused_before_provider(cached):
-                    return batch, cached
-                archive = folder / "paused-before-provider"
-                archive.mkdir(exist_ok=True)
-                for file in (path, path.with_name(path.name + ".provenance.json")):
-                    target = archive / file.name
-                    if not target.exists():
-                        shutil.copyfile(file, target)
-            enriched = enrich({"facilities": [row for _, row in batch]}, folder.name + f":batch:{index}")
+        def publish() -> None:
+            progress = {"phase": "grounded_drafts", "completed_batches": completed_count,
+                        "total_batches": total_batches, "elapsed_seconds": round(time.monotonic() - started, 3),
+                        "budget": budget_summary()}
+            save(folder / "progress.json", progress)
+            if completed_count % 10 == 0 or completed_count == total_batches:
+                print(json.dumps({"phase": "grounded_drafts", "completed_batches": completed_count,
+                                  "total_batches": total_batches, "budget": progress["budget"]}), flush=True)
+
+        if completed_count:
+            publish()
+
+        def model_run(path: Path, batch: list) -> tuple[list, dict]:
+            file_index = int(BATCH_FILE.match(path.name).group(1))
+            enriched = enrich({"facilities": [row for _, row in batch]}, folder.name + f":batch:{file_index}")
             save(path, enriched)
             return batch, enriched
 
-        with ThreadPoolExecutor(max_workers=2) as pool:
-            futures = [pool.submit(model_run, index, batch) for index, batch in enumerate(batches)]
-            for completed, future in enumerate(as_completed(futures), 1):
-                batch, enriched = future.result()
-                model_reports.append(enriched["model_report"])
-                for (fips, row), generated in zip(batch, enriched["facilities"], strict=True):
-                    if row["ccn"] != generated["ccn"]:
-                        raise RuntimeError("A model batch changed source facility identity")
-                    row["evidence"]["model_explanation"] = generated["evidence"]["model_explanation"]
-                    prior = {event["event_id"] for event in snapshots[fips]["model_executions"]}
-                    snapshots[fips]["model_executions"].extend(
-                        event for event in enriched["model_executions"] if event["event_id"] not in prior)
-                    save(folder / f"county-{fips}.json", snapshots[fips])
-                save(folder / "progress.json", {"phase": "grounded_drafts", "completed_batches": completed,
-                     "total_batches": len(batches), "elapsed_seconds": round(time.monotonic() - started, 3),
-                     "budget": budget_summary()})
-                if completed % 10 == 0 or completed == len(batches):
-                    print(json.dumps({"phase": "grounded_drafts", "completed_batches": completed,
-                                      "total_batches": len(batches), "budget": budget_summary()}), flush=True)
+        if jobs:
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                futures = [pool.submit(model_run, path, batch) for path, _, batch in jobs]
+                for future in as_completed(futures):
+                    batch, enriched = future.result()
+                    model_reports.append(enriched["model_report"])
+                    for (fips, row), generated in zip(batch, enriched["facilities"], strict=True):
+                        record_model_facility(snapshots, folder, fips, row, generated,
+                                              enriched["model_executions"])
+                    completed_count += 1
+                    publish()
     results.sort(key=lambda row: row["fips"])
     outcomes = Counter(row["status"] for row in results)
     reasons = Counter(row["reason"] for snapshot in snapshots.values() for row in snapshot["refused"])

@@ -12,8 +12,9 @@ from urllib.request import Request, urlopen
 from uuid import uuid4
 
 from engines.runtime_config import BASE_URL, MODEL
-from engines.model_budget import finish, reserve, runtime_receipt
+from engines.model_budget import BudgetExceeded, finish, reserve, runtime_receipt
 from engines.scout_intent import Scout
+from engines import openrouter_backup
 
 QUESTIONS = {
     "contact": "Is this the correct facility contact, and who should receive a follow-up?",
@@ -170,10 +171,8 @@ def request_selections(rows: list[dict], purpose: str, retry_of: str | None = No
             })},
         ],
     }
-    token = (Path(os.environ["LOCALAPPDATA"]) / "ai.meterless.runtime/proxy-token").read_text().strip()
-    if not token:
-        raise RuntimeError("Meterless token is unavailable")
-    ticket = reserve(purpose)
+    catalogs_messages = body["messages"]
+    drafts = None
     event = {
         "event_id": uuid4().hex, "started_at": datetime.now(timezone.utc).isoformat(),
         "purpose": purpose, "requested_model": MODEL, "mode": MODEL,
@@ -185,28 +184,39 @@ def request_selections(rows: list[dict], purpose: str, retry_of: str | None = No
         "scout_contract_id": verified_contract["contractId"] if verified_contract else None,
         "scout_trace_id": verified_contract["traceId"] if verified_contract else None,
     }
+    primary_error: Exception | None = None
+    ticket = None
     started = time.monotonic()
-    try:
-        request = Request(BASE_URL + "/chat/completions", data=json.dumps(body).encode(), headers={
-            "Authorization": "Bearer " + token, "Content-Type": "application/json",
-            "meterless-app": "porch-light", "meterless-scope": "user",
-            "meterless-tier-split": "off",
-        })
-        with urlopen(request, timeout=180) as response:
-            raw = response.read(2 * 1024 * 1024 + 1)
-        if len(raw) > 2 * 1024 * 1024:
-            raise ValueError("Provider response exceeds the bounded limit")
-        result = json.loads(raw)
+
+    def _compose_from_result(result: dict, *, provider: str, actual_usd: float, effective_mode: str,
+                             receipt: dict, endpoint: str, execution_location: str) -> list[dict]:
         event.update({
             "response_id": result.get("id"), "reported_model": result.get("model"),
-            "usage": result.get("usage"), "endpoint": BASE_URL,
+            "usage": result.get("usage"), "endpoint": endpoint,
+            "execution_location": execution_location,
         })
         if not isinstance(result.get("id"), str) or not result["id"] or "nemotron" not in str(result.get("model", "")).lower():
             raise ValueError("Provider did not identify a genuine Nemotron execution")
         content = result.get("choices", [{}])[0].get("message", {}).get("content")
         event["provider_content"] = content
-        event["meterless_receipt"] = runtime_receipt(result["id"])
-        event["execution_location"] = "nvidia_cloud"
+        if provider == "nvidia":
+            event["meterless_receipt"] = receipt
+        else:
+            event["openrouter_receipt"] = receipt
+            event["meterless_receipt"] = {
+                "request_id": result.get("id"),
+                "receipt_id": None,
+                "winning_route": {
+                    "kind": "openrouter_backup",
+                    "label": "OpenRouter Nemotron backup",
+                    "model": result.get("model"),
+                    "provider": "openrouter",
+                    "tier": "backup",
+                },
+                "actual_usd": actual_usd,
+                "effective_mode": effective_mode,
+                "requested_mode": MODEL,
+            }
         if not isinstance(content, str) or not content.strip():
             raise ValueError("Nemotron returned empty content")
         content = content.strip()
@@ -221,33 +231,112 @@ def request_selections(rows: list[dict], purpose: str, retry_of: str | None = No
                 {item.get("ccn") for item in selections} != {row["ccn"] for row in rows}):
             raise ValueError("Model changed the facility scope or output schema")
         by_ccn = {row["ccn"]: row for row in rows}
-        drafts = []
+        built = []
         for selection in selections:
             draft = compose_selection(by_ccn[selection["ccn"]], selection)
-            drafts.append({"ccn": selection["ccn"], **draft, "trace_id": result["id"],
+            built.append({"ccn": selection["ccn"], **draft, "trace_id": result["id"],
                            "model_id": result["model"], "mode": MODEL, "draft": True,
-                           "effective_mode": event["meterless_receipt"]["effective_mode"],
-                           "provider": "nvidia", "actual_usd": event["meterless_receipt"]["actual_usd"]})
+                           "effective_mode": effective_mode,
+                           "provider": provider, "actual_usd": actual_usd})
         event["status"] = "grounding_passed"
         event["selection_sha256"] = hashlib.sha256(json.dumps(selections, sort_keys=True).encode()).hexdigest()
+        return built
+
+    # --- Primary: Meterless Nightshift (free NVIDIA) ---
+    try:
+        token = (Path(os.environ["LOCALAPPDATA"]) / "ai.meterless.runtime/proxy-token").read_text().strip()
+        if not token:
+            raise RuntimeError("Meterless token is unavailable")
+        ticket = reserve(purpose)
+        request = Request(BASE_URL + "/chat/completions", data=json.dumps(body).encode(), headers={
+            "Authorization": "Bearer " + token, "Content-Type": "application/json",
+            "meterless-app": "porch-light", "meterless-scope": "user",
+            "meterless-tier-split": "off",
+        })
+        with urlopen(request, timeout=180) as response:
+            raw = response.read(2 * 1024 * 1024 + 1)
+        if len(raw) > 2 * 1024 * 1024:
+            raise ValueError("Provider response exceeds the bounded limit")
+        result = json.loads(raw)
+        receipt = runtime_receipt(result["id"])
+        drafts = _compose_from_result(
+            result, provider="nvidia", actual_usd=receipt["actual_usd"],
+            effective_mode=receipt["effective_mode"], receipt=receipt,
+            endpoint=BASE_URL, execution_location="nvidia_cloud",
+        )
+    except BudgetExceeded as error:
+        primary_error = error
+        event["validation_error"] = "free_nvidia_budget_exhausted"
     except HTTPError as error:
+        primary_error = error
         event["http_status"] = error.code
         event["validation_error"] = f"provider_http_{error.code}"
-        raise DraftFailure(f"Meterless request failed with HTTP {error.code}; no fabricated draft", event) from None
-    except (URLError, TimeoutError):
+    except (URLError, TimeoutError) as error:
+        primary_error = error
         event["validation_error"] = "provider_unavailable_or_timeout"
-        raise DraftFailure("Meterless is unavailable or timed out; no fabricated draft", event) from None
-    except (ValueError, KeyError, IndexError, TypeError) as error:
-        event["validation_error"] = str(error)[:300]
-        raise DraftFailure("Nemotron response failed identity, schema or grounding validation; no substitute draft", event) from None
-    except RuntimeError as error:
+    except (ValueError, KeyError, IndexError, TypeError, RuntimeError) as error:
+        primary_error = error
         if getattr(error, "receipt", None):
             event["meterless_receipt"] = error.receipt
         event["validation_error"] = str(error)[:300]
-        raise DraftFailure(str(error), event) from None
-    finally:
+
+    # --- Backup: OpenRouter Nemotron (opt-in, capped) ---
+    if drafts is None:
+        allowed, why = openrouter_backup.can_backup(purpose)
+        event["openrouter_backup_considered"] = True
+        event["openrouter_backup_reason"] = why
+        if allowed:
+            try:
+                event["paid_fallback_enabled"] = True
+                backup = openrouter_backup.chat_completions(
+                    catalogs_messages, max_tokens=4096, purpose=purpose, run_id=run_id,
+                )
+                drafts = _compose_from_result(
+                    backup["result"], provider="openrouter",
+                    actual_usd=backup["receipt"]["actual_usd"],
+                    effective_mode="openrouter_backup",
+                    receipt=backup["receipt"],
+                    endpoint=openrouter_backup.OPENROUTER_BASE,
+                    execution_location="openrouter_cloud",
+                )
+                event["status"] = "grounding_passed"
+                event["fallback_from"] = event.get("validation_error") or "meterless_failed"
+                primary_error = None
+            except (openrouter_backup.OpenRouterDisabled,
+                    openrouter_backup.OpenRouterCapExceeded,
+                    RuntimeError, ValueError, KeyError, IndexError, TypeError) as backup_error:
+                event["openrouter_backup_error"] = str(backup_error)[:300]
+
+    if ticket is not None:
         event["latency_ms"] = round((time.monotonic() - started) * 1000)
         event["ended_at"] = datetime.now(timezone.utc).isoformat()
         finish(ticket, event)
+        if drafts is None:
+            _write_audit(event)
+            if isinstance(primary_error, HTTPError):
+                raise DraftFailure(
+                    f"Meterless request failed with HTTP {primary_error.code}; no fabricated draft",
+                    event,
+                ) from None
+            if isinstance(primary_error, (URLError, TimeoutError)):
+                raise DraftFailure("Meterless is unavailable or timed out; no fabricated draft", event) from None
+            if isinstance(primary_error, BudgetExceeded):
+                raise DraftFailure(str(primary_error), event) from None
+            raise DraftFailure(
+                "Nemotron response failed identity, schema or grounding validation; no substitute draft",
+                event,
+            ) from None
         _write_audit(event)
-    return {"drafts": drafts, "execution": event}
+        return {"drafts": drafts, "execution": event}
+
+    event["latency_ms"] = round((time.monotonic() - started) * 1000)
+    event["ended_at"] = datetime.now(timezone.utc).isoformat()
+    if drafts is not None:
+        event["budget_attempt"] = None
+        event["approval"] = "openrouter-backup"
+        _write_audit(event)
+        return {"drafts": drafts, "execution": event}
+
+    _write_audit(event)
+    detail = event.get("openrouter_backup_error") or event.get("validation_error") or "model_path_failed"
+    raise DraftFailure(f"Meterless and OpenRouter backup both failed ({detail}); no fabricated draft", event) from None
