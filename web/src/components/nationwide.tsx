@@ -12,8 +12,15 @@ import "./national/national.css";
 
 type Alert = { id: string; event: string; areaDesc: string; expires: string; county_fips: string[]; mapping_status: string };
 type Catalog = {
-  catalog: { counties: CountyRecord[]; data_access: { zetaris_query_ids: string[] } };
+  catalog: {
+    counties: (CountyRecord & { ranked_rows?: number; outcome?: string })[];
+    data_access: {
+      zetaris_query_ids: string[];
+      publication?: { mode?: string; sweep_run_id?: string; ranked_counties?: number; note?: string };
+    };
+  };
   weather: { status: string; capture_id?: string; captured_at?: string; alerts?: Alert[]; message?: string };
+  publication?: { mode?: string; sweep_run_id?: string };
 };
 type Job = {
   id: string; phase: string; message?: string; completed_counties?: number; total_counties?: number;
@@ -25,6 +32,19 @@ type RecentRun = {
 };
 const object = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === "object" && !Array.isArray(value);
+
+const openPublishedCounty = async (fips: string): Promise<Job> => {
+  const response = await fetch(`/api/national?county=${fips}`, { cache: "no-store" });
+  const value: unknown = await response.json();
+  if (!response.ok || !object(value) || typeof value.id !== "string" || value.phase !== "completed") {
+    throw new Error(object(value) && typeof value.error === "string" ? value.error : "The published county snapshot couldn't be read.");
+  }
+  return value as Job;
+};
+const catalogIsPublished = (value: Catalog | null): boolean =>
+  value?.publication?.mode === "published_static" ||
+  value?.catalog.data_access.publication?.mode === "published_static";
+
 const launched = new Set<string>();
 const requestRun = async (selection: { county?: string; alert?: string; capture?: string }): Promise<string> => {
   const response = await fetch("/api/national", {
@@ -103,10 +123,19 @@ export const Nationwide = () => {
               if (!launched.has(fips)) {
                 launched.add(fips);
                 try {
-                  const id = await requestRun({ county: fips });
-                  if (!controller.signal.aborted) {
-                    setJob({ id, phase: "starting" });
-                    window.history.replaceState(null, "", `/nationwide?run=${id}&county=${fips}`);
+                  const published = catalogIsPublished(value as unknown as Catalog);
+                  if (published) {
+                    const opened = await openPublishedCounty(fips);
+                    if (!controller.signal.aborted) {
+                      setJob(opened);
+                      window.history.replaceState(null, "", `/nationwide?county=${fips}`);
+                    }
+                  } else {
+                    const id = await requestRun({ county: fips });
+                    if (!controller.signal.aborted) {
+                      setJob({ id, phase: "starting" });
+                      window.history.replaceState(null, "", `/nationwide?run=${id}&county=${fips}`);
+                    }
                   }
                 } catch (failure) {
                   launched.delete(fips);
@@ -154,6 +183,15 @@ export const Nationwide = () => {
     setSubmitting(true);
     setError("");
     try {
+      if (selection.county && catalogIsPublished(catalog)) {
+        const opened = await openPublishedCounty(selection.county);
+        setJob(opened);
+        window.history.replaceState(null, "", `/nationwide?county=${selection.county}`);
+        return;
+      }
+      if (catalogIsPublished(catalog) && selection.alert) {
+        throw new Error("Live alert runs stay on local origin. Choose a published county on this host.");
+      }
       const id = await requestRun(selection);
       setJob({ id, phase: "starting" });
       const query = new URLSearchParams({ run: id });
@@ -205,12 +243,14 @@ export const Nationwide = () => {
         {loading && <p role="status">Reading the audited national source catalog. No sample counties are loaded.</p>}
         {error && <div className="watch-error" role="alert"><p>{error}</p><button onClick={() => setRefreshKey(key => key + 1)} disabled={loading}>Retry verified source catalog</button></div>}
         {recentRuns !== null && <section className="source-strip verified-local-runs" aria-labelledby="verified-runs-title">
-          <h2 id="verified-runs-title">Verified runs on this machine</h2>
-          <p className="fineprint">Completed local jobs only. Snapshot present, provenance checked. Newest first. Cap 20. No sample counties.</p>
+          <h2 id="verified-runs-title">{catalogIsPublished(catalog) ? "Published ranked counties" : "Verified runs on this machine"}</h2>
+          <p className="fineprint">{catalogIsPublished(catalog)
+            ? "Frozen audited sweep snapshots on this host. Highest ranked-facility counts first. Cap 20. No invented counties."
+            : "Completed local jobs only. Snapshot present, provenance checked. Newest first. Cap 20. No sample counties."}</p>
           {recentError && <p role="alert">{recentError}</p>}
           {!recentRuns.length && !recentError && <p>No completed local runs yet.</p>}
           {!!recentRuns.length && <ul className="verified-run-list">{recentRuns.map(run => <li key={run.id}>
-            <a href={`/nationwide?run=${run.id}`}>{run.county_name}, {run.state}</a>
+            <a href={catalogIsPublished(catalog) ? `/nationwide?county=${run.fips}` : `/nationwide?run=${run.id}`}>{run.county_name}, {run.state}</a>
             <span className="fineprint"> / {run.fips} / {run.facility_count} ranked facilities
               {run.alert_event ? ` / ${run.alert_event}` : ""} / {formatDate(run.generated_at)}</span>
           </li>)}</ul>}
@@ -231,7 +271,9 @@ export const Nationwide = () => {
             </>}
           </section>}
         {catalog && <>
-          <p className="fineprint">{catalog.catalog.counties.length} official Census county entries. Zetaris catalog query {catalog.catalog.data_access.zetaris_query_ids.join(", ")}. Being on this list is not a ranking. A run returns that county&apos;s own rows and gaps.</p>
+          <p className="fineprint">{catalog.catalog.counties.length} official Census county entries. Zetaris catalog query {catalog.catalog.data_access.zetaris_query_ids.join(", ")}.
+            {catalogIsPublished(catalog) && <> Published sweep {catalog.publication?.sweep_run_id || catalog.catalog.data_access.publication?.sweep_run_id}: {catalog.catalog.data_access.publication?.ranked_counties ?? "?"} counties with ranked facilities. Hosted clicks open frozen audited snapshots; live model POST stays local.</>}
+            {" "}Being on this list is not a ranking. A run returns that county&apos;s own rows and gaps.</p>
           <form className="contact-form" onSubmit={event => { event.preventDefault(); void start(); }}>
             <fieldset disabled={busy}><legend>Choose source scope</legend>
               <label><input type="radio" name="source-mode" checked={mode === "county"} onChange={() => { setMode("county"); setJob(null); }} /> County discovery</label>
@@ -261,7 +303,9 @@ export const Nationwide = () => {
             </>}
             <button className="primary-button" type="submit" disabled={busy || loading ||
               (mode === "county" ? !county : !selectedAlert)}>
-              {busy ? "Processing verified sources..." : "Build sourced call sheet and grounded drafts"}
+              {busy ? "Processing verified sources..." :
+                catalogIsPublished(catalog) && mode === "county" ? "Open published audited call sheet" :
+                "Build sourced call sheet and grounded drafts"}
             </button>
             <p className="fineprint">Nemotron only, through Meterless. Approved free NVIDIA route only. A failed draft is kept, retried at most once and never replaced with invented text. The shared call cap can leave drafts unattempted.</p>
           </form>

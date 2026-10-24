@@ -1,9 +1,17 @@
 import { UNREACHABLE_MESSAGE } from "@/lib/national-gaps";
-import { listRecentCompletedNationalRuns, NationalEngineError, readNationalCatalog, readNationalRun, requestCallScript, startNationalRun, validRun } from "@/lib/national-server";
+import {
+  listRecentCompletedNationalRuns, NationalEngineError, readNationalCatalog, readNationalRun,
+  requestCallScript, startNationalRun, validRun, validatePublishedResult,
+} from "@/lib/national-server";
+import {
+  listPublishedCountySummaries, publishedPackAvailable, readPublishedCatalog, readPublishedCounty,
+} from "@/lib/national-published";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const headers = { "Cache-Control": "private, no-store" };
+const publicHeaders = { "Cache-Control": "public, max-age=60, stale-while-revalidate=300" };
+
 const localHost = (request: Request): URL | null => {
   try {
     const target = new URL("http://" + request.headers.get("host"));
@@ -20,11 +28,67 @@ const failed = (error: unknown, fallback: string): Response => {
   return Response.json({ error: unreachable ? UNREACHABLE_MESSAGE : fallback, unreachable }, { status: 503, headers });
 };
 
+const publishedCompleted = async (fips: string): Promise<Response> => {
+  const published = await readPublishedCounty(fips);
+  return Response.json({
+    id: published.id,
+    phase: "completed",
+    snapshot: validatePublishedResult(published.value),
+    provenance: published.provenance,
+    publication: { mode: "published_sweep_snapshot", fips },
+  }, { headers: publicHeaders });
+};
+
 export const GET = async (request: Request): Promise<Response> => {
-  if (!localHost(request) || request.headers.get("sec-fetch-site") === "cross-site") return Response.json({ error: "Local-origin access required." }, { status: 403, headers });
+  const local = !!localHost(request) && request.headers.get("sec-fetch-site") !== "cross-site";
   const params = new URL(request.url).searchParams;
   const id = params.get("job");
   const recent = params.get("recent");
+  const county = params.get("county");
+
+  if (county !== null) {
+    if (!/^\d{5}$/.test(county)) {
+      return Response.json({ error: "County source code must be five digits." }, { status: 400, headers });
+    }
+    try {
+      if (await publishedPackAvailable()) return await publishedCompleted(county);
+      if (!local) {
+        return Response.json({ error: "Local-origin access required." }, { status: 403, headers });
+      }
+      return Response.json({
+        error: "No published audited snapshot is installed for hosted county reads.",
+      }, { status: 404, headers });
+    } catch (error) {
+      return failed(error, "No published audited snapshot is available for this county. No substitute data was returned.");
+    }
+  }
+
+  if (!local) {
+    if (!(await publishedPackAvailable())) {
+      return Response.json({ error: "Local-origin access required." }, { status: 403, headers });
+    }
+    if (id !== null && recent !== null) {
+      return Response.json({ error: "Choose either a run reference or recent completed runs." }, { status: 400, headers });
+    }
+    if (recent !== null && recent !== "1") {
+      return Response.json({ error: "Use recent=1 for published county summaries." }, { status: 400, headers });
+    }
+    try {
+      if (recent === "1") {
+        return Response.json({ recent: await listPublishedCountySummaries(20) }, { headers: publicHeaders });
+      }
+      if (id) {
+        return Response.json({
+          error: "Hosted reads use county=FIPS for published snapshots. Local job ids stay on localhost:3101.",
+        }, { status: 400, headers });
+      }
+      const published = await readPublishedCatalog();
+      return Response.json(published.value, { headers: publicHeaders });
+    } catch (error) {
+      return failed(error, "The published national catalog is unavailable. No sample counties are substituted.");
+    }
+  }
+
   if (id !== null && recent !== null) {
     return Response.json({ error: "Choose either a run reference or recent completed runs." }, { status: 400, headers });
   }
