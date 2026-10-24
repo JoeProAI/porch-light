@@ -17,7 +17,7 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
       <header className="entry-header">
         <Link className="wordmark" href="/">Porch Light<span className="wordmark-period">.</span></Link>
         <span className="entry-category">Emergency operations</span>
-        <nav aria-label="Project navigation"><a href="#workflow">How it works</a><Link href="/watch">Storm Watch</Link><Link href="/operate">Call sheet</Link></nav>
+        <nav aria-label="Project navigation"><a href="#workflow">How it works</a><Link href="/watch">Storm Watch</Link><Link href="/nationwide">Nationwide workbench</Link><Link href="/operate">Manatee walkthrough</Link></nav>
       </header>
       <main>
         <section className="mission" id="project-purpose" aria-labelledby="mission-title">
@@ -28,9 +28,9 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
             <p className="eyebrow mission-kicker">Storm preparedness / Care facilities</p>
             <h1 id="mission-title">Storm warning.<br /><em>Clear first call.</em></h1>
             <p className="mission-description">An emergency-operations call sheet for dialysis centers and nursing homes in a storm-warning area. Real phone numbers. A transparent order of outreach. Evidence behind every priority.</p>
-            <Link className="entry-primary" href="/operate">Open the Manatee call sheet <span aria-hidden="true">↗</span></Link>
-            <Link className="entry-secondary" href="/nationwide">Run a US county or captured live alert</Link>
-            <p className="mission-limit">Verified example: Hurricane Milton, 2024. Retrospective, not a live warning or current facility conditions.</p>
+                        <Link className="entry-primary" href="/operate">Open the Manatee walkthrough <span aria-hidden="true">→</span></Link>
+            <Link className="entry-secondary" href="/nationwide">Open the nationwide workbench</Link>
+            <p className="mission-limit">Manatee is the retrospective golden-path walkthrough (Hurricane Milton, 2024). Any US county runs through the nationwide workbench from verified local sources. Gaps stay visible.</p>
             <a className="mission-sponsor-proof" href="#sponsor-title">Built with Zetaris, Meterless and NVIDIA Nemotron. <span>Inspect the proof.</span></a>
             <Link className="watch-entry-link" href="/watch">For current official weather, open Storm Watch</Link>
           </div>
@@ -61,11 +61,11 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
           <p className="satellite-credit"><a href="https://modis.gsfc.nasa.gov/gallery/individual.php?db_date=2024-10-10" target="_blank" rel="noreferrer">Archived image: MODIS Land Rapid Response Team, NASA GSFC. October 8, 2024.</a></p>
         </section>
         <section className="demonstration-scope" aria-label="What this example contains">
-          <div><span className="eyebrow">One real warning area</span><h2>Manatee County,<br />Florida.</h2></div>
+          <div><span className="eyebrow">Golden-path walkthrough</span><h2>Manatee County,<br />Florida.</h2></div>
           <p><strong>{dialysis}</strong> ranked dialysis centers</p>
           <p><strong>{nursing}</strong> ranked nursing homes</p>
           <p><strong>{snapshot.refused.length}</strong> refused source records</p>
-          <span className="scope-note">The demonstration is local and retrospective. Nationwide and international coverage aren't claimed by this example.</span>
+          <span className="scope-note">Manatee is the inspectable Milton retrospective. The product path for more counties is the nationwide workbench: completed local runs from verified CMS, Census, SVI and emPOWER joins, with source gaps left visible. Model draft coverage is still incomplete and is not claimed finished for every US county.</span>
         </section>
         <section className="project-workflow" id="workflow" aria-labelledby="workflow-title">
           <div className="workflow-intro"><p className="eyebrow">From warning to outreach</p><h2 id="workflow-title">Less searching.<br />A call sheet you can inspect.</h2><p>Porch Light brings fragmented public records into one working order. It doesn't decide clinical urgency, place calls or invent missing evidence.</p></div>

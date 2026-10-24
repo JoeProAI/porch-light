@@ -15,6 +15,10 @@ type Job = {
   id: string; phase: string; message?: string; completed_counties?: number; total_counties?: number;
   eligible_facilities?: number; snapshot?: Snapshot & { state?: string; reason?: string }; provenance?: Provenance;
 };
+type RecentRun = {
+  id: string; county_name: string; state: string; fips: string;
+  facility_count: number; alert_event: string | null; generated_at: string;
+};
 const object = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 
@@ -30,19 +34,41 @@ export const Nationwide = () => {
   const [submitting, setSubmitting] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [countyQuery, setCountyQuery] = useState("");
+  const [recentRuns, setRecentRuns] = useState<RecentRun[] | null>(null);
+  const [recentError, setRecentError] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
     setError("");
+    setRecentError("");
     void (async () => {
       try {
-        const response = await fetch("/api/national", { cache: "no-store", signal: controller.signal });
-        const value: unknown = await response.json();
-        if (!response.ok || !object(value) || !object(value.catalog) || !Array.isArray(value.catalog.counties)) {
+        const [catalogResponse, recentResponse] = await Promise.all([
+          fetch("/api/national", { cache: "no-store", signal: controller.signal }),
+          fetch("/api/national?recent=1", { cache: "no-store", signal: controller.signal }),
+        ]);
+        const value: unknown = await catalogResponse.json();
+        if (!catalogResponse.ok || !object(value) || !object(value.catalog) || !Array.isArray(value.catalog.counties)) {
           throw new Error(object(value) && typeof value.error === "string" ? value.error : "The verified national catalog couldn't be read.");
         }
         setCatalog(value as unknown as Catalog);
+        try {
+          const recentValue: unknown = await recentResponse.json();
+          if (!recentResponse.ok || !object(recentValue) || !Array.isArray(recentValue.recent)) {
+            throw new Error(object(recentValue) && typeof recentValue.error === "string"
+              ? recentValue.error : "Completed local runs couldn't be listed.");
+          }
+          const rows = recentValue.recent.filter((row): row is RecentRun =>
+            object(row) && typeof row.id === "string" && /^[a-f0-9]{32}$/.test(row.id) &&
+            typeof row.county_name === "string" && typeof row.state === "string" && typeof row.fips === "string" &&
+            typeof row.facility_count === "number" && typeof row.generated_at === "string" &&
+            (row.alert_event === null || typeof row.alert_event === "string"));
+          setRecentRuns(rows);
+        } catch (failure) {
+          setRecentRuns([]);
+          setRecentError(failure instanceof Error ? failure.message : "Completed local runs couldn't be listed.");
+        }
         const query = new URLSearchParams(window.location.search);
         const saved = query.get("run");
         if (saved && /^[a-f0-9]{32}$/.test(saved)) setJob({ id: saved, phase: "checking_saved_run" });
@@ -117,7 +143,7 @@ export const Nationwide = () => {
       <header className="masthead">
         <a href="/" className="wordmark">Porch Light<span className="wordmark-period">.</span></a>
         <span className="masthead-descriptor">National care-facility outreach</span>
-        <nav className="workspace-nav" aria-label="Workspace sections"><a href="/">Project home</a><a href="/watch">Storm Watch</a><a href="/operate">Manatee walkthrough</a></nav>
+        <nav className="workspace-nav" aria-label="Workspace sections"><a href="/">Project home</a><a href="/watch">Storm Watch</a><a href="/operate">Manatee walkthrough</a><a href="/nationwide" aria-current="page">Nationwide workbench</a></nav>
       </header>
       <Content>
         <section className="intro" aria-labelledby="national-title">
@@ -129,6 +155,17 @@ export const Nationwide = () => {
         </section>
         {loading && <p role="status">Reading the audited national source catalog. No sample counties are loaded.</p>}
         {error && <div className="watch-error" role="alert"><p>{error}</p><button onClick={() => setRefreshKey(key => key + 1)} disabled={loading}>Retry verified source catalog</button></div>}
+        {recentRuns !== null && <section className="source-strip verified-local-runs" aria-labelledby="verified-runs-title">
+          <h2 id="verified-runs-title">Verified runs on this machine</h2>
+          <p className="fineprint">Completed local jobs only. Snapshot present, provenance checked. Newest first. Cap 20. No sample counties.</p>
+          {recentError && <p role="alert">{recentError}</p>}
+          {!recentRuns.length && !recentError && <p>No completed local runs yet.</p>}
+          {!!recentRuns.length && <ul className="verified-run-list">{recentRuns.map(run => <li key={run.id}>
+            <a href={`/nationwide?run=${run.id}`}>{run.county_name}, {run.state}</a>
+            <span className="fineprint"> / {run.fips} / {run.facility_count} ranked facilities
+              {run.alert_event ? ` / ${run.alert_event}` : ""} / {formatDate(run.generated_at)}</span>
+          </li>)}</ul>}
+        </section>}
         {catalog && <>
           <p className="fineprint">{catalog.catalog.counties.length} official Census county entries. Zetaris catalog query {catalog.catalog.data_access.zetaris_query_ids.join(", ")}. Ranking depends on the source joins, not merely being on this list.</p>
           {mode === "county" && <section className="contact-form" aria-label="Search the audited county catalog">
