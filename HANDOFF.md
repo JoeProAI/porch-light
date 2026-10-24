@@ -24,13 +24,14 @@ How work moves between agents. If an area's primary stalls or runs out of quota,
 - 2026-10-21: Repo created private after the window opened; first commit is the compliance kit, contract follows from Cursor.
 
 ## Area: Contract
-owner now: Joe in Cursor  (primary Joe in Cursor, backup Devin)
-state: not started
-next step: see your CREW brief
-branch: contract/*   open PRs: none
-how to run: n/a
+owner now: Devin  (primary Joe in Cursor, backup Devin; Devin took over as backup while Joe was on other gates)
+state: contract/openapi.yaml (11 endpoints incl. GET checkins and export artifact download, 15 schemas incl. Ledger and LedgerEntry plus typed errors and empty states; Devin Review findings addressed in d537834), contract/adapter.md, contract/types (TypeScript and Python dataclasses), contract/fixtures (mock alert, 25 mock facilities with Evidence and ScoreBreakdown, joins with failed joins, trace, export receipt, ledger), .cursor/rules (house, paths, sponsors), and contract/validate_fixtures.py all landed on contract/initial. Fixtures validate.
+next step: Joe reviews and merges the PR to main; every other agent codes against contract/types and the adapter interface. PR #1 (devin/data-scaffold) already renamed data/scoring/weights.yaml terms to the contract ScoreTerm names (af68a70). Wringer findings M8 to M12 and L1 to L4 fixed on contract/initial. Still open and out of area: the README "Sponsor map" Cursor row and the HANDOFF Decisions line both still say the contract was "made in Cursor" and belong to the Front matter seat.
+branch: contract/initial   open PRs: #14 contract (contract/initial)
+how to run: python3 contract/validate_fixtures.py (pip install -r contract/requirements.txt: pyyaml, jsonschema, referencing)
+fix note: Wringer pass two. sponsors.mdc now credits Devin with the contract and describes Cursor's real role (rules plus web and data cloud agents). All 25 facility points now sit inside Manatee County: 10 rows that the Census geocoder placed in Sarasota (12115) were moved to mainland Bradenton, Palmetto, Ellenton and Parrish points, and all 25 were checked with the Census coordinates to county lookup (25 of 25 return 12081). Every reason text now names its rank band and cites the row's two largest weighted terms. The export receipt evidence_ids are the top 10 rows by rank. Fixtures are referentially closed: a zetaris_queries trace step lists every query id, all 25 reason trace_ids are trace steps, a new ledger_mock.json resolves every ledger id, and each nursing home row's ssa_to_fips hop query id is in its own zetaris_query_ids. Two dialysis rows are marked failed geocodes to match the joins count, the ccn to ccn polygon hop now targets tract_geoid, every mock CCN follows the Florida 10xxxx pattern, and model trace steps carry detail "mock values". validate_fixtures.py also fails on bad rank order or totals, score sums off by more than 1e-6, wrong receipt evidence_ids, dangling query, trace or ledger ids, and county_key 12081 rows outside a conservative Manatee box (lat 27.38 to 27.65, lon -82.75 to -82.05). Cross-fixture checks are skipped with a clear message when the schema pass already failed, so a missing field no longer crashes the validator. Earlier: it removes its own directory from sys.path so contract/types cannot shadow the stdlib types module, and uses Draft202012Validator with a referencing registry to match OpenAPI 3.1.
 blocked: none
-last update: Wed Oct 21 2026 8:20 PM ET
+last update: Wed Oct 21 2026 9:02 PM ET
 
 ## Area: Data
 owner now: Devin  (primary Devin, backup Cursor cloud agent (data))
