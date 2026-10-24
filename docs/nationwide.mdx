@@ -1,0 +1,34 @@
+---
+title: "Any US county"
+description: "Nationwide front door: Census catalog search and local jobs when Zetaris is reachable."
+keywords: ["nationwide", "county", "census", "national jobs"]
+---
+
+Home primary action: **Pick any US county** → `/nationwide`. The Milton Manatee sheet is the secondary walkthrough.
+
+<Frame>
+  <img src="/images/screenshot-nationwide.jpg" alt="Nationwide page with county search and night atlas" />
+</Frame>
+
+## How a county job works
+
+1. Search the Census county catalog (3,235 rows in the catalog path) or click a county on the night atlas.
+2. `POST /api/national` starts `engines.national_jobs` for that FIPS (or an alert + capture pair).
+3. Poll the job. On success, open the call sheet for **that** run's audited rows and source gaps.
+4. If Zetaris cannot be reached, the UI says so. It does not load Manatee as a silent fallback for a bad FIPS.
+
+## Verified local runs (examples)
+
+Completed jobs have existed on the operator machine for counties such as Los Angeles CA, Cook IL, Harris TX, Maricopa AZ, and Denver CO, plus Manatee. Treat those as **local machine receipts**, not as a finished national product. Catalog size ≠ completed call sheets for every county.
+
+## Honesty rules
+
+- Do not market “3,000+ counties ready” until the sweep and offline replay actually cover them.
+- Contact outcomes stay operator-entered. No sample **Reached** rows.
+- Alert polygon jobs and single-county jobs are different engines inputs — see engine notes on PR #24.
+
+## Related
+
+- [Manatee walkthrough](/manatee-walkthrough)
+- [Limits](/limits)
+- [Local run](/local-run)

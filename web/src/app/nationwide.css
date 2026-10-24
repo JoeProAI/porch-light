@@ -1,0 +1,73 @@
+/* Night paint for the national workbench. Markup and run logic stay untouched. */
+
+.national-controls {
+  min-height: 100dvh;
+}
+
+
+.national-controls .intro {
+  grid-template-columns: minmax(0, 1.4fr) minmax(220px, .7fr);
+  align-items: end;
+  padding-block: 40px 20px;
+}
+
+.national-controls h1 {
+  font-size: clamp(2.6rem, 6vw, 6.5rem);
+  line-height: .95;
+  max-width: 14ch;
+}
+
+.national-controls .edition-note {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 16px 18px;
+}
+
+.national-controls .contact-form {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 20px 22px 24px;
+  max-width: 720px;
+  margin-top: 20px;
+}
+
+.national-controls .contact-form legend,
+.national-controls .contact-form label {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 17px;
+}
+
+.national-controls .contact-form fieldset {
+  border: 1px solid var(--line);
+  margin: 0 0 12px;
+  padding: 8px 16px 12px;
+}
+
+.national-controls .watch-error,
+.national-controls .source-strip {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 16px 18px;
+  margin-top: 16px;
+}
+
+.national-controls .primary-button {
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 8px;
+}
+
+@media (max-width: 767px) {
+  .national-controls .intro {
+    grid-template-columns: 1fr;
+    padding-top: 16px;
+  }
+
+  .national-controls h1 {
+    font-size: clamp(2.2rem, 11vw, 3.2rem);
+  }
+}
+
