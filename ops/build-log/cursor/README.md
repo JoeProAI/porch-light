@@ -2,6 +2,8 @@
 
 Checked against GitHub on 2026-10-24. This file records pull requests that exist. It does not record token counts, request totals, or spend. No spend figure is stored in this repository.
 
+This note landed in https://github.com/JoeProAI/porch-light/pull/35. That pull request is the evidence file only. It is not a product change and it is not a usage total.
+
 Cursor cloud agents authored the two pull requests below. Devin integrated `devin/web-manatee`. Cursor did not author the data adapters, the engines, or the whole web app.
 
 ## PR #22 — Storm Watch
