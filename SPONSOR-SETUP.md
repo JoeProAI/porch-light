@@ -34,4 +34,5 @@ Primary sources (not memory):
 
 ## Local env template
 
-See `.env.example`. Keep real tokens out of git and out of Cursor provider settings.
+See `env.example`. Keep real tokens out of git and out of Cursor provider settings.
+

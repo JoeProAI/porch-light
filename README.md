@@ -62,5 +62,6 @@ AGPL-3.0. See LICENSE and NOTICE. Pre-existing components are listed in DECLARED
 
 ## Sponsor setup checklist
 
-Correct sponsor endpoints, model ids, eligibility gaps and prize notes: [SPONSOR-SETUP.md](SPONSOR-SETUP.md). Local env placeholders: [.env.example](.env.example).
+Correct sponsor endpoints, model ids, eligibility gaps and prize notes: [SPONSOR-SETUP.md](SPONSOR-SETUP.md). Local env placeholders: [env.example](env.example).
+
 
