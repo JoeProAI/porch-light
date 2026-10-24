@@ -22,6 +22,74 @@ Work from origin/ branches or your own worktree; do not rely on the shared clone
 | Id | From | Severity | Area | Status |
 |---|---|---|---|---|
 
+### Wringer batch 1 (2026-10-21 ~8:30 PM ET)
+Verdicts:
+- PR #1 (data scaffold, head c03963d): pass. Fix M1 before Thursday loads: both CMS links in sources.yaml return 410.
+- PR #14 (contract, head 30057b0): BLOCKED by H1. contract/types/ shadows the Python stdlib types module, so `python3 contract/validate_fixtures.py` crashes on 3.11 to 3.13. Fix: rename contract/types to contract/schema_types, or run as `python3 -m contract.validate_fixtures`.
+- PRs #12 and #13 were not in this batch.
+
+| Id | Sev | Problem (short) | Fix (short) | Owner area |
+|---|---|---|---|---|
+| H1 | High | contract/types/ shadows stdlib types; validator crashes, "exits 0" proof false | Rename folder or move validator; rerun in clean venv | Contract |
+| M1 | Med | Both CMS URLs in sources.yaml return 410 Gone | Switch to provider-data datastore API; record URL in sidecar | Data |
+| M2 | Med | NBER SSA to FIPS crosswalk URL returns 404 | Find current URL; license in sidecar | Data |
+| M3 | Med | emPOWER layer note unsourced, says "etc" | Exact layer names and ids from data dictionary, cited | Data |
+| M4 | Med | Zetaris docker run publishes 8080 on all interfaces | Bind 127.0.0.1 or tailnet IP | Data |
+| M5 | Med | PostGIS on loopback unreachable from Zetaris at wsl2-host; G2 likely fails (not run) | Shared Docker network, connect by container name | Data |
+| M6 | Med | PR #1 body lacks the required HANDOFF block | Use `### HANDOFF` template, placed last | Data |
+| M7 | Med | "~1.5h" time claim does not fit an 8:24 PM ET commit | Correct to real in-window time; declare any pre-window work | Contract |
+| M8 | Med | Contract credited to Cursor but Devin wrote it | Real Cursor follow-ups with links, or reword 4 places | Contract, Front matter and ops |
+| M9 | Med | 6 "Manatee" mock facilities geocode to Sarasota (12115) but carry 12081 | Move points inside Manatee or flag as test rows | Contract |
+| M10 | Med | Every mock reason says "upper band", even rank 25 | Rank-dependent mock reasons citing top terms | Contract |
+| M11 | Med | Export receipt evidence_ids are first 10 in file order, not top 10 | Use ranks 1 to 10 or document rule | Contract |
+| M12 | Med | Evidence trail dead-ends: query, trace and ledger ids do not resolve | Make fixtures referentially closed; validator checks it | Contract |
+| L1 | Low | Failed join says 2 dialysis geocode failures; none marked | Mark 2 rows failed or drop, match count | Contract |
+| L2 | Low | ccn -> ccn hop uses point-in-polygon | Use ccn -> nws_zone (or tract_geoid) | Contract |
+| L3 | Low | Mock CCNs lack Florida prefix 10 | Use 10xxxx pattern | Contract |
+| L4 | Low | Model step metrics not labeled mock | Add "detail": "mock values" | Contract |
+| L5 | Low | Invented weights; term names differ from PR #1 weights.yaml | PR #1 renames to ScoreTerm enum; keep weights marked mock | Data, Contract |
+| L6 | Low | openapi.yaml defines no auth | Add bearer/tailnet note or security scheme | Contract |
+| L7 | Low | Validator uses Draft7Validator and deprecated RefResolver | Draft202012Validator with referencing | Contract |
+| L8 | Low | Contract section timestamp 8:45 PM is in the future; PRs not linked | Real commit time; link #14 | Contract |
+| L9 | Low | No emPOWER layer field in Fact/ScoreTerm | Optional layer (name plus id) on Fact or SourceRef | Contract |
+| L10 | Low | Em dashes in three data READMEs | Replace with colons | Data |
+| L11 | Low | sidecar.py accepts bad fetched_at, non-UTC offsets, blank fields; no tests | Validate on write, require UTC, strip, add test | Data |
+| L12 | Low | Zetaris refetch claim unsourced; live NWS path undocumented | Cite doc; state live alert path | Data |
+| L13 | Low | Zetaris edition and port 8080 are assumptions | Exact image and port, or mark unverified | Data |
+| L14 | Low | POSTGRES_PASSWORD on command line lands in shell history | Use --env-file with gitignored .env | Data |
+| L15 | Low | Data "open PRs" is a branch, not a PR link | Link #1 | Data |
+| L16 | Low | Devin Review flag not visible on GitHub | Joe or Devin reads it before merge | Integration and review |
+| L17 | Low | Commits authored as Joseph Gaither with no agent trailer | Optional agent trailer from here on | All |
+
+Full review (outside the repo): /workspace/hackathons/open-agent-2026/porch-light/reviews/wringer-batch-1.md on the shared box.
+
+### Wringer batch 1b (2026-10-21 ~8:46 PM ET)
+Verdicts (no Highs):
+- PR #14 (contract, head 83a6afd): pass. H1 fixed and verified on Python 3.11 to 3.13, including negative runs.
+- PR #12 (front matter, head 68cd3c9): pass. Fix M14 and M15 before judge-facing text is built from metadata.json.
+- PR #13 (docs, head e931ba4): pass.
+- PR #15 (this PR) was not reviewed.
+
+Still open from batch 1: M7 and M9 to M12 (the source also notes L8 is still open).
+
+| Id | Sev | Problem (short) | Fix (short) | Owner area |
+|---|---|---|---|---|
+| M13 | Med | Validator checks facilities fixture against Facility, not RankedFacility; missing score/evidence passes | Validate against FacilityList or RankedFacility | Contract |
+| M14 | Med | metadata.json says contract made in Cursor; Devin wrote it (same as M8) | Reword to real Cursor work, or real Cursor runs linked | Front matter and ops |
+| M15 | Med | nemotron-4-340b-reward listed but 404ed in G0 smoke and was dropped | Remove or mark dropped | Front matter and ops |
+| M16 | Med | PR #12 and #13 bodies lack the required `### HANDOFF` block (same as M6) | Edit both bodies to the template, placed last | Front matter and ops, Docs |
+| L18 | Low | Commit d537834 subject has an em dash; history can't be rewritten | Won't fix (accepted) | Contract |
+| L19 | Low | Fix note says shadowing on 3.12+; it also failed on 3.11 | Say "Python 3.11+" | Contract |
+| L20 | Low | requirements.txt unpinned; referencing imported but not listed | Pin jsonschema>=4.18, referencing, pyyaml | Contract |
+| L21 | Low | Path filter breaks on native Windows backslash paths | Use os.path.dirname/abspath | Contract |
+| L22 | Low | Local Nemotron models and nemotron-parse-2.0 unverified | Tag "unverified" until G3 and Parse test pass | Front matter and ops |
+| L23 | Low | Zetaris patterns declared Apache 2.0 with no source | Add the repo URL | Front matter and ops |
+| L24 | Low | AGPL-3.0-only vs AGPL-3.0 stated inconsistently | Pick one SPDX id everywhere | Front matter and ops |
+| L25 | Low | Area "last update" times later than commits; PRs named, not linked (same as L8, L15) | Use commit time; link the PR number | Front matter and ops, Docs |
+| L26 | Low | Mintlify app or hosting would publish a public docs URL | Keep docs local until Joe says yes at submission | Docs |
+
+Full batch 1b detail is in the same review file on the shared box.
+
 ## Decisions
 - 2026-10-21: Repo created private after the window opened; first commit is the compliance kit. Devin wrote the contract (PR #14). Cursor is credited for the .cursor/rules/ files and the web and data cloud agents (per .cursor/rules/sponsors.mdc at 362e1c8).
 
