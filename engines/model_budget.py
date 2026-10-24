@@ -37,6 +37,10 @@ def reserve(purpose: str) -> Path:
             return target
         except FileExistsError:
             continue
+        except PermissionError:
+            if target.exists():
+                continue
+            raise
     raise BudgetExceeded("The approved 2000-attempt Nemotron budget is exhausted")
 
 

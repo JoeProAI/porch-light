@@ -39,7 +39,7 @@ def audit_lock():
         try:
             descriptor = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
             break
-        except FileExistsError:
+        except (FileExistsError, PermissionError):
             if time.monotonic() >= deadline:
                 raise RuntimeError("Model audit is locked; no additional call is permitted")
             time.sleep(.05)

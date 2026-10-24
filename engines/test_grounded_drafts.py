@@ -1,11 +1,14 @@
 """Deterministic grounding tests use the actual audited Manatee source snapshot."""
 
 import copy
+import os
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from engines.generate_drafts import read_verified_snapshot
-from engines.grounded_drafts import compose_selection, source_catalog
+from engines.grounded_drafts import audit_lock, compose_selection, source_catalog
 
 
 class GroundingTests(unittest.TestCase):
@@ -46,6 +49,35 @@ class GroundingTests(unittest.TestCase):
         row["evidence"]["facts"][1]["query_id"] = "unclosed"
         with self.assertRaises(ValueError):
             source_catalog(row)
+
+    def test_windows_lock_contention_retries_without_removing_another_lock(self):
+        actual_open = os.open
+        attempts = 0
+
+        def contend_once(path, flags):
+            nonlocal attempts
+            attempts += 1
+            if attempts == 1:
+                raise PermissionError("Windows sharing violation")
+            return actual_open(path, flags)
+
+        with tempfile.TemporaryDirectory() as folder:
+            lock = Path(folder) / ".porchlight/model-audit.lock"
+            with patch("pathlib.Path.home", return_value=Path(folder)):
+                with patch("engines.grounded_drafts.os.open", side_effect=contend_once):
+                    with audit_lock():
+                        self.assertTrue(lock.exists())
+            self.assertEqual(attempts, 2)
+            self.assertFalse(lock.exists())
+
+    def test_persistent_lock_permission_failure_still_fails_closed(self):
+        with tempfile.TemporaryDirectory() as folder:
+            with patch("pathlib.Path.home", return_value=Path(folder)):
+                with patch("engines.grounded_drafts.os.open", side_effect=PermissionError("Denied")):
+                    with patch("engines.grounded_drafts.time.monotonic", side_effect=[0, 11]):
+                        with self.assertRaisesRegex(RuntimeError, "locked"):
+                            with audit_lock():
+                                self.fail("An inaccessible audit lock must not permit a call")
 
 
 if __name__ == "__main__":

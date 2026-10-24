@@ -13,6 +13,27 @@ DEMO = Path(__file__).parent / "snapshots/manatee-zetaris-chain.json"
 
 
 class BudgetAndRetentionTests(unittest.TestCase):
+    def test_windows_occupied_ticket_is_skipped_but_real_access_denial_is_not(self):
+        actual_open = Path.open
+        with tempfile.TemporaryDirectory() as directory, \
+                patch.object(model_budget, "ROOT", Path(directory)), \
+                patch.object(model_budget, "MAX_ATTEMPTS", 2):
+            occupied = model_budget.reserve("filesystem test, no provider request")
+
+            def windows_open(path, *args, **kwargs):
+                if path == occupied and args and args[0] == "x":
+                    raise PermissionError("Occupied ticket sharing violation")
+                return actual_open(path, *args, **kwargs)
+
+            with patch.object(Path, "open", windows_open):
+                ticket = model_budget.reserve("second filesystem test, no provider request")
+            self.assertEqual(ticket.name, "attempt-0002.json")
+        with tempfile.TemporaryDirectory() as directory, \
+                patch.object(model_budget, "ROOT", Path(directory)), \
+                patch.object(Path, "open", side_effect=PermissionError("Unwritable folder")):
+            with self.assertRaises(PermissionError):
+                model_budget.reserve("denied filesystem test, no provider request")
+
     def test_concurrent_reservations_never_exceed_the_approved_limit(self):
         with tempfile.TemporaryDirectory() as directory, \
                 patch.object(model_budget, "ROOT", Path(directory)), \
