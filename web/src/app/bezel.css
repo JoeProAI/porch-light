@@ -30,4 +30,3 @@
   .watch-bezel.is-ring .bezel-linear { display: flex; }
 }
 .atlas-bezel { min-width: 0; max-width: 100%; padding: 8px 0 4px; border-bottom: 1px solid var(--line); }
-.first-call-preview .watch-bezel { margin-top: 16px; }

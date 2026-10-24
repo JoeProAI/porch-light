@@ -131,15 +131,39 @@ test("the call sheet has no canvas-gray band across the workspace", async ({ pag
 test("project entry explains the storm and care-facility use case and opens the real tool", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Storm warning. Clear first call." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Any US county." })).toBeVisible();
   await expect(page.locator(".mission-description")).toContainText("dialysis centers and nursing homes");
+  await expect(page.locator(".mission-description")).toContainText("any US county");
   await expect(page.locator(".mission-limit")).toContainText("not a live warning");
-  await expect(page.locator(".first-call-preview")).toContainText(snapshot.facilities[0].name);
-  await expect(page.locator(".satellite-credit")).toContainText("October 8, 2024");
+  await expect(page.locator(".first-call-preview")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "See the Hurricane Milton walkthrough" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Manatee County, Florida." })).toHaveCount(0);
+  await expect(page.locator(".satellite-credit")).toContainText("not a live warning");
+  const milton = page.getByRole("link", { name: "Hurricane Milton retrospective" });
+  await expect(milton).toHaveCount(1);
+  const retrospective = await milton.evaluate(el => {
+    const style = getComputedStyle(el);
+    return {
+      fontSize: Number.parseFloat(style.fontSize),
+      weight: Number(style.fontWeight),
+      borderWidth: Number.parseFloat(style.borderTopWidth),
+      paddingTop: Number.parseFloat(style.paddingTop),
+    };
+  });
+  expect(retrospective.fontSize).toBeLessThanOrEqual(13);
+  expect(retrospective.weight).toBeLessThanOrEqual(400);
+  expect(retrospective.borderWidth).toBe(0);
+  expect(retrospective.paddingTop).toBe(0);
+  const primary = page.getByRole("link", { name: "Pick any US county" });
+  await expect(primary).toHaveCount(1);
+  await expect(primary).toHaveAttribute("href", "/nationwide");
+  const paint = await primary.evaluate(el => getComputedStyle(el).backgroundColor);
+  expect(paint).toBe("rgb(242, 169, 59)");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.getByRole("link", { name: "Pick any US county" }).click();
+  await primary.click();
   await expect(page).toHaveURL(/\/nationwide$/);
   await page.goto("/");
-  await page.getByRole("link", { name: "See the Hurricane Milton walkthrough" }).click();
+  await page.getByRole("link", { name: "Hurricane Milton retrospective" }).click();
   await expect(page).toHaveURL(/\/operate$/);
   await expect(page.locator(".facility-row")).toHaveCount(18);
 });
