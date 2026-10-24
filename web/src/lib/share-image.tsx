@@ -9,7 +9,7 @@ export const renderShareImage = async (): Promise<Response> => {
   const [{ snapshot }, displayFont, bodyFont, stormImage] = await Promise.all([
     readSnapshot(),
     readFile(path.join(process.cwd(), "node_modules/@fontsource/libre-baskerville/files/libre-baskerville-latin-400-normal.woff")),
-    readFile(path.join(process.cwd(), "node_modules/@fontsource/alegreya-sans/files/alegreya-sans-latin-400-normal.woff")),
+    readFile(path.join(process.cwd(), "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff")),
     readFile(path.join(process.cwd(), "public/weather/milton-2024-nasa.jpg")),
   ]);
   const { project, paths } = createProjection(snapshot.warning_geometry, snapshot.facilities, "facilities");
@@ -23,9 +23,9 @@ export const renderShareImage = async (): Promise<Response> => {
       </div>
       <div style={{ display: "flex", flex: 1, paddingTop: 32, gap: 32 }}>
         <div style={{ display: "flex", flexDirection: "column", width: 540 }}>
-          <span style={{ fontSize: 14, color: colors.muted, letterSpacing: "2px" }}>HURRICANE MILTON / RETROSPECTIVE 2024</span>
-          <span style={{ fontFamily: "BaskervilleStudy", fontSize: 52, letterSpacing: "-3px", lineHeight: 1.15, marginTop: 24, marginBottom: 14 }}>Storm warning. Clear first call.</span>
-          <span style={{ fontSize: 23, color: colors.accent, marginBottom: 24 }}>Dialysis centers. Nursing homes. A sourced call sheet.</span>
+          <span style={{ fontSize: 14, color: colors.muted, letterSpacing: "2px" }}>ONE US COUNTY / ONE RUN</span>
+          <span style={{ fontFamily: "BaskervilleStudy", fontSize: 52, letterSpacing: "-3px", lineHeight: 1.15, marginTop: 24, marginBottom: 14 }}>Pick any US county.</span>
+          <span style={{ fontSize: 23, color: colors.accent, marginBottom: 24 }}>The rows below are the Hurricane Milton walkthrough.</span>
           {snapshot.facilities.slice(0, 3).map(row => (
             <div key={row.id} style={{ display: "flex", alignItems: "center", gap: 16, borderTop: `1px solid ${colors.surface}`, padding: "14px 0", color: row.rank === 1 ? colors.accent : colors.text }}>
               <span style={{ fontSize: 23, width: 30 }}>{String(row.rank).padStart(2, "0")}</span>
@@ -35,7 +35,7 @@ export const renderShareImage = async (): Promise<Response> => {
           ))}
         </div>
         <div style={{ display: "flex", flexDirection: "column", width: 440, borderLeft: `1px solid ${colors.muted}`, paddingLeft: 24 }}>
-          <span style={{ color: colors.accent, fontSize: 15, marginBottom: 14 }}>HURRICANE MILTON / NASA / OCT 8, 2024</span>
+          <span style={{ color: colors.accent, fontSize: 15, marginBottom: 14 }}>SAVED EXAMPLE / HURRICANE MILTON / OCT 8, 2024</span>
           <img src={`data:image/jpeg;base64,${stormImage.toString("base64")}`} width={408} height={170} style={{ width: 408, height: 170, objectFit: "cover", flexShrink: 0 }} alt="Archived NASA satellite image of Hurricane Milton" />
           <svg width="408" height="110" viewBox="0 0 600 400" style={{ background: colors.surface, marginTop: 12, flexShrink: 0 }}>
             <defs><clipPath id="share-clip"><rect width="600" height="400" /></clipPath></defs>
@@ -47,8 +47,8 @@ export const renderShareImage = async (): Promise<Response> => {
               })}
             </g>
           </svg>
-          <span style={{ marginTop: 18, fontSize: 20, color: colors.accent }}>{snapshot.counts.ranked_rows} ranked / {snapshot.counts.refused_rows} refused</span>
-          <span style={{ marginTop: 10, fontSize: 16, lineHeight: 1.4, color: colors.muted }}>Actual source geometry. Not live radar or current conditions.</span>
+          <span style={{ marginTop: 18, fontSize: 20, color: colors.accent }}>{snapshot.counts.ranked_rows} ranked / {snapshot.counts.refused_rows} refused in this example</span>
+          <span style={{ marginTop: 10, fontSize: 16, lineHeight: 1.4, color: colors.muted }}>Saved example geometry. A county run returns its own rows and gaps.</span>
         </div>
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", fontSize: 15, paddingTop: 18, borderTop: `1px solid ${colors.muted}`, color: colors.muted }}>
