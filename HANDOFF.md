@@ -3,10 +3,12 @@ Updated: Wed Oct 21 2026 8:20 PM ET   Target submit: Mon Oct 26 6 PM ET   Judgin
 
 How work moves between agents. If an area's primary stalls or runs out of quota, its backup reads that area's section and picks up from "next step". Edit only your own area's section. Never commit secrets; env var names only.
 
+Work from origin/ branches or your own worktree; do not rely on the shared clone's local branch names.
+
 ## Gates
 | Gate | Due | Status | Note |
 |---|---|---|---|
-| G1 Contract commit lands | Wed Oct 21, 9 PM ET | open | Cursor cloud agent on `contract/initial` |
+| G1 Contract commit lands | Wed Oct 21, 9 PM ET | open | Delivered by Devin's PR #14 (https://github.com/JoeProAI/porch-light/pull/14) on `contract/initial`; H1 validator fix in commit 83a6afd; Wringer-passed; not yet merged |
 | G2 Zetaris local on the 5080 | Thu Oct 22, 10 AM ET | open | |
 | G3 Local Nemotron via Meterless | Thu Oct 22, noon ET | open | |
 | G4 US golden path green | Sat Oct 24, 1 PM ET | open | |
@@ -21,7 +23,7 @@ How work moves between agents. If an area's primary stalls or runs out of quota,
 |---|---|---|---|---|
 
 ## Decisions
-- 2026-10-21: Repo created private after the window opened; first commit is the compliance kit, contract follows from Cursor.
+- 2026-10-21: Repo created private after the window opened; first commit is the compliance kit. Devin wrote the contract (PR #14). Cursor is credited for the .cursor/rules/ files and the web and data cloud agents (per .cursor/rules/sponsors.mdc at 362e1c8).
 
 ## Area: Contract
 owner now: Devin  (primary Joe in Cursor, backup Devin; Devin took over as backup while Joe was on other gates)
@@ -95,12 +97,13 @@ last update: Wed Oct 21 2026 8:20 PM ET
 
 ## Area: Front matter and ops
 owner now: Hackathon Desk  (primary Hackathon Desk, backup Devin)
-state: not started
-next step: see your CREW brief
-branch: desk/ops-*   open PRs: none
-how to run: n/a
-blocked: none
-last update: Wed Oct 21 2026 8:20 PM ET
+state: in progress
+next step: (1) verify metadata.json field names against the HackOS submission form (behind Joe's login); current keys follow the community draft schema, not an official format. (2) Confirm the NIM model id for Nemotron 3.5 Embed 1B (still marked TODO in metadata.json). (3) Fill the "where" paths in metadata.json and DECLARED_PREEXISTING.md as the build lands. (4) Set demo_url once a demo is hosted (empty string for now).
+branch: desk/frontmatter-fixes   open PRs: see PR "Front matter: add built_window/demo_url, Zetaris declaration, handoff update"
+how to run: metadata.json validates against metadata.schema.json (demo_url and built_window added to the schema)
+note: the contract was written by Devin (PR #14), not Cursor. metadata.json sponsors.cursor how and where are TODO placeholders now. Joe needs to settle real Cursor evidence (run links, usage CSV) and attribution before submission. README.md and metadata.json now credit Cursor per .cursor/rules/sponsors.mdc (362e1c8): .cursor/rules/ files plus the web UI and data backup cloud agents. .cursor/rules/ lands on main with PR #14. Cursor run links, models and the usage CSV are still owed.
+blocked: HackOS field names need Joe's login (screenshot of the submission form or Setup Guide)
+last update: Wed Oct 21 2026 8:35 PM ET
 
 ## Area: Deck, script, explanation
 owner now: Hackathon Desk  (primary Hackathon Desk, backup Claude Code)
