@@ -53,3 +53,8 @@ Checks: `python -m unittest engines.test_grounded_drafts engines.test_national e
 The MapLibre integration uses IEM NEXRAD tiles and a separate scan clock. `python -m engines.radar_assets --register` captures the real clock and registers its read-only source projection once. Runtime asset batches capture up to forty allowlisted source keys, publish immutable hashes/paths, then read them through Zetaris. The app verifies bytes and provenance again before serving local PNGs. No browser reads radar or scan data directly from the upstream provider. Source caches last at most five minutes; missing assets fail visibly without replacement echoes.
 
 Tile capture time isn't observation time. Relative layer offsets aren't verified per-tile scan timestamps. The separate NOAA observation loop retains its own source capture and audit. External OpenFreeMap basemap tiles are cartographic reference, not facility conditions or hazard evidence.
+
+## OpenRouter Nemotron backup (optional, capped)
+
+Meterless Nightshift remains the only primary model path. When `PORCHLIGHT_OPENROUTER_BACKUP=call_script` and `OPENROUTER_API_KEY` are set in a gitignored `.env.local`, a failed Meterless call-script request may retry once through OpenRouter using `nvidia/nemotron-3.5-lightning-30b-a3b`. `explanation_batch` / the national sweep stay on free NVIDIA only. Hard ceiling: `OPENROUTER_MAX_SPEND_USD` (Joe set 5). Spend ledger: `~/.porchlight/openrouter-spend/ledger.jsonl`. Code: `engines/openrouter_backup.py`.
+

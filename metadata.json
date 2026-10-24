@@ -55,22 +55,19 @@
       ]
     },
     "meterless": {
-      "status": "planned",
-      "how": "Meterless is the only model path: the app talks to one OpenAI-compatible base URL on Meterless Runtime (Nightshift), routing meterless/deep, fast and local. Scout Intent guards the export and signs an execution contract; H-MEM with TrustLedger remembers measured join outcomes and links every claim to fact and query ids; a minimal World Model holds alert, area, check-in, network and provider state. Markovian and Swarm are not used. Optional OpenRouter Nemotron backup exists for call_script only when OPENROUTER_API_KEY and PORCHLIGHT_OPENROUTER_BACKUP are set; Meterless remains primary; OPENROUTER_MAX_SPEND_USD hard-caps paid spend; OpenRouter is not a scoring sponsor.",
-      "engines": [
-        "Scout Intent",
-        "H-MEM",
-        "World Model"
-      ],
+      "status": "working",
+      "how": "Meterless Nightshift is the primary model path (meterless/deep to Nemotron). Optional OpenRouter Nemotron backup for call_script only when OPENROUTER_API_KEY and PORCHLIGHT_OPENROUTER_BACKUP are set; OPENROUTER_MAX_SPEND_USD hard-caps paid spend (Joe set 5). OpenRouter is not a scoring sponsor. Scout Intent engine claim belongs to PR #38 on web-manatee, not this engines PR. H-MEM, World Model and Markovian are not implemented.",
+      "engines": [],
       "provider": "nightshift",
       "where": [
-        "TODO: engines/ paths after build",
+        "engines/grounded_drafts.py",
         "engines/openrouter_backup.py",
-        "engines/grounded_drafts.py"
+        "engines/model_budget.py",
+        "engines/meterless.py"
       ],
       "evidence": [
-        "TODO: contract hash on the call sheet, TrustLedger entries, offline unplug beat",
         "engines/test_openrouter_backup.py",
+        "engines/snapshots/manatee-zetaris.json",
         "~/.porchlight/openrouter-spend/ledger.jsonl"
       ],
       "decisions": [
@@ -98,24 +95,20 @@
       "decisions": []
     },
     "nvidia": {
-      "status": "planned",
-      "how": "Nemotron is the only model family in the runtime path. It proposes join paths and writes every call-first explanation and call script (it never ranks; a fixed formula does). Super VL and Lightning run on NIM through Meterless; Nano 9B v2 and Nano 4B run locally on the RTX 5080 for EOC snapshot mode; Content Safety screens scripts; Parse splits the county plan PDF.",
+      "status": "working",
+      "how": "Nemotron is the only model family on the runtime path via Meterless. Hosted Lightning and Super VL are attested on Meterless receipts. OpenRouter backup, when enabled, also calls Nemotron only. Local Nano offline proof and Content Safety / Parse are not claimed in this PR.",
       "models": [
         "nvidia/nemotron-3.5-super-vl-120b-a12b",
-        "nvidia/nemotron-3.5-lightning-30b-a3b",
-        "Nemotron Nano 9B v2 (local, GGUF)",
-        "Nemotron 3 Nano 4B (local, GGUF)",
-        "Nemotron 3.5 Embed 1B (TODO: confirm NIM model id)",
-        "nvidia/nemotron-3.5-content-safety",
-        "nvidia/nemotron-parse-2.0",
-        "nvidia/nemotron-4-340b-reward"
+        "nvidia/nemotron-3.5-lightning-30b-a3b"
       ],
       "route": "via-meterless",
       "where": [
-        "TODO: engines/model_client/ after build"
+        "engines/grounded_drafts.py",
+        "engines/openrouter_backup.py"
       ],
       "evidence": [
-        "TODO: trace panel and Who answered badge, local vs cloud eval results"
+        "engines/test_openrouter_backup.py",
+        "~/.porchlight/model-budget/"
       ],
       "decisions": []
     }
