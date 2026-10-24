@@ -1,4 +1,4 @@
-# Porch Light
+﻿# Porch Light
 
 Care-facility outreach with sourced contacts, inspectable reasons and visible unknowns.
 
@@ -59,3 +59,8 @@ Porch Light uses only public, facility-level and aggregate data. It holds no per
 ## License
 
 AGPL-3.0. See LICENSE and NOTICE. Pre-existing components are listed in DECLARED_PREEXISTING.md.
+
+## Sponsor setup checklist
+
+Correct sponsor endpoints, model ids, eligibility gaps and prize notes: [SPONSOR-SETUP.md](SPONSOR-SETUP.md). Local env placeholders: [.env.example](.env.example).
+
