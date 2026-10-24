@@ -78,7 +78,7 @@ Raw sources, county checkpoints, exact audit IDs and model receipts remain in th
 The original Robertson County, Texas run, FIPS `48395`, failed to open its Zetaris JDBC transport after 26.992 seconds.
 That failure remains unchanged and is included in the first-pass results above.
 A separate audited retry completed in 18.637 seconds with three source rows, two ranked facilities and one `census_address_match_not_exact` refusal.
-Its seven distinct closed audit IDs are `22533`, `22538`, `22546`, `22550`, `22553`, `22558` and `22561`.
+Its seven distinct closed statement receipts remain in the private evidence capture.
 
 After that explicitly separate recovery, all 3,235 counties have completed an audited chain at least once.
 There are 2,491 counties with ranked rows and 2,882 with CMS rows after recovery.
@@ -93,7 +93,7 @@ A fresh audited check selected at 9:46:22 PM ET used the NWS capture from 9:43:0
 The immutable national source capture was unchanged.
 All 535 mapped active-alert counties in that check have successful first-pass source chains in this full sweep.
 There were 196 mapped alerts and 187 alerts without supported source-zone mappings; none received guessed counties.
-The separate catalog, weather and mapping audit IDs are `23638`, `23643` and `23644`.
+The catalog, weather and mapping reads have three separate closed audit receipts retained privately.
 This check has its own timestamp and doesn't relabel the original frozen 639-county alert scope as current.
 
 The later model phase is running across 1,544 batches covering the original sweep's 15,440 ranked rows.
