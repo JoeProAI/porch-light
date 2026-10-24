@@ -1,0 +1,84 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "maple",
+  "name": "Porch Light",
+  "description": "Who to call first when a storm warning drops — local Zetaris, Meterless, and Nemotron on a night desk.",
+  "colors": {
+    "primary": "#f2a93b",
+    "light": "#ffb547",
+    "dark": "#05070b"
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": true
+  },
+  "background": {
+    "color": {
+      "light": "#f3eee3",
+      "dark": "#05070b"
+    }
+  },
+  "logo": {
+    "light": "/logo/logo-light.svg",
+    "dark": "/logo/logo-dark.svg",
+    "href": "/"
+  },
+  "favicon": "/logo/favicon.svg",
+  "fonts": {
+    "heading": {
+      "family": "Libre Baskerville",
+      "weight": 700
+    },
+    "body": {
+      "family": "IBM Plex Sans",
+      "weight": 400
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/JoeProAI/porch-light"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Local run",
+      "href": "/local-run"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/JoeProAI/porch-light"
+    }
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get started",
+        "pages": [
+          "index",
+          "local-run",
+          "manatee-walkthrough",
+          "nationwide",
+          "limits"
+        ]
+      },
+      {
+        "group": "Sponsors",
+        "pages": [
+          "sponsors"
+        ]
+      }
+    ]
+  },
+  "styling": {
+    "eyebrows": "breadcrumbs",
+    "codeblocks": {
+      "theme": {
+        "light": "github-light",
+        "dark": "github-dark"
+      }
+    }
+  }
+}
