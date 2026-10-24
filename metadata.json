@@ -42,12 +42,16 @@
       "decisions": []
     },
     "cursor": {
-      "status": "planned",
-      "how": "This web implementation was authored by Devin. Genuine Cursor build evidence is missing from this checkout; a rules folder on a separate contract branch does not establish eligibility.",
+      "status": "in-progress",
+      "how": "Cursor cloud agents authored merged Storm Watch PR #22 and open national-web PR #24. Devin integrated this branch and wrote the data adapters, engines, and the rest of the web. No token count or spend is recorded.",
       "models": [],
-      "surfaces": [],
-      "where": [],
-      "evidence": [],
+      "surfaces": ["background-agents"],
+      "where": [".cursor/rules/", "ops/build-log/cursor/"],
+      "evidence": [
+        "https://github.com/JoeProAI/porch-light/pull/22",
+        "https://github.com/JoeProAI/porch-light/pull/24",
+        "ops/build-log/cursor/README.md"
+      ],
       "decisions": []
     },
     "nvidia": {

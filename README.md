@@ -36,7 +36,11 @@ The call sheet renders from committed real-source snapshots without live data cr
 | Zetaris | `engines/zetaris_chain.py`, `engines/zetaris_client.py` | Seven independently audited statements, including CMS/Census/SVI/emPOWER joins and SQL-measured match counts. The source relations share one physical read-only PostGIS datasource; spatial predicates stay in PostGIS. |
 | Meterless | `engines/meterless.py`, snapshot `model_executions` | One stored `meterless/deep` execution routed a genuine Nemotron response with thinking disabled. No Scout Intent, H-MEM or World Model implementation is claimed. |
 | NVIDIA Nemotron | `engines/snapshots/manatee-zetaris.json` | One stored Super VL execution produced three explanation drafts. The audited snapshot reused them after input equality checks. Other rows have computed reasons. Nemotron does not rank, and local GPU inference is not verified. |
-| Cursor | Build evidence missing from this checkout | This web implementation was authored by Devin. Rules on a separate contract branch are not evidence of a Cursor build. Eligibility evidence must be produced through genuine Cursor work. |
+| Cursor | `.cursor/rules/`, `ops/build-log/cursor/` | Partial. Merged [PR #22](https://github.com/JoeProAI/porch-light/pull/22) is the Storm Watch chart in this branch. Open [PR #24](https://github.com/JoeProAI/porch-light/pull/24) (`cursor/national-web`) is not merged here. No token or spend total is recorded. |
+
+## Cursor
+
+Cursor cloud agents authored two recorded pull requests. [PR #22](https://github.com/JoeProAI/porch-light/pull/22) merged the MapLibre Storm Watch chart into this branch. [PR #24](https://github.com/JoeProAI/porch-light/pull/24) is the open `cursor/national-web` branch and is not in this checkout. Devin wrote the data adapters, the engines, and the rest of the integrated web branch. Links, agent pages, and the limits of that evidence are in `ops/build-log/cursor/README.md`. Agent rules for this repo are in `.cursor/rules/`. This repository does not record Cursor token counts or spend.
 
 ## Feature to engine
 
@@ -50,7 +54,7 @@ External resources, including emPOWER, are complementary systems, not partners o
 
 ## Submission Gaps
 
-The video, slide deck and written submission explanation are not packaged here. Cursor build evidence, a measured operator baseline and release/deployment review remain outstanding. Nationwide source loading, county/live-alert execution and a measured coverage sweep are the current implementation target, not completed coverage claims. International facility ranking, shared multi-operator coordination and live facility conditions are not implemented.
+The video, slide deck and written submission explanation are not packaged here. Cursor evidence is partial and recorded in `ops/build-log/cursor/README.md`. A measured operator baseline and release/deployment review remain outstanding. Nationwide source loading, county/live-alert execution and a measured coverage sweep are the current implementation target, not completed coverage claims. International facility ranking, shared multi-operator coordination and live facility conditions are not implemented.
 
 ## Privacy
 

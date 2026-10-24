@@ -1,0 +1,12 @@
+---
+description: Runtime model calls stay on Meterless and NVIDIA Nemotron.
+alwaysApply: true
+---
+
+# Runtime models
+
+- The only runtime model path is Meterless routing NVIDIA Nemotron.
+- Do not add another provider, a direct provider endpoint, a paid backup, or a second model family.
+- Thinking stays disabled. Nemotron does not rank facilities.
+- A missing or failed draft stays missing. Do not fill it with computed prose.
+- Local GPU inference is not a claim unless a run on this machine produced it.

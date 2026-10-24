@@ -1,0 +1,11 @@
+---
+description: Keep nationwide facility gaps visible. Weather coverage is not facility coverage.
+alwaysApply: true
+---
+
+# Nationwide gaps
+
+- Storm Watch and captured weather do not establish national facility coverage.
+- When a county or alert has no audited source intersection, show the gap. Do not substitute Manatee or any other county.
+- A loading sweep, a partial catalog, or an unmerged branch is not completed national coverage.
+- Ranked rows keep the source facts that were actually joined. Unknowns stay on screen.
