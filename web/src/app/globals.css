@@ -413,6 +413,10 @@ a:hover, summary:hover { color: var(--ink); }
   .facility-list { max-height: none; overflow: visible; }
   .facility-name { font-size: 12px; }
   .facility-row[aria-pressed="true"], .facility-row[data-porch="true"] { background: transparent; color: #111; box-shadow: none; }
+  .facility-row[aria-pressed="true"] .rank,
+  .facility-row[aria-pressed="true"] .score,
+  .facility-row[aria-pressed="true"][data-porch="true"] .rank,
+  .facility-row[aria-pressed="true"][data-porch="true"] .score { color: #111; }
   .facility-row[data-rank="1"] { box-shadow: inset 8px 0 0 #111; }
   .facility-row[data-rank="1"] .rank::after { content: " FIRST"; font-family: var(--body); font-size: 9pt; letter-spacing: .12em; }
   .facility-row::before, .score-bar, .selection-label { display: none; }
