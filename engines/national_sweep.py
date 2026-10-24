@@ -4,6 +4,7 @@ import argparse
 import csv
 import json
 import random
+import shutil
 import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -33,6 +34,15 @@ def classify(snapshot: dict) -> str:
     if snapshot["counts"]["ranked_rows"]:
         return "complete_with_ranked_rows"
     return "complete_no_rankable_rows" if snapshot["counts"]["source_rows"] else "complete_no_matching_source_rows"
+
+
+def paused_before_provider(snapshot: dict) -> bool:
+    histories = [attempt for row in snapshot.get("facilities", [])
+                 for attempt in (row["evidence"].get("model_explanation") or {}).get("attempts", [])]
+    return (not snapshot.get("model_executions") and bool(histories)
+            and all(attempt.get("status") == "failed_before_provider_call"
+                    and attempt.get("reason") == "Model calls are blocked by a retained provider/cost policy violation"
+                    for attempt in histories))
 
 
 def unassigned(capture: str) -> dict:
@@ -91,6 +101,11 @@ def execute(folder: Path, sample: int, seed: int, all_counties: bool, workers: i
             if snapshot.get("source_snapshot_hash") != capture:
                 raise RuntimeError("A cached county artifact belongs to another source capture")
             return fips, snapshot
+        failed = folder / f"failure-{fips}.json"
+        if failed.exists():
+            if not verify(failed):
+                raise RuntimeError("A retained county failure failed its checksum")
+            return fips, json.loads(failed.read_text())
         begin = time.monotonic()
         try:
             snapshot = run_county(fips, capture)
@@ -142,7 +157,15 @@ def execute(folder: Path, sample: int, seed: int, all_counties: bool, workers: i
             if path.exists():
                 if not verify(path):
                     raise RuntimeError("A model batch checkpoint failed its checksum")
-                return batch, json.loads(path.read_text())
+                cached = json.loads(path.read_text())
+                if not paused_before_provider(cached):
+                    return batch, cached
+                archive = folder / "paused-before-provider"
+                archive.mkdir(exist_ok=True)
+                for file in (path, path.with_name(path.name + ".provenance.json")):
+                    target = archive / file.name
+                    if not target.exists():
+                        shutil.copyfile(file, target)
             enriched = enrich({"facilities": [row for _, row in batch]}, folder.name + f":batch:{index}")
             save(path, enriched)
             return batch, enriched

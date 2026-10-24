@@ -1,9 +1,11 @@
 import unittest
 import tempfile
+import json
 from pathlib import Path
 from shutil import copyfile
 
 from engines.sweep_report import markdown, percentile, verified
+from engines.national_sweep import paused_before_provider
 
 
 class SweepSummaryTests(unittest.TestCase):
@@ -28,6 +30,21 @@ class SweepSummaryTests(unittest.TestCase):
             target.write_bytes(target.read_bytes() + b"\n")
             with self.assertRaisesRegex(ValueError, "checksum"):
                 verified(target)
+
+    def test_only_work_without_a_provider_attempt_can_resume_after_output_pause(self):
+        source = json.loads((Path(__file__).parent / "snapshots/manatee-zetaris-chain.json").read_text())
+        row = source["facilities"][0]
+        row["evidence"]["model_explanation"] = {"attempts": [{
+            "status": "failed_before_provider_call",
+            "reason": "Model calls are blocked by a retained provider/cost policy violation",
+        }]}
+        checkpoint = {"facilities": [row], "model_executions": []}
+        self.assertTrue(paused_before_provider(checkpoint))
+        checkpoint["model_executions"] = source["model_executions"][:1]
+        self.assertFalse(paused_before_provider(checkpoint))
+        checkpoint["model_executions"] = []
+        row["evidence"]["model_explanation"]["attempts"][0]["status"] = "failed"
+        self.assertFalse(paused_before_provider(checkpoint))
 
 
 if __name__ == "__main__":
