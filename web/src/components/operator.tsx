@@ -28,6 +28,8 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
   const storageKey = `porch-light:contacts:v1:${snapshot.source_snapshot_hash}${national ? ":" + (snapshot.selected_alert?.id ?? snapshot.county.fips) : ""}`;
   const row = snapshot.facilities.find(item => item.id === selectedId);
   const recorded = snapshot.facilities.filter(item => contacts[item.id] && contacts[item.id].status !== "uncontacted").length;
+  // Model polling replaces row objects, but shouldn't reset the operator's selected call.
+  const facilityScope = snapshot.facilities.map(item => `${item.id}:${item.rank}`).join("|");
 
   useEffect(() => {
     try {
@@ -46,7 +48,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
     window.addEventListener("online", updateConnection);
     window.addEventListener("offline", updateConnection);
     return () => { window.clearInterval(timer); window.removeEventListener("online", updateConnection); window.removeEventListener("offline", updateConnection); };
-  }, [snapshot.facilities, storageKey, initialEvidenceOpen, initialRank]);
+  }, [facilityScope, storageKey, initialEvidenceOpen, initialRank]);
 
   const selectRow = (id: string) => {
     setSelectedId(id);

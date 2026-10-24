@@ -17,6 +17,7 @@ const engineRoot = () => process.env.PORCHLIGHT_ENGINE_ROOT ?? path.resolve(proc
 const record = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 
+<<<<<<< HEAD
 export class NationalEngineError extends Error {
   readonly unreachable: boolean;
   constructor(message: string, unreachable: boolean) {
@@ -38,6 +39,14 @@ const runPython = async (args: string[], timeout: number): Promise<string> => {
     const unreachable = failed.code === "ENOENT" || failed.code === "ETIMEDOUT" || looksUnreachable(detail);
     throw new NationalEngineError(unreachable ? UNREACHABLE_MESSAGE : "The verified national operation failed. No substitute data was returned.", unreachable);
   }
+=======
+const command = async (args: string[], timeout = 190000): Promise<unknown> => {
+  const { stdout } = await execute(python(), ["-m", "engines.national_jobs", ...args], {
+    cwd: engineRoot(), timeout, maxBuffer: 48 * 1024 * 1024, windowsHide: true,
+    encoding: "utf8",
+  });
+  return JSON.parse(stdout) as unknown;
+>>>>>>> origin/devin/web-manatee
 };
 
 const command = async (args: string[]): Promise<unknown> => JSON.parse(await runPython(["-m", "engines.national_jobs", ...args], 190000)) as unknown;
@@ -149,12 +158,18 @@ export const readNationalRun = async (id: string): Promise<unknown> => {
     throw new Error("No verified local run checkpoint is available");
   }
   if (!record(status) || status.id !== id || typeof status.phase !== "string") throw new Error("Invalid run checkpoint");
-  if (status.phase !== "completed") return status;
-  const result = await readVerified(path.join(root, id, "snapshot.json"));
-  return { ...status, snapshot: validateResult(result.value), provenance: result.provenance };
+  if (!["grounding_nemotron_drafts", "completed", "failed"].includes(status.phase)) return status;
+  try {
+    const result = await readVerified(path.join(root, id, "snapshot.json"));
+    return { ...status, snapshot: validateResult(result.value), provenance: result.provenance };
+  } catch {
+    if (status.phase === "completed") throw new Error("The completed source result failed verification");
+    return status;
+  }
 };
 
 export const requestCallScript = async (ccn: string, run?: string): Promise<unknown> => {
   if (!/^[0-9A-Z]{6}$/.test(ccn) || run && !validRun(run)) throw new Error("Invalid verified facility/run reference");
-  return command(["--call-script", ccn, ...(run ? ["--source-run", run] : [])]);
+  // Both bounded provider attempts must finish so the sole retry and its receipt survive a slow route.
+  return command(["--call-script", ccn, ...(run ? ["--source-run", run] : [])], 420000);
 };

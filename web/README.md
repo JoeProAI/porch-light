@@ -10,3 +10,13 @@
 - The original animated radar loop covers the contiguous US. Night/light maps use unaltered NOAA transparent frames and official legend for available CONUS, Alaska, Hawaii, Caribbean and Guam provider regions. Census boundaries and NWS polygons share EPSG:4326 with the source images. Coverage can have gaps; blank pixels aren't proof of safety.
 - Main-page sponsor roles link to actual row/model evidence. Independent resource links open public informational pages, not connected accounts or partner integrations. National weather discovery doesn't establish national care-facility ranking. No public deployment or continuous hosting is configured.
 - Geographic controls use Census state/territory names, source-polygon alert fitting, cursor-centered zoom, keyboard pan and an expandable map. Radar can be hidden to read the chart. Geographic zoom doesn't increase the source radar's resolution. No satellite provider or unsourced geographic imagery is loaded.
+
+## Nationwide Operator Workflow
+
+- `/nationwide` searches the audited 3,235-entry county catalog by name, state abbreviation or FIPS. Ambiguous names require an explicit selection. Names with diacritics can be searched without accents.
+- County discovery and captured active-alert runs execute the national Zetaris chain. Neither substitutes the Manatee demonstration. Official alert polygons or source zone mappings determine inclusion, not place-name guesses.
+- The verified call sheet appears as soon as the source chain finishes, before model processing completes. A model failure doesn't replace the ranking or hide an already verified source result.
+- Unmapped alerts return an audited source gap with no facilities invented. Missing joins and excluded source rows remain explicit refusals.
+- Ranked facilities can request a grounded live call script. Runtime remains Meterless plus Nemotron on the approved free NVIDIA route, with a shared 2,000-attempt cap including retries. Provider failures and budget omissions are not successful drafts.
+- Call scripts show retained attempt IDs, failure reasons, the linked sole retry and available route/cost receipts. The local worker allows both bounded provider attempts to finish rather than terminating the retry at the catalog timeout. Model polling preserves the operator's selected facility.
+- Use `PORCHLIGHT_ENGINE_ROOT` for the engine worktree, or run from the integrated repository with its `engines` module. Jobs and provenance-checked snapshots remain under `%USERPROFILE%/.porchlight/national/jobs`, outside Git.
