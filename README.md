@@ -34,7 +34,7 @@ The call sheet renders from committed real-source snapshots without live data cr
 | Sponsor | Where it's used | How |
 |---|---|---|
 | Zetaris | `engines/zetaris_chain.py`, `engines/zetaris_client.py` | Seven independently audited statements, including CMS/Census/SVI/emPOWER joins and SQL-measured match counts. The source relations share one physical read-only PostGIS datasource; spatial predicates stay in PostGIS. |
-| Meterless | `engines/meterless.py`, snapshot `model_executions` | One stored `meterless/deep` execution routed a genuine Nemotron response with thinking disabled. No Scout Intent, H-MEM or World Model implementation is claimed. |
+| Meterless | `engines/meterless.py`, `engines/scout_intent.py`, snapshot `model_executions` | Runtime: one stored `meterless/deep` execution routed a genuine Nemotron response with thinking disabled. Engine: Scout Intent gates the live call-script path with a signed execution contract that the draft executor verifies before any provider call (see `engines/README.md`, Scout Intent gate). H-MEM, World Model and Markovian are not claimed. |
 | NVIDIA Nemotron | `engines/snapshots/manatee-zetaris.json` | One stored Super VL execution produced three explanation drafts. The audited snapshot reused them after input equality checks. Other rows have computed reasons. Nemotron does not rank, and local GPU inference is not verified. |
 | Cursor | Build evidence missing from this checkout | This web implementation was authored by Devin. Rules on a separate contract branch are not evidence of a Cursor build. Eligibility evidence must be produced through genuine Cursor work. |
 
