@@ -15,15 +15,15 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
   openGraph: {
     title: "Porch Light | Pick any US county.",
-    description: "Run one US county or one active weather alert. The call sheet is that run's audited rows and source gaps. The Hurricane Milton walkthrough remains the saved example.",
+    description: "Run one US county or one active weather alert. The call sheet is that run's audited rows and source gaps.",
     url: "https://porchlight.earth",
     type: "website",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Porch Light. Pick any US county. The saved example is the Hurricane Milton walkthrough." }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Porch Light. Pick any US county. One run, audited rows, source gaps." }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Porch Light | Pick any US county.",
-    description: "One county or one active alert per run. Audited rows, source gaps, and query IDs from that run. Hurricane Milton is the saved walkthrough.",
+    description: "One county or one active alert per run. Audited rows and source gaps from that run.",
     images: ["/twitter-image"],
   },
 };

@@ -56,7 +56,7 @@ On Windows, `.\Start-Local.ps1` from the repository root starts that built app w
 
 ## Usage
 
-1. `/` explains the project, sponsors, and independent emergency resources. **Pick any US county** opens the national run. **See the Hurricane Milton walkthrough** opens the saved Manatee demonstration.
+1. `/` explains the project, sponsors, and independent emergency resources. **Pick any US county** opens the national run. A footer text link, **Hurricane Milton retrospective**, opens the saved Manatee demonstration.
 2. `/operate` is the Manatee sheet. Select a facility and read source facts, score terms, and the audit reference. Record a contact outcome, export CSV, or print.
 3. `/nationwide` searches the Census county catalog by name, state, or FIPS, and lists active NWS alerts from the audited feed. A county job or a combined alert job runs through `engines.national_jobs`. The page shows job progress, the ranked sheet, Zetaris query IDs, and per-source gaps. `/operate?county=<FIPS>` opens that nationwide run. A FIPS or alert id that fails validation does not load the Manatee sheet.
 4. On a national row, **Generate live Nemotron call script** is classified by Scout Intent first. A proceed decision issues a signed execution contract; the draft executor verifies it before that job id is sent through Meterless. A refusal returns `refused_by_scout` and shows no substitute script. Grounding failures stay visible. `/operate` can request a script for the stored Manatee snapshot.
