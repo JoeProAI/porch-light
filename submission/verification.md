@@ -1,53 +1,55 @@
 # Submission documentation verification
 
-This file records checks for the October 24, 2026 morning refresh of the submission materials. Product results stay in the linked reports. This pass did not create new county runs, model drafts, receipts, or spend.
+This file records checks for the October 24, 2026, 9:51 AM ET refresh of the submission materials. Product results stay in the linked reports. This pass did not create new county runs, model drafts, receipts, or spend. It read the private sweep directory and counted files; it did not modify that directory.
 
-## What changed, and what was left
+## What changed
 
-`submission/README.md`, `submission/written-submission.md`, `submission/demo-script.md`, and this file replace the county and model figures from pull request #27.
+`submission/README.md`, `submission/written-submission.md`, `submission/demo-script.md`, and this file replace the county and model figures from pull requests #27 and #41. `SPONSOR-SETUP.md`, `metadata.json`, `docs/sponsors.mdx`, `docs/local-run.mdx`, `docs/limits.mdx`, and `HANDOFF.md` were edited to carry the same claim language and the same numbers.
 
-Withdrawn from the narrative, and not current totals:
+Withdrawn, and not current totals:
 
-- Withdrawn claim: "All 3,235 counties completed an audited chain at least once."
-- Withdrawn claim: the reconciliation baseline of 1,290 accepted drafts, 340 exhausted failures, and 1,380 pause batches. Those counts are not a live total and are not a resume baseline.
+- From #27: the reconciliation baseline of 1,290 accepted drafts, 340 exhausted failures, and 1,380 pause batches.
+- From #41: "about 3,153 of 3,235 unique FIPS have runs" and "Connecticut and U.S. territories are skipped." The private sweep directory contains 3,234 county checkpoints plus the retained Robertson failure and its separate retry, and 200 of those checkpoints carry Connecticut planning-region or territory FIPS prefixes. The #41 figure's origin was not found in this pass.
+- From #41: the withdrawal of the October 23 report's closing sentence. That sentence, "all 3,235 counties have completed an audited chain at least once," matches the directory count and stands.
 
-Replacement figures, cited as an operator snapshot rather than a new measurement in this checkout:
+Replacement figures, counted in `%USERPROFILE%\.porchlight\national\sweeps\20261023T200048Z-78a426ba` at 9:51 AM ET while the sweep worker was still writing:
 
-- Source sweep planner `remaining` 0. About 3,153 of 3,235 unique FIPS with runs. 2,491 with facilities. Connecticut and U.S. territories skipped.
-- Model sweep `20261023T200048Z-78a426ba`, phase `grounded_drafts`, about 649 of 1,545 `completed_batches` as of about 6:38 AM ET. `known_actual_usd` 0. `paid_fallback_enabled` false.
+- Source phase: 3,234 `county-*.json` checkpoints, `failure-48395.json`, `source-retries/county-48395-attempt-2.json`. 3,235 of 3,235 source-audited at least once. 2,490 first-pass counties with ranked rows, 2,491 after the retry.
+- `progress.json`: phase `grounded_drafts`, `completed_batches` 1,282, `total_batches` 1,545, `approved_attempts` 2,000, `reserved_attempts` 1,621, `completed_records` 1,616, `unresolved_reservations` 5, `known_actual_usd` 0, `paid_fallback_enabled` false.
+- 1,544 `model-batch-*.json` files: 15,438 facility rows, 1,386 model executions (1,242 `grounding_passed`, 144 `failed`), `accepted_facilities` 12,418, `unresolved_facilities` 3,020, `not_attempted_budget` 0, `unknown_cost_receipts` 28, `known_actual_usd` 0. Reported models: 1,110 `nvidia/nemotron-3.5-lightning-30b-a3b`, 250 `nvidia/nemotron-3.5-super-vl-120b-a12b`, 28 none. 256 batch files have zero provider requests and the retained reason "Model calls are blocked by a retained provider/cost policy violation" over 2,570 rows. Newest batch file and `progress.json` were both written at 9:51 AM ET; the latest execution `started_at` was 13:51 UTC.
 
-`SPONSOR-SETUP.md` and `metadata.json` were read against pull requests #33 and #35. They already describe Scout Intent on the call-script path, Cursor evidence limited to pull requests #22 and #24, and no token or spend total. They do not repeat the withdrawn 3,235-complete or 1,290 / 340 / 1,380 figures. They were left unchanged.
+The Lightning model id was added to `metadata.json` `nvidia.models` because it is the `reported_model` in `engines/reports/scout-intent-live-2026-10-23.json` and in most sweep executions. No new receipt was created.
 
-The engines commits (#40, #30, #36, #39) were confirmed on `origin/devin/engines-manatee` at `6f54146111ab0db34bd99d7997aad3297d21033d`. That commit is not an ancestor of this web branch. The offline report file is not in this checkout. OpenRouter backup code is not in this checkout. Web ancestry for #24, #38, #34, #31, #37, #33, and #35 was confirmed on `67f8222b777777c8c266abe557be97e2e0c3178d`.
-
-The one call-script receipt cited, `rcpt_req_qsa07grv` for CCN `102853`, is copied from `engines/reports/scout-intent-live-2026-10-23.json`. No receipt id was created for this refresh.
+The engines commits (#40, #30, #36, #39) remain on `origin/devin/engines-manatee`, which is not an ancestor of this web branch. Web ancestry for #24, #38, #34, #31, #37, #33, #35, and #41 is on `8aeccd6`.
 
 ## Documentation checks
 
-Run from the repository root after the four submission files are the only intended change:
+Run from the repository root:
 
 | Check | What it must show |
 |---|---|
 | Relative links in `submission/*.md` | Each `](...)` target that is not an `http` URL exists on disk. |
 | Dash punctuation | No U+2013 or U+2014 in the four submission files. |
-| Withdrawn claims | The four files do not instruct a reader to treat all 3,235 counties as completed runs, and they do not present 1,290 / 1,380 as current model totals. |
-| Required snapshot | The files contain source sweep planner remaining 0, about 3,153 of 3,235, 2,491 with facilities, Connecticut and territories skipped, sweep `20261023T200048Z-78a426ba`, `grounded_drafts`, about 649 of 1,545, `known_actual_usd` 0, `paid_fallback_enabled` false, `blocked_preflight`, and receipt `rcpt_req_qsa07grv`. |
+| Forbidden claims | No file states, in positive form, an offline DGX result, H-MEM, World Model, Markovian, or that all counties are drafted. Negated mentions ("not claimed", "never say") are allowed. |
+| Stale figures | `3,153`, `649 of 1,545`, `6:38 AM`, and "territories skipped" appear only on lines that mark them withdrawn, stale, superseded, or as the earlier pack. |
+| Required snapshot | `submission/README.md` contains `1,282 of 1,545`, `12,418`, `3,020`, `9:51 AM ET`, `blocked_preflight`, `rcpt_req_qsa07grv`, and the reconciled coverage table. |
+| `metadata.json` | Parses as JSON; `nvidia.models` includes both Nemotron ids; `meterless.engines` is exactly `["Scout Intent"]`; every local path in `nvidia.where` and `nvidia.evidence` exists. |
 | Boundaries | The files still say grounding is not clinical validation, and they make no exclusivity claim and no prize claim. |
-| `git diff --check` | No whitespace errors in the submission diff. |
+| `git diff --check` | No whitespace errors. |
 
-Recorded on this refresh, from the repository root, before commit. A Python check resolved every non-HTTP relative link in `submission/*.md`, rejected U+2013 and U+2014, required the morning snapshot phrases, and allowed the old 3,235-complete sentence and the 1,290 / 1,380 counts only on lines that also say withdrawn or stale. `git diff --check -- submission/` then passed.
+Recorded on this refresh, before commit, with a Python script run from the repository root over `submission/*.md`, `SPONSOR-SETUP.md`, `README.md`, `docs/limits.mdx`, `docs/sponsors.mdx`, `docs/local-run.mdx`, `docs/nationwide.mdx`, `web/README.md`, `engines/README.md`, and `metadata.json`.
 
 | Check | Result |
 |---|---|
 | Relative links | Passed. Every relative target exists. |
 | Dash punctuation | Passed. No en dash or em dash in the four files. |
-| Withdrawn claims | Passed. The old full-catalog sentence and the 1,290 / 340 / 1,380 counts appear only as withdrawn or stale. |
-| Required snapshot | Passed. Morning county gap, model fraction, `blocked_preflight`, and receipt `rcpt_req_qsa07grv` are present. |
-| Boundaries | Passed. The files say grounding is not clinical validation, and they claim no exclusivity and no prize. |
-| `git diff --check` | Passed for `submission/`. |
+| Forbidden claims | Passed. The only regex hits were the negated rules in `demo-script.md` and `SPONSOR-SETUP.md` ("never say" and "do not say"). |
+| Stale figures | Passed after this file was rewritten. Remaining mentions are marked withdrawn or as the earlier pack. |
+| Required snapshot | Passed. |
+| `metadata.json` | Passed. JSON parses, both model ids present, engines list unchanged, all local paths exist. Full validation against `metadata.schema.json` with `jsonschema` Draft 2020-12 passed. |
+| Boundaries | Passed. |
+| `git diff --check` | Passed. |
 
 ## What this pass did not do
 
-No live provider test, source sweep, model request, application restart, deployment, or spend. No radar, map, or look CSS edit. No county was added to a fixture to close the 3,235 gap. No screenshot or browser pass of the web app. The #27 packaging note recorded an isolated production build that compiled and then failed generated Next.js route-type checks on existing `Page` and `RootLayout` exports. That build was not re-run here, so the failure is not cleared and is not newly confirmed.
-
-The earlier script report's build result and the #27 unit-test note stay historical. They are not results of this refresh.
+No live provider test, source sweep, model request, application restart, deployment, or spend. No radar, map, or look CSS edit. No change to the private sweep directory. No screenshot or browser pass of the web app. The #27 packaging note recorded an isolated production build that compiled and then failed generated Next.js route-type checks on existing `Page` and `RootLayout` exports. That build was not re-run here, so the failure is not cleared and is not newly confirmed. The two-row difference between the October 23 report's 15,440 rows and the 15,438 rows in the batch files was recorded, not explained. Whether the 256 policy-blocked batches get reprocessed by the running worker was not determined.

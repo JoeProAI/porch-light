@@ -3,7 +3,7 @@
   "schema_version": "0.1-community",
   "project": {
     "name": "Porch Light",
-    "summary": "A retrospective Manatee County care-facility outreach workbench with 18 deterministically ranked records, two refusals, sourced contacts and inspectable evidence. Separate national weather context does not establish national facility ranking or current facility conditions.",
+    "summary": "A care-facility outreach workbench for dialysis centers and nursing homes: an operator opens any of the 3,235 Census catalog counties, or a captured NWS alert, and gets a deterministically ranked call sheet with sourced contacts, inspectable score terms, recorded refusals and optional grounded Nemotron call scripts. Every catalog county has been source-audited through local Zetaris at least once (2,491 return ranked rows), grounded drafts are in progress on free Nemotron routes and are not complete for every county, and current facility conditions, clinical validation and offline or local GPU inference are not claimed.",
     "licence": "AGPL-3.0-only"
   },
   "track": "Solving Fragmented Intelligence",
@@ -64,13 +64,14 @@
     },
     "nvidia": {
       "status": "working",
-      "how": "One stored Super VL call through Meterless produced drafts for ranks 1 to 3. The Zetaris snapshot reused them after source and policy input equality checks. Remaining rows use computed reasons. Nemotron does not rank; join proposals, local GPU inference, Parse and Content Safety are not demonstrated.",
+      "how": "Two Nemotron ids appear in retained receipts, both on free routes through Meterless meterless/deep with thinking disabled. Super VL: one stored call produced the Manatee drafts for ranks 1 to 3, reused by the Zetaris snapshot after source and policy input equality checks; remaining Manatee rows use computed reasons. Lightning: the retained Scout Intent live call-script receipt (CCN 102853, $0) and most national sweep batch executions. The national draft sweep is in progress and not finished; accepted drafts, retained failures and policy-blocked batches are reported separately with an as-of time in submission/README.md. Nemotron does not rank; join proposals, local GPU or offline inference, Parse and Content Safety are not demonstrated.",
       "models": [
-        "nvidia/nemotron-3.5-super-vl-120b-a12b"
+        "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "nvidia/nemotron-3.5-lightning-30b-a3b"
       ],
       "route": "via-meterless",
-      "where": ["engines/"],
-      "evidence": ["engines/snapshots/manatee-zetaris.json"],
+      "where": ["engines/grounded_drafts.py", "engines/national_jobs.py", "engines/national_sweep.py"],
+      "evidence": ["engines/snapshots/manatee-zetaris.json", "engines/reports/scout-intent-live-2026-10-23.json", "engines/reports/national-script-verification-2026-10-23.md"],
       "decisions": []
     }
   },
