@@ -219,6 +219,7 @@ export const RadarMap = ({ maps, alerts, selectedId, onSelect, captureId }: {
                   aria-label={`Select official ${alert.event ?? "alert"}: ${alert.areaDesc ?? "area not supplied"}`}
                   aria-pressed={selectedId === alert.id} onClick={() => { if (!gestureMoved.current) onSelect(alert.id); }}
                   onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); event.stopPropagation(); onSelect(alert.id); } }}>
+                  <path d={d} className="warning-map-halo" fillRule="evenodd" />
                   <path d={d} className={`warning-map-shape ${selectedId === alert.id ? "selected" : ""}`}
                     data-severity={alert.severity} fillRule="evenodd" />
                 </g>;
