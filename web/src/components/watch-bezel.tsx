@@ -59,7 +59,7 @@ export const WatchBezel = ({
       top: `${50 + Math.sin(angle) * (RING_RADIUS / RING_SIZE) * 100}%`,
     } : undefined;
     const selected = tick.id === selectedId;
-    const lit = tick.id === (litId || selectedId);
+    const lit = tick.id === (litId ?? selectedId);
     if (tick.href) return (
       <a key={`${className}-${tick.id}`} data-tick={tick.id} className={`${className}${lit ? " is-lit" : ""}`} style={style} href={tick.href}
         aria-label={tick.label} aria-current={selected ? "true" : undefined}>{tick.mark}</a>

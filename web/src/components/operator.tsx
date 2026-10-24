@@ -166,7 +166,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
               <div><span className="eyebrow">Selected care facility</span><strong>{row.name}</strong><span className="mono" title={`${row.lat}, ${row.lon}`}>Provider no. {row.ccn} / {formatFigure(row.lat)}, {formatFigure(row.lon)}</span></div>
             </div>}
             {row && <div className="atlas-bezel"><WatchBezel label="Ranked call order" ticks={snapshot.facilities.map(item => ({ id: item.id, label: `Jump to rank ${item.rank}, ${item.name}`, mark: String(item.rank) }))}
-              selectedId={row.id} litId={porch?.id} onSelect={selectRow} centerLabel={`Focus rank ${row.rank} in the ledger`} centerMark={String(row.rank).padStart(2, "0")}
+              selectedId={row.id} litId={porch?.id ?? ""} onSelect={selectRow} centerLabel={`Focus rank ${row.rank} in the ledger`} centerMark={String(row.rank).padStart(2, "0")}
               onCenter={() => document.querySelector<HTMLElement>(".facility-row[aria-pressed='true']")?.focus()} /></div>}
             <div className="atlas-provenance">
               <span className="eyebrow">{isZetaris ? "Source query, not model confidence" : "Source integration state"}</span>

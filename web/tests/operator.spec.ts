@@ -290,10 +290,30 @@ test("manual outcome persists, advances without reranking, CSV and print use act
   expect(csv).toContain(snapshot.facilities[0].phone.value);
   expect(csv).toContain('"No answer"');
   expect(csv).toContain(snapshot.source_snapshot_hash);
+  await page.locator(".facility-row").nth(3).click();
   await page.emulateMedia({ media: "print" });
   await expect(page.locator(".export-actions")).not.toBeVisible();
   await expect(page.locator(".facility-row")).toHaveCount(18);
   await expect(page.locator(".print-limits")).toBeVisible();
+  const printed = await page.locator(".facility-row[aria-pressed='true']").evaluate(row => ({
+    porch: row.getAttribute("data-porch"),
+    rank: getComputedStyle(row.querySelector(".rank")!).color,
+    score: getComputedStyle(row.querySelector(".score")!).color,
+  }));
+  expect(printed.porch).toBe("false");
+  expect(printed.rank).toBe("rgb(17, 17, 17)");
+  expect(printed.score).toBe("rgb(17, 17, 17)");
+});
+
+test("a finished call sheet does not light a next bezel tick", async ({ page }) => {
+  await page.addInitScript(({ key, ids }) => {
+    const contacts = Object.fromEntries(ids.map(id => [id, { status: "reached", updatedAt: "2026-10-24T00:00:00.000Z" }]));
+    localStorage.setItem(key, JSON.stringify(contacts));
+  }, { key: `porch-light:contacts:v1:${snapshot.source_snapshot_hash}`, ids: snapshot.facilities.map(row => row.id) });
+  await page.goto("/operate");
+  await expect(page.locator(".facility-row")).toHaveCount(18);
+  await expect(page.locator(".facility-row[data-porch='true']")).toHaveCount(0);
+  await expect(page.locator(".bezel-step.is-lit, .bezel-tick.is-lit")).toHaveCount(0);
 });
 
 test("copy success and storage/clipboard failures are explicit; loaded snapshot works offline", async ({ page, context }) => {
