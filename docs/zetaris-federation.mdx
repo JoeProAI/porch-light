@@ -1,0 +1,29 @@
+---
+title: "Zetaris federation"
+---
+
+Zetaris is the only data path. At runtime the app reads only through Zetaris SQL. No adapter method calls a model or reads a source directly at runtime.
+
+## Joins are measured, not guessed
+
+Nemotron proposes joins. Zetaris SQL measures each one. A `JoinProposal` records:
+
+- `from_table`, `from_key`, `to_table`, `to_key` and `method`
+- `measured_match_rate`, from a Zetaris count query
+- `fan_out`
+- `threshold`, the acceptance threshold for that join
+- `status`: `proposed`, `accepted` or `refused`
+- `seen_before`: true when H-MEM remembers this join from an earlier run
+- `query_id`, the Zetaris query that measured it
+
+Join methods in the contract: `exact_key`, `ssa_to_fips_crosswalk`, `census_geocode`, `postgis_point_in_polygon`, `zip_to_empower`, `osm_admin_lookup`.
+
+## Failed joins
+
+Failed joins come from Zetaris data quality results (`SHOW DQ ALL INVALID TABLE`). Each `FailedJoin` carries its keys, method, a plain `reason`, an optional `row_count` and its `query_id`. `GET /runs/{id}/joins` returns proposals and failed joins together. This is the Seams panel.
+
+## Query ids everywhere
+
+Every fact carries a Zetaris query id. The ids show up in `Evidence.zetaris_query_ids`, in each `JoinHop.query_id`, and in the export receipt.
+
+<Note>The join examples in `contract/fixtures/joins_mock.json` are mock data. They aren't measured.</Note>

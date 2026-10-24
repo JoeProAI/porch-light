@@ -1,0 +1,916 @@
+openapi: 3.1.0
+info:
+  title: Porch Light API
+  version: 0.1.0
+  summary: >-
+    The shared contract every Porch Light agent builds against. Country
+    agnostic: everything US specific sits behind the country adapter
+    interface in contract/adapter.md.
+  description: >-
+    Porch Light takes a weather alert in, builds the warning area, ranks the
+    facilities inside it with a fixed transparent formula, and returns a
+    call sheet where every row carries its evidence trail. Zetaris is the
+    only data path. Meterless is the only model path. Nemotron explains,
+    the formula ranks.
+  license:
+    name: AGPL-3.0
+security:
+  - bearerAuth: []
+tags:
+  - name: alerts
+  - name: runs
+  - name: health
+paths:
+  /alerts/archived:
+    get:
+      tags: [alerts]
+      operationId: listArchivedAlerts
+      summary: Archived alerts captured in the repo with provenance
+      description: >-
+        Archived alerts the golden path replays, for example the Hurricane
+        Milton warning for Manatee County FL pulled from the Iowa
+        Environmental Mesonet archive. Never live; this list comes from
+        committed captures only.
+      parameters:
+        - name: country
+          in: query
+          schema: { type: string, example: "us" }
+      responses:
+        "200":
+          description: Archived alerts
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AlertList" }
+        "503":
+          description: Data layer unavailable
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+  /alerts/active:
+    get:
+      tags: [alerts]
+      operationId: listActiveAlerts
+      summary: Currently active alerts (live mode)
+      description: >-
+        Live alerts, for example from api.weather.gov/alerts/active via a
+        Zetaris Lightning REST table. Returns an empty list offline.
+      parameters:
+        - name: country
+          in: query
+          schema: { type: string, example: "us" }
+      responses:
+        "200":
+          description: Active alerts, possibly empty
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AlertList" }
+        "503":
+          description: Source unreachable
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+  /runs:
+    post:
+      tags: [runs]
+      operationId: createRun
+      summary: Start a run from an alert
+      description: >-
+        Loads the alert, builds the warning area, finds the facilities
+        inside it, measures and accepts joins, ranks by the fixed formula,
+        and writes explanations. Every step lands in the audit log.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateRunRequest" }
+      responses:
+        "201":
+          description: Run created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Run" }
+        "400":
+          description: Alert missing or malformed
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+        "404":
+          description: Alert id not found
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+        "503":
+          description: Zetaris or Meterless unavailable
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+        "504":
+          description: Upstream source timed out
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+  /runs/{id}:
+    get:
+      tags: [runs]
+      operationId: getRun
+      summary: One run with its alert and warning area
+      parameters:
+        - { $ref: "#/components/parameters/RunId" }
+      responses:
+        "200":
+          description: The run
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Run" }
+        "404":
+          description: No such run
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+  /runs/{id}/facilities:
+    get:
+      tags: [runs]
+      operationId: listRunFacilities
+      summary: Ranked facility list inside the warning area
+      description: >-
+        The call sheet rows, ranked by the fixed scoring formula. Each row
+        carries its score breakdown and evidence id. An empty list is a
+        typed empty state, not an error.
+      parameters:
+        - { $ref: "#/components/parameters/RunId" }
+        - name: type
+          in: query
+          schema: { $ref: "#/components/schemas/FacilityType" }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, default: 50 }
+        - name: offset
+          in: query
+          schema: { type: integer, minimum: 0, default: 0 }
+      responses:
+        "200":
+          description: Ranked facilities, possibly empty
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FacilityList" }
+        "404":
+          description: No such run
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+  /runs/{id}/joins:
+    get:
+      tags: [runs]
+      operationId: listRunJoins
+      summary: Join proposals and failed joins (the Seams panel)
+      description: >-
+        Every join Nemotron proposed, the match rate Zetaris SQL measured
+        for it, and whether it was accepted or refused. Failed joins come
+        from Zetaris DQ results (SHOW DQ ALL INVALID TABLE).
+      parameters:
+        - { $ref: "#/components/parameters/RunId" }
+      responses:
+        "200":
+          description: Join proposals and failed joins
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/JoinReport" }
+        "404":
+          description: No such run
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+  /runs/{id}/trace:
+    get:
+      tags: [runs]
+      operationId: getRunTrace
+      summary: Model and step trace for the run
+      description: >-
+        Every step: name, model id, local or NIM, Meterless mode, latency
+        and tokens. Powers the trace panel.
+      parameters:
+        - { $ref: "#/components/parameters/RunId" }
+      responses:
+        "200":
+          description: The trace
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Trace" }
+        "404":
+          description: No such run
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+  /runs/{id}/checkins:
+    get:
+      tags: [runs]
+      operationId: listRunCheckIns
+      summary: All check-ins recorded for the run
+      description: >-
+        The full check-in history for the run, newest last. The call sheet
+        restores its contact state from this list; per facility the latest
+        entry is the current status.
+      parameters:
+        - { $ref: "#/components/parameters/RunId" }
+      responses:
+        "200":
+          description: Check-ins, possibly empty
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CheckInList" }
+        "404":
+          description: No such run
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+    post:
+      tags: [runs]
+      operationId: createCheckIn
+      summary: Mark a facility called, answered, or no answer
+      parameters:
+        - { $ref: "#/components/parameters/RunId" }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CheckIn" }
+      responses:
+        "201":
+          description: Check-in recorded
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CheckIn" }
+        "400":
+          description: Bad check-in
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+        "404":
+          description: No such run or facility
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+  /runs/{id}/export:
+    post:
+      tags: [runs]
+      operationId: exportRun
+      summary: Export the call sheet (Scout Intent signed)
+      description: >-
+        Scout Intent checks the request and signs an execution contract.
+        Returns the export receipt: CSV hash, Zetaris query ids, snapshot
+        id, trace ids and the contract signature. The agent drafts, a
+        human decides.
+      parameters:
+        - { $ref: "#/components/parameters/RunId" }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ExportRequest" }
+      responses:
+        "200":
+          description: Export receipt
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ExportReceipt" }
+        "403":
+          description: Scout Intent refused the export
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+        "404":
+          description: No such run
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+        "503":
+          description: Meterless unavailable
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+  /runs/{id}/exports/{export_id}/artifacts/{format}:
+    get:
+      tags: [runs]
+      operationId: getExportArtifact
+      summary: Download one exported artifact
+      description: >-
+        Returns the bytes of one artifact named in the export receipt. The
+        artifact's sha256 in the receipt verifies the body.
+      parameters:
+        - { $ref: "#/components/parameters/RunId" }
+        - name: export_id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: format
+          in: path
+          required: true
+          schema: { type: string, enum: [csv, print_sheet, call_script] }
+      responses:
+        "200":
+          description: The artifact bytes
+          content:
+            text/csv: {}
+            text/html: {}
+            text/plain: {}
+        "404":
+          description: No such run, export or artifact
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+  /health:
+    get:
+      tags: [health]
+      operationId: getHealth
+      summary: "System health: Zetaris, Meterless, network, snapshot age"
+      responses:
+        "200":
+          description: Health report
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Health" }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    RunId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, example: "run_milton_12081_mock" }
+  schemas:
+    CountryCode:
+      type: string
+      description: Lowercase adapter country key (us, jm, ph, ...), not an enum so new adapters do not change the contract.
+      example: "us"
+    ExternalKeyType:
+      type: string
+      enum: [ccn, osm_id, worldpop_cell, gdacs_event, cap_id, ugc, fips, tract_geoid, zip, ssa_county, nws_zone]
+      description: Adapter-specific key types the USL carries per country.
+    ExternalKey:
+      type: object
+      required: [type, value]
+      properties:
+        type: { $ref: "#/components/schemas/ExternalKeyType" }
+        value: { type: string, example: "12081" }
+    Alert:
+      type: object
+      required: [id, country, source, event, headline, sent, zone_based, affected_zones]
+      properties:
+        id: { type: string, example: "iem-2024-milton-flz-12081-mock" }
+        country: { $ref: "#/components/schemas/CountryCode" }
+        source:
+          type: string
+          enum: [nws, iem, gdacs, cap, mock]
+          description: Which adapter source produced the alert.
+        event: { type: string, example: "Hurricane Warning" }
+        headline: { type: string }
+        severity: { type: string, enum: [extreme, severe, moderate, minor, unknown] }
+        urgency: { type: string, enum: [immediate, expected, future, past, unknown] }
+        certainty: { type: string, enum: [observed, likely, possible, unlikely, unknown] }
+        sent: { type: string, format: date-time }
+        effective: { type: string, format: date-time }
+        expires: { type: string, format: date-time }
+        geocode:
+          type: object
+          properties:
+            ugc: { type: array, items: { type: string }, example: ["FLZ152"] }
+            same: { type: array, items: { type: string }, example: ["012081"] }
+        affected_zones:
+          type: array
+          items: { $ref: "#/components/schemas/ZoneRef" }
+        geometry:
+          description: GeoJSON Polygon or MultiPolygon. Storm based warnings carry one; zone based alerts (hurricane, coastal flood) are null.
+          oneOf:
+            - { type: object }
+            - { type: "null" }
+        zone_based: { type: boolean }
+        vtec:
+          type: object
+          description: VTEC fields when the source carries them (NWS, IEM).
+          properties:
+            office: { type: string, example: "TBW" }
+            phenomena: { type: string, example: "HU" }
+            significance: { type: string, example: "W" }
+            event_id: { type: integer, example: 42 }
+        raw_ref:
+          type: string
+          description: Repo relative path of the captured raw JSON and its provenance sidecar.
+        fetched_at: { type: string, format: date-time }
+        mock:
+          type: boolean
+          description: True when the alert is fixture data, never a real measurement.
+    ZoneRef:
+      type: object
+      required: [id, kind]
+      properties:
+        id: { type: string, example: "FLZ152" }
+        kind:
+          type: string
+          enum: [county, zone, tract, admin, grid, cap_area]
+        name: { type: string }
+        country: { $ref: "#/components/schemas/CountryCode" }
+    Zone:
+      type: object
+      required: [id, kind, country]
+      properties:
+        id: { type: string }
+        kind: { $ref: "#/components/schemas/ZoneRef/properties/kind" }
+        country: { $ref: "#/components/schemas/CountryCode" }
+        name: { type: string }
+        keys:
+          type: array
+          items: { $ref: "#/components/schemas/ExternalKey" }
+        geometry:
+          description: GeoJSON geometry of the zone shape.
+          oneOf:
+            - { type: object }
+            - { type: "null" }
+    WarningArea:
+      type: object
+      required: [id, country, built_from, keys]
+      properties:
+        id: { type: string }
+        country: { $ref: "#/components/schemas/CountryCode" }
+        built_from:
+          type: string
+          enum: [zone_shapes, storm_polygon, admin_boundary, gdacs_buffer]
+          description: How the area was assembled. Zone based alerts build from zone shapes.
+        keys:
+          type: array
+          items: { $ref: "#/components/schemas/ExternalKey" }
+        zones:
+          type: array
+          items: { $ref: "#/components/schemas/ZoneRef" }
+        geometry:
+          oneOf:
+            - { type: object }
+            - { type: "null" }
+        area_km2: { type: number }
+    AlertList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Alert" }
+        empty_state: { $ref: "#/components/schemas/EmptyState" }
+    CreateRunRequest:
+      description: Exactly one of alert_id or alert is required.
+      oneOf:
+        - type: object
+          required: [alert_id]
+          properties:
+            alert_id: { type: string, description: "Id of a known alert (archived or active)." }
+            country: { $ref: "#/components/schemas/CountryCode" }
+          additionalProperties: false
+        - type: object
+          required: [alert]
+          properties:
+            alert: { $ref: "#/components/schemas/Alert" }
+            country: { $ref: "#/components/schemas/CountryCode" }
+          additionalProperties: false
+    Run:
+      type: object
+      required: [id, status, alert, created_at]
+      properties:
+        id: { type: string }
+        status:
+          type: string
+          enum: [queued, building_area, finding_facilities, measuring_joins, scoring, writing_reasons, ready, exporting, done, failed]
+        alert: { $ref: "#/components/schemas/Alert" }
+        warning_area: { $ref: "#/components/schemas/WarningArea" }
+        snapshot_id: { type: string }
+        country: { $ref: "#/components/schemas/CountryCode" }
+        counts:
+          type: object
+          properties:
+            facilities: { type: integer }
+            joins_accepted: { type: integer }
+            joins_failed: { type: integer }
+            checkins_done: { type: integer }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        error: { $ref: "#/components/schemas/ApiError/properties/error" }
+    FacilityType:
+      type: string
+      enum: [dialysis, nursing_home, home_health, hospital, clinic, other]
+    Facility:
+      type: object
+      required: [id, country, name, type, key, lat, lon]
+      properties:
+        id: { type: string }
+        country: { $ref: "#/components/schemas/CountryCode" }
+        name: { type: string }
+        type: { $ref: "#/components/schemas/FacilityType" }
+        key:
+          $ref: "#/components/schemas/ExternalKey"
+          description: Primary adapter key (ccn in the US, osm_id in the global adapter).
+        alt_keys:
+          type: array
+          items: { $ref: "#/components/schemas/ExternalKey" }
+        address: { type: string }
+        phone: { $ref: "#/components/schemas/FacilityPhone" }
+        zip: { type: string }
+        county_key:
+          $ref: "#/components/schemas/ExternalKey"
+          description: County level key, fips in the US, admin code elsewhere.
+        tract_key: { $ref: "#/components/schemas/ExternalKey" }
+        lat: { type: number, format: double }
+        lon: { type: number, format: double }
+        geocode:
+          type: object
+          description: Present when the point came from geocoding, not the source.
+          properties:
+            source: { type: string, example: "census_geocoder" }
+            match_quality: { type: string, enum: [exact, partial, tied, failed] }
+        attributes:
+          type: object
+          additionalProperties: true
+          description: Type specific facts (star_rating, staffing_rn_hours, late_shift, station count). Names come from the adapter, not the contract.
+        score: { $ref: "#/components/schemas/ScoreBreakdown" }
+        evidence: { $ref: "#/components/schemas/Evidence" }
+        mock: { type: boolean }
+    FacilityPhone:
+      oneOf:
+        - type: object
+          required: [status, value, source]
+          properties:
+            status: { const: available }
+            value: { type: string, minLength: 1 }
+            source: { $ref: "#/components/schemas/SourceRef" }
+            source_record_key: { type: string }
+        - type: object
+          required: [status, reason]
+          properties:
+            status: { const: unavailable }
+            reason: { type: string, minLength: 1 }
+          not:
+            required: [value]
+    RankedFacility:
+      description: >-
+        A facility after ranking. Used by GET /runs/{id}/facilities so the
+        call sheet always carries its score breakdown and evidence trail.
+        The raw Facility stays for adapter output before scoring.
+      allOf:
+        - { $ref: "#/components/schemas/Facility" }
+        - type: object
+          required: [score, evidence]
+          properties:
+            score: { $ref: "#/components/schemas/ScoreBreakdown" }
+            evidence: { $ref: "#/components/schemas/Evidence" }
+    ScoreTerm:
+      type: object
+      required: [name, input, weight, weighted]
+      properties:
+        name:
+          type: string
+          enum: [type_weight, svi_pct, empower_density_pct, cms_risk, plan_flag]
+        input: { type: number }
+        weight: { type: number }
+        weighted: { type: number }
+        note: { type: string, description: "Plain label for the evidence drawer, for example: ZIP level aggregate." }
+    ScoreBreakdown:
+      type: object
+      required: [total, terms, formula_version, rank]
+      properties:
+        total: { type: number }
+        terms:
+          type: array
+          items: { $ref: "#/components/schemas/ScoreTerm" }
+        formula_version: { type: string, description: "Version of data/scoring/weights.yaml used." }
+        rank: { type: integer, minimum: 1 }
+        tie_break: { type: string, description: "Ties break by facility type, then facility key." }
+    SourceRef:
+      type: object
+      required: [name, license]
+      properties:
+        name: { type: string, example: "cms_dialysis" }
+        dataset_id: { type: string, example: "23ew-n7w9" }
+        url: { type: string }
+        license: { type: string }
+    DataAsOf:
+      type: object
+      required: [source, fetched_at, snapshot_id, stale]
+      properties:
+        source: { type: string }
+        modified: { type: string, format: date-time, description: "Source dataset modified stamp when the source publishes one." }
+        fetched_at: { type: string, format: date-time }
+        snapshot_id: { type: string }
+        stale: { type: boolean, description: "True when the row is being read from the snapshot while the source is unreachable." }
+        provenance_file: { type: string }
+    JoinHop:
+      type: object
+      required: [from_key, to_key, method, match_rate]
+      properties:
+        from_key: { $ref: "#/components/schemas/ExternalKeyType" }
+        to_key: { $ref: "#/components/schemas/ExternalKeyType" }
+        method:
+          type: string
+          enum: [exact_key, ssa_to_fips_crosswalk, census_geocode, postgis_point_in_polygon, zip_to_empower, osm_admin_lookup]
+        match_rate: { type: number, description: "Measured by Zetaris SQL, never an LLM confidence." }
+        query_id: { type: string }
+    DqResult:
+      type: object
+      required: [rule, passed]
+      properties:
+        rule: { type: string, example: "zip_is_5_digits" }
+        passed: { type: boolean }
+        detail: { type: string }
+    Fact:
+      type: object
+      required: [name, value, query_id]
+      properties:
+        name: { type: string, example: "svi_pct" }
+        value: {}
+        unit: { type: string }
+        query_id: { type: string }
+    RuleCite:
+      type: object
+      required: [cite]
+      properties:
+        cite: { type: string, example: "42 CFR 494.62" }
+        plan_section: { type: string }
+        page: { type: integer }
+    Reason:
+      type: object
+      required: [text, trace_id]
+      properties:
+        text: { type: string, description: "Nemotron's explanation. It never sets the order." }
+        rule_cites:
+          type: array
+          items: { $ref: "#/components/schemas/RuleCite" }
+        model_id: { type: string, example: "nvidia/nemotron-3.5-super-vl-120b-a12b" }
+        mode: { type: string, enum: [meterless/deep, meterless/fast, meterless/local] }
+        provider: { type: string, enum: [local, nim, none] }
+        trace_id: { type: string }
+    Evidence:
+      type: object
+      required: [zetaris_query_ids, sources, data_as_of, join_path, score, dq_results, failed_joins, facts]
+      properties:
+        zetaris_query_ids:
+          type: array
+          items: { type: string }
+        sources:
+          type: array
+          items: { $ref: "#/components/schemas/SourceRef" }
+        data_as_of:
+          type: array
+          items: { $ref: "#/components/schemas/DataAsOf" }
+        join_path:
+          type: array
+          items: { $ref: "#/components/schemas/JoinHop" }
+        score: { $ref: "#/components/schemas/ScoreBreakdown" }
+        dq_results:
+          type: array
+          items: { $ref: "#/components/schemas/DqResult" }
+        failed_joins:
+          type: array
+          items: { $ref: "#/components/schemas/FailedJoin" }
+        facts:
+          type: array
+          items: { $ref: "#/components/schemas/Fact" }
+        reason: { $ref: "#/components/schemas/Reason" }
+        ledger_ids:
+          type: array
+          items: { type: string }
+          description: TrustLedger entries linking each claim in the reason to fact ids.
+    JoinProposal:
+      type: object
+      required: [id, from_key, to_key, method, status]
+      properties:
+        id: { type: string }
+        from_table: { type: string }
+        from_key: { $ref: "#/components/schemas/ExternalKeyType" }
+        to_table: { type: string }
+        to_key: { $ref: "#/components/schemas/ExternalKeyType" }
+        method: { $ref: "#/components/schemas/JoinHop/properties/method" }
+        measured_match_rate: { type: number, description: "From a Zetaris count query." }
+        fan_out: { type: number }
+        threshold: { type: number, description: "Acceptance threshold, for example 0.95 for keys and 0.85 for geocodes." }
+        status:
+          type: string
+          enum: [proposed, accepted, refused]
+        seen_before:
+          type: boolean
+          description: "H-MEM remembers this join from an earlier run."
+        query_id: { type: string }
+    FailedJoin:
+      type: object
+      required: [from_key, to_key, method, reason]
+      properties:
+        from_key: { $ref: "#/components/schemas/ExternalKeyType" }
+        to_key: { $ref: "#/components/schemas/ExternalKeyType" }
+        method: { $ref: "#/components/schemas/JoinHop/properties/method" }
+        reason: { type: string, example: "address could not be geocoded" }
+        row_count: { type: integer }
+        query_id: { type: string }
+    JoinReport:
+      type: object
+      required: [proposals, failed]
+      properties:
+        proposals:
+          type: array
+          items: { $ref: "#/components/schemas/JoinProposal" }
+        failed:
+          type: array
+          items: { $ref: "#/components/schemas/FailedJoin" }
+    TraceStep:
+      type: object
+      required: [step, provider, started_at]
+      properties:
+        step: { type: string, example: "reason_written" }
+        model_id: { type: string }
+        mode: { type: string, enum: [meterless/deep, meterless/fast, meterless/local, none] }
+        provider: { type: string, enum: [local, nim, none] }
+        latency_ms: { type: integer }
+        input_tokens: { type: integer }
+        output_tokens: { type: integer }
+        tokens_per_sec: { type: number }
+        trace_id: { type: string }
+        query_ids:
+          type: array
+          items: { type: string, minLength: 1 }
+          uniqueItems: true
+        started_at: { type: string, format: date-time }
+        detail: { type: string }
+    Trace:
+      type: object
+      required: [run_id, steps]
+      properties:
+        run_id: { type: string }
+        steps:
+          type: array
+          items: { $ref: "#/components/schemas/TraceStep" }
+    LedgerEntry:
+      type: object
+      required: [id, facility_id, claims, query_ids]
+      properties:
+        id: { type: string, description: "TrustLedger entry id, for example tl-mock-001a." }
+        facility_id: { type: string }
+        claims:
+          type: array
+          items: { type: string }
+          description: "Fact names this entry links the reason's claims to."
+        query_ids:
+          type: array
+          items: { type: string }
+        mock: { type: boolean }
+    Ledger:
+      type: object
+      required: [run_id, entries]
+      properties:
+        run_id: { type: string }
+        entries:
+          type: array
+          items: { $ref: "#/components/schemas/LedgerEntry" }
+    CheckInStatus:
+      type: string
+      enum: [called, answered, no_answer]
+    CheckIn:
+      type: object
+      required: [facility_id, status, by, at]
+      properties:
+        facility_id: { type: string }
+        status: { $ref: "#/components/schemas/CheckInStatus" }
+        by: { type: string, description: "Staff initials or role, never a patient or resident name." }
+        at: { type: string, format: date-time }
+        note: { type: string }
+    CheckInList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/CheckIn" }
+    Contract:
+      type: object
+      required: [id, action, request_hash, engine, signed_at, signature]
+      properties:
+        id: { type: string }
+        action: { type: string, enum: [export_call_sheet, export_csv, draft_call_script] }
+        engine: { type: string, enum: [scout_intent] }
+        request_hash: { type: string, description: "SHA-256 of the request." }
+        inputs_hash: { type: string }
+        evidence_ids:
+          type: array
+          items: { type: string }
+        trace_ids:
+          type: array
+          items: { type: string }
+        signed_at: { type: string, format: date-time }
+        signature: { type: string }
+        disclaimers:
+          type: array
+          items: { type: string }
+          description: For example, that the call script is a draft a human reviews.
+    ExportArtifact:
+      type: object
+      required: [format, sha256, href]
+      properties:
+        format: { type: string, enum: [csv, print_sheet, call_script] }
+        sha256: { type: string, pattern: "^[0-9a-f]{64}$" }
+        href: { type: string, description: "Download path under /runs/{id}/exports/{export_id}/artifacts/{format}." }
+        media_type: { type: string, example: "text/csv" }
+        filename: { type: string }
+    ExportRequest:
+      type: object
+      required: [formats]
+      properties:
+        formats:
+          type: array
+          items: { type: string, enum: [csv, print_sheet, call_script] }
+        include_call_script: { type: boolean, default: false }
+    ExportReceipt:
+      type: object
+      required: [export_id, run_id, created_at, artifacts, zetaris_query_ids, snapshot_id, contract_signature]
+      properties:
+        export_id: { type: string }
+        run_id: { type: string }
+        created_at: { type: string, format: date-time }
+        artifacts:
+          type: array
+          minItems: 1
+          items: { $ref: "#/components/schemas/ExportArtifact" }
+          description: One entry per requested format, each retrievable at href.
+        csv_sha256: { type: string, pattern: "^[0-9a-f]{64}$", description: "Present when the csv format was exported; kept for readers that only need the CSV hash." }
+        zetaris_query_ids:
+          type: array
+          items: { type: string }
+        snapshot_id: { type: string }
+        model_trace_ids:
+          type: array
+          items: { type: string }
+        contract: { $ref: "#/components/schemas/Contract" }
+        contract_signature: { type: string }
+        held:
+          type: array
+          items: { type: string }
+          description: Outputs Scout Intent held back, for example the call script while Content Safety is unreachable offline.
+    FacilityList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/RankedFacility" }
+        total: { type: integer }
+        empty_state: { $ref: "#/components/schemas/EmptyState" }
+    EmptyState:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          enum: [no_facilities, no_alerts, no_joins, no_dependents_data]
+        message: { type: string, example: "No facilities sit inside the warning area." }
+    ErrorCode:
+      type: string
+      enum: [not_found, bad_request, no_facilities, source_stale, zetaris_down, meterless_unauthorized, meterless_offline, timeout, export_refused]
+    ApiError:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { $ref: "#/components/schemas/ErrorCode" }
+            message: { type: string }
+            detail: {}
+            retry_after_ms: { type: integer }
+    ServiceStatus:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [up, down, unauthorized, offline, degraded] }
+        latency_ms: { type: integer }
+        detail: { type: string }
+    Health:
+      type: object
+      required: [zetaris, meterless, network, snapshot]
+      properties:
+        zetaris: { $ref: "#/components/schemas/ServiceStatus" }
+        meterless:
+          allOf:
+            - { $ref: "#/components/schemas/ServiceStatus" }
+            - type: object
+              properties:
+                provider: { type: string, enum: [local, nim, none] }
+                mode: { type: string }
+        network:
+          type: object
+          required: [status]
+          properties:
+            status: { type: string, enum: [online, offline] }
+        snapshot:
+          type: object
+          required: [snapshot_id, data_as_of]
+          properties:
+            snapshot_id: { type: string }
+            data_as_of:
+              type: array
+              items: { $ref: "#/components/schemas/DataAsOf" }
+            age_minutes: { type: number }

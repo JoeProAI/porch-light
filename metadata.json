@@ -15,6 +15,8 @@
     ]
   },
   "repository": "https://github.com/JoeProAI/porch-light",
+  "demo_url": "",
+  "built_window": "2026-10-22T00:00Z to 2026-10-27T23:45Z",
   "submission": {
     "demo_video": null,
     "slide_deck": "TODO: deck link or repo path (Mon Oct 26)"
@@ -55,10 +57,10 @@
     },
     "cursor": {
       "status": "planned",
-      "how": "The contract commit and compliance kit are made in Cursor, .cursor/rules (house, paths, sponsors) govern every agent, and Cursor cloud agents own the web UI and back up the data layer, each through a PR.",
+      "how": "Cursor supplies the .cursor/rules/ files: the rules every agent (Cursor included) follows to stay inside its area, follow the house rules and keep HANDOFF.md current. Cursor also runs the cloud agents for the web UI seat and the data backup seat. The contract (PR #14) was written by Devin, not by a Cursor run.",
       "models": ["TODO: fill from the Cursor usage CSV"],
       "surfaces": ["ide", "background-agents"],
-      "where": [".cursor/rules/", "web/", "ops/build-log/cursor/"],
+      "where": [".cursor/rules/"],
       "evidence": ["TODO: cloud agent PR links, exported transcripts, Cursor usage CSV"],
       "decisions": []
     },
@@ -72,8 +74,7 @@
         "Nemotron 3 Nano 4B (local, GGUF)",
         "Nemotron 3.5 Embed 1B (TODO: confirm NIM model id)",
         "nvidia/nemotron-3.5-content-safety",
-        "nvidia/nemotron-parse-2.0",
-        "nvidia/nemotron-4-340b-reward"
+        "nvidia/nemotron-parse-2.0"
       ],
       "route": "via-meterless",
       "where": ["TODO: engines/model_client/ after build"],
