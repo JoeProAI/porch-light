@@ -1,0 +1,12 @@
+{
+  "source_url": "https://geocoding.geo.census.gov/geocoder/geographies/coordinates?benchmark=Public_AR_Current&vintage=Census2020_Current&format=json&x=-82.62&y=27.4834",
+  "fetched_at_utc": "2026-10-22T03:32:43+00:00",
+  "sha256": "68142b47cba69f7238bb277f70bfd05f3c612fbe5b4ed545772f48dfdba2a960",
+  "license": "US Census Bureau US government public data; https://www.census.gov/about/policies/quality/guidelines.html",
+  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_census",
+  "request_input_source": {
+    "artifact": "data\\snapshot\\raw\\cms\\20261022T030046Z-a5ce96ba\\nursing_homes.csv",
+    "sha256": "378d76a43f89c132e6796ea97530a004beabd2b0aa6516833c5734fd99d1e2b0",
+    "ccn": "105327"
+  }
+}

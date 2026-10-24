@@ -1,0 +1,7 @@
+{
+  "source_url": "https://api.weather.gov/zones/forecast/FLZ155",
+  "fetched_at_utc": "2026-10-22T03:08:18+00:00",
+  "sha256": "cd5b6c0e5be2cc9e8c9f6395188d1e1b1b2682e5965ce240773a5f4f206857ad",
+  "license": "US National Weather Service public domain; https://www.weather.gov/disclaimer",
+  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_milton"
+}

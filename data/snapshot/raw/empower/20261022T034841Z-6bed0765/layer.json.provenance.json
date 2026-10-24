@@ -1,0 +1,7 @@
+{
+  "source_url": "https://services2.arcgis.com/ZQ4jTQn6k7VPXEwO/arcgis/rest/services/HHS_emPOWER_REST_Service_Public/FeatureServer/1?f=json",
+  "fetched_at_utc": "2026-10-22T03:48:41+00:00",
+  "sha256": "316d6d4cd43625e14f006d5968f37220467854ee0dc4ab3927f2bb991a1724cd",
+  "license": "HHS emPOWER publicly released aggregate data; reuse terms not specified in ArcGIS layer metadata",
+  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_empower"
+}

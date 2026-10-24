@@ -1,0 +1,35 @@
+name: porchlight-data
+
+services:
+  postgis:
+    image: postgis/postgis@sha256:7ef699637304feff96028edbc7a653e135f2db2236d322b5cb2bfca11fd920bc
+    platform: linux/amd64
+    container_name: porchlight-postgis
+    restart: unless-stopped
+    env_file:
+      - path: "${PORCHLIGHT_POSTGIS_ENV_FILE:?Set the private PostGIS env file path}"
+        required: true
+    networks:
+      - data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    mem_limit: 2g
+    cpus: "2.0"
+    shm_size: 256mb
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+networks:
+  data:
+    name: porchlight-private
+    internal: true
+
+volumes:
+  pgdata:
+    name: porchlight-postgis-v1

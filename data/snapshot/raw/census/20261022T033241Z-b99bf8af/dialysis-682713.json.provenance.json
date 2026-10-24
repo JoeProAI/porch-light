@@ -1,0 +1,12 @@
+{
+  "source_url": "https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?benchmark=Public_AR_Current&vintage=Census2020_Current&format=json&address=1939+Worth+Court%2C+Bradenton%2C+FL%2C+34211",
+  "fetched_at_utc": "2026-10-22T03:32:47+00:00",
+  "sha256": "0b93037336a5f79e898accdabaabe34a9bb68fb90acb4bda46fd9a9297280880",
+  "license": "US Census Bureau US government public data; https://www.census.gov/about/policies/quality/guidelines.html",
+  "fetch_command": "'C:\\Python314\\python.exe' -m data.adapters.us.capture_census",
+  "request_input_source": {
+    "artifact": "data\\snapshot\\raw\\cms\\20261022T030046Z-a5ce96ba\\dialysis.csv",
+    "sha256": "02a7155f9797fe3194f220e765eb8ac511cbc1402e286c3e235a3157ba7cee5f",
+    "ccn": "682713"
+  }
+}
