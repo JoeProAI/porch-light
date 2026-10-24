@@ -11,7 +11,11 @@
     "name": "Burden of Proof",
     "solo": true,
     "builders": [
-      { "name": "Joe Gaither", "role": "owner: decides, reviews and merges; agents write the code", "github": "JoeProAI" }
+      {
+        "name": "Joe Gaither",
+        "role": "owner: decides, reviews and merges; agents write the code",
+        "github": "JoeProAI"
+      }
     ]
   },
   "repository": "https://github.com/JoeProAI/porch-light",
@@ -40,26 +44,57 @@
         "Manatee County CEMP (county plan PDF)",
         "Postgres + PostGIS EOC snapshot (JDBC datasource)"
       ],
-      "where": ["TODO: data/ paths after build"],
-      "evidence": ["TODO: evidence drawer demo moment, export receipt, Zetaris audit log cross-reference"],
-      "decisions": ["TODO: ADR or docs/zetaris-federation.mdx"]
+      "where": [
+        "TODO: data/ paths after build"
+      ],
+      "evidence": [
+        "TODO: evidence drawer demo moment, export receipt, Zetaris audit log cross-reference"
+      ],
+      "decisions": [
+        "TODO: ADR or docs/zetaris-federation.mdx"
+      ]
     },
     "meterless": {
       "status": "planned",
-      "how": "Meterless is the only model path: the app talks to one OpenAI-compatible base URL on Meterless Runtime (Nightshift), routing meterless/deep, fast and local. Scout Intent guards the export and signs an execution contract; H-MEM with TrustLedger remembers measured join outcomes and links every claim to fact and query ids; a minimal World Model holds alert, area, check-in, network and provider state. Markovian and Swarm are not used.",
-      "engines": ["Scout Intent", "H-MEM", "World Model"],
+      "how": "Meterless is the only model path: the app talks to one OpenAI-compatible base URL on Meterless Runtime (Nightshift), routing meterless/deep, fast and local. Scout Intent guards the export and signs an execution contract; H-MEM with TrustLedger remembers measured join outcomes and links every claim to fact and query ids; a minimal World Model holds alert, area, check-in, network and provider state. Markovian and Swarm are not used. Optional OpenRouter Nemotron backup exists for call_script only when OPENROUTER_API_KEY and PORCHLIGHT_OPENROUTER_BACKUP are set; Meterless remains primary; OPENROUTER_MAX_SPEND_USD hard-caps paid spend; OpenRouter is not a scoring sponsor.",
+      "engines": [
+        "Scout Intent",
+        "H-MEM",
+        "World Model"
+      ],
       "provider": "nightshift",
-      "where": ["TODO: engines/ paths after build"],
-      "evidence": ["TODO: contract hash on the call sheet, TrustLedger entries, offline unplug beat"],
-      "decisions": ["TODO: Thursday Nightshift local-Nemotron spike decision in HANDOFF.md"]
+      "where": [
+        "TODO: engines/ paths after build",
+        "engines/openrouter_backup.py",
+        "engines/grounded_drafts.py"
+      ],
+      "evidence": [
+        "TODO: contract hash on the call sheet, TrustLedger entries, offline unplug beat",
+        "engines/test_openrouter_backup.py",
+        "~/.porchlight/openrouter-spend/ledger.jsonl"
+      ],
+      "decisions": [
+        "TODO: Thursday Nightshift local-Nemotron spike decision in HANDOFF.md"
+      ]
     },
     "cursor": {
       "status": "planned",
       "how": "The contract commit and compliance kit are made in Cursor, .cursor/rules (house, paths, sponsors) govern every agent, and Cursor cloud agents own the web UI and back up the data layer, each through a PR.",
-      "models": ["TODO: fill from the Cursor usage CSV"],
-      "surfaces": ["ide", "background-agents"],
-      "where": [".cursor/rules/", "web/", "ops/build-log/cursor/"],
-      "evidence": ["TODO: cloud agent PR links, exported transcripts, Cursor usage CSV"],
+      "models": [
+        "TODO: fill from the Cursor usage CSV"
+      ],
+      "surfaces": [
+        "ide",
+        "background-agents"
+      ],
+      "where": [
+        ".cursor/rules/",
+        "web/",
+        "ops/build-log/cursor/"
+      ],
+      "evidence": [
+        "TODO: cloud agent PR links, exported transcripts, Cursor usage CSV"
+      ],
       "decisions": []
     },
     "nvidia": {
@@ -76,8 +111,12 @@
         "nvidia/nemotron-4-340b-reward"
       ],
       "route": "via-meterless",
-      "where": ["TODO: engines/model_client/ after build"],
-      "evidence": ["TODO: trace panel and Who answered badge, local vs cloud eval results"],
+      "where": [
+        "TODO: engines/model_client/ after build"
+      ],
+      "evidence": [
+        "TODO: trace panel and Who answered badge, local vs cloud eval results"
+      ],
       "decisions": []
     }
   },
@@ -85,29 +124,41 @@
     {
       "name": "Proof Desk (proof.joepro.systems)",
       "what": "Joe Gaither's own design-direction tool, built before the hackathon. Used on Oct 21 to produce the Porch Light design brief, direction, dial settings and one background plate. Dev tooling only; no Proof Desk source code is in the product.",
-      "where": ["not in this repository"]
+      "where": [
+        "not in this repository"
+      ]
     },
     {
       "name": "Design contract and tokens",
       "what": "Outputs of Proof Desk: the design contract JSON and CSS custom properties (--pd-* values from Proof Desk's dial-to-CSS formulas).",
-      "where": ["design/proof-desk-contract.json", "design/design-tokens.css"],
+      "where": [
+        "design/proof-desk-contract.json",
+        "design/design-tokens.css"
+      ],
       "since": "2026-10-21"
     },
     {
       "name": "Generated design assets",
       "what": "Hero key art, deck plates, OG card, logo mark and hero and logo video loops generated through OpenRouter before the build window. Models, prompts and costs are in the manifest. No people, no third-party marks.",
-      "where": ["design/art/", "design/art/manifest.json"],
+      "where": [
+        "design/art/",
+        "design/art/manifest.json"
+      ],
       "since": "2026-10-21"
     },
     {
       "name": "Meterless engine specs (open-source reference)",
       "what": "engines/*/AGENTS.md specs from github.com/meterless/meterless (Apache-2.0); engines are implemented fresh from them.",
-      "where": ["not in this repository"]
+      "where": [
+        "not in this repository"
+      ]
     },
     {
       "name": "Zetaris getting-started patterns (open-source reference)",
       "what": "Zetaris getting-started patterns (Apache-2.0), credited in NOTICE.",
-      "where": ["not in this repository"]
+      "where": [
+        "not in this repository"
+      ]
     }
   ],
   "run": {
