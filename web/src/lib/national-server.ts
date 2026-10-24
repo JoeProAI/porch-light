@@ -140,6 +140,8 @@ const validateResult = (value: unknown): Snapshot | Record<string, unknown> => {
 };
 
 
+export const validatePublishedResult = validateResult;
+
 export type RecentNationalRun = {
   id: string;
   county_name: string;
