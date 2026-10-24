@@ -27,9 +27,14 @@ MODEL_BATCH_SIZE = 10
 
 
 def save(path: Path, document: dict) -> None:
-    path.write_text(json.dumps(document, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
-    write_sidecar(path, SOURCE, "Derived public-source evidence; original source licenses retained",
-                  "python -m engines.national_sweep", datetime.now(timezone.utc).isoformat())
+    # The web poller and call-script reader verify these bytes against the sidecar while a job is
+    # still running. A direct overwrite exposes a partial file, so publish complete files by rename.
+    temporary = path.with_name(path.name + "." + uuid4().hex + ".tmp")
+    temporary.write_text(json.dumps(document, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+    sidecar = write_sidecar(temporary, SOURCE, "Derived public-source evidence; original source licenses retained",
+                            "python -m engines.national_sweep", datetime.now(timezone.utc).isoformat())
+    temporary.replace(path)
+    sidecar.replace(path.with_name(path.name + ".provenance.json"))
 
 
 def classify(snapshot: dict) -> str:
