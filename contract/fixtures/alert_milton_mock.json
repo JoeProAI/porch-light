@@ -1,0 +1,54 @@
+{
+  "id": "iem-2024-milton-tbw-mock",
+  "country": "us",
+  "source": "iem",
+  "event": "Hurricane Warning",
+  "headline": "MOCK DATA: Hurricane Warning shaped like the archived Hurricane Milton warning for Manatee County FL, FIPS 12081. Not a real NWS record.",
+  "severity": "extreme",
+  "urgency": "immediate",
+  "certainty": "observed",
+  "sent": "2024-10-08T15:05:00Z",
+  "effective": "2024-10-08T15:05:00Z",
+  "expires": "2024-10-10T12:00:00Z",
+  "geocode": {
+    "ugc": [
+      "FLZ152",
+      "FLZ155",
+      "FLZ162"
+    ],
+    "same": [
+      "012081"
+    ]
+  },
+  "affected_zones": [
+    {
+      "id": "FLZ152",
+      "kind": "zone",
+      "name": "Coastal Manatee (mock)",
+      "country": "us"
+    },
+    {
+      "id": "FLZ155",
+      "kind": "zone",
+      "name": "Inland Manatee (mock)",
+      "country": "us"
+    },
+    {
+      "id": "12081",
+      "kind": "county",
+      "name": "Manatee County (mock)",
+      "country": "us"
+    }
+  ],
+  "geometry": null,
+  "zone_based": true,
+  "vtec": {
+    "office": "TBW",
+    "phenomena": "HU",
+    "significance": "W",
+    "event_id": 42
+  },
+  "raw_ref": "contract/fixtures/alert_milton_mock.json",
+  "fetched_at": "2024-10-09T06:00:00Z",
+  "mock": true
+}
