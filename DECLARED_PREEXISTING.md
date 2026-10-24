@@ -4,6 +4,7 @@ Porch Light was built inside the Open Agent Hackathon 2026 window (Oct 22 00:00 
 
 ## Open-source references and scaffolds
 - Meterless engine specs (Apache 2.0): implemented fresh, not copied. Any copied template code gets listed here by the agent that added it.
+- Zetaris getting-started patterns (Apache 2.0): used as reference, credited in NOTICE and metadata.json. Not stored in this repository. Any copied template code gets listed here by the agent that added it.
 
 ## Dev tooling used, not shipped as product code
 - Proof Desk (proof.joepro.systems), Joe Gaither's own design-direction tool, built before this hackathon. Only its outputs (design contract JSON, CSS custom properties, generated art) enter the repo. No Proof Desk source code is copied in.

@@ -1,0 +1,31 @@
+---
+description: House rules for every agent working on Porch Light
+alwaysApply: true
+---
+
+# House rules
+
+- Plain words. No em dashes, no en dashes; use a comma, colon or period.
+- No secrets, tokens or key values in code, commits, logs or chat. Env var
+  names only.
+- Nemotron is the only model family in the runtime path, reached only
+  through Meterless Runtime (one OpenAI-compatible base URL). No other
+  provider, no direct model calls.
+- Zetaris is the only data path at runtime. The app never calls a data
+  source directly. Ingest helpers download raw files untouched into the
+  filestore with a checksum and fetched_at.
+- Every model call and every data read is traced (model, mode, local or
+  NIM, latency, tokens) and written to the audit log. Nothing secret is
+  logged.
+- No posts about the project before submission. No public URLs, no
+  production deploys, no public previews. Any deploy happens only with
+  Joe's yes, auth-gated or tailnet-only.
+- The repo stays private until submission.
+- Never invent numbers. Every number on screen needs a source and a query
+  id, or a marked placeholder. Fixture values are labeled mock.
+- Every cached data file gets a `.provenance.json` sidecar: source URL,
+  fetched_at UTC, SHA-256, license line, fetch command.
+- Never rewrite or backdate commits. No force-push to main; PR required.
+- No new accounts and no spending without Joe's yes.
+- Nemotron never ranks. The fixed formula in data/scoring/weights.yaml
+  ranks; the model writes the reason.
