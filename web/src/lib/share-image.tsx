@@ -9,7 +9,7 @@ export const renderShareImage = async (): Promise<Response> => {
   const [{ snapshot }, displayFont, bodyFont, stormImage] = await Promise.all([
     readSnapshot(),
     readFile(path.join(process.cwd(), "node_modules/@fontsource/libre-baskerville/files/libre-baskerville-latin-400-normal.woff")),
-    readFile(path.join(process.cwd(), "node_modules/@fontsource/alegreya-sans/files/alegreya-sans-latin-400-normal.woff")),
+    readFile(path.join(process.cwd(), "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff")),
     readFile(path.join(process.cwd(), "public/weather/milton-2024-nasa.jpg")),
   ]);
   const { project, paths } = createProjection(snapshot.warning_geometry, snapshot.facilities, "facilities");

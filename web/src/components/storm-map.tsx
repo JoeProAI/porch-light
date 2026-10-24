@@ -51,6 +51,42 @@ export type StormMapApi = {
 const readToken = (name: string, fallback: string) =>
   getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
 
+const HALO = "#05070b";
+
+const paintSafe = (map: MapLibreMap, id: string, name: string, value: unknown) => {
+  try { map.setPaintProperty(id, name as never, value as never); } catch { /* this layer does not use the property */ }
+};
+
+const restyleNight = (map: MapLibreMap) => {
+  const layers = map.getStyle()?.layers ?? [];
+  const sample = layers.find(layer => layer.type === "symbol" && Array.isArray(layer.layout?.["text-font"]));
+  const textFont = (sample && sample.type === "symbol" && Array.isArray(sample.layout?.["text-font"])
+    ? sample.layout["text-font"]
+    : ["Noto Sans Regular"]) as string[];
+  for (const layer of layers) {
+    const id = layer.id.toLowerCase();
+    if (layer.type === "background") paintSafe(map, layer.id, "background-color", "#05070b");
+    if (layer.type === "fill" || layer.type === "fill-extrusion") {
+      const key = layer.type === "fill" ? "fill-color" : "fill-extrusion-color";
+      if (/water|ocean|sea|river|lake/.test(id)) paintSafe(map, layer.id, key, "#070b12");
+      else if (/park|landcover|wood|grass|forest|pitch|garden|scrub|wetland|sand|national/.test(id)) paintSafe(map, layer.id, key, "#10151d");
+      else if (/landuse|land|earth|residential|industrial|commercial|building/.test(id)) paintSafe(map, layer.id, key, "#121820");
+    }
+    if (layer.type === "line") {
+      if (/water/.test(id)) paintSafe(map, layer.id, "line-color", "#121820");
+      else if (/road|street|bridge|tunnel|path|rail|transit|transport/.test(id)) paintSafe(map, layer.id, "line-color", "#3a4556");
+      else if (/boundary|admin|border/.test(id)) paintSafe(map, layer.id, "line-color", "#2c3646");
+    }
+    if (layer.type === "symbol") {
+      paintSafe(map, layer.id, "text-color", "#ebe4cf");
+      paintSafe(map, layer.id, "text-halo-color", HALO);
+      paintSafe(map, layer.id, "text-halo-width", 1.5);
+      paintSafe(map, layer.id, "icon-color", "#c5ccd6");
+    }
+  }
+  return textFont;
+};
+
 const alertCollection = (alerts: OfficialAlert[]) => ({
   type: "FeatureCollection" as const,
   features: alerts.filter(alert => hasAlertShape(alert.geometry)).map(alert => ({
@@ -68,6 +104,9 @@ export const StormMap = forwardRef<StormMapApi, {
   selectedFacilityId: string;
   frameId: string;
   radarVisible: boolean;
+  radarOpacity: number;
+  playing: boolean;
+  porchId: string;
   alertsVisible: boolean;
   radarRetry: number;
   reducedMotion: boolean;
@@ -105,7 +144,7 @@ export const StormMap = forwardRef<StormMapApi, {
       const bounds = new lib.LngLatBounds();
       points.forEach(row => bounds.extend([row.lon, row.lat]));
       map.fitBounds(bounds, {
-        padding: { top: 88, right: 24, bottom: 210, left: map.getContainer().clientWidth < 600 ? 24 : 210 },
+        padding: { top: 72, right: 24, bottom: 48, left: 24 },
         duration: motion(480),
         maxZoom: 14,
       });
@@ -203,23 +242,38 @@ export const StormMap = forwardRef<StormMapApi, {
       map.on("load", () => {
         if (!map || cancelled) return;
         window.clearTimeout(loadTimer);
+        const textFont = restyleNight(map);
         const severe = {
-          Extreme: readToken("--color-severity-extreme", "#e07a5f"),
-          Severe: readToken("--color-severity-severe", "#efb45e"),
-          Moderate: readToken("--color-severity-moderate", "#e6c98a"),
-          Minor: readToken("--color-severity-minor", "#92c6d1"),
-          Unknown: readToken("--color-severity-unknown", "#abbcc2"),
+          Extreme: readToken("--color-severity-extreme", "#ff5a36"),
+          Severe: readToken("--color-severity-severe", "#ef7a5f"),
+          Moderate: readToken("--color-severity-moderate", "#ebe4cf"),
+          Minor: readToken("--color-severity-minor", "#8fd3ff"),
+          Unknown: readToken("--color-severity-unknown", "#a8b0bc"),
         };
         const match = ["match", ["get", "severity"], "Extreme", severe.Extreme, "Severe", severe.Severe, "Moderate", severe.Moderate, "Minor", severe.Minor, severe.Unknown] as const;
         const placeLabels = map.getStyle().layers?.find(layer => layer.type === "symbol")?.id;
+        const opacity = propsRef.current.radarVisible ? propsRef.current.radarOpacity : 0;
         map.addSource("iem-radar", { type: "raster", tiles: [radarTileUrl(propsRef.current.frameId)], tileSize: 256, maxzoom: 12 });
         map.addLayer({
           id: "iem-radar", type: "raster", source: "iem-radar",
-          paint: { "raster-opacity": propsRef.current.radarVisible ? 0.72 : 0, "raster-fade-duration": propsRef.current.reducedMotion ? 0 : 180 },
+          paint: { "raster-opacity": opacity, "raster-fade-duration": 0 },
         }, placeLabels);
         map.addSource("alerts", { type: "geojson", data: alertCollection(propsRef.current.alerts) });
-        map.addLayer({ id: "alert-fill", type: "fill", source: "alerts", paint: { "fill-color": match as never, "fill-opacity": 0.28 } }, placeLabels);
-        map.addLayer({ id: "alert-line", type: "line", source: "alerts", paint: { "line-color": match as never, "line-width": 1.4 } });
+        map.addLayer({ id: "alert-fill", type: "fill", source: "alerts", paint: { "fill-color": match as never, "fill-opacity": 0.18 } }, placeLabels);
+        map.addLayer({ id: "alert-halo", type: "line", source: "alerts", paint: { "line-color": HALO, "line-width": 6.5, "line-opacity": 0.95 } }, placeLabels);
+        map.addLayer({ id: "alert-line", type: "line", source: "alerts", paint: { "line-color": match as never, "line-width": 2.2, "line-blur": 0 } }, placeLabels);
+        try {
+          map.addLayer({
+            id: "alert-label", type: "symbol", source: "alerts",
+            layout: {
+              "text-field": ["concat", ["get", "event"], " · ", ["get", "severity"]],
+              "text-size": 13,
+              "text-font": textFont,
+              "text-max-width": 16,
+            },
+            paint: { "text-color": "#ebe4cf", "text-halo-color": HALO, "text-halo-width": 1.8 },
+          }, placeLabels);
+        } catch { /* strokes still sit above the radar if the style font rejects the label */ }
         map.on("click", "alert-fill", event => {
           const id = event.features?.[0]?.properties?.id;
           if (typeof id === "string") propsRef.current.onSelectAlert(id);
@@ -273,17 +327,21 @@ export const StormMap = forwardRef<StormMapApi, {
   useEffect(() => {
     const map = mapRef.current;
     if (!mapReady || !map?.getLayer("alert-line")) return;
-    map.setPaintProperty("alert-line", "line-width", ["case", ["==", ["get", "id"], props.selectedAlertId || ""], 3.2, 1.4]);
+    const selected = props.selectedAlertId || "";
+    if (map.getLayer("alert-halo")) map.setPaintProperty("alert-halo", "line-width", ["case", ["==", ["get", "id"], selected], 8.5, 6.5]);
+    map.setPaintProperty("alert-line", "line-width", ["case", ["==", ["get", "id"], selected], 3.6, 2.2]);
   }, [mapReady, props.selectedAlertId]);
 
   useEffect(() => {
     const map = mapRef.current;
     if (!mapReady || !map?.getLayer("iem-radar")) return;
-    map.setPaintProperty("iem-radar", "raster-opacity", props.radarVisible ? 0.72 : 0);
+    map.setPaintProperty("iem-radar", "raster-opacity", props.radarVisible ? props.radarOpacity : 0);
+    map.setPaintProperty("iem-radar", "raster-fade-duration", props.reducedMotion || !props.playing ? 0 : 160);
     const visibility = props.alertsVisible ? "visible" : "none";
-    map.setLayoutProperty("alert-fill", "visibility", visibility);
-    map.setLayoutProperty("alert-line", "visibility", visibility);
-  }, [mapReady, props.radarVisible, props.alertsVisible]);
+    for (const id of ["alert-fill", "alert-halo", "alert-line", "alert-label"]) {
+      if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", visibility);
+    }
+  }, [mapReady, props.radarVisible, props.radarOpacity, props.alertsVisible, props.playing, props.reducedMotion]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -294,7 +352,7 @@ export const StormMap = forwardRef<StormMapApi, {
     markers.current = props.facilities.filter(hasCoordinates).map(row => {
       const element = document.createElement("button");
       element.type = "button";
-      element.className = `facility-pin${row.id === props.selectedFacilityId ? " is-selected" : ""}`;
+      element.className = `facility-pin${row.id === props.selectedFacilityId ? " is-selected" : ""}${row.id === props.porchId ? " is-porch" : ""}`;
       element.dataset.facilityId = row.id;
       element.dataset.type = row.type;
       element.textContent = String(row.rank);
@@ -305,7 +363,7 @@ export const StormMap = forwardRef<StormMapApi, {
       return marker;
     });
     return () => { cancelled = true; void cancelled; };
-  }, [mapReady, props.facilities, props.selectedFacilityId]);
+  }, [mapReady, props.facilities, props.selectedFacilityId, props.porchId]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -317,7 +375,7 @@ export const StormMap = forwardRef<StormMapApi, {
   }, [mapReady, props.frameId, props.radarRetry]);
 
   return (
-    <div ref={shell} className="storm-map" data-loaded="false" data-ready={mapReady ? "true" : "false"} data-frame={props.frameId}>
+    <div ref={shell} className="storm-map" data-loaded="false" data-ready={mapReady ? "true" : "false"} data-frame={props.frameId} data-playing={props.playing ? "true" : "false"} data-radar-opacity={props.radarOpacity.toFixed(2)}>
       <div ref={canvas} className="storm-map-canvas" />
     </div>
   );

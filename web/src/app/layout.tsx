@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import "@fontsource/libre-baskerville/latin-400.css";
 import "@fontsource/libre-baskerville/latin-400-italic.css";
-import "@fontsource/alegreya-sans/latin-400.css";
-import "@fontsource/alegreya-sans/latin-500.css";
-import "@fontsource/alegreya-sans/latin-700.css";
+import "@fontsource/atkinson-hyperlegible/latin-400.css";
+import "@fontsource/atkinson-hyperlegible/latin-700.css";
+import "@fontsource/ibm-plex-mono/latin-400.css";
+import "@fontsource/ibm-plex-mono/latin-500.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     images: ["/twitter-image"],
   },
 };
-export const viewport: Viewport = { themeColor: "#081c26", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#05070b", colorScheme: "dark" };
 
 export const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => (
   <html lang="en"><body>{children}</body></html>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { Provenance, Snapshot } from "@/lib/types";
 import { formatDate } from "@/lib/operator";
 import { searchCounties, type CountyRecord } from "@/lib/county-search";
+import { Masthead } from "./masthead";
 import { Operator } from "./operator";
 
 type Alert = { id: string; event: string; areaDesc: string; expires: string; county_fips: string[]; mapping_status: string };
@@ -114,18 +115,14 @@ export const Nationwide = () => {
 
   return <>
     <div className="app-shell national-controls">
-      <header className="masthead">
-        <a href="/" className="wordmark">Porch Light<span className="wordmark-period">.</span></a>
-        <span className="masthead-descriptor">National care-facility outreach</span>
-        <nav className="workspace-nav" aria-label="Workspace sections"><a href="/">Project home</a><a href="/watch">Storm Watch</a><a href="/operate">Manatee walkthrough</a></nav>
-      </header>
+      <Masthead />
       <Content>
         <section className="intro" aria-labelledby="national-title">
           <div className="intro-heading"><p className="eyebrow">County discovery / Official alert captures</p>
             <h1 id="national-title">Find the next <em>care-facility call.</em></h1>
-            <p className="intro-description">Choose a US county or a current captured NWS alert. The real CMS, Census, SVI and emPOWER chain returns an inspectable call sheet, or the exact source gaps.</p>
+            <p className="intro-description">Choose a US county or a captured weather alert. Medicare, Census, and power-outage records build a call sheet, or show exactly what is missing.</p>
           </div>
-          <div className="edition-note"><p>Directory records, not verified facility conditions. Prototype ranking, not clinical urgency.</p><a href="https://api.weather.gov/alerts/active" target="_blank" rel="noreferrer">Current official NWS alerts</a></div>
+          <div className="edition-note"><p>Directory records, not verified facility conditions. Prototype ranking, not clinical urgency.</p><a href="https://api.weather.gov/alerts/active" target="_blank" rel="noreferrer">Current official weather alerts</a></div>
         </section>
         {loading && <p role="status">Reading the audited national source catalog. No sample counties are loaded.</p>}
         {error && <div className="watch-error" role="alert"><p>{error}</p><button onClick={() => setRefreshKey(key => key + 1)} disabled={loading}>Retry verified source catalog</button></div>}

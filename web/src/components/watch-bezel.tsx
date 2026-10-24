@@ -8,11 +8,12 @@ const RING_SIZE = 240;
 const RING_RADIUS = 88;
 
 export const WatchBezel = ({
-  label, ticks, selectedId, onSelect, centerLabel, centerMark, onCenter, centerHref, centerPressed, centerDisabled,
+  label, ticks, selectedId, litId, onSelect, centerLabel, centerMark, onCenter, centerHref, centerPressed, centerDisabled,
 }: {
   label: string;
   ticks: BezelTick[];
   selectedId: string;
+  litId?: string;
   onSelect?: (id: string) => void;
   centerLabel: string;
   centerMark: string;
@@ -58,12 +59,13 @@ export const WatchBezel = ({
       top: `${50 + Math.sin(angle) * (RING_RADIUS / RING_SIZE) * 100}%`,
     } : undefined;
     const selected = tick.id === selectedId;
+    const lit = tick.id === (litId || selectedId);
     if (tick.href) return (
-      <a key={`${className}-${tick.id}`} data-tick={tick.id} className={className} style={style} href={tick.href}
+      <a key={`${className}-${tick.id}`} data-tick={tick.id} className={`${className}${lit ? " is-lit" : ""}`} style={style} href={tick.href}
         aria-label={tick.label} aria-current={selected ? "true" : undefined}>{tick.mark}</a>
     );
     return (
-      <button key={`${className}-${tick.id}`} type="button" data-tick={tick.id} className={className} style={style}
+      <button key={`${className}-${tick.id}`} type="button" data-tick={tick.id} className={`${className}${lit ? " is-lit" : ""}`} style={style}
         aria-label={tick.label} aria-pressed={selected} onClick={() => onSelect?.(tick.id)}>{tick.mark}</button>
     );
   });
