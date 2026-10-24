@@ -1,0 +1,32 @@
+{
+  "name": "porch-light-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 3101",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1 --port 3101",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "node --experimental-strip-types --experimental-detect-module --test src/lib/national-gaps.test.ts",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "@fontsource/atkinson-hyperlegible": "^5.2.8",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/libre-baskerville": "5.3.0",
+    "framer-motion": "12.34.3",
+    "maplibre-gl": "6.15.0",
+    "next": "16.4.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.2",
+    "@tailwindcss/postcss": "4.2.0",
+    "@types/node": "20.19.33",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "tailwindcss": "4.2.0",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "source_url": "https://proof.joepro.systems/plates/night-ledger.webp",
+  "fetched_at_utc": "2026-10-22T20:26:18+00:00",
+  "sha256": "ca648727963c823923664207ed13b3d787ba125c0aad797072f16c5779f6a789",
+  "license": "Pre-existing JoePro Proof Desk direction plate, reused by user request; illustration/material only, not weather or geographic evidence",
+  "fetch_command": "urllib GET https://proof.joepro.systems/plates/night-ledger.webp"
+}

@@ -1,0 +1,16 @@
+{
+  "source_url": "https://proof.joepro.systems/plates/night-ledger.webp",
+  "fetched_at_utc": "2026-10-22T20:26:18+00:00",
+  "sha256": "ca648727963c823923664207ed13b3d787ba125c0aad797072f16c5779f6a789",
+  "license": "Pre-existing JoePro Proof Desk direction plate, reused by user request; illustration/material only, not weather or geographic evidence",
+  "fetch_command": "urllib GET https://proof.joepro.systems/plates/night-ledger.webp",
+  "role": "decorative material texture",
+  "pre_existing_asset": true,
+  "design_contract_source": "https://proof.joepro.systems",
+  "design_contract_method": "Product-specific manual brief, direction and dials, actual Export contract output. No Copy Desk or Image Press call.",
+  "implementation_fonts": {
+    "Baskerville_display_role": "Libre Baskerville 5.3.0, self-hosted",
+    "Optima_body_role": "Alegreya Sans 5.3.0, self-hosted humanist counterpart"
+  },
+  "tool_audit_note": "Proof Desk audit scores are tool heuristics, not independent product quality or accessibility measurements."
+}
