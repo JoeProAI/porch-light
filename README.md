@@ -1,60 +1,103 @@
 # Porch Light
 
-Care-facility outreach with sourced contacts, inspectable reasons and visible unknowns.
+Porch Light is a care-facility outreach workbench. It shows sourced contacts, the ranking terms behind each row, and the facts that are still unknown.
 
-Porch Light demonstrates a retrospective Manatee County, Florida call sheet for dialysis centers and nursing homes. A fixed development formula ranks 18 sourced records; two records remain refused. Operators can inspect evidence, record contact outcomes on their device, export CSV and print. This is not a clinically validated urgency model or current facility-status feed.
+The home page opens on any US county. The Hurricane Milton walkthrough is the saved Manatee County, Florida example: 18 ranked dialysis and nursing-home records and 2 refusals, from a fixed published formula over captured public CMS, Census, SVI, and emPOWER records. Operators can inspect the evidence, record a contact outcome on their own device, export CSV, and print. The app does not place calls or send messages.
+
+`/nationwide` runs the same engine for a Census county or a current National Weather Service alert when local Zetaris is available. Each county run reports that county’s audited rows and source gaps. Storm Watch (`/watch`) shows captured official alerts and NOAA radar for the provider regions that published frames.
 
 Built for the GenAI.Works Open Agent Hackathon 2026, Track 01 (Solving Fragmented Intelligence), by team Burden of Proof.
 
-Separate Storm Watch weather context uses captured national NWS alerts and source-faithful NOAA radar for available provider regions. Weather coverage does not establish national facility coverage.
+The ranking formula is a published prototype over captured public records. Operators still verify facility conditions. Nemotron drafts do not change a score.
 
-## Run Locally
+## Who built it
 
-From `web/`, with the repository's dependencies already installed:
+Joe Gaither directed the project: decisions, review, and merges.
+
+Devin built the data adapters, the engines, and most of the web application, including the Manatee call sheet.
+
+Cursor cloud agents built [Storm Watch v2 and the Storm Glass Desk design (PR #22)](https://github.com/JoeProAI/porch-light/pull/22) and [the national web wiring (PR #24)](https://github.com/JoeProAI/porch-light/pull/24): county search, active-alert runs, source gaps, and the smoke script.
+
+## Dependencies
+
+Application reads go through a local Zetaris JDBC connection. The source relations sit in one read-only PostGIS database, registered in Zetaris as `porchlight_postgis`. Spatial predicates stay in PostGIS.
+
+Nemotron drafts and call scripts go through Meterless on the Nightshift route (`meterless/deep`), with thinking disabled. Credentials stay in Meterless’s private proxy-token file, outside this repository. The model route is that hosted Meterless path.
+
+National captures, live weather captures, job artifacts, and local logs stay outside git:
+
+| Path under `%USERPROFILE%\.porchlight` | What it holds |
+|---|---|
+| `national` | Census, CMS, and related national source files, plus job and sweep artifacts |
+| `live-weather` | Official NWS alert and NOAA radar captures |
+| `runlogs` | Local web and weather-worker logs from `Start-Local.ps1` |
+
+Also required for a live run: Java 21, the licensed Zetaris JDBC jar (outside git), Python 3, and Node.js for the web app. Engine Python dependencies are listed in `engines/requirements.txt`. Web dependencies are in `web/package.json`.
+
+Set `PORCHLIGHT_ZETARIS_ENV_FILE` and `PORCHLIGHT_ZETARIS_JDBC_JAR` only when those paths differ from the local install. Do not put the PostGIS password in audited SQL.
+
+The committed Manatee page can render from `web/data/manatee-ranked.json` without live data credentials. County runs, active alerts, and Storm Watch need the local Zetaris and PostGIS stack, and the files under `%USERPROFILE%\.porchlight`.
+
+## Setup
+
+1. Install Java 21, the Zetaris JDBC jar, and the local Zetaris and PostGIS services. Register the read-only database as `porchlight_postgis`.
+2. Capture and load national sources into `%USERPROFILE%\.porchlight\national` with `python -m data.adapters.us.capture_national`, then `python -m data.snapshot.national --folder <capture-directory>`. Register the read-only projections with `python -m engines.national_sources --register` and `python -m engines.national_alerts --register`. Details are in `engines/README.md`.
+3. From `web/`, install dependencies and build:
 
 ```powershell
+npm ci
 npm run build
 npm run start
 ```
 
-On Windows, `.\Start-Local.ps1` from the repository root starts the built app if port 3101 is free and starts a weather worker if none is running. By default the worker makes up to 288 capture attempts, with at least five minutes between attempts, roughly a day plus fetch time. It does not install dependencies, auto-start on Windows boot or delete retained source captures. Logs stay outside Git under `%USERPROFILE%\.porchlight\runlogs`. Use `-SkipWeather` for snapshot-only operation. Local Zetaris/PostGIS must already be running.
-
 Open `http://127.0.0.1:3101`.
 
-1. `/` explains the project, sponsors and independent emergency resources.
-2. `/operate` opens the real, retrospective Manatee snapshot.
-3. Select a facility and inspect source facts, score terms and the shared audit reference.
-4. Record a manual contact outcome, export CSV or print. No calls or messages are sent.
-5. `/watch` shows captured official weather, with source times and stale/offline states.
+On Windows, `.\Start-Local.ps1` from the repository root starts that built app when port 3101 is free, and starts a weather worker when none is running. The default worker makes up to 288 capture attempts, at least five minutes apart. It does not install dependencies, start on boot, or delete retained captures. `-SkipWeather` leaves the weather worker off. Local Zetaris and PostGIS must already be running.
 
-The call sheet renders from committed real-source snapshots without live data credentials. Retaining an already loaded page is not a verified cold-offline application or local GPU inference. Storm Watch needs the licensed local Zetaris runtime, registered read-only source and private weather cache. See `web/README.md` for the bounded capture-worker command. No public deployment is configured.
+## Usage
+
+1. `/` explains the project, sponsors, and independent emergency resources. **Pick any US county** opens the national run. **See the Hurricane Milton walkthrough** opens the saved Manatee demonstration.
+2. `/operate` is the Manatee sheet. Select a facility and read source facts, score terms, and the audit reference. Record a contact outcome, export CSV, or print.
+3. `/nationwide` searches the Census county catalog by name, state, or FIPS, and lists active NWS alerts from the audited feed. A county job or a combined alert job runs through `engines.national_jobs`. The page shows job progress, the ranked sheet, Zetaris query IDs, and per-source gaps. `/operate?county=<FIPS>` opens that nationwide run. A FIPS or alert id that fails validation does not load the Manatee sheet.
+4. On a national row, **Generate live Nemotron call script** is classified by Scout Intent first. A proceed decision issues a signed execution contract; the draft executor verifies it before that job id is sent through Meterless. A refusal returns `refused_by_scout` and shows no substitute script. Grounding failures stay visible. `/operate` can request a script for the stored Manatee snapshot.
+5. `/watch` shows the captured official weather feed, with source times and stale or offline states.
+
+If Zetaris cannot be reached, the national page says `Zetaris unreachable on this machine` and returns no rows.
+
+## Smoke script
+
+From the repository root, on a machine with local Zetaris:
+
+```powershell
+scripts\smoke-national.ps1
+```
+
+```bash
+scripts/smoke-national.sh
+```
+
+The script reads the county catalog, then runs Manatee County, Florida (`12081`), Harris County, Texas (`48201`), Cook County, Illinois (`17031`), Loving County, Texas (`48301`), and one county mapped from the current audited active alert. It prints pass or fail, wall time, engine runtime, source gaps, and Zetaris query IDs.
+
+It calls `engines.national_run`, so it does not spend the Meterless draft budget. The web call sheet still uses `engines.national_jobs`, which requests grounded drafts for ranked rows. If Zetaris is unreachable, the script exits with that message and does not substitute another county.
 
 ## Sponsor map
 
 | Sponsor | Where it's used | How |
 |---|---|---|
-| Zetaris | `engines/zetaris_chain.py`, `engines/zetaris_client.py` | Seven independently audited statements, including CMS/Census/SVI/emPOWER joins and SQL-measured match counts. The source relations share one physical read-only PostGIS datasource; spatial predicates stay in PostGIS. |
-| Meterless | `engines/meterless.py`, `engines/scout_intent.py`, snapshot `model_executions` | Runtime: one stored `meterless/deep` execution routed a genuine Nemotron response with thinking disabled. Engine: Scout Intent gates the live call-script path with a signed execution contract that the draft executor verifies before any provider call (see `engines/README.md`, Scout Intent gate). H-MEM, World Model and Markovian are not claimed. |
-| NVIDIA Nemotron | `engines/snapshots/manatee-zetaris.json` | One stored Super VL execution produced three explanation drafts. The audited snapshot reused them after input equality checks. Other rows have computed reasons. Nemotron does not rank, and local GPU inference is not verified. |
-| Cursor | Build evidence missing from this checkout | This web implementation was authored by Devin. Rules on a separate contract branch are not evidence of a Cursor build. Eligibility evidence must be produced through genuine Cursor work. |
-
-## Feature to engine
-
-The ranking code and evidence are in `engines/`; the operator interface, source map and weather interface are in `web/`. `web/data/manatee-ranked.json` contains the actual audited chain snapshot from `engines/snapshots/manatee-zetaris-chain.json`. Historical single-bundle query `80` remains in the older snapshot; the active chain has a distinct audit ID for each statement. Selecting a row does not issue a new facility query.
+| Zetaris | `engines/zetaris_chain.py`, `engines/zetaris_client.py`, `engines/national_run.py` | Audited SQL joins CMS, Census, SVI, and emPOWER, with measured match counts. Source relations share one read-only PostGIS datasource. The Manatee page can read the audited export. National runs query Zetaris directly. |
+| Meterless | `engines/meterless.py`, `engines/scout_intent.py`, `engines/draft_jobs.py` | Nemotron requests use the Nightshift `meterless/deep` route with thinking disabled. Scout Intent gates the live call-script path with a signed execution contract that the draft executor verifies before any provider call (see `engines/README.md`, Scout Intent gate). H-MEM, World Model and Markovian are not claimed. |
+| NVIDIA Nemotron | `engines/snapshots/manatee-zetaris.json`, `engines/national_jobs.py` | Stored Super VL drafts explain the top Manatee rows. National call scripts are requested per run through Meterless after the Scout Intent contract is verified. Nemotron does not rank. Local GPU inference is not verified. |
+| Cursor | [PR #22](https://github.com/JoeProAI/porch-light/pull/22), [PR #24](https://github.com/JoeProAI/porch-light/pull/24) | Cursor cloud agents wrote Storm Watch v2 and the shared design, and the national web wiring. Devin wrote the data, engines, and most of the web. Joe directed the work. |
 
 ## Data credits
 
-Facility evidence retains source URLs, licenses and SHA-256 references for the captured CMS and contextual records. Snapshot provenance is retained with `web/data/` and `engines/snapshots/`. Weather frames remain outside Git with source-hash verification. NASA's archived Milton image is credited and dated in the interface and `web/public/weather/` sidecar.
+Facility evidence keeps source URLs, licenses, and SHA-256 references for the captured CMS and contextual records. Snapshot provenance is in `web/data/` and `engines/snapshots/`. Weather frames stay outside git and are checked by source hash. NASA’s archived Milton image is credited and dated in the interface and the `web/public/weather/` sidecar.
 
-External resources, including emPOWER, are complementary systems, not partners or integrations. emPOWER also has restricted outreach capabilities; it is not merely a counting tool.
-
-## Submission Gaps
-
-The video, slide deck and written submission explanation are not packaged here. Cursor build evidence, a measured operator baseline and release/deployment review remain outstanding. Nationwide source loading, county/live-alert execution and a measured coverage sweep are the current implementation target, not completed coverage claims. International facility ranking, shared multi-operator coordination and live facility conditions are not implemented.
+External resources, including emPOWER, are public references. They are not partner integrations. emPOWER has its own restricted outreach rules.
 
 ## Privacy
 
-Porch Light uses only public, facility-level and aggregate data. It holds no personal health records.
+Porch Light uses public, facility-level, and aggregate data. It holds no personal health records.
 
 ## License
 

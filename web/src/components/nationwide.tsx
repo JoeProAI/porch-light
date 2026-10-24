@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import type { Provenance, Snapshot } from "@/lib/types";
 import { formatDate } from "@/lib/operator";
 import { searchCounties, type CountyRecord } from "@/lib/county-search";
+import { CountyMap } from "./national/county-map";
+import { SourceGaps } from "./national/source-gaps";
+import { Masthead } from "./masthead";
 import { Operator } from "./operator";
+import "./national/national.css";
 
 type Alert = { id: string; event: string; areaDesc: string; expires: string; county_fips: string[]; mapping_status: string };
 type Catalog = {
@@ -17,6 +21,17 @@ type Job = {
 };
 const object = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === "object" && !Array.isArray(value);
+const launched = new Set<string>();
+const requestRun = async (selection: { county?: string; alert?: string; capture?: string }): Promise<string> => {
+  const response = await fetch("/api/national", {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(selection),
+  });
+  const value: unknown = await response.json();
+  if (!response.ok || !object(value) || typeof value.id !== "string") {
+    throw new Error(object(value) && typeof value.error === "string" ? value.error : "The source run couldn't start.");
+  }
+  return value.id;
+};
 
 export const Nationwide = () => {
   const [catalog, setCatalog] = useState<Catalog | null>(null);
@@ -47,6 +62,34 @@ export const Nationwide = () => {
         const saved = query.get("run");
         if (saved && /^[a-f0-9]{32}$/.test(saved)) setJob({ id: saved, phase: "checking_saved_run" });
         if (query.get("alert")) { setMode("alert"); setAlert(query.get("alert")!); }
+        const fips = query.get("county");
+        const rows = (value as unknown as Catalog).catalog.counties;
+        if (fips && !saved) {
+          if (!/^\d{5}$/.test(fips)) setError("County source code must be five digits. No Manatee sheet was substituted.");
+          else {
+            const row = rows.find(item => item.fips === fips);
+            if (!row) setError(`${fips} is not in the official Census catalog. No Manatee sheet was substituted.`);
+            else {
+              setMode("county");
+              setState(row.state);
+              setCounty(row.fips);
+              setCountyQuery(row.fips);
+              if (!launched.has(fips)) {
+                launched.add(fips);
+                try {
+                  const id = await requestRun({ county: fips });
+                  if (!controller.signal.aborted) {
+                    setJob({ id, phase: "starting" });
+                    window.history.replaceState(null, "", `/nationwide?run=${id}&county=${fips}`);
+                  }
+                } catch (failure) {
+                  launched.delete(fips);
+                  if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : "The source run is unavailable.");
+                }
+              }
+            }
+          }
+        }
       } catch (failure) {
         if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : "The source service is unavailable.");
       } finally { if (!controller.signal.aborted) setLoading(false); }
@@ -81,20 +124,14 @@ export const Nationwide = () => {
     return () => { controller.abort(); clearTimeout(timer); };
   }, [polling]);
 
-  const start = async () => {
+  const begin = async (selection: { county?: string; alert?: string; capture?: string }) => {
     setSubmitting(true);
     setError("");
     try {
-      const selection = mode === "county" ? { county } : { alert, capture: catalog?.weather.capture_id };
-      const response = await fetch("/api/national", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(selection),
-      });
-      const value: unknown = await response.json();
-      if (!response.ok || !object(value) || typeof value.id !== "string") {
-        throw new Error(object(value) && typeof value.error === "string" ? value.error : "The source run couldn't start.");
-      }
-      setJob({ id: value.id, phase: "starting" });
-      const query = new URLSearchParams({ run: value.id });
+      const id = await requestRun(selection);
+      setJob({ id, phase: "starting" });
+      const query = new URLSearchParams({ run: id });
+      if (selection.county) query.set("county", selection.county);
       window.history.replaceState(null, "", `/nationwide?${query}`);
     } catch (failure) { setError(failure instanceof Error ? failure.message : "The source run is unavailable."); }
     finally { setSubmitting(false); }
@@ -104,6 +141,21 @@ export const Nationwide = () => {
   const countyMatches = searchCounties(catalog?.catalog.counties ?? [], countyQuery);
   const selectedAlert = catalog?.weather.alerts?.find(row => row.id === alert);
   const busy = submitting || !!polling;
+  const start = () => void begin(mode === "county" ? { county } : { alert, capture: catalog?.weather.capture_id });
+  const pickCounty = (fips: string) => {
+    if (!/^\d{5}$/.test(fips) || busy) return;
+    const row = catalog?.catalog.counties.find(item => item.fips === fips);
+    if (catalog && !row) {
+      setCountyQuery(fips);
+      setError(`${fips} is not in the official Census catalog. No Manatee sheet was substituted.`);
+      return;
+    }
+    setMode("county");
+    setCounty(fips);
+    setCountyQuery(fips);
+    if (row) setState(row.state);
+    void begin({ county: fips });
+  };
   const snapshot = job?.snapshot;
   const Content = snapshot && snapshot.state !== "source_gap" ? "section" : "main";
   useEffect(() => {
@@ -114,28 +166,23 @@ export const Nationwide = () => {
 
   return <>
     <div className="app-shell national-controls">
-      <header className="masthead">
-        <a href="/" className="wordmark">Porch Light<span className="wordmark-period">.</span></a>
-        <span className="masthead-descriptor">National care-facility outreach</span>
-        <nav className="workspace-nav" aria-label="Workspace sections"><a href="/">Project home</a><a href="/watch">Storm Watch</a><a href="/operate">Manatee walkthrough</a></nav>
-      </header>
+      <Masthead />
       <Content>
         <section className="intro" aria-labelledby="national-title">
           <div className="intro-heading"><p className="eyebrow">County discovery / Official alert captures</p>
             <h1 id="national-title">Find the next <em>care-facility call.</em></h1>
-            <p className="intro-description">Choose a US county or a current captured NWS alert. The real CMS, Census, SVI and emPOWER chain returns an inspectable call sheet, or the exact source gaps.</p>
+            <p className="intro-description">Click a county or search the catalog. One run returns that county&apos;s audited rows and source gaps. A captured weather alert can run the counties it maps.</p>
           </div>
-          <div className="edition-note"><p>Directory records, not verified facility conditions. Prototype ranking, not clinical urgency.</p><a href="https://api.weather.gov/alerts/active" target="_blank" rel="noreferrer">Current official NWS alerts</a></div>
+          <div className="edition-note"><p>Directory records, not verified facility conditions. Prototype ranking, not clinical urgency.</p><a href="https://api.weather.gov/alerts/active" target="_blank" rel="noreferrer">Current official weather alerts</a></div>
         </section>
+        {mode === "county" && <CountyMap selected={county} disabled={busy} onPick={pickCounty} />}
         {loading && <p role="status">Reading the audited national source catalog. No sample counties are loaded.</p>}
         {error && <div className="watch-error" role="alert"><p>{error}</p><button onClick={() => setRefreshKey(key => key + 1)} disabled={loading}>Retry verified source catalog</button></div>}
-        {catalog && <>
-          <p className="fineprint">{catalog.catalog.counties.length} official Census county entries. Zetaris catalog query {catalog.catalog.data_access.zetaris_query_ids.join(", ")}. Ranking depends on the source joins, not merely being on this list.</p>
-          {mode === "county" && <section className="contact-form" aria-label="Search the audited county catalog">
+        {mode === "county" && <section className="contact-form" aria-label="Search the audited county catalog">
             <label htmlFor="county-search">Search US counties by name or FIPS</label>
             <input id="county-search" type="search" value={countyQuery} disabled={busy}
               onChange={event => setCountyQuery(event.target.value)} placeholder="Baldwin, Doña Ana, or 01003" />
-            {!!countyQuery.trim() && <>
+            {catalog && !!countyQuery.trim() && <>
               <p role="status">{countyMatches.length} matching source counties. Select the state and county you mean.</p>
               <ul>{countyMatches.slice(0, 20).map(item => <li key={item.fips}>
                 <button type="button" disabled={busy} onClick={() => {
@@ -146,6 +193,8 @@ export const Nationwide = () => {
               {!countyMatches.length && <p>No source county matches this name or FIPS. Try another name or use the state list. No county is guessed.</p>}
             </>}
           </section>}
+        {catalog && <>
+          <p className="fineprint">{catalog.catalog.counties.length} official Census county entries. Zetaris catalog query {catalog.catalog.data_access.zetaris_query_ids.join(", ")}. Being on this list is not a ranking. A run returns that county&apos;s own rows and gaps.</p>
           <form className="contact-form" onSubmit={event => { event.preventDefault(); void start(); }}>
             <fieldset disabled={busy}><legend>Choose source scope</legend>
               <label><input type="radio" name="source-mode" checked={mode === "county"} onChange={() => { setMode("county"); setJob(null); }} /> County discovery</label>
@@ -188,11 +237,13 @@ export const Nationwide = () => {
           {job.phase === "grounding_nemotron_drafts" && snapshot && <p>The audited call sheet is ready below. Nemotron drafts are still processing; they don't determine the ranking.</p>}
         </section>}
         {snapshot?.state === "source_gap" && <section className="watch-error" role="alert"><h2>Source gap, no ranking invented.</h2>
-          <p>{snapshot.county.name}: {snapshot.reason}</p><p>Audited query {snapshot.data_access.zetaris_query_ids.join(", ")}.</p></section>}
+          <p>{snapshot.county.name}: {snapshot.reason}</p><p>Audited query {snapshot.data_access.zetaris_query_ids.join(", ")}.</p>
+          <SourceGaps value={snapshot} /></section>}
       </Content>
     </div>
     {snapshot && snapshot.state !== "source_gap" && job?.provenance &&
       <div id="national-result" tabIndex={-1} role="region" aria-label="Verified care-facility call sheet">
+        <SourceGaps value={snapshot} />
         <Operator key={job.id} snapshot={snapshot} provenance={job.provenance} sourceRunId={job.id} />
       </div>}
   </>;
