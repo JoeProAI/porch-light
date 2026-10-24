@@ -77,6 +77,10 @@ export const Nationwide = () => {
     setLoading(true);
     setError("");
     setRecentError("");
+    const query = new URLSearchParams(window.location.search);
+    const saved = query.get("run");
+    // A saved run is read from its own verified checkpoint. Don't make the operator wait on the catalog read to see it.
+    if (saved && /^[a-f0-9]{32}$/.test(saved)) setJob(current => current?.id === saved ? current : { id: saved, phase: "starting" });
     void (async () => {
       try {
         const [catalogResponse, recentResponse] = await Promise.all([
@@ -204,6 +208,13 @@ export const Nationwide = () => {
   const counties = catalog?.catalog.counties.filter(row => row.state === state) ?? [];
   const countyMatches = searchCounties(catalog?.catalog.counties ?? [], countyQuery);
   const selectedAlert = catalog?.weather.alerts?.find(row => row.id === alert);
+
+// Operators scan for a mapped warning, not a marine statement. Order the captured feed that way; nothing is dropped.
+  const orderedAlerts = [...catalog?.weather.alerts ?? []].sort((a, b) =>
+    Number(!!b.county_fips.length) - Number(!!a.county_fips.length) ||
+    Number(/warning/i.test(b.event)) - Number(/warning/i.test(a.event)) ||
+    a.event.localeCompare(b.event) || a.areaDesc.localeCompare(b.areaDesc));
+  const alertUnmapped = !!selectedAlert && !selectedAlert.county_fips.length;
   const busy = submitting || !!polling;
   const start = () => void begin(mode === "county" ? { county } : { alert, capture: catalog?.weather.capture_id });
   const pickCounty = (fips: string) => {
@@ -295,14 +306,15 @@ export const Nationwide = () => {
                 <><label htmlFor="national-alert">Official NWS alert</label>
                   <select id="national-alert" value={alert} onChange={event => { setAlert(event.target.value); setJob(null); }} disabled={busy} required>
                     <option value="">Choose a captured source alert</option>
-                    {catalog.weather.alerts?.map(row => <option key={row.id} value={row.id}>{row.event} / {row.areaDesc}</option>)}
+                    {orderedAlerts.map(row => <option key={row.id} value={row.id}>{row.event} / {row.areaDesc} / {row.county_fips.length ? `${row.county_fips.length} source ${row.county_fips.length === 1 ? "county" : "counties"}` : "no source county mapping"}</option>)}
                   </select>
                   {catalog.weather.captured_at && <p className="fineprint">Feed captured {formatDate(catalog.weather.captured_at)}. Alerts can expire after capture.</p>}
                   {selectedAlert && <p className="fineprint">{selectedAlert.county_fips.length} source-mapped counties. Mapping: {selectedAlert.mapping_status}. <a href={selectedAlert.id} target="_blank" rel="noreferrer">Inspect the original NWS record</a></p>}
+                  {alertUnmapped && <p className="watch-error" role="alert">No source county maps to this alert, so there is nothing to run. Choose a mapped alert, or run the county you mean through county discovery.</p>}
                 </>}
             </>}
             <button className="primary-button" type="submit" disabled={busy || loading ||
-              (mode === "county" ? !county : !selectedAlert)}>
+              (mode === "county" ? !county : !selectedAlert || alertUnmapped)}>
               {busy ? "Processing verified sources..." :
                 catalogIsPublished(catalog) && mode === "county" ? "Open published audited call sheet" :
                 "Build sourced call sheet and grounded drafts"}

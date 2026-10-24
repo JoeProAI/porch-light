@@ -57,6 +57,31 @@ test("a real empty county stays empty and source failures have recovery", async 
   await expect(page.getByLabel("State or territory")).toBeEnabled({ timeout: 160000 });
 });
 
+test("a saved run reopens from its own checkpoint before the catalog read finishes", async ({ page }) => {
+  test.setTimeout(240000);
+  await page.goto("/nationwide");
+  await expect(page.getByLabel("State or territory")).toBeEnabled({ timeout: 160000 });
+  await page.getByLabel("State or territory").selectOption("HI");
+  await page.getByLabel("County or county-equivalent").selectOption("15005");
+  await page.getByRole("button", { name: "Build sourced call sheet and grounded drafts" }).click();
+  await expect(page.getByRole("heading", { name: "No ranked facilities." })).toBeVisible({ timeout: 160000 });
+  const saved = new URL(page.url()).searchParams.get("run");
+  expect(saved).toMatch(/^[a-f0-9]{32}$/);
+  // Hold the catalog read for longer than the assertion window. The run checkpoint is a separate request and must not wait on it.
+  await page.route("**/api/national", async route => {
+    if (new URL(route.request().url()).searchParams.has("job")) return route.continue();
+    await new Promise(resolve => setTimeout(resolve, 20000));
+    return route.continue();
+  });
+  const started = Date.now();
+  await page.goto(`/nationwide?run=${saved}&county=15005`);
+  await expect(page.getByRole("heading", { name: "No ranked facilities." })).toBeVisible({ timeout: 15000 });
+  expect(Date.now() - started).toBeLessThan(15000);
+  await expect(page.locator(".facility-row")).toHaveCount(0);
+  expect(await page.evaluate(() => document.querySelectorAll("main").length)).toBe(1);
+  await page.unroute("**/api/national");
+});
+
 test("local model operations reject cross-site requests and unverified client facts", async ({ request }) => {
   const blocked = await request.post("/api/national", {
     headers: { Origin: "https://untrusted.example", "Sec-Fetch-Site": "cross-site" },
@@ -122,6 +147,27 @@ test("a real active NWS alert runs in the nationwide app without a Manatee subst
   await expect(sheet.locator(".source-strip")).toContainText("audit verified");
   await expect(sheet.locator(".edition")).not.toContainText("MANATEE");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("the alert list leads with mapped warnings and an unmapped alert cannot start a run", async ({ page, request }) => {
+  test.setTimeout(240000);
+  const response = await request.get("/api/national", { timeout: 190000 });
+  expect(response.ok()).toBe(true);
+  const catalog = await response.json() as { weather: { status: string; alerts: { id: string; county_fips: string[] }[] } };
+  test.skip(catalog.weather.status !== "available", "No audited alert capture is available right now.");
+  await page.goto("/nationwide");
+  await expect(page.getByLabel("Captured live alert", { exact: true })).toBeEnabled({ timeout: 160000 });
+  await page.getByLabel("Captured live alert", { exact: true }).check();
+  const labels = await page.getByLabel("Official NWS alert", { exact: true }).locator("option").allTextContents();
+  const mapped = labels.slice(1).map(label => !label.endsWith("/ no source county"));
+  // Every mapped alert precedes every unmapped one; the feed itself is unchanged.
+  expect(mapped.indexOf(false) === -1 || mapped.lastIndexOf(true) < mapped.indexOf(false)).toBe(true);
+  expect(labels.length - 1).toBe(catalog.weather.alerts.length);
+  const unmapped = catalog.weather.alerts.find(alert => alert.county_fips.length === 0);
+  test.skip(!unmapped, "Every captured alert maps to a source county right now.");
+  await page.getByLabel("Official NWS alert", { exact: true }).selectOption(unmapped!.id);
+  await expect(page.getByRole("button", { name: "Build sourced call sheet and grounded drafts" })).toBeDisabled();
+  await expect(page.locator("form .watch-error[role=alert]")).toContainText("nothing to run");
 });
 
 test("live Nemotron call script carries source grounding and is retained without placing calls", async ({ page }) => {
