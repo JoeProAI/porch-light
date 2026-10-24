@@ -12,7 +12,11 @@ type ScriptResult = {
   }[];
 };
 
-for (const county of [{ fips: "01003", name: "Baldwin, AL" }, { fips: "44007", name: "Providence, RI" }]) {
+for (const county of [
+  { fips: "01003", name: "Baldwin, AL" },
+  { fips: "44007", name: "Providence, RI" },
+  { fips: "08031", name: "Denver, CO" },
+]) {
   test(`real top-three Nemotron scripts for ${county.name} stay grounded and retained`, async ({ page, request }, testInfo) => {
     test.setTimeout(1500000);
     const errors: string[] = [];
