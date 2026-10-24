@@ -120,7 +120,25 @@ test("actual bytes, deterministic terms, projection and local record validation"
   expect(b[1]).toBeLessThan(a[1]);
   expect(parseContacts(null, snapshot.facilities)).toEqual({});
   expect(() => parseContacts("{", snapshot.facilities)).toThrow();
-  expect(createCsv(snapshot, {}).split("\r\n")).toHaveLength(19);
+  const countyCsv = createCsv(snapshot, {});
+  expect(countyCsv.split("\r\n")).toHaveLength(19);
+  expect(countyCsv).toContain("NWS alert URL");
+  expect(countyCsv).toContain("Alert captured at UTC");
+  expect(countyCsv).toContain("Alert expires at UTC");
+  const alertSnapshot = {
+    ...snapshot,
+    selected_alert: {
+      id: "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.example",
+      event: "Tornado Warning",
+      captured_at: "2026-10-23T20:00:00Z",
+      expires: "2026-10-23T21:00:00Z",
+      capture_id: "0000000000000000000000000000000000000000000000000000000000000000",
+    },
+  } as Snapshot;
+  const alertCsv = createCsv(alertSnapshot, {});
+  expect(alertCsv).toContain("https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.example");
+  expect(alertCsv).toContain("2026-10-23T20:00:00Z");
+  expect(alertCsv).toContain("2026-10-23T21:00:00Z");
 });
 
 test("real ledger, synchronized selection, keyboard evidence and no browser errors", async ({ page }, testInfo) => {
