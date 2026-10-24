@@ -35,12 +35,27 @@ last update: Wed Oct 21 2026 9:02 PM ET
 
 ## Area: Data
 owner now: Devin  (primary Devin, backup Cursor cloud agent (data))
-state: not started
-next step: see your CREW brief
-branch: devin/data-*   open PRs: none
-how to run: n/a
-blocked: none
-last update: Wed Oct 21 2026 8:20 PM ET
+state: scaffold in PR (adapters layout, provenance sidecar helper, snapshot dirs)
+next step: Thu Oct 22: load core sources into the PostGIS snapshot with provenance sidecars, capture live Nor'easter alerts + golden Milton alert (FIPS 12081) + zone shapes, geocode dialysis addresses, map NH SSA codes to FIPS. Done check: a Zetaris SQL join returns in-area facilities with tract and SVI.
+branch: devin/data-*   open PRs: #1 data scaffold (devin/data-scaffold)
+how to run: `python3 data/provenance/sidecar.py <file> --source-url <u> --license "<line>" --fetch-command "<cmd>"`; add `--verify` to check a sidecar.
+blocked: local Zetaris on the 5080 needs Joe at the keyboard (steps below); contract/initial is up as PR #14, so data builds against it once it lands.
+
+emPOWER note: sources.yaml now cites the HHS emPOWER FeatureServer ZIP level layers (1, 5, 9, 13, 17, 21) checked HTTP 200; the geohealth MapServer ids differ and that host timed out from the box. sources.yaml parses as YAML again.
+
+### Local Zetaris on the 5080, steps for Joe (gate G2, never AWS)
+1. Windows side: install Docker Desktop with the WSL2 backend. Cap WSL2 in `%UserProfile%\.wslconfig`: `memory=8GB`, `processors=4`.
+2. WSL2 terminal: create the shared network `docker network create porchlight`, then pull and start the Zetaris build from the hackathon sponsor page (unverified: community/local edition and the default 8080 UI port are not confirmed from the sponsor page yet, L13), exposing its UI port on loopback only. `docker run -d --name porchlight-zetaris --network porchlight -p 127.0.0.1:8080:8080 <zetaris-image>`.
+3. Same WSL2: start PostGIS on the same network with no published port, credentials via env file: `docker run -d --name porchlight-postgis --network porchlight --env-file data/.env.postgis postgis/postgis:16-3.4`. Publish `127.0.0.1:5432:5432` only if local psql access is needed. `data/.env.postgis` is gitignored (root `.gitignore` covers `.env.*`); shape is placeholders only:
+
+   ```
+   POSTGRES_PASSWORD=<password>
+   POSTGRES_DB=porchlight
+   ```
+4. Zetaris admin UI: register a JDBC datasource `porchlight_postgis`: `jdbc:postgresql://porchlight-postgis:5432/porchlight`, user `postgres`, password from env, never in code or docs.
+5. Verify: run `SELECT 1` through Zetaris SQL against the datasource, then mark G2 in the Gates table.
+
+last update: Wed Oct 21 2026 9:04 PM ET
 
 ## Area: Engines
 owner now: Claude Code  (primary Claude Code, backup Devin)

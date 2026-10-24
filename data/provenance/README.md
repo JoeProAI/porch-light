@@ -1,5 +1,7 @@
 # Provenance convention
 
+Requires Python 3.10 or newer (`sidecar.py` uses `str | None` annotations).
+
 Every cached file under `data/` (alert JSON, CMS CSVs, SVI, emPOWER pulls, the county PDF) is committed next to a sidecar named `<file>.provenance.json`:
 
 ```json
