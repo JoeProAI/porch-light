@@ -137,6 +137,7 @@ def request_selections(rows: list[dict], purpose: str, retry_of: str | None = No
         raise RuntimeError("Retry does not reference a prior attempt covering these facilities")
     body = {
         "model": MODEL, "temperature": 0, "max_tokens": 4096,
+        "response_format": {"type": "json_object"},
         "chat_template_kwargs": {"enable_thinking": False},
         "messages": [
             {"role": "system", "content": (
@@ -171,6 +172,7 @@ def request_selections(rows: list[dict], purpose: str, retry_of: str | None = No
         "execution_location": "not_reported", "input_sha256": payload_hash,
         "facility_ccns": [row["ccn"] for row in rows], "max_tokens": 4096,
         "thinking_disabled": True, "status": "failed",
+        "meterless_tier_split": False,
         "retry_of": retry_of, "paid_fallback_enabled": False, "run_id": run_id,
     }
     started = time.monotonic()
@@ -178,6 +180,7 @@ def request_selections(rows: list[dict], purpose: str, retry_of: str | None = No
         request = Request(BASE_URL + "/chat/completions", data=json.dumps(body).encode(), headers={
             "Authorization": "Bearer " + token, "Content-Type": "application/json",
             "meterless-app": "porch-light", "meterless-scope": "user",
+            "meterless-tier-split": "off",
         })
         with urlopen(request, timeout=180) as response:
             raw = response.read(2 * 1024 * 1024 + 1)
