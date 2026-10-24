@@ -71,6 +71,10 @@ test("Storm Watch renders actual alerts, authentic radar and explicit national s
   await radar;
   await waitForChart(page);
   await expect(page.locator(".storm-map")).toHaveAttribute("data-frame", "nexrad-n0q-900913");
+  await expect(page.locator(".storm-map")).toHaveAttribute("data-playing", "false");
+  await expect(page.locator(".storm-map")).toHaveAttribute("data-radar-opacity", "0.45");
+  await expect(page.getByRole("button", { name: "Play radar" })).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator(".watch-map-frame .bezel-circular")).toHaveCount(0);
   const loadedFeed = page.locator("#national-alerts-title");
   const unavailable = page.getByRole("heading", { name: "Weather data is unavailable." });
   await expect(loadedFeed.or(unavailable)).toBeVisible();
@@ -97,7 +101,7 @@ test("weather read failure never becomes a sample warning or radar image", async
   await expect(page.locator(".official-alert-list button")).toHaveCount(0);
   await expect(page.locator(".radar-image > img")).toHaveCount(0);
   await expect(page.locator(".official-alert-detail")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Retry audited weather" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Retry weather" })).toBeVisible();
 });
 
 test("regional map assets are original source PNGs and use the provider geographic extent", async ({ request }) => {
@@ -196,7 +200,7 @@ test("a failed radar tile stays explicit and can retry without substituting imag
   await page.route("**/api/weather/radar-assets/nexrad-*/**", route => route.abort("failed"));
   await page.goto("/watch");
   await expect(page.getByRole("heading", { name: "Radar tiles didn't load." })).toBeVisible({ timeout: 30000 });
-  await expect(page.locator(".map-failure")).toContainText("No substitute echo is drawn.");
+  await expect(page.locator(".map-failure")).toContainText("No substitute image is drawn.");
   await page.unroute("**/api/weather/radar-assets/nexrad-*/**");
   const radar = page.waitForResponse(response => response.url().includes("/nexrad-n0q-900913/") && response.ok());
   await page.getByRole("button", { name: "Retry radar tiles" }).click();
@@ -226,8 +230,9 @@ test("map load, alert click and facility pin open the evidence drawer", async ({
   } else {
     await expect(page.locator(".official-alert-detail")).toHaveCount(0);
   }
-  await page.getByRole("button", { name: "25 minutes before the latest IEM composite", exact: true }).click();
+  await page.getByLabel("Radar frame").selectOption("nexrad-n0q-900913-m25m");
   await expect(page.locator(".storm-map")).toHaveAttribute("data-frame", "nexrad-n0q-900913-m25m");
+  await expect(page.locator(".storm-map")).toHaveAttribute("data-playing", "false");
   await page.getByRole("button", { name: "Fit ranked facilities", exact: true }).click();
   const pin = page.getByRole("button", { name: `Rank 1, ${snapshot.facilities[0].name}`, exact: true });
   await expect(pin).toBeVisible();
@@ -249,5 +254,5 @@ test("aging a real capture preserves the stale warning and explains how to resta
   await expect(page.locator(".watch-error")).toContainText("Don't treat the displayed weather or alert list as current");
   await expect(page.locator(".watch-error")).toContainText("Refreshing this page only rereads the stored capture");
   await expect(page.locator(".watch-error code")).toHaveText(".\\Start-Local.ps1");
-  await expect(page.getByRole("link", { name: "Check current NWS warnings" })).toHaveAttribute("href", "https://www.weather.gov/");
+  await expect(page.getByRole("link", { name: "Check current weather warnings" })).toHaveAttribute("href", "https://www.weather.gov/");
 });

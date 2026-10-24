@@ -1,9 +1,10 @@
 import { execFile, spawn } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
-import { access, readFile } from "node:fs/promises";
+import { access, readdir, readFile, stat } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
+import { looksUnreachable, UNREACHABLE_MESSAGE } from "./national-gaps";
 import type { Provenance, Snapshot } from "./types";
 
 const execute = promisify(execFile);
@@ -16,29 +17,62 @@ const engineRoot = () => process.env.PORCHLIGHT_ENGINE_ROOT ?? path.resolve(proc
 const record = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 
-const command = async (args: string[], timeout = 190000): Promise<unknown> => {
-  const { stdout } = await execute(python(), ["-m", "engines.national_jobs", ...args], {
-    cwd: engineRoot(), timeout, maxBuffer: 48 * 1024 * 1024, windowsHide: true,
-    encoding: "utf8",
-  });
-  return JSON.parse(stdout) as unknown;
+export class NationalEngineError extends Error {
+  readonly unreachable: boolean;
+  constructor(message: string, unreachable: boolean) {
+    super(message);
+    this.name = "NationalEngineError";
+    this.unreachable = unreachable;
+  }
+}
+
+const runPython = async (args: string[], timeout: number): Promise<string> => {
+  try {
+    const result = await execute(python(), args, {
+      cwd: engineRoot(), timeout, maxBuffer: 48 * 1024 * 1024, windowsHide: true, encoding: "utf8",
+    });
+    return result.stdout;
+  } catch (error) {
+    const failed = error as { stdout?: string; stderr?: string; message?: string; code?: string };
+    const detail = [failed.stderr, failed.stdout, failed.message, failed.code].filter(Boolean).join("\n");
+    const unreachable = failed.code === "ENOENT" || failed.code === "ETIMEDOUT" || looksUnreachable(detail);
+    throw new NationalEngineError(unreachable ? UNREACHABLE_MESSAGE : "The verified national operation failed. No substitute data was returned.", unreachable);
+  }
 };
 
-export const readNationalCatalog = async (): Promise<unknown> => {
-  if (catalogCache && Date.now() < catalogCache.until) return catalogCache.value;
-  if (catalogPending) return catalogPending;
-  catalogPending = (async () => {
+const command = async (args: string[], timeout = 190000): Promise<unknown> =>
+  JSON.parse(await runPython(["-m", "engines.national_jobs", ...args], timeout)) as unknown;
+
+const publishActiveAlerts = async (): Promise<void> => {
+  await runPython(["-m", "data.adapters.us.capture_live_weather", "--interval", "300", "--max-captures", "1"], 180000);
+};
+
+export const readNationalCatalog = async (refreshAlerts = false): Promise<unknown> => {
+  if (!refreshAlerts && catalogCache && Date.now() < catalogCache.until) return catalogCache.value;
+  if (!refreshAlerts && catalogPending) return catalogPending;
+  const pending = (async () => {
+    if (refreshAlerts) catalogCache = undefined;
+    let refreshNote = "";
+    if (refreshAlerts) {
+      try { await publishActiveAlerts(); }
+      catch (error) {
+        if (error instanceof NationalEngineError && error.unreachable) throw error;
+        refreshNote = "A new active-alert capture did not publish. This list is the latest audited feed only when that feed is still current.";
+      }
+    }
     const value = await command(["--catalog"]);
     if (!record(value) || !record(value.catalog) || !Array.isArray(value.catalog.counties) ||
       !record(value.catalog.data_access) || value.catalog.data_access.data_access_mode !== "zetaris" ||
       !Array.isArray(value.catalog.data_access.zetaris_query_ids) || !value.catalog.data_access.zetaris_query_ids.length) {
       throw new Error("The national catalog has no real source audit");
     }
+    if (refreshNote && record(value.weather)) value.weather.refresh_note = refreshNote;
     catalogCache = { value, until: Date.now() + 30000 };
     return value;
   })();
-  try { return await catalogPending; }
-  finally { catalogPending = undefined; }
+  if (!refreshAlerts) catalogPending = pending;
+  try { return await pending; }
+  finally { if (!refreshAlerts) catalogPending = undefined; }
 };
 
 export const validRun = (id: string): boolean => /^[a-f0-9]{32}$/.test(id);
@@ -56,8 +90,8 @@ export const startNationalRun = (selection: { county?: string; alert?: string; c
     ...(selection.capture ? ["--weather-capture", selection.capture] : [])];
   const child = spawn(/* turbopackIgnore: true */ python(), args, { cwd: engineRoot(), windowsHide: true, stdio: "ignore", detached: false });
   children.set(id, state);
-  child.once("error", () => { state.live = false; state.error = "The local audited source worker couldn't start."; });
-  child.once("close", code => { state.live = false; if (code) state.error = "The local worker exited without a verified result."; });
+  child.once("error", () => { state.live = false; state.error = UNREACHABLE_MESSAGE; });
+  child.once("close", code => { state.live = false; if (code && !state.error) state.error = "The local worker exited without a verified result."; });
   child.unref();
   return id;
 };
@@ -105,13 +139,75 @@ const validateResult = (value: unknown): Snapshot | Record<string, unknown> => {
   return snapshot;
 };
 
+
+export type RecentNationalRun = {
+  id: string;
+  county_name: string;
+  state: string;
+  fips: string;
+  facility_count: number;
+  alert_event: string | null;
+  generated_at: string;
+};
+
+const summarizeCompletedSnapshot = (id: string, value: unknown): RecentNationalRun | null => {
+  if (!record(value) || !record(value.county) || !record(value.counts) || !record(value.scenario)) return null;
+  const county = value.county;
+  const counts = value.counts;
+  const scenario = value.scenario;
+  if (typeof county.name !== "string" || typeof county.state !== "string" || typeof county.fips !== "string") return null;
+  if (typeof value.generated_at !== "string" || typeof counts.ranked_rows !== "number" || !Number.isFinite(counts.ranked_rows)) return null;
+  const facilities = Array.isArray(value.facilities) ? value.facilities.length : counts.ranked_rows;
+  // Prefer the ranked cardinality when present; never invent a higher count.
+  const facility_count = value.state === "source_gap" ? 0 : Math.max(0, Math.trunc(counts.ranked_rows || facilities));
+  const alert_event = typeof scenario.event === "string" && scenario.event.trim() ? scenario.event : null;
+  return {
+    id,
+    county_name: county.name,
+    state: county.state,
+    fips: county.fips,
+    facility_count,
+    alert_event,
+    generated_at: value.generated_at,
+  };
+};
+
+export const listRecentCompletedNationalRuns = async (limit = 20): Promise<RecentNationalRun[]> => {
+  const cap = Math.min(Math.max(1, Math.trunc(limit)), 20);
+  let entries: string[] = [];
+  try { entries = await readdir(root); }
+  catch { return []; }
+  const ranked: { id: string; mtime: number }[] = [];
+  for (const name of entries) {
+    if (!validRun(name)) continue;
+    try {
+      const info = await stat(path.join(root, name));
+      if (!info.isDirectory()) continue;
+      ranked.push({ id: name, mtime: info.mtimeMs });
+    } catch { /* missing entry */ }
+  }
+  ranked.sort((a, b) => b.mtime - a.mtime);
+  const recent: RecentNationalRun[] = [];
+  for (const item of ranked) {
+    if (recent.length >= cap) break;
+    try {
+      const status = (await readVerified(path.join(root, item.id, "status.json"))).value;
+      if (!record(status) || status.id !== item.id || status.phase !== "completed") continue;
+      const snapshot = (await readVerified(path.join(root, item.id, "snapshot.json"))).value;
+      const summary = summarizeCompletedSnapshot(item.id, snapshot);
+      if (summary) recent.push(summary);
+    } catch { /* incomplete or unverified job folder */ }
+  }
+  return recent;
+};
+
 export const readNationalRun = async (id: string): Promise<unknown> => {
   if (!validRun(id)) throw new Error("Invalid local run ID");
   const state = children.get(id);
-  if (state?.error) return { id, phase: "failed", message: state.error };
   let status: unknown;
   try { status = (await readVerified(path.join(root, id, "status.json"))).value; }
   catch {
+    if (state?.error) return { id, phase: "failed", message: state.error };
     if (state?.live) return { id, phase: "starting" };
     // A bookmarked run with no folder can never complete; a non-terminal error would keep the
     // client polling and leave the whole nationwide form disabled.

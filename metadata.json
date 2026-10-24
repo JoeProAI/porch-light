@@ -16,8 +16,8 @@
   },
   "repository": "https://github.com/JoeProAI/porch-light",
   "submission": {
-    "demo_video": null,
-    "slide_deck": null
+    "demo_video": "",
+    "slide_deck": ""
   },
   "sponsors": {
     "zetaris": {
@@ -34,20 +34,29 @@
     },
     "meterless": {
       "status": "working",
-      "how": "One stored Nemotron execution used the Meterless Runtime meterless/deep route with thinking disabled. Its response produced three drafts. Scout Intent, H-MEM, World Model and local model execution are not implemented claims.",
-      "engines": [],
+      "how": "Two Meterless uses. Runtime: one stored Nemotron execution used the meterless/deep route through the local Nightshift gateway with thinking disabled; its response produced three drafts. Engine: a fresh Scout Intent implementation (engines/scout_intent.py) gates the live call-script path. Each operator request is classified against a versioned intent registry, bound to its facility parameter, passed through injection, policy, scope, sensitivity and rate-limit guards, routed only when the Meterless Runtime token exists, and issued an HMAC-SHA256 signed execution contract with a 5 minute TTL. The grounded-draft executor refuses unsigned, tampered, expired or out-of-scope contracts before any provider call or budget reservation; the sole retry is a replan on the same trace. Honest limits: Stage 1 deterministic scoring only (no local embedding stage), the signing key is a local integrity secret, and batch explanation drafts are not yet contract-gated. H-MEM, World Model, Markovian and local model execution are not implemented claims.",
+      "engines": ["Scout Intent"],
       "provider": "nightshift",
-      "where": ["engines/"],
-      "evidence": ["engines/snapshots/manatee-ranked.json", "engines/snapshots/manatee-zetaris.json"],
+      "where": ["engines/scout_intent.py", "engines/grounded_drafts.py", "engines/national_jobs.py", "web/src/components/call-script.tsx"],
+      "evidence": ["engines/test_scout_intent.py", "engines/reports/scout-intent-live-2026-10-23.json", "engines/snapshots/manatee-ranked.json", "engines/snapshots/manatee-zetaris.json"],
       "decisions": []
     },
     "cursor": {
-      "status": "planned",
-      "how": "This web implementation was authored by Devin. Genuine Cursor build evidence is missing from this checkout; a rules folder on a separate contract branch does not establish eligibility.",
+      "status": "used",
+      "how": "Cursor cloud agents wrote Storm Watch v2 and the Storm Glass Desk design, and the national county and alert web wiring. Devin wrote the data, engines, and most of the web. Joe directed the work.",
       "models": [],
-      "surfaces": [],
-      "where": [],
-      "evidence": [],
+      "surfaces": ["background-agents"],
+      "where": [
+        "web/src/components/storm-watch.tsx",
+        "web/src/app/watch/page.tsx",
+        "web/src/components/nationwide.tsx",
+        "web/src/components/national/",
+        "scripts/smoke-national.py"
+      ],
+      "evidence": [
+        "https://github.com/JoeProAI/porch-light/pull/22",
+        "https://github.com/JoeProAI/porch-light/pull/24"
+      ],
       "decisions": []
     },
     "nvidia": {
@@ -92,9 +101,9 @@
     }
   ],
   "run": {
-    "setup": "README.md Run Locally and web/README.md. The committed real-source call sheet needs no live data credentials. Live weather needs licensed local Zetaris and the external capture cache. No verified cold-offline application or local GPU inference.",
+    "setup": "README.md Setup, Usage, and Smoke script, plus web/README.md. The committed Manatee call sheet renders without live data credentials. County runs, active alerts, and Storm Watch need local Zetaris, PostGIS, and the files under %USERPROFILE%\\.porchlight. Nemotron drafts use the Meterless Nightshift route.",
     "sample_mode": true,
     "secrets": []
   },
-  "evidence_logs": "engines/snapshots/manatee-zetaris.json retains shared query audit evidence and the stored Meterless model execution."
+  "evidence_logs": "engines/snapshots/manatee-zetaris.json retains shared query audit evidence and the stored Meterless model execution. Scout Intent decisions and contract events are appended locally to ~/.porchlight/scout-intent/events.jsonl."
 }
