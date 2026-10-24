@@ -1,0 +1,19 @@
+---
+title: "API reference"
+---
+
+The API reference is generated from `contract/openapi.yaml` (OpenAPI 3.1, Porch Light API version 0.1.0). Right now it reads the spec from the `contract/initial` branch (PR #14). It moves to main once that PR merges.
+
+## Tags
+
+- `alerts`: archived and active weather alerts
+- `runs`: start a run, read its ranked facilities, joins, trace and check-ins, and export the call sheet
+- `health`: Zetaris, Meterless, network and snapshot status
+
+## Errors
+
+Every error returns an `ApiError` with a `code` and `message`. Codes in the contract: `not_found`, `bad_request`, `no_facilities`, `source_stale`, `zetaris_down`, `meterless_unauthorized`, `meterless_offline`, `timeout`, `export_refused`.
+
+## Empty states
+
+An empty result is a typed empty state, not an error. `EmptyState.code` is one of `no_facilities`, `no_alerts`, `no_joins`, `no_dependents_data`.
