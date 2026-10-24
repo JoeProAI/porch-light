@@ -89,12 +89,11 @@ last update: Thu Oct 22 2026 9:42 AM ET
 
 ## Area: Engines
 owner now: Devin, takeover approved by Joe
-state: Nightshift NVIDIA key saved to its daemon keystore through the local Windows control pipe. NVIDIA catalog GET returns 200. Read-only route previews now select Lightning for fast and Super VL 3.5 for deep, matching KICKOFF-PROMPT.md; the older Super 3 route was enabled initially, then corrected without inference. Authenticated Meterless discovery returns 200; unauthenticated discovery returns 401.
-next step: Joe approves a suitable local Nemotron download and local smoke test; verify generation, receipts and offline replay before closing G3. Keep application client changes on a separate devin/engines-* branch.
-branch: no engine implementation branch or new PR yet; this data branch changes HANDOFF only for the setup receipt.
-how to run: use http://127.0.0.1:8088/v1 with METERLESS_TOKEN_FILE pointing to Nightshift's existing proxy-token; meterless-app: porch-light on requests, meterless-scope: user on chat, 180-second timeout.
-blocked: no installed local Nemotron lane. The bundled 30B local candidates exceed the laptop's 16 GB VRAM before context overhead. No cloud generation or local model download is approved by this setup pass.
-last update: Wed Oct 21 2026 10:35 PM ET
+state: Manatee retains 18 deterministic ranks and two refusals with seven distinct audited statements. Every ranked facility has a grounding result: 15 accepted drafts, three retained failures that exhausted their sole retry. National county discovery and official-alert point coverage are implemented against separately projected CMS, Census, SVI and emPOWER relations, with individual audit IDs and SQL match counts.
+branch: devin/engines-manatee, PR18; Joe merges.
+how to run: engines/README.md; national_jobs supplies asynchronous county/alert jobs and source-verified live call scripts. radar_assets captures bounded IEM PNGs and clock metadata, then reads them through Zetaris before serving verified bytes locally. The JDBC bridge preserves UTF-8 and caches compiled bytecode outside Git. Original bundle mode remains explicit, with no fallback.
+next step: finish the full 3,235-county sweep, including all 639 counties mapped to its frozen active-alert feed and 500 seeded random additional counties. Preserve per-county timings, source refusals, unmapped alerts and every failed draft. The run isn't complete yet.
+blocked: local GPU inference and clinical validation remain unverified; all source relations currently share one physical PostGIS datasource. Joe approved up to 2,000 total Meterless request attempts, including retries, on the free NVIDIA Nemotron route. Each failed draft gets at most one linked retry. Provider/cost violations block further calls. OpenRouter backup stays disabled because no enforceable paid fallback was enabled. No Modal or paid execution.
 
 ### Nightshift setup and operator use
 
