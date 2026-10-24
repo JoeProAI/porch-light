@@ -102,3 +102,7 @@ Porch Light uses public, facility-level, and aggregate data. It holds no persona
 ## License
 
 AGPL-3.0. See LICENSE and NOTICE. Pre-existing components are listed in DECLARED_PREEXISTING.md.
+
+## Sponsor setup checklist
+
+Sponsor endpoints, model ids, and current status (Scout Intent on the live call-script path; Meterless Nightshift plus NVIDIA Nemotron as the only runtime model route; Cursor evidence is merged PRs #22 and #24, with no token or spend total): [SPONSOR-SETUP.md](SPONSOR-SETUP.md). Local placeholders: [env.example](env.example).
