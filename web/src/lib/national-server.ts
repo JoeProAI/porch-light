@@ -1,6 +1,6 @@
 import { execFile, spawn } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
@@ -113,6 +113,10 @@ export const readNationalRun = async (id: string): Promise<unknown> => {
   try { status = (await readVerified(path.join(root, id, "status.json"))).value; }
   catch {
     if (state?.live) return { id, phase: "starting" };
+    // A bookmarked run with no folder can never complete; a non-terminal error would keep the
+    // client polling and leave the whole nationwide form disabled.
+    try { await access(path.join(root, id)); }
+    catch { return { id, phase: "failed", message: "No verified checkpoint exists for this run reference. Start a new county or alert run." }; }
     throw new Error("No verified local run checkpoint is available");
   }
   if (!record(status) || status.id !== id || typeof status.phase !== "string") throw new Error("Invalid run checkpoint");
