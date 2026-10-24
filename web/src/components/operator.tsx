@@ -18,7 +18,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
   const [storageError, setStorageError] = useState("");
   const [notice, setNotice] = useState("");
   const [copying, setCopying] = useState(false);
-  const [draftStatus, setDraftStatus] = useState<ContactStatus>("reached");
+  const [draftStatus, setDraftStatus] = useState<ContactStatus>("uncontacted");
   const [evidenceOpen, setEvidenceOpen] = useState(initialEvidenceOpen);
   const [offline, setOffline] = useState(false);
   const [clock, setClock] = useState<number | null>(null);
@@ -52,7 +52,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
 
   const selectRow = (id: string) => {
     setSelectedId(id);
-    setDraftStatus("reached");
+    setDraftStatus(contacts[id]?.status ?? "uncontacted");
     setNotice("");
     if (window.matchMedia("(max-width: 767px)").matches) {
       window.requestAnimationFrame(() => {
@@ -71,7 +71,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
     try { localStorage.setItem(storageKey, JSON.stringify(updated)); setStorageError(""); }
     catch { saved = false; setStorageError("Browser storage is unavailable. Changes are session-only. Export CSV before leaving."); }
     const next = snapshot.facilities.find(item => item.id !== row.id && (!updated[item.id] || updated[item.id].status === "uncontacted"));
-    if (draftStatus !== "uncontacted" && next) { setSelectedId(next.id); setDraftStatus("reached"); }
+    if (draftStatus !== "uncontacted" && next) { setSelectedId(next.id); setDraftStatus("uncontacted"); }
     setNotice(`${contactLabels[draftStatus]} recorded for ${row.name}${saved ? " on this device" : " for this session only"}.${draftStatus !== "uncontacted" && next ? ` Next uncontacted: rank ${next.rank}, ${next.name}.` : " Ranking unchanged."}`);
   };
   const copyPhone = async () => {
