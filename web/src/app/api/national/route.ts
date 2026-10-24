@@ -7,7 +7,8 @@ const headers = { "Cache-Control": "private, no-store" };
 const localHost = (request: Request): URL | null => {
   try {
     const target = new URL("http://" + request.headers.get("host"));
-    return ["127.0.0.1", "localhost"].includes(target.hostname) && target.port === "3101" ? target : null;
+    // Loopback only. The port is whatever this process was bound to; pinning 3101 broke every other local worktree.
+    return ["127.0.0.1", "localhost", "[::1]"].includes(target.hostname) && /^\d{2,5}$/.test(target.port) ? target : null;
   } catch { return null; }
 };
 const localOrigin = (request: Request): boolean => {
@@ -53,7 +54,12 @@ export const POST = async (request: Request): Promise<Response> => {
     }
     if (Object.keys(value).some(key => !["county", "alert", "capture"].includes(key)) ||
       Object.values(value).some(entry => typeof entry !== "string")) return Response.json({ error: "Only actual source identifiers are accepted." }, { status: 400, headers });
-    const id = startNationalRun(value as { county?: string; alert?: string; capture?: string });
+    let id: string;
+    try { id = startNationalRun(value as { county?: string; alert?: string; capture?: string }); }
+    catch (error) {
+      // Selection and concurrency refusals are operator-facing text, not engine internals. Say which one it was.
+      return Response.json({ error: error instanceof Error ? error.message : "The selection couldn't start.", unreachable: false }, { status: 409, headers });
+    }
     return Response.json({ id, phase: "starting" }, { status: 202, headers });
   } catch (error) {
     return failed(error, "The verified operation couldn't start or complete. No fabricated model reply was substituted.");

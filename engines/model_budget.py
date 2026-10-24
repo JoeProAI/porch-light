@@ -21,10 +21,23 @@ class RouteViolation(RuntimeError):
         self.receipt = receipt
 
 
+def retained_stop_message(stop: Path) -> str:
+    """The stop file is also used as an operator pause. Say which one it is; a pause isn't a violation."""
+    try:
+        retained = json.loads(stop.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        retained = {}
+    if isinstance(retained, dict) and retained.get("provider_or_cost_violation_observed") is False:
+        reason = str(retained.get("reason") or retained.get("kind") or "no reason recorded")[:200]
+        return f"Model calls are paused by a retained operator stop marker, not a provider/cost violation: {reason}"
+    return "Model calls are blocked by a retained provider/cost policy violation"
+
+
 def reserve(purpose: str) -> Path:
     ROOT.mkdir(parents=True, exist_ok=True)
-    if (ROOT / "ROUTE_STOP.json").exists():
-        raise RuntimeError("Model calls are blocked by a retained provider/cost policy violation")
+    stop = ROOT / "ROUTE_STOP.json"
+    if stop.exists():
+        raise RuntimeError(retained_stop_message(stop))
     if (ROOT / f"attempt-{MAX_ATTEMPTS:04}.json").exists():
         raise BudgetExceeded("The approved 2000-attempt Nemotron budget is exhausted")
     for index in range(1, MAX_ATTEMPTS + 1):
