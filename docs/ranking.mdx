@@ -1,29 +1,53 @@
 ---
 title: "Ranking"
+description: "Fixed weights rank the call sheet. Nemotron does not set the order."
+keywords: ["ranking", "weights", "svi", "formula"]
 ---
 
-Rank is set by a fixed formula. Nemotron writes the reason for each row. It never sets the order.
+Rank is a fixed formula. The same inputs always produce the same order. Nemotron writes a draft for a row. It does not change `score.total` or `rank`.
 
-## Score breakdown
+## National screen
 
-Each ranked facility carries a `ScoreBreakdown`:
+Hosted county sheets use version `national-source-screen-v1` from `data/scoring/national_weights.json`. The same object is copied on the `national_source_screen` line of `data/scoring/weights.yaml`. `engines/national_run.py` refuses to start if those two copies differ.
 
-- `total`
-- `terms`, a list of `ScoreTerm`
-- `formula_version`, the version of `data/scoring/weights.yaml` that was used
-- `rank`
-- `tie_break`: ties break by facility type, then facility key
+| Term | Weight | Input |
+| --- | --- | --- |
+| `type_weight` | 0.35 | Dialysis `1.0`, nursing home `0.8` |
+| `svi_pct` | 0.30 | 2022 nationally ranked tract SVI, exact Census tract GEOID |
+| `empower_density_pct` | 0.20 | Midrank of the ZIP DME / Medicare ratio among unique unmasked county ZIP rows |
+| `cms_risk` | 0.15 | `(5 - CMS stars) / 4`, stars in 1 to 5 |
 
-## Score terms
+Each input is required to fall between 0 and 1. The total is the sum of input times weight. Ties break by descending score, then facility type, then source CCN.
 
-Each `ScoreTerm` has a `name`, `input`, `weight`, `weighted` and an optional plain `note` for the evidence drawer. Term names in the contract:
+County plans are not a term. The Milton plan is not copied onto other counties, and a missing plan is not stored as zero.
 
-- `type_weight`
-- `svi_pct`
-- `empower_density_pct`
-- `cms_risk`
-- `plan_flag`
+The screen's own scope line: prototype outreach ordering, not clinical urgency and not an operational-status prediction.
 
-## Weights
+## Worked row: Anchorage rank 1
 
-Weights live in `data/scoring/weights.yaml`, not in the contract. They go on this page when that file lands.
+Published snapshot for FIPS `02020`, generated `2026-10-23T22:17:02Z`. Polaris Extended Care, nursing home, CCN `025036`.
+
+| Term | Input | Weight | Weighted |
+| --- | --- | --- | --- |
+| `type_weight` | 0.8 | 0.35 | 0.28 |
+| `svi_pct` | 0.8749 | 0.30 | 0.26247 |
+| `empower_density_pct` | 0.8846153846153846 | 0.20 | 0.17692307692307693 |
+| `cms_risk` | 0.75 | 0.15 | 0.1125 |
+
+CMS stars on the row are 2.0, so `cms_risk` is `(5 - 2) / 4 = 0.75`. The total stored on the row is `0.8318930769230769`. Formula version on the score is `national-source-screen-v1`. Zetaris query ids on the row: `9704`, `9709`, `9717`, `9724`, `9729`, `9731`, `9736`.
+
+The draft on this row failed (`Extra data: line 1 column 2 (char 1)`). The computed source sentence remains: tract SVI `0.8749`, CMS stars `2.0`, published ZIP DME `287/6563`. That ZIP ratio is not a count of this facility's patients.
+
+## Milton formula
+
+`/operate` uses `manatee-development-v1` from the `terms` block of `data/scoring/weights.yaml`:
+
+| Term | Weight |
+| --- | --- |
+| `type_weight` | 0.30 |
+| `svi_pct` | 0.25 |
+| `empower_density_pct` | 0.20 |
+| `cms_risk` | 0.15 |
+| `plan_flag` | 0.10 |
+
+That fifth term is why the Milton sheet is not comparable, row for row, with the national Manatee snapshot (14 ranked rows on the hosted county route). Both totals are development policy. Neither is a validated clinical score.

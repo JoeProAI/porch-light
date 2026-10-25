@@ -1,15 +1,63 @@
 ---
 title: "Quickstart"
+description: "Open the hosted county desk with no credentials, or start a new local run when Zetaris is up."
+keywords: ["quickstart", "porchlight.earth", "nationwide", "local"]
 ---
 
-Coming soon.
+You have two ways in. The recording path is the hosted desk. A new audit or a new model call stays on the operator machine.
 
-## Requirements
+## Hosted desk, no credentials
 
-## Replay mode (no credentials)
+1. Open [porchlight.earth](https://porchlight.earth). The primary action is **Pick any US county**.
+2. Open a county directly:
+   - [Anchorage, AK `02020`](https://porchlight.earth/nationwide?county=02020)
+   - [Doña Ana, NM `35013`](https://porchlight.earth/nationwide?county=35013)
+   - [Harris, TX `48201`](https://porchlight.earth/nationwide?county=48201)
+3. Read the ranked rows, the refusals, and the draft status on the row you select. Contact status starts at **Not contacted**. Leave it there unless you placed the call.
+4. If you show Milton, open [/operate](https://porchlight.earth/operate) and keep it short. That sheet is not loaded when a county code fails.
 
-## Live mode (local Zetaris and Nightshift)
+Hosted `GET /api/national` serves the frozen pack under `web/data/national/published/`. Weather on that host reports `unavailable`: live alert refresh stays on local origin. Choosing **Captured live alert** on the hosted page tells you to pick a published county instead.
 
-## Environment variables
+`GET /api/national?county=48395` (Robertson County, Texas) returns 503: `No published audited snapshot is available for this county. No substitute data was returned.`
 
-## Run the app
+The site sends `noindex, nofollow`. This docs tree is not a public docs site.
+
+## What you should see
+
+| County | Ranked | Refused | Drafts in the published snapshot |
+| --- | --- | --- | --- |
+| Anchorage `02020` | 4 | 2 | 4 failed. The source sentence remains. The failure is kept. |
+| Doña Ana `35013` | 7 | 4 | 7 passed, Lightning, `meterless/deep` |
+| Harris `48201` | 140 | 96 | 140 passed |
+
+Rank, score, and the Zetaris query ids are on the row. Nemotron does not set the order. Details are on [Ranking](/ranking) and [Evidence trail](/evidence-trail).
+
+## Local machine, when you need a new run
+
+The hosted desk does not start a new Zetaris chain or a new model call. Those stay on loopback.
+
+You need Java 21, the licensed local Zetaris bundle, PostGIS registered as `porchlight_postgis`, Python 3, and Node.js. National source files live under the local `.porchlight` directory, outside git. From `web/`:
+
+```bash
+npm ci
+npm run build
+npm run start
+```
+
+Open `http://127.0.0.1:3101`. On Windows, `.\Start-Local.ps1` from the repo root starts that app when port 3101 is free. It does not install dependencies or start Zetaris for you.
+
+Names the app actually reads, when you must override a default, are in [env.example](https://github.com/JoeProAI/porch-light/blob/main/env.example): `PORCHLIGHT_ZETARIS_ENV_FILE`, `PORCHLIGHT_ZETARIS_JDBC_URL`, `PORCHLIGHT_ZETARIS_JDBC_JAR`, `PORCHLIGHT_ZETARIS_DATASOURCE`, `PORCHLIGHT_DATA_ACCESS_MODE`. Put the NVIDIA key in Nightshift Providers. The app calls Meterless at `http://127.0.0.1:8088/v1` with route `meterless/deep`. It does not read `NVIDIA_API_KEY` or `METERLESS_RUNTIME_TOKEN` from the environment.
+
+If Zetaris cannot be reached, a local nationwide job stops with an unreachable message and returns no rows.
+
+`PORCHLIGHT_OPENROUTER_BACKUP` and `OPENROUTER_API_KEY` enable an optional backup module. Leave them unset. No OpenRouter spend is part of this submission. The runtime path you are demonstrating is Meterless.
+
+## Docs preview
+
+From `docs/` on a machine where you are allowed to run the Mintlify CLI:
+
+```bash
+npx mint dev
+```
+
+There is no Porch Light docs deployment. Do not publish this folder.

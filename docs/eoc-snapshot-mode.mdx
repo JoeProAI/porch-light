@@ -1,5 +1,55 @@
 ---
 title: "EOC snapshot mode"
+description: "The hosted desk opens frozen audited county snapshots. New model calls and live alert runs stay on the local machine."
+keywords: ["snapshot", "eoc", "published", "offline"]
 ---
 
-Coming soon.
+The mode an emergency-operations desk can use without local credentials is the published sweep snapshot. You open a county. The page reads a file that was audited earlier. It does not re-query Zetaris and it does not call Nemotron.
+
+## What is frozen
+
+The pack is `web/data/national/published/`, sweep `20261023T200048Z-78a426ba`, catalog publication time `2026-10-24T16:47:04Z`. Each county file is gzip JSON plus a `.provenance.json` sidecar.
+
+A hosted county response looks like this:
+
+- `phase` is `completed`
+- `publication.mode` is `published_sweep_snapshot`
+- `data_access.data_access_mode` is `zetaris`, with the original query ids and audit times
+- `scenario.mode` is `county_discovery`
+- `historical_2024_boundary_equivalence_verified` is false
+- `warning_geometry.coordinates` is empty because those coordinates were stripped for the pack. Rankings and audit ids were not rewritten.
+
+Facility rows still carry Census latitude and longitude. Stripping applies to the warning geometry, not to the facility points.
+
+## What you can do on the host
+
+- Search the 3,235-row catalog by name, state, or FIPS. Diacritics match without accents, which is why `Dona Ana` finds Doña Ana.
+- Open `/nationwide?county=` and read that snapshot, including refusals and draft status.
+- See **Published ranked counties**: the 20 catalog counties with the highest `ranked_rows` counts. Los Angeles is 450, Cook is 212, Harris is 140. The strip is a cap, not the full set of 2,490 ranked counties.
+- Record a contact outcome in this browser, export CSV, or print.
+
+## What stays on the local machine
+
+- A new `engines.national_jobs` run
+- Captured-alert jobs (`Live alert runs stay on local origin`)
+- `POST /api/national` with `action: call_script` or `action: refresh_alerts`
+- Nightshift, the Zetaris JDBC process, and the private sweep directory
+
+The published snapshot is not an offline DGX result and not a local GGUF run. Model receipts in the pack record `execution_location` `nvidia_cloud` and mode `meterless/deep`.
+
+## When the snapshot is missing or empty
+
+| Situation | What you see |
+| --- | --- |
+| FIPS not in the catalog | The page says the code is not in the official Census catalog. Milton is not substituted. |
+| FIPS is not five digits | The page says the county source code must be five digits. |
+| Catalog row, no snapshot file | Robertson `48395` is the first-pass runtime error. Live `GET` returns 503 and the sentence that no substitute data was returned. |
+| Snapshot with zero ranked rows | The audited empty result, with the source-gap copy. No facilities are invented. |
+
+The separate Robertson retry (2 ranked rows) is in the source report. It was not published into this pack. The hosted county still shows the failure.
+
+## Milton is a second snapshot
+
+`/operate` loads `web/data/manatee-ranked.json` (generated `2026-10-23T20:25:15Z`): Hurricane Milton, 18 ranked, 2 refused, formula `manatee-development-v1`. Use it as a short coda.
+
+The hosted national snapshot for the same FIPS is county discovery on the national screen: 20 source rows, 14 ranked, 6 refused, 14 passed drafts, generated `2026-10-23T22:35:28Z`. If you need the national Manatee sheet, open `/nationwide?county=12081`. If you need Milton, open `/operate` with no county query.

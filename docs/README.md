@@ -1,16 +1,18 @@
 # Porch Light docs (Mintlify)
 
-Night + amber theme (`#05070b` / `#f2a93b`). Preview locally:
+Source for a local preview. There is no Porch Light docs deployment, and this folder does not set a public docs URL.
 
 ```bash
 cd docs
 npx mint dev
 ```
 
-Validate:
+Check:
 
 ```bash
 npx mint validate
 ```
 
-Do not publish a public Mintlify site until Joe says yes at submission.
+The live product is https://porchlight.earth (`noindex`). Do not publish this docs site, and do not change the app's `noindex` setting from here.
+
+`api-reference/introduction.mdx` documents `GET /api/national`. The OpenAPI contract stays at `contract/openapi.yaml` in the repo root. It is not copied into this folder.

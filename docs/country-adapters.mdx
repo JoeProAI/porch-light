@@ -1,5 +1,32 @@
 ---
 title: "Country adapters"
+description: "The US adapter is the shipped data path. A global adapter is a stretch note, not operating coverage."
+keywords: ["adapters", "us", "global"]
 ---
 
-Coming soon.
+The contract types are not hard-coded to one country. The product you can open is the United States adapter.
+
+## Shipped: `data/adapters/us/`
+
+Build-time code downloads public files, writes `.provenance.json`, and loads the local snapshot. Runtime reads go through Zetaris SQL, not back to the publisher from the page.
+
+What that adapter actually feeds:
+
+| Contract idea | US implementation in this repo |
+| --- | --- |
+| Alerts | NWS active alerts and the IEM archive, including the Milton issuance `202410072107-KTBW-WTUS82-TCVTBW` |
+| Areas | County FIPS and Census tracts |
+| Facilities | CMS dialysis and nursing homes, key `ccn` |
+| Vulnerability | CDC/ATSDR SVI 2022 |
+| Dependents | HHS emPOWER ZIP and county aggregates |
+| Plans | Manatee CEMP PDF on the Milton path only |
+
+Keys on a national row are `country: us`, facility `ccn`, county `fips`. The interface is described in `contract/adapter.md`. Adding a new key type is a contract change and stays on a `contract/*` branch.
+
+The adapter does not call a model. Drafts belong to the engines.
+
+## Not shipped: `data/adapters/global/`
+
+`data/adapters/global/README.md` names candidate sources: GDACS alerts, OpenStreetMap facilities, WorldPop population, and national CAP feeds where one exists. That folder is a stretch note. There is no global operating catalog, no international call sheet, and no emPOWER equivalent invented for other countries.
+
+The hosted desk's 3,235 rows are US counties and county equivalents, including the territory rows listed on [Data sources](/data-sources). They are not a world coverage claim.

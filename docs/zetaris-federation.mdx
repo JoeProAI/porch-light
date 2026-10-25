@@ -1,29 +1,45 @@
 ---
 title: "Zetaris federation"
+description: "Audited SQL through local Zetaris. The hosted desk serves that audit. It does not open a new JDBC session in the browser."
+keywords: ["zetaris", "jdbc", "postgis", "query id"]
 ---
 
-Zetaris is the only data path. At runtime the app reads only through Zetaris SQL. No adapter method calls a model or reads a source directly at runtime.
+Zetaris is the data path. National rankings were produced by audited SQL, and the query ids on the call sheet are those audit ids.
 
-## Joins are measured, not guessed
+## Where it runs
 
-Nemotron proposes joins. Zetaris SQL measures each one. A `JoinProposal` records:
+The audit ran on the local Docker install: UI on port 3000, JDBC `jdbc:zetaris:lightning@localhost:10000`. The app's default datasource name is `porchlight_postgis`. Spatial predicates stay in PostGIS. Zetaris records the statement in `audit.public.sql_audit_log`, and `engines/zetaris_client.py` keeps that id.
 
-- `from_table`, `from_key`, `to_table`, `to_key` and `method`
-- `measured_match_rate`, from a Zetaris count query
-- `fan_out`
-- `threshold`, the acceptance threshold for that join
-- `status`: `proposed`, `accepted` or `refused`
-- `seen_before`: true when H-MEM remembers this join from an earlier run
-- `query_id`, the Zetaris query that measured it
+The source relations are separate projections for CMS, Census, SVI, and emPOWER. They currently share one physical read-only PostGIS database. This submission does not claim a Unified Semantic Layer across several live systems, and it does not use the managed AWS route.
 
-Join methods in the contract: `exact_key`, `ssa_to_fips_crosswalk`, `census_geocode`, `postgis_point_in_polygon`, `zip_to_empower`, `osm_admin_lookup`.
+A browser on porchlight.earth does not log in to Zetaris. `GET /api/national` reads the published JSON. Each snapshot still carries `data_access_mode: zetaris`, the statement hash, the transaction id `zetaris-national-chain`, and the query ids from the run that created it.
 
-## Failed joins
+## Catalog statement you can check
 
-Failed joins come from Zetaris data quality results (`SHOW DQ ALL INVALID TABLE`). Each `FailedJoin` carries its keys, method, a plain `reason`, an optional `row_count` and its `query_id`. `GET /runs/{id}/joins` returns proposals and failed joins together. This is the Seams panel.
+The hosted catalog cites one statement, query id `833`, hash `72188e2699f12f0e5db8989a322c045e`, started `2026-10-23T20:00:48.891Z`, finished `2026-10-23T20:00:50.055Z`, `finish_successfully` true, `row_count` 3,235. The SQL reads `pl_nat_county_catalog_v3` joined to the latest `pl_nat_capture_v1`.
 
-## Query ids everywhere
+County chains add the facility, geography, SVI, and emPOWER statements. Anchorage's snapshot lists seven ids, `9704` through `9736`, executed `2026-10-23T22:17:01.945Z`.
 
-Every fact carries a Zetaris query id. The ids show up in `Evidence.zetaris_query_ids`, in each `JoinHop.query_id`, and in the export receipt.
+## Measured joins
 
-<Note>The join examples in `contract/fixtures/joins_mock.json` are mock data. They aren't measured.</Note>
+Match rates on a national `join_path` are `matched_count / candidate_count` from the Zetaris statement. They are not model confidence.
+
+Hops written by `engines/national_run.py`:
+
+| Hop | Method |
+| --- | --- |
+| Facility point into the county | `postgis_point_in_polygon` |
+| Tract GEOID to SVI | `exact_key` |
+| ZIP to emPOWER | `zip_to_empower` |
+
+The source report totals those steps across the first pass. CMS to exact Census addresses and county coverage: 21,900 candidates, 16,326 matched, 5,574 unmatched. Tract to SVI: 21,900 candidates, 19,897 matched. ZIP to emPOWER, with fan-out counted: 21,900 candidates, 19,362 matched. Those are statement totals, not unique facility counts.
+
+The OpenAPI contract also names `ssa_to_fips_crosswalk`, `census_geocode`, and `osm_admin_lookup` as legal methods. The national screen uses the three hops above. Global OSM lookups are not a shipped join.
+
+## What a failed join looks like
+
+A CMS row that misses the screen is a `refused` entry with a reason and the chain's query ids. It is not deleted. Robertson County's first pass failed before a snapshot was written (JDBC transport, 26.992 seconds in the source report). The hosted route returns 503 for that FIPS. The retry that later ranked two rows was not copied into the published pack.
+
+## Mock joins
+
+`contract/fixtures/joins_mock.json` is mock data for the contract validator. It is not a measured national join.

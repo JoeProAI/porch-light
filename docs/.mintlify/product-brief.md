@@ -1,18 +1,23 @@
 # Product brief
 
 ## Description
-Porch Light ranks care facilities inside a real weather warning area and hands a county operator a call-first sheet with phones, reasons, and an evidence trail. The formula ranks; Nemotron explains. Nothing auto-dials.
+
+Porch Light ranks dialysis centers and nursing homes in a US county and hands you a call sheet with directory phones, score terms, refusals, and a Nemotron draft when the snapshot has one. The formula ranks. The model writes the reason. Nothing auto-dials.
 
 ## Primary audience
-Hackathon judges and operators who need an honest local demo: what works on this machine, what is still a walkthrough, and which sponsor tech actually ran.
+
+Hackathon judges and operators who need the hosted nationwide desk, the three recording counties, and a plain account of what is still failed or unfinished.
 
 ## Jobs to be done
-1. Run the app locally against Zetaris / Meterless when available, or read the saved Manatee walkthrough without inventing outcomes.
-2. Distinguish the Hurricane Milton Manatee sheet from any-county nationwide jobs.
-3. See sponsor purpose, proof, and gaps without marketing claims.
+
+1. Open https://porchlight.earth/nationwide and a published county snapshot without credentials.
+2. Tell the Milton sheet at `/operate` apart from the national Manatee snapshot.
+3. See sponsor proof and the gaps: drafts in progress, no offline DGX, no H-MEM, World Model, or Markovian.
 
 ## Motivation
-When a storm warning drops, someone has to call dialysis, nursing homes, and similar facilities first. Spreadsheets and chat do not leave an inspectable trail. Porch Light keeps that trail on a night desk with one amber porch light for the next call.
+
+When a warning drops, someone still has to choose who to call first. The desk keeps the public sources, the rank, and the missing joins in one place.
 
 ## Visual
-Near-black storm `#05070b`, rain, one amber porch light (`#f2a93b` / `#ffb547`). No green, sage, or teal. Matches PR #24 look.
+
+Near-black storm `#05070b`, one amber porch light (`#f2a93b` / `#ffb547`). The live home leads with Pick any US county.

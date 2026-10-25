@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
   "name": "Porch Light",
-  "description": "Who to call first when a storm warning drops. Local Zetaris, Meterless, and Nemotron on a night desk.",
+  "description": "Nationwide call sheets for dialysis centers and nursing homes. Open any Census county on the published Zetaris audit. Nemotron drafts the reason. The formula ranks.",
   "colors": {
     "primary": "#f2a93b",
     "light": "#ffb547",
@@ -43,8 +43,8 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Local run",
-      "href": "/local-run"
+      "label": "Live desk",
+      "href": "https://porchlight.earth/nationwide"
     }
   },
   "footer": {
@@ -59,9 +59,9 @@
         "pages": [
           "index",
           "quickstart",
-          "local-run",
-          "manatee-walkthrough",
           "nationwide",
+          "manatee-walkthrough",
+          "local-run",
           "limits"
         ]
       },
@@ -110,21 +110,8 @@
       },
       {
         "group": "API reference",
-        "openapi": "/contract/openapi.yaml",
         "pages": [
-          "api-reference/introduction",
-          "GET /alerts/archived",
-          "GET /alerts/active",
-          "POST /runs",
-          "GET /runs/{id}",
-          "GET /runs/{id}/facilities",
-          "GET /runs/{id}/joins",
-          "GET /runs/{id}/trace",
-          "GET /runs/{id}/checkins",
-          "POST /runs/{id}/checkins",
-          "POST /runs/{id}/export",
-          "GET /runs/{id}/exports/{export_id}/artifacts/{format}",
-          "GET /health"
+          "api-reference/introduction"
         ]
       }
     ]

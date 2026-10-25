@@ -1,30 +1,39 @@
 ---
 title: "Limits"
-description: "What Porch Light does not claim yet — coverage, models, contact outcomes, and clinical use."
-keywords: ["limits", "honesty", "gaps", "not claimed"]
+description: "Coverage, drafts, models, and contact outcomes: what the desk shows and what it leaves unresolved."
+keywords: ["limits", "honesty", "gaps"]
 ---
 
-This page is intentional. Judges should see the gaps next to the working path.
+Read this next to the working path. The gaps are part of the product.
 
-## Product
+## Coverage
 
-| Claim people might assume | Actual status |
+| What you might assume | What is true |
 | --- | --- |
-| Every US county has a polished offline sheet | **No.** Every catalog county has been source-audited through Zetaris once (3,235 of 3,235; 2,491 with ranked rows), and any county can be opened live when local Zetaris is up. Grounded drafts are in progress on free Nemotron routes and are not complete for every county. Nothing runs offline. |
-| Contact **Reached** means someone was called | **Only if an operator chose it.** Default is **Not contacted**. |
-| Nemotron picks who to call first | **No.** Fixed formula ranks; Nemotron drafts explanations / early reasons when receipts exist. |
-| Clinically validated priority | **No.** Transparent prototype heuristic. Operator verification required. |
-| Auto-dial or auto-SMS | **No.** Export and check-ins only. |
+| Every catalog county was source-audited | Yes. 3,235 of 3,235, including the Robertson retry in `engines/reports/national-sweep-2026-10-23.md`. Connecticut planning regions and the territory rows are in the catalog. |
+| The live desk has a ranked sheet for each of those | The published pack has 2,490 counties with ranked rows and 3,234 snapshot files. Robertson `48395` returns 503. 353 counties have no matching CMS rows. 391 have CMS rows and nothing rankable. |
+| The Robertson retry is on the host | The retry's 2 ranked rows are in the source report only. The host still shows the first-pass failure. |
+| An empty county has no care facilities | The sheet says the opposite. Empty means these sources returned nothing rankable. |
 
-## Sponsor stack
+## Drafts and models
 
-| Gap | Why it matters |
+| What you might assume | What is true |
 | --- | --- |
-| Meterless engines beyond Scout Intent | Scout Intent gates the live call-script path. H-MEM, World Model, and Markovian are not claimed. Batch explanation drafts are not contract-gated. |
-| Cursor usage totals | Merged PRs #22 and #24 are the product evidence. This repository has no Cursor usage export, token count, or spend total. |
-| Local Nemotron on GPU | Stronger for “best use of Nemotron” than a single hosted Super VL receipt. |
-| Full Zetaris USL across many live physical systems | Not claimed. Audited JDBC + shared PostGIS path is what we show. |
+| Every ranked row has a passed Nemotron draft | 14,960 passed and 480 failed in the published pack. 89 counties with ranked rows are all failed. Anchorage is one. |
+| The model picks the call order | The formula in `data/scoring/national_weights.json` ranks. Nemotron writes the draft. |
+| A failed draft is filled in | The failure reason stays. Anchorage rank 1 keeps `Extra data: line 1 column 2 (char 1)`. |
+| This is a local or offline DGX run | Receipts say `nvidia_cloud` through Meterless `meterless/deep`. |
+| H-MEM, World Model, or Markovian ran | They are not in this build. Scout Intent is the Meterless engine, and only on the local call-script path. |
+| OpenRouter is the backup you are watching | The module exists. The demo leaves it unset. No spend is claimed. |
 
-## Data
+## Operator and clinical
 
-Source vintages and refusals belong in the evidence drawer. Missing geometry is listed as missing — never guessed onto the map. Fabricated facilities, phones, or alert polygons are forbidden.
+Contact status starts at **Not contacted**. **Reached** appears only after someone chooses it on that device. The recording does not select it.
+
+The national screen's scope line is prototype outreach ordering. `current_operating_status_verified` and `emergency_contact_verified` stay false on ranked rows. No operator time saving is measured.
+
+Milton (`/operate`) is a retrospective of one county with a different formula and a plan term. It is not the template for the other 3,234 snapshots. Hosted Manatee `12081` is the national screen: 14 ranked rows, not the Milton 18.
+
+## Weather
+
+Hosted alert refresh is off. A captured alert on the local stack can rank a different set than the county sheet. The Doña Ana flash-flood check ranked zero facilities inside the polygon. Radar does not establish that a facility is affected.

@@ -1,54 +1,59 @@
 ---
 title: "Local run"
-description: "Run Porch Light on this machine with Zetaris, Meterless Nightshift, and the web app."
-keywords: ["local", "zetaris", "meterless", "nightshift", "start-local"]
+description: "Run a new county audit on the operator machine. The hosted desk does not need this for the published snapshots."
+keywords: ["local", "zetaris", "nightshift", "start-local"]
 ---
 
-Porch Light is built to run on the dedicated operator PC. Public cloud substitutes for Zetaris or Meterless are not the demo path.
+The recording path does not need this page. Published counties open on [porchlight.earth](https://porchlight.earth). Use a local run when you are producing a new audit, a new draft, or a captured-alert sheet.
 
-## What you need
+## What has to be up
 
-| Piece | Expected local address | Notes |
+| Piece | Address | Role |
 | --- | --- | --- |
 | Web app | `http://127.0.0.1:3101` | Next.js in `web/` |
-| Zetaris (Docker) | UI `http://localhost:3000`, JDBC `jdbc:zetaris:lightning@localhost:10000`, REST `http://localhost:8888/api/v1.0` | From the licensed local bundle, not a managed AWS cluster |
-| Meterless Nightshift | `http://127.0.0.1:8088/v1` | NVIDIA key stays in Nightshift Providers, not in the web app |
-| PostGIS | private read-only datasource | Registered into Zetaris; facility/geo joins |
+| Zetaris | UI `http://localhost:3000`, JDBC `jdbc:zetaris:lightning@localhost:10000` | Licensed local bundle |
+| Nightshift | `http://127.0.0.1:8088/v1` | Meterless route `meterless/deep` |
+| PostGIS | datasource `porchlight_postgis` | Read-only source relations |
 
-Copy `env.example` at the repo root into a local env file **outside git**. Never commit tokens.
+Copy `env.example` to a file outside git if you override a path. Names the code reads include `PORCHLIGHT_ZETARIS_ENV_FILE`, `PORCHLIGHT_ZETARIS_JDBC_URL`, `PORCHLIGHT_ZETARIS_JDBC_JAR`, `PORCHLIGHT_ZETARIS_DATASOURCE`, and `PORCHLIGHT_DATA_ACCESS_MODE`. The NVIDIA key goes in Nightshift Providers. The app does not read `NVIDIA_API_KEY`.
 
-## Start the web app
+Leave `PORCHLIGHT_OPENROUTER_BACKUP` unset.
 
-From the repo root on Windows:
+## Start
 
-```powershell
-.\Start-Local.ps1
-```
-
-Or from `web/`:
-
-```powershell
-npm install
-npm run dev -- --port 3101
-```
-
-Open `http://127.0.0.1:3101`. If Zetaris is down, nationwide jobs fail closed with a clear unreachable message — they do not invent facilities.
-
-## Model lanes (honest)
-
-Correct NVIDIA model ids from the Participant Setup Guide:
-
-- Fast: `nvidia/nemotron-3.5-lightning-30b-a3b`
-- Deep: `nvidia/nemotron-3.5-super-vl-120b-a12b`
-
-Verified to date (see `metadata.json` / `SPONSOR-SETUP.md`): stored `meterless/deep` → Super VL drafts for the top Manatee rows, a Lightning receipt on the Scout Intent live call-script path (contract verified before the provider call), and an in-progress national draft sweep on both free ids with a dated snapshot in `submission/README.md`. The only runtime model route is that Meterless Nightshift path. Local GPU `meterless/local`, H-MEM, Parse, and Content Safety are **not** claimed as implemented.
-
-## Preview docs
-
-From `docs/`:
+From `web/`:
 
 ```bash
+npm ci
+npm run build
+npm run start
+```
+
+On Windows, `.\Start-Local.ps1` from the repo root starts the built app when 3101 is free, and a weather worker when none is running. `-SkipWeather` leaves the worker off. The script does not install libraries, start Zetaris, or delete captures.
+
+If Zetaris is unreachable, the nationwide page says so and returns no invented rows.
+
+## Model route
+
+Fast id: `nvidia/nemotron-3.5-lightning-30b-a3b`. Deep id: `nvidia/nemotron-3.5-super-vl-120b-a12b`. Both appear on `meterless/deep` receipts with thinking disabled. Local `meterless/local` is not a lane this submission demonstrates.
+
+Scout Intent runs before a live call script. Batch explanation drafts are not on that gate. See [Meterless and Nemotron](/meterless-and-nemotron).
+
+## Smoke
+
+On a machine with Zetaris:
+
+```bash
+scripts/smoke-national.sh
+```
+
+The script reads the catalog and runs a fixed set of counties through `engines.national_run`. It does not spend the draft budget. A pass from the night of 2026-10-23 is in `docs/smoke-national-results.md`. If Zetaris is down, the script exits with that message and does not substitute another county.
+
+## Docs preview
+
+```bash
+cd docs
 npx mint dev
 ```
 
-Then open the printed local URL (usually `http://localhost:3000`). Docs stay private until Joe publishes at submission.
+Do not publish the preview.

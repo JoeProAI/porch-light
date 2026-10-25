@@ -1,5 +1,48 @@
 ---
 title: "Evaluation"
+description: "Measured source, draft, and script checks. No clinical score and no single blended pass rate."
+keywords: ["eval", "sweep", "grounding"]
 ---
 
-Coming soon. Results go here once there are measured runs.
+There is no `eval/` harness and no judge score stored in this repo. The measurements below are the committed reports and the published pack. They answer different questions. Do not add them into one success rate.
+
+## Source phase
+
+`engines/reports/national-sweep-2026-10-23.md`, sweep `20261023T200048Z-78a426ba`, measured `2026-10-24T01:56:56Z`.
+
+| | First pass | After the separate Robertson retry |
+| --- | --- | --- |
+| Counties with an audited chain | 3,234 of 3,235 | 3,235 of 3,235 |
+| Counties with ranked rows | 2,490 | 2,491 |
+| Ranked facility rows | 15,440 | 15,442 |
+| Refusals | 6,460 | 6,461 |
+
+First-pass outcomes: 2,490 with ranked rows, 391 with CMS rows that did not rank, 353 with no matching CMS rows, 1 runtime error (Robertson `48395`, JDBC, 26.992 seconds). The retry completed in 18.637 seconds with 3 source rows, 2 ranked, 1 refusal. The original failure file was kept. Source-time p50 was 18.888 seconds and p95 was 63.258 seconds, including the failure. Those percentiles were not recomputed to hide it.
+
+The hosted pack matches the first pass: 3,234 snapshots, 2,490 ranked counties. The retry is not in the pack.
+
+## Drafts in the hosted pack
+
+Counted 2026-10-25 from the committed gzip snapshots, which `GET /api/national` serves.
+
+14,960 facility explanations passed. 480 failed. 2,383 counties are all passed, 89 are all failed, 18 are mixed. 744 snapshots have no ranked rows. Executions: 3,637 `grounding_passed`, 461 `failed`. Reported models on executions that have an id: Lightning 3,085 passed and 144 failed, Super VL 552 passed and 221 failed. 96 failed executions have no reported model id. Paid fallback flags: 0.
+
+Grounding checks source-clause identity, approved questions, and query references. The report text calls that check exact source-clause identity. It does not validate clinical priority or present facility conditions.
+
+The 9:51 AM ET private-directory snapshot on 2026-10-24 (1,282 of 1,545 batches, 12,418 accepted, 3,020 unresolved) is an earlier reading of a directory this pass did not reopen. Use the pack counts when you talk about the live desk.
+
+## Script checks, separate from the pack
+
+`engines/reports/national-script-verification-2026-10-23.md`:
+
+- Baldwin and Providence, top three rows, desktop and mobile: 12 outcomes, 10 accepted, 2 Providence failures retained, 14 attempts, $0.
+- Denver after the JSON-object request fix: 6 of 6 passed, $0, no retry.
+- Combined line in that file: 18 outcomes, 16 passed, 2 retained failures, 20 attempts.
+
+`engines/reports/scout-intent-live-2026-10-23.json` is one additional facility, CCN `102853`, receipt `rcpt_req_qsa07grv`, `actual_usd` 0.
+
+`docs/smoke-national-results.md` is a local web session on the night of 2026-10-23. It includes an Anchorage re-run with 4 of 4 drafts accepted. The published Anchorage snapshot still has 4 failures. Both records are real. The live URL shows the snapshot.
+
+## What was not measured
+
+No operator time-and-motion study. No clinical validation. No test that a directory phone was answered. No offline tokens-per-second figure. No claim that the 480 failed drafts were later repaired.

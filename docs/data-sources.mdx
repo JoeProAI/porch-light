@@ -1,17 +1,50 @@
 ---
 title: "Data sources"
+description: "CMS, Census, SVI, emPOWER, and NWS captures behind the call sheet, with the limits of each."
+keywords: ["cms", "census", "svi", "empower", "nws"]
 ---
 
-Coming soon.
+The call sheet is built from public facility records and public geographic context. Provenance sits on the capture. The app does not treat a directory listing as proof that a facility is open, staffed, or inside today's warning.
 
-## Weather alerts and warning areas
+Source names and URLs below are the entries in `data/adapters/us/sources.yaml`. National bytes for the full catalog live in the private filestore. The checked-in raw profile in `data/snapshot/raw/` is the Manatee intake plus provenance. The hosted county pack is the audited result of the national capture, not a second copy of every raw file.
 
 ## Facilities
 
-## Vulnerability and population
+| Source | What it contributes | Vintage noted in the repo |
+| --- | --- | --- |
+| CMS nursing homes, dataset `4pq5-n9py` | Facility identity, county, phone, star rating | Provider-data release modified `2026-09-30` |
+| CMS dialysis, dataset `23ew-n7w9` | Facility identity and address for geocoding | Provider-data release modified `2026-06-16` |
 
-## Geography and crosswalks
+The national capture accounts for 22,180 distinct CMS records in the source report, including refusals and county-join gaps. The first pass of the sweep placed 15,440 of those into ranked rows and recorded 6,460 refusals. Names beginning `zz_closed_` stay refused (`cms_source_marked_closed`). A CMS county label is not, by itself, an exact geocode.
+
+Phones on ranked rows are the CMS directory numbers that passed the digit check. They are not verified emergency contacts. The data-quality rule `emergency_contact_verified` stays false.
+
+## Geography
+
+Census geocoder, benchmark `Public_AR_Current`, vintage `Census2020_Current`: `https://geocoding.geo.census.gov/geocoder/geographies/address`.
+
+A ranked row needs `match_status` `Match` and `match_type` `Exact`, and the source point covered by official county geometry. Any other match is refused: `census_address_match_not_exact`, `census_address_not_matched`, or `source_point_not_covered_by_current_county_geometry`. An absent Exact rating is not stored as Exact.
+
+The catalog is the loaded NWS county file joined to the latest national capture: 3,235 county and county-equivalent rows, query id `833`. That includes Connecticut planning regions (FIPS prefix `09`, 9 rows) and territory equivalents: American Samoa 5, Guam 1, Northern Mariana Islands 4, Puerto Rico 78, U.S. Virgin Islands 3. Those 100 rows are in the published catalog. They were not skipped.
+
+NWS zone shapes and the IEM archive supply warning geometry for alert jobs and for the Milton retrospective. Current published shapes are not asserted to match October 2024 boundaries. `historical_2024_boundary_equivalence_verified` is false on both the national snapshots and the Milton sheet.
+
+## Vulnerability and electricity-dependent equipment
+
+CDC/ATSDR SVI 2022, tract file, joined on the Census tract GEOID. National percentiles are used. Unavailable percentiles stay unavailable. The SVI `data_as_of` flag on a national row is stale because the vintage is 2022.
+
+HHS emPOWER public FeatureServer, ZIP layer 1, electricity-dependent durable medical equipment. The count is Medicare beneficiaries in that ZIP who use that equipment. It is not a count of patients at the facility on the row. Masked source values of 11 are refused (`ambiguous_or_masked_source_count_11`). A missing ZIP context is a refusal, not a zero.
+
+## Weather
+
+`https://api.weather.gov/alerts/active` is the live alert URL. On porchlight.earth the catalog's weather block is `unavailable` and points you at that official URL. Local origin can refresh a capture and run an alert through the counties the official geometry maps. Unmapped alerts, including marine zones, return a source gap. The Doña Ana flash-flood check in `docs/smoke-national-results.md` ranked zero facilities inside the polygon even though the county sheet ranks seven. The alert sheet did not reuse the county list.
+
+Storm Watch (`/watch`) shows captured official alerts and radar frames for the regions that have frames. A missing frame stays missing.
 
 ## County plans
 
-## Provenance and attribution
+The Milton path can cite the Bradenton adoption PDF of the Manatee CEMP captured under `data/snapshot/raw/cemp/`. Applicability to October 2024 is unverified. The national screen does not import that PDF, does not guess a plan for any other county, and does not encode a missing plan as zero.
+
+## Provenance
+
+Ingest writes a `.provenance.json` sidecar: source URL, `fetched_at` UTC, SHA-256, license line, fetch command. The published catalog and each county gzip have sidecars. The national source capture id on the hosted catalog is `47344192d80249d0c96a69fb2acd0f11a6b32009a8cd0607dca8872609488ac0`.

@@ -1,34 +1,43 @@
 ---
 title: "Any US county"
-description: "Nationwide front door: Census catalog search and local jobs when Zetaris is reachable."
-keywords: ["nationwide", "county", "census", "national jobs"]
+description: "Search the Census catalog and open a published audited snapshot. The three recording counties are Anchorage, Doña Ana, and Harris."
+keywords: ["nationwide", "county", "fips", "anchorage"]
 ---
 
-Home primary action: **Pick any US county** → `/nationwide`. The Milton Manatee sheet is the secondary walkthrough.
+`/nationwide` is the product. Home sends you here. The page reads the published catalog when the host has the pack, which porchlight.earth does.
 
 <Frame>
-  <img src="/images/screenshot-nationwide.jpg" alt="Nationwide page with county search and night atlas" />
+  <img src="/images/screenshot-nationwide.jpg" alt="Earlier local capture of the nationwide county search" />
 </Frame>
 
-## How a county job works
+## Open a county
 
-1. Search the Census county catalog (3,235 rows in the catalog path) or click a county on the night atlas.
-2. `POST /api/national` starts `engines.national_jobs` for that FIPS (or an alert + capture pair).
-3. Poll the job. On success, open the call sheet for **that** run's audited rows and source gaps.
-4. If Zetaris cannot be reached, the UI says so. It does not load Manatee as a silent fallback for a bad FIPS.
+The address `/nationwide?county=` plus a five-digit FIPS selects that catalog row and, on the hosted desk, loads the published snapshot. You can also search by name or pick a state and county. Ambiguous names ask you to choose. `Dona Ana` matches Doña Ana.
 
-## Verified local runs (examples)
+The button label on a published host is **Open published audited call sheet**. The fine print under the catalog count cites the Zetaris query ids and the sweep id.
 
-Completed jobs have existed on the operator machine for counties such as Los Angeles CA, Cook IL, Harris TX, Maricopa AZ, and Denver CO, plus Manatee. Treat those as **local machine receipts**, not as a finished national product. Catalog size ≠ completed call sheets for every county.
+**Published ranked counties** lists 20 counties, highest `ranked_rows` first. That list is not the whole catalog. Los Angeles County is 450 ranked rows, Cook is 212, Harris is 140.
 
-## Honesty rules
+**Captured live alert** on this host does not start a job. The weather block is `unavailable`, and the client tells you live alert runs stay on local origin.
 
-- Do not market “3,000+ counties ready” until the sweep and offline replay actually cover them.
-- Contact outcomes stay operator-entered. No sample **Reached** rows.
-- Alert polygon jobs and single-county jobs are different engine inputs. The merged national web work is [PR #24](https://github.com/JoeProAI/porch-light/pull/24); engine notes are in `engines/README.md`.
+## Recording counties
 
-## Related
+Verified live on 2026-10-25 against the committed gzip files.
 
-- [Manatee walkthrough](/manatee-walkthrough)
-- [Limits](/limits)
-- [Local run](/local-run)
+| FIPS | County | Source rows | Ranked | Refused | Drafts in the snapshot | Generated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `02020` | Anchorage, AK | 6 | 4 | 2 | 4 failed | `2026-10-23T22:17:02Z` |
+| `35013` | Doña Ana, NM | 11 | 7 | 4 | 7 passed, Lightning | `2026-10-23T20:37:26Z` |
+| `48201` | Harris, TX | 236 | 140 | 96 | 140 passed | `2026-10-23T20:59:02Z` |
+
+Anchorage refusals are both `census_address_match_not_exact`. Doña Ana's four refusals are the same code. Harris refusals: 55 non-exact geocodes, 26 unmatched addresses, 10 missing CMS ratings, 5 missing ZIP contexts.
+
+Show the Anchorage failure. Then show a passed Doña Ana draft. Use Harris when you need a large sheet. Leave contact status on **Not contacted**.
+
+## Catalog totals
+
+3,235 official entries. 2,490 `complete_with_ranked_rows`. 391 `complete_no_rankable_rows`. 353 `complete_no_matching_source_rows`. 1 `runtime_error` (Robertson `48395`). Query id `833`.
+
+On the local machine, the same URL starts `engines.national_jobs` instead of reading the pack. If Zetaris is down, the page says so and does not load Milton. `/operate?county=` redirects here, so a bad county code cannot fall through to the Milton sheet.
+
+A local smoke session is written up in `docs/smoke-national-results.md`. Those job ids are local checkpoints. They are not required to open the hosted snapshots.

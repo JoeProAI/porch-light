@@ -2,6 +2,8 @@
 
 Porch Light was built inside the Open Agent Hackathon 2026 window (Oct 22 00:00 UTC to Oct 27 23:45 UTC). This file lists everything that existed before the window. Nothing else in this repo is pre-existing code.
 
+The nationwide desk, the published county pack under `web/data/national/published/`, and the live site at https://porchlight.earth were built inside the window. They are not pre-existing components. The Milton sheet is a real-source snapshot from the window, not a template for other counties.
+
 ## Open-source references and scaffolds
 - Meterless engine specs (Apache 2.0): implemented fresh, not copied. Any copied template code gets listed here by the agent that added it.
 - Zetaris getting-started patterns (Apache 2.0): used as reference, credited in NOTICE and metadata.json. Not stored in this repository. Any copied template code gets listed here by the agent that added it.
