@@ -1,25 +1,27 @@
 ---
 title: "Local run"
-description: "Run Porch Light on this machine with Zetaris, Meterless Nightshift, and the web app."
-keywords: ["local", "zetaris", "meterless", "nightshift", "start-local"]
+description: "Run a fresh county job on the operator machine. The hosted desk does not need this stack."
+keywords: ["local", "zetaris", "nightshift", "start-local"]
 ---
 
-Porch Light is built to run on the dedicated operator PC. Public cloud substitutes for Zetaris or Meterless are not the demo path.
+[porchlight.earth](https://porchlight.earth) serves the published snapshots with no local install. Use this page when you want a fresh Zetaris chain, a captured alert run, or a new call script.
 
 ## What you need
 
 | Piece | Expected local address | Notes |
 | --- | --- | --- |
 | Web app | `http://127.0.0.1:3101` | Next.js in `web/` |
-| Zetaris (Docker) | UI `http://localhost:3000`, JDBC `jdbc:zetaris:lightning@localhost:10000`, REST `http://localhost:8888/api/v1.0` | From the licensed local bundle, not a managed AWS cluster |
-| Meterless Nightshift | `http://127.0.0.1:8088/v1` | NVIDIA key stays in Nightshift Providers, not in the web app |
-| PostGIS | private read-only datasource | Registered into Zetaris; facility/geo joins |
+| Zetaris (Docker) | UI `http://localhost:3000`, JDBC `jdbc:zetaris:lightning@localhost:10000`, REST `http://localhost:8888/api/v1.0` | Licensed local bundle. Not the managed AWS cluster |
+| Meterless Nightshift | `http://127.0.0.1:8088/v1` | The NVIDIA key stays in Nightshift Providers |
+| PostGIS | private read-only datasource `porchlight_postgis` | Spatial predicates stay in PostGIS |
 
-Copy `env.example` at the repo root into a local env file **outside git**. Never commit tokens.
+Copy `env.example` into a gitignored env file. Names only. Never commit token values. The app reads the Nightshift proxy-token file at runtime (`%LOCALAPPDATA%\ai.meterless.runtime\proxy-token` on Windows). It does not read `NVIDIA_API_KEY` from the web env.
 
-## Start the web app
+National captures, weather captures, and job artifacts stay outside git under `%USERPROFILE%\.porchlight`.
 
-From the repo root on Windows:
+## Start
+
+From the repo root on Windows, when Java 21, Zetaris, and PostGIS are already up:
 
 ```powershell
 .\Start-Local.ps1
@@ -28,27 +30,51 @@ From the repo root on Windows:
 Or from `web/`:
 
 ```powershell
-npm install
-npm run dev -- --port 3101
+npm ci
+npm run build
+npm run start
 ```
 
-Open `http://127.0.0.1:3101`. If Zetaris is down, nationwide jobs fail closed with a clear unreachable message — they do not invent facilities.
+Open `http://127.0.0.1:3101`. If Zetaris is down, nationwide jobs fail closed. They do not load Manatee in place of the county you asked for.
 
-## Model lanes (honest)
+The Milton sheet at `/operate` renders from `web/data/manatee-ranked.json` without live credentials.
 
-Correct NVIDIA model ids from the Participant Setup Guide:
+## Model route
 
-- Fast: `nvidia/nemotron-3.5-lightning-30b-a3b`
-- Deep: `nvidia/nemotron-3.5-super-vl-120b-a12b`
+`engines/runtime_config.py` sets the base URL to `http://127.0.0.1:8088/v1` and the requested model to `meterless/deep`, with thinking disabled.
 
-Verified to date (see `metadata.json` / `SPONSOR-SETUP.md`): stored `meterless/deep` → Super VL drafts for the top Manatee rows, a Lightning receipt on the Scout Intent live call-script path (contract verified before the provider call), and an in-progress national draft sweep on both free ids with a dated snapshot in `submission/README.md`. The only runtime model route is that Meterless Nightshift path. Local GPU `meterless/local`, H-MEM, Parse, and Content Safety are **not** claimed as implemented.
+Ids in retained receipts:
 
-## Preview docs
+- `nvidia/nemotron-3.5-lightning-30b-a3b`
+- `nvidia/nemotron-3.5-super-vl-120b-a12b`
 
-From `docs/`:
+Scout Intent (`engines/scout_intent.py`) classifies a live call-script request and signs an execution contract. The draft executor checks that contract before the provider call. One retained pass is `engines/reports/scout-intent-live-2026-10-23.json` for CCN `102853`, receipt `rcpt_req_qsa07grv`, contract `01M5NZW047TK9BE2HZQBQVB931`, `actual_usd` 0.
+
+Batch explanation drafts in the national sweep are not on that contract gate.
+
+Local GPU `meterless/local` is not a demonstrated lane. The offline probe in `engines/reports/nemotron-offline-proof-2026-10-23.md` stopped at `blocked_preflight`.
+
+## Smoke script
+
+On a machine with local Zetaris:
+
+```powershell
+scripts\smoke-national.ps1
+```
 
 ```bash
+scripts/smoke-national.sh
+```
+
+The script calls `engines.national_run` for Manatee (`12081`), Harris (`48201`), Cook (`17031`), Loving (`48301`), and one county mapped from the current audited alert. It does not spend the draft budget. If Zetaris is unreachable, it exits with that message and does not substitute a county.
+
+A recorded local pass from 2026-10-23 is `docs/smoke-national-results.md`. Those query ids are that session. They are not the query ids on the hosted sweep snapshots.
+
+## Docs preview
+
+```bash
+cd docs
 npx mint dev
 ```
 
-Then open the printed local URL (usually `http://localhost:3000`). Docs stay private until Joe publishes at submission.
+That preview is local. It is not a public docs URL.

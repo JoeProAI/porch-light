@@ -1,19 +1,35 @@
 ---
 title: "API reference"
+description: "The contract OpenAPI spec, and the routes the hosted desk actually serves."
+keywords: ["openapi", "api", "contract", "national"]
 ---
 
-The API reference is generated from `contract/openapi.yaml` (OpenAPI 3.1, Porch Light API version 0.1.0). Right now it reads the spec from the `contract/initial` branch (PR #14). It moves to main once that PR merges.
+<Warning>
+The generated pages after this one are the contract in `contract/openapi.yaml` (OpenAPI 3.1, version 0.1.0, PR #14, on main). They are the shared shape agents build against. `porchlight.earth` does not serve `/runs`, `/alerts`, or `/health` from that file.
+</Warning>
 
-## Tags
+Mintlify reads the spec through `docs/contract/openapi.yaml`, which points at `contract/openapi.yaml`. Do not treat the playground as a call against the live desk.
 
-- `alerts`: archived and active weather alerts
-- `runs`: start a run, read its ranked facilities, joins, trace and check-ins, and export the call sheet
-- `health`: Zetaris, Meterless, network and snapshot status
+## Routes the live desk serves
 
-## Errors
+Checked 2026-10-25.
 
-Every error returns an `ApiError` with a `code` and `message`. Codes in the contract: `not_found`, `bad_request`, `no_facilities`, `source_stale`, `zetaris_down`, `meterless_unauthorized`, `meterless_offline`, `timeout`, `export_refused`.
+| Request | Result |
+| --- | --- |
+| `GET /api/national` | Published catalog, 3,235 counties, `publication.mode` `published_static` |
+| `GET /api/national?county=35013` | Completed snapshot for Doña Ana |
+| `GET /api/national?county=48395` | HTTP 503. No snapshot. No substitute county |
+| `GET /api/national?recent=1` | Up to 20 published counties |
+| `POST /api/national` | HTTP 403, `Same-origin local access is required for model operations.` |
 
-## Empty states
+Implementation: `web/src/app/api/national/route.ts`. Weather captures are `web/src/app/api/weather/`.
 
-An empty result is a typed empty state, not an error. `EmptyState.code` is one of `no_facilities`, `no_alerts`, `no_joins`, `no_dependents_data`.
+On loopback, the same GET reads the local catalog when the published pack is not what that process serves, and POST can start a job or a call script. Those local responses are not the contract `/runs` objects either. They are national job checkpoints.
+
+## How to read the contract pages
+
+The spec's own summary says the formula ranks and Nemotron explains. Fixture files under `contract/fixtures/` include mock trace numbers. A page that cites `trace_mock.json` or `joins_mock.json` is showing fixtures. Measured query ids are on the published county snapshots, listed in [Evidence trail](/evidence-trail).
+
+Contract error codes include `not_found`, `bad_request`, `no_facilities`, `source_stale`, `zetaris_down`, `meterless_unauthorized`, `meterless_offline`, `timeout`, and `export_refused`. The hosted national route uses its own JSON `error` string and HTTP status, as in the table above.
+
+`JoinProposal.seen_before` in the spec is described as H-MEM. That engine is not claimed. See [Zetaris](/zetaris-federation).

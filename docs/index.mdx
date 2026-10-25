@@ -1,77 +1,110 @@
 ---
 title: "Porch Light"
-description: "Who to call first when a storm warning drops: honest local docs for the night desk."
-keywords: ["porch light", "call sheet", "NWS", "Zetaris", "Meterless", "Nemotron"]
+description: "Open a published US county and read who to call first, with the source gaps left on the sheet."
+keywords: ["porch light", "nationwide", "call sheet", "Nemotron", "Zetaris"]
 ---
 
-emPOWER tells you how many. Porch Light tells you who to call first, and why.
+You open a US county. Porch Light shows the dialysis centers and nursing homes that joined the audited sources, in an order a fixed formula set, with directory phones and the facts that did not join.
+
+The live desk is [porchlight.earth](https://porchlight.earth). Home says **Pick any US county** and goes to `/nationwide`. The Hurricane Milton sheet is a footer link, **Hurricane Milton retrospective**. It is a saved example. It is not the product.
 
 <Frame>
-  <img src="/images/hero-key-art.webp" alt="Night storm over land with one amber porch light on" />
+  <img src="/images/hero-key-art.webp" alt="Illustration of a night storm with one amber porch light" />
 </Frame>
 
-Porch Light is a county emergency operator's **call-first** workflow. Pick a real warning area, get a ranked facility list with phones and reasons, inspect the evidence, mark contact status yourself, and export. No call or message is sent automatically. The priority formula is a transparent prototype heuristic, not a clinically validated order.
+<Note>
+The picture is project key art. It is not a satellite image, a live warning, or a facility map.
+</Note>
 
-## Two doors
+## What you can check today
 
-| Door | What it is | What it is not |
+Checked against `GET https://porchlight.earth/api/national` on 2026-10-25 at 23:08 UTC, and against `web/data/national/published/` in this repo. Both describe sweep `20261023T200048Z-78a426ba`, generated `2026-10-24T16:47:04Z`.
+
+| What you see | Figure | Where it comes from |
 | --- | --- | --- |
-| [Manatee walkthrough](/manatee-walkthrough) | Saved Hurricane Milton sheet for Manatee County, FL: audited ranks, evidence drawer, operator contact states | Proof that every US county already runs the same path |
-| [Any US county](/nationwide) | Local nationwide job against the Census catalog when Zetaris is up on this machine | A finished national offline product or fabricated coverage |
+| Census catalog rows | 3,235 | Hosted catalog `catalog.counties`, Zetaris query `833` |
+| Published county snapshots | 3,234 | `publication.county_snapshots` and the `counties/*.json.gz` files |
+| Counties with ranked facilities | 2,490 | `publication.ranked_counties` |
+| Ranked facility rows in that pack | 15,440 | Sum of `ranked_rows` in the catalog |
+| Passed stored drafts | 14,960 | Row `model_explanation.status` `passed`, `actual_usd` 0 |
+| Failed stored drafts, kept failed | 480 | Row status `failed`. No replacement prose |
+| County with no published file | Robertson County, Texas, FIPS `48395` | Catalog outcome `runtime_error`. Hosted GET returns 503 and does not substitute another county |
 
-PR #24 flips home primary to **Pick any US county** with Milton as secondary. The live :3101 shot below still shows Manatee as the primary button until that branch is rebuilt onto the running app.
+A separate retry for Robertson is written up in `engines/reports/national-sweep-2026-10-23.md` (2 ranked rows after recovery, 2,491 counties with ranked rows in that report). That retry file is not in the hosted pack. Quote 2,490 when you mean the desk a judge can open. Quote 2,491 only when you mean that report's post-retry source count.
 
-## Live product shots
+## Three counties for the video
 
-These are captures from the local app at `http://127.0.0.1:3101` on Joe's machine (America/New_York). They are not stock photography.
+| County | Open | Ranked / refused / source | Rank 1 on the live response |
+| --- | --- | --- | --- |
+| Anchorage, Alaska | `/nationwide?county=02020` | 4 / 2 / 6 | Polaris Extended Care, CCN `025036`. Stored draft **failed** |
+| Doña Ana, New Mexico | `/nationwide?county=35013` | 7 / 4 / 11 | USRC Las Cruces, CCN `322559`. Lightning draft **passed**, actual cost 0 |
+| Harris County, Texas | `/nationwide?county=48201` | 140 / 96 / 236 | DaVita North Houston Dialysis Center, CCN `452678`. Super VL draft **passed**, actual cost 0 |
 
-<Frame>
-  <img src="/images/screenshot-home.jpg" alt="Porch Light home on :3101: night hero, amber first-call card; current build still leads with Manatee walkthrough while PR #24 flips primary to any county" />
-</Frame>
+Walk through them on [Quickstart](/quickstart). Leave contact status on **Not contacted** unless you placed the call yourself.
 
-<Frame>
-  <img src="/images/screenshot-nationwide.jpg" alt="Nationwide county picker with night map and search" />
-</Frame>
+## Two sheets, on purpose
 
-<Frame>
-  <img src="/images/screenshot-operate.jpg" alt="Operator call sheet with Not contacted default and evidence drawer" />
-</Frame>
+| Sheet | Route | What it is |
+| --- | --- | --- |
+| Published national county | `/nationwide?county=` then the call sheet | Frozen audited sweep snapshot. National weights `national-source-screen-v1`. No county plan term |
+| Hurricane Milton retrospective | `/operate` with no county query | Saved Manatee sheet: 18 ranked rows, 2 refusals, weights `manatee-development-v1`, including an archived plan term |
 
-## Design plates
-
-Declared pre-existing art from the design folder: night land, warning in, evidence, call-first ranking.
-
-<Columns cols={3}>
-  <Frame>
-    <img src="/images/section-warning-in.jpg" alt="Design plate: warning in" />
-  </Frame>
-  <Frame>
-    <img src="/images/section-evidence.jpg" alt="Design plate: evidence trail" />
-  </Frame>
-  <Frame>
-    <img src="/images/section-call-first.jpg" alt="Design plate: who to call first" />
-  </Frame>
-</Columns>
+The national snapshot for Manatee (`12081`) is a different sheet: 14 ranked and 6 refused. Do not describe that national row count as the Milton walkthrough.
 
 ## Start here
 
 <Columns cols={2}>
-  <Card title="Local run" icon="terminal" href="/local-run">
-    Bring up the web app, Zetaris, and Meterless/Nemotron on this machine.
+  <Card title="Quickstart" icon="clapperboard" href="/quickstart">
+    The live path for the submission video. Three counties, no invented calls.
   </Card>
-  <Card title="Sponsors" icon="handshake" href="/sponsors">
-    Zetaris, Meterless, Nemotron, Cursor, and Devin: purpose, proof, and gaps.
-  </Card>
-  <Card title="Manatee walkthrough" icon="list-ordered" href="/manatee-walkthrough">
-    Hurricane Milton saved sheet for judges and operators.
+  <Card title="Nationwide" icon="map" href="/nationwide">
+    Catalog, published snapshots, and the county the host will not open.
   </Card>
   <Card title="Limits" icon="triangle-alert" href="/limits">
-    What we do not claim yet, including national coverage and contact outcomes.
+    Source audit, drafts, and the claims this submission does not make.
+  </Card>
+  <Card title="Sponsors" icon="handshake" href="/sponsors">
+    Zetaris, Meterless, Nemotron, and Cursor, with the proof a judge can open.
   </Card>
 </Columns>
 
-## Honest bar
+## Earlier local captures
 
-- Contact status defaults to **Not contacted**. **Reached** is stored only when an operator chooses it.
-- Rank order comes from a fixed formula. Nemotron does not set the order.
-- Sponsor labels link only to work that actually ran. See [Sponsors](/sponsors) and repo `metadata.json`.
+These JPGs are from the local app before the nationwide-first home. They are not captures of the current [porchlight.earth](https://porchlight.earth) home.
+
+<AccordionGroup>
+  <Accordion title="Home, earlier local build">
+    <Frame>
+      <img src="/images/screenshot-home.jpg" alt="Earlier local home with two buttons: Open the Manatee walkthrough and Open the nationwide workbench" />
+    </Frame>
+    That build offered Manatee and nationwide as peer buttons. The live home has one amber action, **Pick any US county**. Milton is a footer text link.
+  </Accordion>
+  <Accordion title="Nationwide, earlier local session">
+    <Frame>
+      <img src="/images/screenshot-nationwide.jpg" alt="Earlier local nationwide page titled Verified runs on this machine" />
+    </Frame>
+    That session listed completed jobs on one machine. The hosted page lists **Published ranked counties** from the frozen sweep, capped at 20, highest ranked-facility count first.
+  </Accordion>
+  <Accordion title="Operator sheet, earlier local session">
+    <Frame>
+      <img src="/images/screenshot-operate.jpg" alt="Earlier local operator call sheet with a Not contacted control" />
+    </Frame>
+    Contact status still defaults to **Not contacted**. The hosted national sheet uses the same control, stored in the browser.
+  </Accordion>
+</AccordionGroup>
+
+## Design plates
+
+Declared illustration. Not radar, not facility locations, not a measured join.
+
+<Columns cols={3}>
+  <Frame>
+    <img src="/images/section-warning-in.jpg" alt="Illustration of a warning coming in over a dark street" />
+  </Frame>
+  <Frame>
+    <img src="/images/section-evidence.jpg" alt="Illustration of a desk lamp over papers" />
+  </Frame>
+  <Frame>
+    <img src="/images/section-call-first.jpg" alt="Illustration of four porch lights, the nearest one bright" />
+  </Frame>
+</Columns>

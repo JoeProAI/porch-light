@@ -1,5 +1,34 @@
 ---
 title: "Country adapters"
+description: "The US adapter is the working path. A global adapter is not operating coverage."
+keywords: ["adapter", "US", "global", "contract"]
 ---
 
-Coming soon.
+`contract/adapter.md` keeps country-specific work behind an adapter. The contract types themselves do not name a US county. The US implementation is `data/adapters/us/`.
+
+## US adapter
+
+Build time, the adapter downloads raw files, writes a `.provenance.json` sidecar, and loads PostGIS. Runtime, the app reads Zetaris SQL. An adapter method does not call a model.
+
+Sources the US path is built to fetch:
+
+| Method | US source |
+| --- | --- |
+| `alerts` | NWS API, IEM archive, NWS zones |
+| `areas` | County FIPS and Census tracts |
+| `facilities` | CMS dialysis and nursing homes, keyed by CCN |
+| `vulnerability` | CDC/ATSDR SVI |
+| `dependents` | HHS emPOWER ZIP and county aggregates |
+| `freshness` | Dataset modified stamps and capture times |
+
+The national product you open on the hosted desk is that US path, frozen into the published sweep. It is not a second country.
+
+## Global adapter
+
+`contract/adapter.md` lists a stretch goal: GDACS, a national CAP feed where one exists, OSM admin boundaries, and WorldPop. It also says open data has no emPOWER equivalent, and the UI should say so.
+
+That stretch is not shipped coverage. Do not describe Porch Light as operating outside the US catalog. Adding a key type to the contract is a contract change and goes in its own PR.
+
+## Keys
+
+US keys in the contract are `ccn`, `fips`, `tract_geoid`, `zip`, and NWS zone ids. The hosted sheet uses FIPS for the county and CCN for the facility. A FIPS that fails the five-digit check is rejected. The Manatee sheet is not substituted.

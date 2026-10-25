@@ -1,29 +1,35 @@
 ---
-title: "Zetaris federation"
+title: "Zetaris"
+description: "Zetaris is the data path. The hosted desk shows the audited query ids from that path."
+keywords: ["zetaris", "postgis", "query id", "jdbc"]
 ---
 
-Zetaris is the only data path. At runtime the app reads only through Zetaris SQL. No adapter method calls a model or reads a source directly at runtime.
+Zetaris is the only data path for a fresh run. The web app does not query CMS, Census, SVI, or emPOWER directly. Spatial predicates stay in PostGIS. Zetaris runs the SQL and returns the audit row the sheet cites.
 
-## Joins are measured, not guessed
+## What the desk shows
 
-Nemotron proposes joins. Zetaris SQL measures each one. A `JoinProposal` records:
+Hosted county files set `data_access_mode` to `zetaris`. The drawer prints query ids, the vendor query hash, the audited SQL, and the topology string:
 
-- `from_table`, `from_key`, `to_table`, `to_key` and `method`
-- `measured_match_rate`, from a Zetaris count query
-- `fan_out`
-- `threshold`, the acceptance threshold for that join
-- `status`: `proposed`, `accepted` or `refused`
-- `seen_before`: true when H-MEM remembers this join from an earlier run
-- `query_id`, the Zetaris query that measured it
+`Separate national public-source relations in one read-only PostGIS datasource`
 
-Join methods in the contract: `exact_key`, `ssa_to_fips_crosswalk`, `census_geocode`, `postgis_point_in_polygon`, `zip_to_empower`, `osm_admin_lookup`.
+The datasource name in local setup is `porchlight_postgis`. The deployment used for the sweep is local Docker, not a hosted Zetaris cluster. `metadata.json` records `deployment: local-docker` and `interface: jdbc`.
 
-## Failed joins
+The catalog read is one statement, query `833`, transaction `zetaris-national-chain`, finished successfully at `2026-10-23T20:00:50.055+00:00`. A county chain stores its own seven query ids. Match counts on those steps are SQL counts. They are not a model confidence.
 
-Failed joins come from Zetaris data quality results (`SHOW DQ ALL INVALID TABLE`). Each `FailedJoin` carries its keys, method, a plain `reason`, an optional `row_count` and its `query_id`. `GET /runs/{id}/joins` returns proposals and failed joins together. This is the Seams panel.
+## What is not claimed
 
-## Query ids everywhere
+A Unified Semantic Layer spread across many live physical systems is not claimed. The relations are separately projected and currently share one read-only PostGIS database.
 
-Every fact carries a Zetaris query id. The ids show up in `Evidence.zetaris_query_ids`, in each `JoinHop.query_id`, and in the export receipt.
+H-MEM is not a claimed engine. The contract field `seen_before` describes an H-MEM memory of a join. The hosted drawer does not set that story. Failed joins on the national sheet are the recorded refusals (inexact geocode, missing rating, missing ZIP context, and the other rules in [Data sources](/data-sources)), with query ids, not an LLM guess.
 
-<Note>The join examples in `contract/fixtures/joins_mock.json` are mock data. They aren't measured.</Note>
+If local Zetaris cannot be reached, a fresh job stops. The UI does not swap in another county. The hosted pack is how you read a county when you are not on that machine.
+
+## Where the code is
+
+| Path | Role |
+| --- | --- |
+| `engines/zetaris_client.py` | JDBC client |
+| `engines/zetaris_chain.py` | Audited statements |
+| `engines/national_run.py` | County source chain |
+| `engines/reports/national-sweep-2026-10-23.md` | Full-catalog source sweep |
+| `web/data/national/published/` | Snapshots the host serves |

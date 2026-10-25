@@ -1,5 +1,25 @@
 ---
 title: "License"
+description: "AGPL-3.0-only, third-party credits, and the pre-existing pieces."
+keywords: ["license", "AGPL", "NOTICE"]
 ---
 
-Coming soon.
+Porch Light is licensed under the GNU Affero General Public License v3.0 only. The text is `LICENSE`. Credits are `NOTICE`. The SPDX id in `metadata.json` is `AGPL-3.0-only`.
+
+Copyright 2026 Joe Gaither / Burden of Proof.
+
+## Third-party credits
+
+`NOTICE` names:
+
+- Meterless engine specs (`github.com/meterless/meterless`), Apache-2.0. The engines in this repo are implemented from the specs. The specs themselves are not copied in as the product.
+- Zetaris getting-started patterns, Apache-2.0, used as reference.
+- Data sources: National Weather Service, Iowa Environmental Mesonet, CMS, CDC/ATSDR SVI 2022, HHS emPOWER, U.S. Census Bureau, the NBER SSA to FIPS crosswalk, and the Manatee County CEMP for the retrospective sheet.
+
+Each published data file keeps its own license line in `.provenance.json`.
+
+## Pre-existing work
+
+`DECLARED_PREEXISTING.md` lists what existed before the build window (2026-10-22 00:00 UTC through 2026-10-27 23:45 UTC). The pre-existing pieces are Proof Desk outputs and the open-source references above. The national published pack, the web desk, and these docs were written inside the window.
+
+A generation manifest of model prompts and costs for the art is not in this checkout. Do not invent one. The committed plates you can open are under `web/public/art/` and `docs/images/`. The Proof Desk export that is in the tree is `web/design/proof-contract.json`, fetched `2026-10-22T20:25:43.950Z`.

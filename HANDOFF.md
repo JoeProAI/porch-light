@@ -207,32 +207,32 @@ blocked: continuous hosting, shared multi-operator coordination, verified facili
 last update: Sat Oct 24 2026. Home hero no longer sells Manatee or Hurricane Milton as a co-equal action. /operate is unchanged. Earlier the same day: origin/main had been merged into devin/web-manatee with contract PR #14, data scaffold PR #1, front matter PR #12, docs stubs PR #13, Wringer notes PR #15, and Manatee intake PR #17. Nationwide pack, Storm Watch, operator workspace, and claim lock stay. Fri Oct 23 2026: typecheck and production build pass. All 54 desktop/mobile Playwright checks pass with no skipped weather checks. Twelve engine checks pass, including real Zetaris and national chains and radar boundary regressions. Tablet routes at 768px have no overflow; Storm Watch and nationwide show no console or failed-request errors.
 
 ## Area: Docs
-owner now: Hackathon Desk docs seat (primary Hackathon Desk docs seat, backup Claude Code). Devin did the bounded private documentation pass.
-state: Mintlify skeleton from PR #13 is on this branch: docs.json groups, product and data stubs, and the OpenAPI reference group. This branch also has operator pages for local run, the Manatee walkthrough, nationwide, limits, and a sponsors page with current sponsor evidence. Twelve MDX pages in the isolated porch-light-docs worktree, private commits 6ec5c7b and 207c49b, record a judge-first walkthrough, sponsor-evidence matrix, and map-mode contract. Static source and route checks passed for that pass. No rendered Mintlify build or publication was performed.
-next step: api-reference and the contract pages (architecture, zetaris-federation, meterless-and-nemotron, ranking, evidence-trail) were built against contract/initial (PR #14), which is now on main and on this branch. Mintlify resolves the openapi path inside docs/, so either copy or sync contract/openapi.yaml to docs/contract/openapi.yaml or set the docs root to the repo root. Fill remaining stubs from product truth. Ranking weights are in data/scoring/weights.yaml. Leave eval numbers until measured results exist. Run a real Mintlify build when tooling is approved. Do not publish until Joe says yes.
-branch: docs stubs from PR #13 are on devin/web-manatee via this merge. The private pass sat on desk/docs-private-progress, based on origin/desk/docs-stubs at 49bd63c. No new docs PR was opened from that pass.
-how to run: cd docs && npx mint dev (check: npx mint broken-links). The private worktree source was at D:\Projects\AI_Projects\porch-light-docs\docs. Eighty-three source and Git checks and seven actual SQL checks were documented there, not as a running API.
-blocked: the API reference pages render only once the spec is reachable at docs/contract/openapi.yaml (see next step). Mintlify CLI was not installed for the private pass. Publication requires Joe's approval. No public docs site, Mintlify connection, deployment, or public preview.
-last update: Thu Oct 22 2026 10:16 AM ET for the private pass. Stub skeleton on main: Wed Oct 21 2026 8:55 PM ET. The same private-pass notes remain under Integration and review.
+owner now: Hackathon Desk docs seat (primary Hackathon Desk docs seat, backup Claude Code)
+state: docs/*.mdx are filled from the hosted nationwide desk and the committed published pack. No page is a Coming soon stub. docs/contract/openapi.yaml points at contract/openapi.yaml so Mintlify can read the contract spec. The API introduction says those generated pages are the contract, not the routes porchlight.earth serves. No public docs URL.
+next step: Joe shoots the video from docs/quickstart.mdx and submission/demo-script.md. Do not publish Mintlify until Joe says yes. Do not merge this docs PR from the agent seat.
+branch: cursor/docs-submission-front-matter-fe66 off main. Earlier stubs were PR #13.
+how to run: cd docs && npx mint dev. Product desk: https://porchlight.earth/nationwide
+blocked: Mintlify publication still needs Joe's yes. No separate docs deployment exists.
+last update: Sun Oct 25 2026, after a live GET of /api/national at 23:08 UTC.
 
 ## Area: Front matter and ops
 owner now: Hackathon Desk  (primary Hackathon Desk, backup Devin)
-state: in progress
-next step: (1) verify metadata.json field names against the HackOS submission form (behind Joe's login); current keys follow the community draft schema, not an official format. (2) Nemotron 3.5 Embed 1B stays off metadata.json until a NIM id is confirmed and the lane is demonstrated. (3) Fill remaining where paths in DECLARED_PREEXISTING.md as the build lands. (4) demo_url stays an empty string until a demo is hosted.
-branch: desk/frontmatter-fixes   open PRs: see PR "Front matter: add built_window/demo_url, Zetaris declaration, handoff update"
-how to run: metadata.json validates against metadata.schema.json (demo_url and built_window added to the schema)
-note: the contract was written by Devin (PR #14), not Cursor. metadata.json sponsors.cursor status is used: merged PRs #22 and #24, Storm Watch, national web wiring, and .cursor/rules/. The models list is empty because no usage CSV, token count, or spend is in the repo. demo_url is an empty string. Local GGUF, Content Safety, and Parse ids are not listed because they are not demonstrated. .cursor/rules/ lands with PR #14.
-blocked: HackOS field names need Joe's login (screenshot of the submission form or Setup Guide)
-last update: Wed Oct 21 2026 8:35 PM ET
+state: README, metadata.json, DECLARED_PREEXISTING.md, and SPONSOR-SETUP.md match the hosted pack. demo_url is https://porchlight.earth. demo_video and slide_deck stay empty. Pre-existing where paths point at files that exist (web/design/proof-contract.json, web/public/art/, docs/images/). design/art/manifest.json is not in the checkout and is not cited as if it were. Nemotron 3.5 Embed stays off metadata.json. Cursor models list stays empty.
+next step: Joe records the video and pastes that URL into demo_video. HackOS form field names still need Joe's login if the community schema differs from the form. Do not merge from the agent seat.
+branch: cursor/docs-submission-front-matter-fe66 off main.
+how to run: metadata.json validates against metadata.schema.json.
+note: the contract was written by Devin (PR #14), not Cursor. Cursor evidence is merged PRs #22, #24, and #47. No token count or spend is in the repo.
+blocked: HackOS field names still need Joe's login. The video is unshot.
+last update: Sun Oct 25 2026.
 
 ## Area: Deck, script, explanation
 owner now: Hackathon Desk  (primary Hackathon Desk, backup Claude Code)
-state: not started
-next step: see your CREW brief
-branch: desk/ops-*   open PRs: none
-how to run: n/a
-blocked: none
-last update: Wed Oct 21 2026 8:20 PM ET
+state: submission/written-submission.md, submission/demo-script.md, submission/README.md, and submission/verification.md are updated to the hosted desk and the published-pack counts. The video file and the slide deck are not in the repo.
+next step: shoot https://porchlight.earth/nationwide using submission/demo-script.md. Anchorage, Doña Ana, then Harris. Do not press Generate on the public host. Leave contact status on Not contacted. Paste the video URL into metadata.json demo_video after the file exists.
+branch: cursor/docs-submission-front-matter-fe66 off main. Narrative files under ops/narrative/ were not added.
+how to run: open the three county URLs in submission/demo-script.md.
+blocked: the recording itself. No deploy and no model spend from this pass.
+last update: Sun Oct 25 2026.
 
 ## Area: Integration and review
 owner now: Devin, takeover approved by Joe
@@ -344,3 +344,11 @@ Blocked: actual Zetaris bundle and JDBC audit, normalized policy and contract, l
 - County coverage reconciled against the private sweep directory for `20261023T200048Z-78a426ba`: 3,234 first-pass county checkpoints, the retained Robertson, Texas failure, and its separate retry, so 3,235 of 3,235 source-audited and 2,491 with ranked rows. Connecticut planning regions and territories are present (200 checkpoints). The earlier Oct 24 pack's "about 3,153, Connecticut and territories skipped" is withdrawn; its origin was not found.
 - Draft phase snapshot at 9:51 AM ET, directory still writing: `progress.json` 1,282 of 1,545 batches, 1,621 of 2,000 attempts reserved, `known_actual_usd` 0, paid fallback off. Batch files: 1,386 executions, 1,242 grounding passed, 144 failed, 12,418 accepted and 3,020 unresolved of 15,438 rows, 256 batches still carrying a retained policy-block reason over 2,570 rows. Reported models: 1,110 Lightning, 250 Super VL, 28 unreported.
 - `metadata.json` now lists both Nemotron ids and a national project summary. `SPONSOR-SETUP.md`, `docs/sponsors.mdx`, `docs/local-run.mdx`, `docs/limits.mdx` and the four `submission/` files carry the same numbers and the same as-of time. Recheck the sweep before recording and move every figure together.
+
+### Hosted desk and docs, Oct 25 at 7:08 PM ET
+
+- The 9:51 AM ET block above is an earlier private-directory snapshot. It is not the figure set for the hosted desk. This pass did not re-read that directory.
+- Live `GET https://porchlight.earth/api/national` at 23:08 UTC matches `web/data/national/published/`: sweep `20261023T200048Z-78a426ba`, generated `2026-10-24T16:47:04Z`, 3,235 catalog counties, 3,234 snapshots, 2,490 ranked counties, 15,440 ranked rows. Recount of the gz files: 14,960 passed drafts at actual cost 0, 480 failed. Robertson County, Texas (`48395`) returns HTTP 503 and no substitute county.
+- The sweep report's post-retry total remains 2,491 ranked counties. That retry is not in the published pack. Quote 2,490 for the desk.
+- `POST /api/national` on the public host returns 403. New model calls stay local. Docs pages are filled in `docs/`. No public docs URL. `metadata.json` `demo_url` is https://porchlight.earth. Video and slide deck fields stay empty.
+- Allowed claims for the recording: every catalog county source-audited (the sweep report); stored free-route drafts in the published pack, failures included; an operator can open the 2,490 published counties that have ranked facilities on the hosted desk today. Offline DGX, H-MEM, World Model, Markovian, and accepted drafts for every county stay unclaimed. Milton stays a retrospective.

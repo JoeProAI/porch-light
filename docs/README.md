@@ -1,6 +1,8 @@
 # Porch Light docs (Mintlify)
 
-Night + amber theme (`#05070b` / `#f2a93b`). Preview locally:
+Night and amber theme (`#05070b` / `#f2a93b`). These pages are the docs source in this repo. They are not a published docs site. Do not invent a docs URL.
+
+Preview locally:
 
 ```bash
 cd docs
@@ -13,4 +15,4 @@ Validate:
 npx mint validate
 ```
 
-Do not publish a public Mintlify site until Joe says yes at submission.
+The product desk is [https://porchlight.earth](https://porchlight.earth). Publishing this Mintlify project still waits on Joe.

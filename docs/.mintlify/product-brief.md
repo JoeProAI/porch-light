@@ -1,18 +1,20 @@
 # Product brief
 
 ## Description
-Porch Light ranks care facilities inside a real weather warning area and hands a county operator a call-first sheet with phones, reasons, and an evidence trail. The formula ranks; Nemotron explains. Nothing auto-dials.
+Porch Light ranks care facilities for a US county and hands you a call-first sheet with directory phones, score terms, source gaps, and a Nemotron draft when the published sweep stored one. The formula ranks. The model writes the reason. Nothing auto-dials.
+
+The live desk is https://porchlight.earth. Home is nationwide-first. These docs live in the repo. There is no separate public docs site.
 
 ## Primary audience
-Hackathon judges and operators who need an honest local demo: what works on this machine, what is still a walkthrough, and which sponsor tech actually ran.
+Hackathon judges and the person shooting the submission video. They need the hosted path, the numbers they can recount, and the limits that stay on screen.
 
 ## Jobs to be done
-1. Run the app locally against Zetaris / Meterless when available, or read the saved Manatee walkthrough without inventing outcomes.
-2. Distinguish the Hurricane Milton Manatee sheet from any-county nationwide jobs.
+1. Open three published counties on the live desk and read ranked rows, refusals, and a passed or failed draft.
+2. Keep the Hurricane Milton Manatee sheet as a retrospective, separate from the national pack.
 3. See sponsor purpose, proof, and gaps without marketing claims.
 
 ## Motivation
-When a storm warning drops, someone has to call dialysis, nursing homes, and similar facilities first. Spreadsheets and chat do not leave an inspectable trail. Porch Light keeps that trail on a night desk with one amber porch light for the next call.
+When a storm warning drops, someone has to call dialysis centers and nursing homes first. Spreadsheets and chat do not leave an inspectable trail. Porch Light keeps that trail: one county, one audited sheet, one amber porch light for the next uncontacted row.
 
 ## Visual
-Near-black storm `#05070b`, rain, one amber porch light (`#f2a93b` / `#ffb547`). No green, sage, or teal. Matches PR #24 look.
+Near-black storm `#05070b`, one amber porch light (`#f2a93b` / `#ffb547`). No green, sage, or teal.

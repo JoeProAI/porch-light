@@ -1,56 +1,51 @@
 # Porch Light demo script
 
-Recording plan only. No finished video is claimed. Use the existing local application and retained evidence. This documentation task does not authorize new model requests, source sweeps, calls, messages, deploys, or spend.
+Recording plan. No finished video is claimed. Shoot the hosted desk. This pass does not authorize a new model request, a source sweep, a call, a message, a deploy, or spend.
 
-Primary action for the viewer: inspect the sourced call sheet and its evidence. Keep weather context brief.
+Desk: https://porchlight.earth/nationwide
 
-Deadline context, if the recording mentions a date: Tuesday, October 27, 2026, 7:45 PM ET. Do not imply the national draft sweep will be complete by then.
+Allowed claims: every catalog county is source-audited; stored drafts from free Nemotron routes are in the published pack, with failures kept; you can open any of the 2,490 published counties that have ranked facilities today. Never say offline DGX, H-MEM, World Model, Markovian, or that all counties are drafted. Do not make Milton the product.
 
-Allowed claims, and nothing beyond them: every catalog county is source-audited; drafts are in progress on free Nemotron routes; an operator can open any county with ranked facilities today when local Zetaris is reachable. Never say offline DGX, H-MEM, World Model, or that all counties are drafted.
+Deadline to say out loud, if you mention one: the team is aiming at Monday, October 26, 2026, 6:00 PM ET for the HackOS submit. Do not imply the draft failures will be cleared by then.
 
-## Open on the outreach workflow
+## Open the nationwide desk
 
-Show `/nationwide` on the shipped #24 desk: county search or the county atlas, and a captured alert only if one is already on screen. Pick any county by name or FIPS and run it live if local Zetaris is up. If the machine has completed local jobs, show **Verified runs on this machine** and open one `/nationwide?run=` link. If the section says "No completed local runs yet," read that sentence. Do not substitute Manatee for a national county result. `/operate` may be shown separately as the retrospective Manatee demonstration.
+Show the home. One amber control: **Pick any US county**. The footer text link is **Hurricane Milton retrospective**. Do not treat that footer as a second hero button.
 
-Say: "Porch Light is a sourced outreach workflow for dialysis centers and nursing homes. It puts directory contacts, inspectable ranking terms, and source evidence into a call sheet. Any county in the Census catalog can be opened. An operator verifies conditions and decides whom to contact."
+On `/nationwide`, read the fine print: 3,235 Census counties, Zetaris query `833`, sweep `20261023T200048Z-78a426ba`, 2,490 counties with ranked facilities. If weather says live alert refresh stays on local origin, read that sentence. Do not call the hosted catalog a current warning feed.
 
-## Inspect the source result
+Say: "Porch Light is a sourced outreach sheet for dialysis centers and nursing homes. I can open a published US county and see directory contacts, the ranking terms, and the gaps. I still verify conditions before anyone calls."
 
-Select a facility and open its evidence. Show actual source references, query audits, and rank terms. Show a real refusal or source gap if one is on the sheet. Do not invent a missing-data example or describe a captured alert as current.
+## Three counties
 
-Say: "The ranking comes from deterministic code. Missing source evidence stays visible. A directory phone is not a verified emergency contact, and an empty county result does not prove there are no facilities. All 3,235 catalog counties have been source-audited through Zetaris at least once, including Connecticut and the territories. 2,491 of them return ranked facilities. That is the source phase. It is not a claim that every county has drafts."
+1. [Anchorage, `02020`](https://porchlight.earth/nationwide?county=02020). 4 ranked, 2 refused, 6 source. Rank 1: Polaris Extended Care, CCN `025036`. Open evidence. The stored draft failed. Leave it failed.
+2. [Doña Ana, `35013`](https://porchlight.earth/nationwide?county=35013). 7 ranked, 4 refused, 11 source. Rank 1: USRC Las Cruces, CCN `322559`. The stored draft passed on Lightning, actual cost 0. Read the source clauses. They are area context, not clinical urgency.
+3. [Harris, `48201`](https://porchlight.earth/nationwide?county=48201). 140 ranked, 96 refused, 236 source. Rank 1: DaVita North Houston Dialysis Center, CCN `452678`. The stored draft passed on Super VL, actual cost 0. Point at a refusal so the gap stays visible.
 
-## Compare an accepted script and a retained failure
+Say: "The order comes from a fixed formula. Nemotron wrote the draft that is already on the row. Anchorage's draft failed, and the failure is still on the sheet. Across the published pack, 14,960 ranked rows have a passed draft at cost 0, and 480 failed. 89 counties are in Anchorage's situation. That is not every county."
 
-Show already retained script evidence. Do not request another draft.
+## Do not press Generate
 
-For the live Scout Intent path, open the retained call script for CCN `102853` if that cache is on the machine, or show [the committed receipt](../engines/reports/scout-intent-live-2026-10-23.json) and say it is the retained file. The receipt id on screen is `rcpt_req_qsa07grv`. The contract id is `01M5NZW047TK9BE2HZQBQVB931`. `actual_usd` is 0. The reported model is `nvidia/nemotron-3.5-lightning-30b-a3b`. Do not invent another receipt id.
+The button **Generate live Nemotron call script** is on the sheet. On this host it returns HTTP 403, `Same-origin local access is required for model operations.` Show the stored draft instead. If the 403 appears, read it. Do not retry until it looks like a success.
 
-For the retained failure, use the scoped October 23 checks: two Providence outcomes that stayed failed. If only the report is available, label it as report evidence.
+If you need the Scout Intent proof, cut to the committed file `engines/reports/scout-intent-live-2026-10-23.json` and say it is the retained file: CCN `102853`, receipt `rcpt_req_qsa07grv`, contract `01M5NZW047TK9BE2HZQBQVB931`, `actual_usd` 0, Lightning. Do not invent another receipt id. Say it is one facility.
 
-Say: "Meterless routes the draft request to NVIDIA Nemotron on a free route. On this call-script path, Scout Intent issues a contract and the executor checks it before the provider call. Validation checks the model's clause selections against the source evidence. One live facility script returned a $0 receipt. Across the separate scoped checks, 18 script outcomes produced 16 passes and 2 retained failures, also at $0 actual script request cost. The failures are still failures. Grounding is not clinical validation. Batch explanation drafts are not on this contract gate."
+## Contact, export, Milton
 
-## Show the operator's next action
+Show the contact dropdown on **Not contacted**. Do not save **Reached**. Say the operator makes the call. Porch Light does not.
 
-Show the contact controls. The dropdown starts at Not contacted. Do not save an outcome for a call that did not happen.
+Export or print is optional. Do not paste a sample alert URL into an empty alert column.
 
-Show export or print. If the sheet has a selected alert, point at the CSV columns `NWS alert URL`, `Alert captured at UTC`, and `Alert expires at UTC`. If it does not, say those cells are empty. Do not paste a sample alert URL into the sheet.
+If you open `/operate`, say you left the national desk for the Hurricane Milton retrospective: 18 ranked, 2 refused, a different formula. Then return to `/nationwide`. The national Manatee snapshot is 14 ranked and 6 refused. Do not mix the counts.
 
-Say: "The operator makes the call and records the outcome. Porch Light does not call or message anyone. The record stays on this device, and the call sheet can be exported or printed. When a run used a captured NWS alert, the CSV carries that alert's URL, capture time, and expiry. It does not turn the alert into a verified facility condition."
+## Close
 
-If showing `/watch`, describe radar as supporting weather context. Show its source time and any stale or unavailable state. Do not use radar to imply verified facility conditions.
-
-## Close on STATUS
-
-Show the [status and evidence index](README.md#status).
-
-Say: "Every catalog county has an audited source chain. 2,491 return ranked facilities. The national draft sweep is still running on free Nemotron through Meterless: 1,282 of 1,545 batches as of 9:51 AM ET on October 24, with 12,418 accepted facility drafts, 3,020 unresolved, known actual spend at $0, and paid fallback off. That snapshot is not a finished report, and not every county has drafts. Offline local Nemotron was blocked before any generation, so there is no DGX Spark result in this submission. Operator time savings and clinical usefulness have not been established. We are not claiming exclusivity or a prize."
+Say: "All 3,235 catalog counties were source-audited through Zetaris. The desk publishes 2,490 of them with ranked facilities. Drafts are stored where the sweep wrote them, including the failures. Offline local Nemotron did not run. We are not claiming a clinical result or a prize."
 
 ## Recording checks
 
-1. Recheck `progress.json` and the batch files for `20261023T200048Z-78a426ba` before recording. If the counts have moved, update every material and speak the new "as of" time. A higher fraction is still unfinished until a reviewed `report.json` exists. Completion must not imply every draft passed.
-2. Keep the figures apart: 3,235 catalog counties, 3,235 source-audited at least once, 2,491 with ranked rows, 1,282 of 1,545 model batches, 12,418 accepted and 3,020 unresolved facility drafts. Do not revive the withdrawn 1,290 / 340 / 1,380 baseline or the withdrawn 3,153-county figure.
-3. Show real retained content. If a ready, loading, error, or empty state is visible, name it. "No completed local runs yet" is a valid shot. Do not stage a provider success or hide a failure during editing.
-4. The Scout Intent proof is one facility, CCN `102853`, receipt `rcpt_req_qsa07grv`. Do not add receipt ids that are not in [the retained file](../engines/reports/scout-intent-live-2026-10-23.json).
-5. Capture only the application and approved aggregate reports. Keep tokens, credentials, private receipt payloads, and unrelated operator records out of frame.
-6. Check the recording at desktop and mobile size. Preserve visible source times, scope labels, refusals, and status text. A public deployment, clinical validation, exclusivity, an offline DGX result, H-MEM, World Model, and a competition outcome are not demonstrated.
+1. Use the live URLs above. If a county count on screen disagrees with this script, stop and read the screen. The screen wins.
+2. Keep 3,235, 3,234, 2,490, and the report's 2,491 apart. Robertson County, Texas does not open on the host.
+3. Do not revive the 9:51 AM ET batch totals, the withdrawn 3,153-county figure, or the withdrawn 1,290 / 340 / 1,380 baseline, except to say they are earlier cuts.
+4. No tokens, credentials, or patient-looking notes in frame.
+5. A public docs URL, an offline DGX result, H-MEM, World Model, Markovian, and a finished accepted draft for every county are not in this shot.

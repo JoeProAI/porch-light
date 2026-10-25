@@ -1,48 +1,72 @@
 # Porch Light
 
-Porch Light is a care-facility outreach workbench. It shows sourced contacts, the ranking terms behind each row, and the facts that are still unknown.
+Porch Light is a care-facility outreach workbench for dialysis centers and nursing homes. You open a US county and get a ranked call sheet: directory phones, the formula terms behind each row, the records that did not join, and a stored Nemotron draft when the national sweep wrote one.
 
-The home page opens on any US county. The Hurricane Milton walkthrough is the saved Manatee County, Florida example: 18 ranked dialysis and nursing-home records and 2 refusals, from a fixed published formula over captured public CMS, Census, SVI, and emPOWER records. Operators can inspect the evidence, record a contact outcome on their own device, export CSV, and print. The app does not place calls or send messages.
+The live desk is [https://porchlight.earth](https://porchlight.earth). Home is nationwide-first. **Pick any US county** opens `/nationwide`. The Hurricane Milton sheet is a footer link, **Hurricane Milton retrospective**. It is a saved Manatee example. It is not the product.
 
-`/nationwide` runs the same engine for a Census county or a current National Weather Service alert when local Zetaris is available. Each county run reports that county’s audited rows and source gaps. Storm Watch (`/watch`) shows captured official alerts and NOAA radar for the provider regions that published frames.
+The ranking formula is published. Operators still verify facility conditions. Nemotron writes the draft. The formula sets the order. The app does not place calls or send messages.
 
 Built for the GenAI.Works Open Agent Hackathon 2026, Track 01 (Solving Fragmented Intelligence), by team Burden of Proof.
 
-The ranking formula is a published prototype over captured public records. Operators still verify facility conditions. Nemotron drafts do not change a score.
+## What you can say
+
+Checked `GET https://porchlight.earth/api/national` on 2026-10-25 at 23:08 UTC. The body matches `web/data/national/published/` in this repo. Sweep `20261023T200048Z-78a426ba`, generated `2026-10-24T16:47:04Z`.
+
+1. Every county in the 3,235-row Census catalog has been source-audited through Zetaris at least once. The write-up is `engines/reports/national-sweep-2026-10-23.md`, including a separate retry for Robertson County, Texas.
+2. You can open any of the 2,490 published counties that have ranked facilities, on the hosted desk, today. The pack has 3,234 county snapshots and 15,440 ranked rows.
+3. Stored drafts on those rows are from free Nemotron routes through Meterless, thinking disabled. 14,960 passed with `actual_usd` 0. 480 failed and stayed failed. 89 ranked counties have only failed drafts.
+
+The hosted catalog lists Robertson County, Texas (`48395`) as `runtime_error`. There is no published file. `GET /api/national?county=48395` returns HTTP 503 and does not substitute another county. The report's post-retry total is 2,491 ranked counties. That retry is not the file the desk serves. Use 2,490 for the desk and 2,491 only for the report.
+
+## What this submission does not say
+
+Offline or local DGX inference, H-MEM, World Model, and Markovian are not claimed. Not every county has an accepted draft. Contact status defaults to **Not contacted**. A **Reached** row exists only after an operator records a real call on that device. The Milton sheet (18 ranked, 2 refused, formula `manatee-development-v1`) is not the national Manatee snapshot (14 ranked, 6 refused, formula `national-source-screen-v1`).
+
+`POST /api/national` on the public host returns HTTP 403, `Same-origin local access is required for model operations.` New model calls stay on the operator machine.
+
+These docs under `docs/` are repo source. There is no public docs URL.
+
+## Video path
+
+Open `/nationwide`, then:
+
+| County | URL | Ranked / refused / source | What rank 1 shows |
+| --- | --- | --- | --- |
+| Anchorage, Alaska | `?county=02020` | 4 / 2 / 6 | Polaris Extended Care, CCN `025036`. Stored draft failed |
+| Doña Ana, New Mexico | `?county=35013` | 7 / 4 / 11 | USRC Las Cruces, CCN `322559`. Lightning draft passed, cost 0 |
+| Harris County, Texas | `?county=48201` | 140 / 96 / 236 | DaVita North Houston Dialysis Center, CCN `452678`. Super VL draft passed, cost 0 |
+
+Narration and the claim boundary are in `submission/demo-script.md` and `docs/quickstart.mdx`. The video and slide deck fields in `metadata.json` stay empty until those files exist.
 
 ## Who built it
 
 Joe Gaither directed the project: decisions, review, and merges.
 
-Devin wrote the contract (PR #14), the data adapters, the engines, and most of the web application, including the Manatee call sheet.
+Devin wrote the contract (PR #14), the data adapters, the engines, and most of the web application, including the Milton call sheet.
 
-Cursor cloud agents built [Storm Watch v2 and the Storm Glass Desk design (PR #22)](https://github.com/JoeProAI/porch-light/pull/22) and [the national web wiring (PR #24)](https://github.com/JoeProAI/porch-light/pull/24): county search, active-alert runs, source gaps, and the smoke script. Both pull requests are merged. What that evidence includes, and what it does not count, is in `ops/build-log/cursor/README.md`. Later-edit rules are in `.cursor/rules/`. This repository does not record Cursor token counts or spend.
+Cursor cloud agents wrote [Storm Watch and the Storm Glass Desk (PR #22)](https://github.com/JoeProAI/porch-light/pull/22), [the national web wiring (PR #24)](https://github.com/JoeProAI/porch-light/pull/24), and the [nationwide-first home (PR #47)](https://github.com/JoeProAI/porch-light/pull/47). Cursor also supplies `.cursor/rules/`. This repository does not record Cursor token counts or spend. The build log is `ops/build-log/cursor/README.md`.
 
-## Dependencies
+## Two ways to read a county
 
-Application reads go through a local Zetaris JDBC connection. The source relations sit in one read-only PostGIS database, registered in Zetaris as `porchlight_postgis`. Spatial predicates stay in PostGIS.
+**Hosted.** [porchlight.earth/nationwide](https://porchlight.earth/nationwide) serves the published snapshots. No Zetaris process and no API key are required. Weather refresh and model POST stay local.
 
-Nemotron drafts and call scripts go through Meterless on the Nightshift route (`meterless/deep`), with thinking disabled. Credentials stay in Meterless’s private proxy-token file, outside this repository. The model route is that hosted Meterless path.
-
-National captures, live weather captures, job artifacts, and local logs stay outside git:
+**Local.** A fresh chain needs Java 21, the licensed Zetaris JDBC jar (outside git), local Zetaris and PostGIS, Python 3, and Node.js. Engine dependencies are `engines/requirements.txt`. Web dependencies are `web/package.json`.
 
 | Path under `%USERPROFILE%\.porchlight` | What it holds |
-|---|---|
+| --- | --- |
 | `national` | Census, CMS, and related national source files, plus job and sweep artifacts |
 | `live-weather` | Official NWS alert and NOAA radar captures |
 | `runlogs` | Local web and weather-worker logs from `Start-Local.ps1` |
 
-Also required for a live run: Java 21, the licensed Zetaris JDBC jar (outside git), Python 3, and Node.js for the web app. Engine Python dependencies are listed in `engines/requirements.txt`. Web dependencies are in `web/package.json`.
-
 Set `PORCHLIGHT_ZETARIS_ENV_FILE` and `PORCHLIGHT_ZETARIS_JDBC_JAR` only when those paths differ from the local install. Do not put the PostGIS password in audited SQL.
 
-The committed Manatee page can render from `web/data/manatee-ranked.json` without live data credentials. County runs, active alerts, and Storm Watch need the local Zetaris and PostGIS stack, and the files under `%USERPROFILE%\.porchlight`.
+The Milton page renders from `web/data/manatee-ranked.json` without live credentials.
 
 ## Setup
 
 1. Install Java 21, the Zetaris JDBC jar, and the local Zetaris and PostGIS services. Register the read-only database as `porchlight_postgis`.
 2. Capture and load national sources into `%USERPROFILE%\.porchlight\national` with `python -m data.adapters.us.capture_national`, then `python -m data.snapshot.national --folder <capture-directory>`. Register the read-only projections with `python -m engines.national_sources --register` and `python -m engines.national_alerts --register`. Details are in `engines/README.md`.
-3. From `web/`, install dependencies and build:
+3. From `web/`:
 
 ```powershell
 npm ci
@@ -54,15 +78,15 @@ Open `http://127.0.0.1:3101`.
 
 On Windows, `.\Start-Local.ps1` from the repository root starts that built app when port 3101 is free, and starts a weather worker when none is running. The default worker makes up to 288 capture attempts, at least five minutes apart. It does not install dependencies, start on boot, or delete retained captures. `-SkipWeather` leaves the weather worker off. Local Zetaris and PostGIS must already be running.
 
+Nemotron requests use Nightshift at `http://127.0.0.1:8088/v1` (`meterless/deep`, thinking disabled). The proxy token stays in Nightshift's token file.
+
 ## Usage
 
-1. `/` explains the project, sponsors, and independent emergency resources. **Pick any US county** opens the national run. A footer text link, **Hurricane Milton retrospective**, opens the saved Manatee demonstration.
-2. `/operate` is the Manatee sheet. Select a facility and read source facts, score terms, and the audit reference. Record a contact outcome, export CSV, or print.
-3. `/nationwide` searches the Census county catalog by name, state, or FIPS, and lists active NWS alerts from the audited feed. A county job or a combined alert job runs through `engines.national_jobs`. The page shows job progress, the ranked sheet, Zetaris query IDs, and per-source gaps. `/operate?county=<FIPS>` opens that nationwide run. A FIPS or alert id that fails validation does not load the Manatee sheet.
-4. On a national row, **Generate live Nemotron call script** is classified by Scout Intent first. A proceed decision issues a signed execution contract; the draft executor verifies it before that job id is sent through Meterless. A refusal returns `refused_by_scout` and shows no substitute script. Grounding failures stay visible. `/operate` can request a script for the stored Manatee snapshot.
-5. `/watch` shows the captured official weather feed, with source times and stale or offline states.
-
-If Zetaris cannot be reached, the national page says `Zetaris unreachable on this machine` and returns no rows.
+1. On the hosted home, **Pick any US county** opens `/nationwide`. Search by name, state, or FIPS. **Open published audited call sheet** reads that county's snapshot.
+2. `/operate` with no query is the Milton sheet. A `county` or `alert` query redirects to `/nationwide` so a bad id does not fall through to Manatee.
+3. On a local origin, `/nationwide` can start `engines.national_jobs` for a catalog county or a captured alert. If Zetaris cannot be reached, the page says so and returns no rows.
+4. **Generate live Nemotron call script** is a local-origin POST. Scout Intent signs the call-script path. The draft executor checks the contract before that request. A refusal stays a refusal. The public host returns 403.
+5. `/watch` shows the captured official weather feed on a machine that has one, with source times and stale or offline states.
 
 ## Smoke script
 
@@ -76,33 +100,33 @@ scripts\smoke-national.ps1
 scripts/smoke-national.sh
 ```
 
-The script reads the county catalog, then runs Manatee County, Florida (`12081`), Harris County, Texas (`48201`), Cook County, Illinois (`17031`), Loving County, Texas (`48301`), and one county mapped from the current audited active alert. It prints pass or fail, wall time, engine runtime, source gaps, and Zetaris query IDs.
-
-It calls `engines.national_run`, so it does not spend the Meterless draft budget. The web call sheet still uses `engines.national_jobs`, which requests grounded drafts for ranked rows. If Zetaris is unreachable, the script exits with that message and does not substitute another county.
+The script reads the county catalog, then runs Manatee (`12081`), Harris (`48201`), Cook (`17031`), Loving (`48301`), and one county mapped from the current audited active alert. It calls `engines.national_run`, so it does not spend the draft budget. If Zetaris is unreachable, it exits with that message and does not substitute another county.
 
 ## Sponsor map
 
-| Sponsor | Where it's used | How |
-|---|---|---|
-| Zetaris | `engines/zetaris_chain.py`, `engines/zetaris_client.py`, `engines/national_run.py` | Audited SQL joins CMS, Census, SVI, and emPOWER, with measured match counts. Source relations share one read-only PostGIS datasource. The Manatee page can read the audited export. National runs query Zetaris directly. |
-| Meterless | `engines/meterless.py`, `engines/scout_intent.py`, `engines/draft_jobs.py` | Nemotron requests use the Nightshift `meterless/deep` route with thinking disabled. Scout Intent gates the live call-script path with a signed execution contract that the draft executor verifies before any provider call (see `engines/README.md`, Scout Intent gate). H-MEM, World Model and Markovian are not claimed. |
-| NVIDIA Nemotron | `engines/snapshots/manatee-zetaris.json`, `engines/national_jobs.py` | Stored Super VL drafts explain the top Manatee rows. National call scripts are requested per run through Meterless after the Scout Intent contract is verified. Nemotron does not rank. Local GPU inference is not verified. |
-| Cursor | [PR #22](https://github.com/JoeProAI/porch-light/pull/22), [PR #24](https://github.com/JoeProAI/porch-light/pull/24), `.cursor/rules/`, `ops/build-log/cursor/README.md` | Cursor cloud agents wrote Storm Watch v2 and the shared design, and the national web wiring. Both pull requests are merged. Cursor also supplies the `.cursor/rules/` files. Devin wrote the contract (PR #14), the data, the engines, and most of the web. Joe directed the work. No token count or spend total is recorded. |
+| Sponsor | Where it is used | How |
+| --- | --- | --- |
+| Zetaris | `engines/zetaris_chain.py`, `engines/national_run.py`, published snapshots | Audited SQL over CMS, Census, SVI, and emPOWER in one read-only PostGIS datasource. The hosted desk shows the query ids from sweep `20261023T200048Z-78a426ba`. Catalog query `833`. |
+| Meterless | `engines/meterless.py`, `engines/scout_intent.py`, `engines/draft_jobs.py` | `meterless/deep` through Nightshift, thinking disabled. Scout Intent gates the local call-script path. H-MEM, World Model, and Markovian are not claimed. |
+| NVIDIA Nemotron | Published county `model_explanation` rows, `engines/reports/scout-intent-live-2026-10-23.json` | Lightning and Super VL, both free routes. 14,960 passed drafts in the pack at actual cost 0. 480 failed. Nemotron does not rank. Local GPU inference is not claimed. |
+| Cursor | [PR #22](https://github.com/JoeProAI/porch-light/pull/22), [PR #24](https://github.com/JoeProAI/porch-light/pull/24), [PR #47](https://github.com/JoeProAI/porch-light/pull/47), `.cursor/rules/` | Storm Watch, national web wiring, nationwide-first home, and the rules files. No token or spend total is recorded. |
+
+An optional OpenRouter retry for `call_script` exists in `engines/openrouter_backup.py` and stays off unless `PORCHLIGHT_OPENROUTER_BACKUP` and `OPENROUTER_API_KEY` are set. Every explanation execution in the published pack has `paid_fallback_enabled` false. Do not enable it for the demo.
 
 ## Data credits
 
-Facility evidence keeps source URLs, licenses, and SHA-256 references for the captured CMS and contextual records. Snapshot provenance is in `web/data/` and `engines/snapshots/`. Weather frames stay outside git and are checked by source hash. NASA’s archived Milton image is credited and dated in the interface and the `web/public/weather/` sidecar.
+Facility evidence keeps source URLs, licenses, and SHA-256 references. Published provenance sidecars are next to `web/data/national/published/`. The Milton snapshot is `web/data/manatee-ranked.json`. Weather frames for a local Storm Watch stay outside git. NASA's archived Milton image is credited in the interface and the `web/public/weather/` sidecar.
 
-External resources, including emPOWER, are public references. They are not partner integrations. emPOWER has its own restricted outreach rules.
+External resources, including emPOWER, are public references. They are not partner integrations.
 
 ## Privacy
 
-Porch Light uses public, facility-level, and aggregate data. It holds no personal health records.
+Porch Light uses public, facility-level, and aggregate data. It holds no personal health records. Contact status stays in the browser.
 
 ## License
 
 AGPL-3.0. See LICENSE and NOTICE. Pre-existing components are listed in DECLARED_PREEXISTING.md.
 
-## Sponsor setup checklist
+## Docs and sponsor setup
 
-Sponsor endpoints, model ids, and current status (Scout Intent on the live call-script path; Meterless Nightshift plus NVIDIA Nemotron as the only runtime model route; Cursor evidence is merged PRs #22 and #24, with no token or spend total): [SPONSOR-SETUP.md](SPONSOR-SETUP.md). Local placeholders: [env.example](env.example).
+Docs source, not a published site: `docs/`. Sponsor endpoints and model ids: [SPONSOR-SETUP.md](SPONSOR-SETUP.md). Local placeholders: [env.example](env.example).

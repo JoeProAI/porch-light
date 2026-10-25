@@ -1,33 +1,51 @@
 ---
-title: "Manatee walkthrough"
-description: "Hurricane Milton saved call sheet for Manatee County — the judge-friendly walkthrough, not the whole product."
-keywords: ["manatee", "milton", "operate", "walkthrough"]
+title: "Milton retrospective"
+description: "The saved Hurricane Milton sheet for Manatee County. A retrospective, not the national product."
+keywords: ["manatee", "milton", "retrospective", "operate"]
 ---
 
-The Manatee sheet is the **saved walkthrough**: archived Hurricane Milton warning area, audited facility ranks, evidence drawer, and operator contact states. It is not a claim that every county already has the same frozen snapshot.
+`/operate` with no county query is the Hurricane Milton retrospective for Manatee County, Florida. On the live home it is a 12px footer link, **Hurricane Milton retrospective**. The amber action on home is **Pick any US county**.
+
+<Warning>
+Do not present this sheet as nationwide coverage. The national published snapshot for the same FIPS is a different run, with a different formula and different row counts.
+</Warning>
+
+## Two Manatee sheets
+
+| | Milton retrospective | National published snapshot |
+| --- | --- | --- |
+| How you open it | `/operate` | `/nationwide?county=12081` |
+| File | `web/data/manatee-ranked.json` | `web/data/national/published/counties/12081.json.gz` |
+| Scenario | Hurricane Milton, 2024, `retrospective` | County source discovery, 2026 |
+| Ranked / refused / source | 18 / 2 / 20 | 14 / 6 / 20 |
+| Formula | `manatee-development-v1` | `national-source-screen-v1` |
+| Score terms | type 0.30, SVI 0.25, emPOWER 0.20, CMS risk 0.15, plan flag 0.10 | type 0.35, SVI 0.30, emPOWER 0.20, CMS risk 0.15. No plan term |
+| Rank 1 | DaVita Manatee Bay, CCN `682766` | DaVita Manatee Bay, CCN `682766` |
+| Drafts on ranked rows | 15 passed on Super VL, 3 failed | 3 stored executions; rank 1 passed on Lightning with `actual_usd` 0 (live check 2026-10-25) |
+
+Same facility name at rank 1 does not make the sheets the same ranking. The Milton sheet includes an archived county plan term. The national policy omits county plans and does not import the Manatee plan.
+
+Provenance for the Milton file: fetched `2026-10-23T20:25:15+00:00`, command `python -m engines.generate_drafts --snapshot engines/snapshots/manatee-zetaris-chain.json --all`.
+
+## How to read it
+
+<Steps>
+  <Step title="Open /operate">
+    No `county` query. A county or alert query on `/operate` redirects to `/nationwide` so a bad FIPS cannot fall through to this sheet.
+  </Step>
+  <Step title="Read the warning label">
+    The eyebrow is the retrospective Milton label, not a live warning. Boundary equivalence to the 2024 zone is unverified (`historical_2024_boundary_equivalence_verified` is false).
+  </Step>
+  <Step title="Open rank 1">
+    Read the five score terms, the Zetaris query ids, and the model block. A failed row stays failed.
+  </Step>
+  <Step title="Leave contact status on Not contacted">
+    Change it only after a real call. Export or print if you need a paper copy. Nothing auto-dials.
+  </Step>
+</Steps>
 
 <Frame>
-  <img src="/images/screenshot-operate.jpg" alt="Manatee operate call sheet on the night desk" />
+  <img src="/images/screenshot-operate.jpg" alt="Earlier local capture of an operator call sheet with Not contacted selected" />
 </Frame>
 
-<Frame>
-  <img src="/images/section-call-first.jpg" alt="Design plate: ranked porch lights for who to call first" />
-</Frame>
-
-## Route
-
-1. Open `http://127.0.0.1:3101/operate` (no county query) — Milton walkthrough.
-2. Read the warning identity and data-as-of stamps.
-3. Select rank 1 (amber porch row). Open the evidence drawer: source joins, refusals, query identity when present.
-4. Contact status starts as **Not contacted**. Change it only for a call you actually made. **Reached** is never the default.
-5. Export print/CSV when you need a paper trail. Nothing auto-dials.
-
-## What is real here
-
-- Facilities and phones come from the audited Manatee snapshot path, not invented demo rows.
-- Reasons may include Nemotron drafts for early ranks when a Meterless receipt exists; remaining rows use computed reasons. Ranking stays formula-driven.
-- Storm Watch / radar are separate surfaces. A missing radar tile must say so — never paint a decorative storm as live echo.
-
-## What this page does not prove
-
-Nationwide any-county coverage, offline national replay for every FIPS, or clinical correctness. For county reuse, see [Any US county](/nationwide) and [Limits](/limits).
+That JPG is an earlier local capture. Use the live `/operate` page if you put the retrospective on camera, and say that you left the national desk to do it.
