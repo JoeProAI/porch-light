@@ -1,53 +1,51 @@
 # Porch Light
 
-Sourced outreach for dialysis centers and nursing homes, with evidence an operator can inspect.
+Sourced outreach for dialysis centers and nursing homes. You open a county, read a ranked call sheet, and decide whom to call.
 
-Evidence cut: Saturday, October 24, 2026, 9:51 AM ET, against `devin/web-manatee` at `8aeccd6`. External deadline: Tuesday, October 27, 2026, 7:45 PM ET. The video and slide deck are still empty.
+Evidence cut: Sunday, October 25, 2026, 23:08 UTC, against https://porchlight.earth and `web/data/national/published/` on main. The video and slide deck are still empty. The remaining human step is that recording, before the HackOS submit aimed at Monday, October 26, 2026, 6:00 PM ET.
 
 ## What it does
 
-Porch Light brings public facility contacts, geographic context, and source references into a call sheet. An operator selects a county or a captured official alert, reviews deterministic ranking terms and refusals, inspects a grounded call script when one is available, and records a manual contact outcome. The call sheet supports CSV export and print. Radar provides supporting weather context.
+The live home is nationwide-first. **Pick any US county** opens `/nationwide`. A click reads a frozen audited snapshot from sweep `20261023T200048Z-78a426ba` (generated `2026-10-24T16:47:04Z`): ranked facilities, directory phones, score terms, refusals, and a stored Nemotron draft or a retained failure.
 
-The workflow keeps unknowns in view. A directory entry does not confirm that a facility is open, reachable, or affected by a warning. The operator still has to verify conditions. Porch Light does not place calls or send messages.
+The formula in `data/scoring/weights.yaml` (`national-source-screen-v1`) sets the order. Nemotron, through Meterless `meterless/deep` with thinking disabled, wrote the drafts that are already on the rows. Opening the public page does not call the model. `POST /api/national` on that host returns HTTP 403, `Same-origin local access is required for model operations.`
 
-The shipped web desk is the national product from pull request #24: any Census county, or a captured official alert, on the night desk that merged with that pull request. Pull request #25 was still open on October 24 and is not a second shipped look. `/nationwide` can reopen verified local runs that already exist on that machine (pull request #34). If that machine has none, the screen says so. The CSV includes the NWS alert URL, capture time, and expiry time when the sheet has a selected alert (pull request #31). Those cells are blank when no alert was selected.
+Contact status stays in the browser and starts at **Not contacted**. The product does not place calls or send messages. A directory phone is not a verified emergency contact. A draft is not clinical validation.
+
+The Hurricane Milton sheet at `/operate` is a retrospective Manatee example: 18 ranked rows, 2 refusals, formula `manatee-development-v1`. The national snapshot for the same FIPS is 14 ranked and 6 refused. Milton is a footer link, not the product.
 
 ## How it works
 
-Zetaris executes audited source statements over CMS facility records, Census geography, CDC Social Vulnerability Index context, and HHS emPOWER aggregate context. These separately projected relations currently share one physical read-only PostGIS datasource. Missing or unsuitable source evidence produces a refusal or gap rather than an invented facility fact.
+Zetaris ran the source statements over CMS facility records, Census geography, CDC/ATSDR SVI, and HHS emPOWER ZIP aggregates. Those relations share one read-only PostGIS datasource. The catalog statement is query `833`. Each published county sheet carries its own query ids. Missing joins stay refusals.
 
-Ranking is deterministic code with inspectable terms. Meterless routes draft requests to NVIDIA Nemotron on free routes. On the live call-script path, Scout Intent (pull request #38) classifies the request, binds the facility CCN, and issues a signed execution contract. The draft executor checks that contract before a provider call. The model selects allowed source clauses and approved verification questions. Validation checks exact identities, source and query references, scope, and output schema. It does not set the ranking. Invalid outputs remain failed. Batch explanation drafts are not contract-gated. Stage 2 local embeddings are not installed.
-
-Contact records stay on the operator's device. The product uses public facility and aggregate context, not patient records. HHS emPOWER context is not a facility patient count.
+On the operator machine, Scout Intent gates a new call script: classify, bind the CCN, sign a contract, and refuse a bad contract before the provider call. One retained pass is CCN `102853`, receipt `rcpt_req_qsa07grv`, contract `01M5NZW047TK9BE2HZQBQVB931`, Lightning, `actual_usd` 0. Batch explanation drafts in the sweep are not on that gate.
 
 ## Verified results
 
-County coverage: every county in the 3,235-entry Census catalog has been source-audited through Zetaris at least once. The private sweep directory for run `20261023T200048Z-78a426ba` holds 3,234 first-pass county checkpoints, the retained first-pass failure for Robertson County, Texas, and a separate audited retry for that county. Connecticut planning regions and U.S. territories are in the checkpoint set. 2,491 counties return ranked rows. The rest returned no matching CMS rows or no rankable rows, and those refusals are recorded. The [October 23 source report](../engines/reports/national-sweep-2026-10-23.md) matches this count. The earlier October 24 pack's statement of about 3,153 counties with runs and skipped Connecticut and territories is withdrawn; it did not come from the sweep directory.
+Hosted pack, recounted from the committed gz files and matched to the live API for the catalog and for FIPS `02020`, `35013`, `48201`, `12081`, and `48395`:
 
-Source-audited is a source-phase statement. It does not mean every county has finished drafts, and a county with no CMS rows is not proof that no care facility exists there.
+- 3,235 catalog counties. 3,234 snapshots. 2,490 with ranked rows. 15,440 ranked rows.
+- 14,960 drafts `passed`, provider `nvidia`, `actual_usd` 0. 480 `failed` and retained.
+- 2,383 ranked counties all passed, 18 mixed, 89 all failed. Anchorage is all failed.
+- Robertson County, Texas has no snapshot. The live GET returned 503 and no substitute county.
+- Reported models on 4,098 explanation executions: 3,229 Lightning, 773 Super VL, 96 unreported. `paid_fallback_enabled` false on all 4,098. `thinking_disabled` true on all 4,098.
 
-Model coverage, sweep `20261023T200048Z-78a426ba`, phase `grounded_drafts`, as of 9:51 AM ET: `progress.json` showed 1,282 of 1,545 batches complete, 1,621 of 2,000 approved attempts reserved, `known_actual_usd` 0, and `paid_fallback_enabled` false. The 1,544 batch checkpoints on disk recorded 1,386 provider executions, 1,242 passed grounding and 144 failed, with 12,418 accepted facility drafts and 3,020 unresolved out of 15,438 ranked rows. Reported models were `nvidia/nemotron-3.5-lightning-30b-a3b` for 1,110 executions and `nvidia/nemotron-3.5-super-vl-120b-a12b` for 250. 256 batch files held no provider request and a retained policy-block reason over 2,570 rows. The directory was still being written. The sweep is not finished, and this text does not pretend a later `report.json` exists.
+Source audit of all 3,235, including the separate Robertson retry (2 ranked rows, bringing the report's ranked-county total to 2,491), is `engines/reports/national-sweep-2026-10-23.md`. That retry is not in the hosted pack.
 
-One live call script is retained for a single facility, CCN `102853`, in [the Scout Intent receipt](../engines/reports/scout-intent-live-2026-10-23.json). Meterless receipt `rcpt_req_qsa07grv` records `actual_usd` 0 on the Lightning model id. Contract `01M5NZW047TK9BE2HZQBQVB931` was verified before that provider call. No call was placed, and no facility condition is inferred. This is one facility, not a national script rate.
+Scoped script checks (Baldwin, Providence, Denver) are a separate file: 18 outcomes, 16 passed, 2 retained failures, actual cost $0. They are not a national rate.
 
-Separate from that receipt, the [scoped October 23 script checks](../engines/reports/national-script-verification-2026-10-23.md) recorded 18 outcomes in Baldwin County, Alabama; Providence County, Rhode Island; and Denver County, Colorado. 16 passed. 2 failed and remain retained. Actual script request cost was $0 across 20 provider attempts, including retries. Those checks are not the national model phase.
-
-## Engines branch, not this checkout
-
-`devin/engines-manatee` at `6f54146111ab0db34bd99d7997aad3297d21033d` is a separate base. It is not merged here. On that tip, pull request #40 resumes model batches by facility CCN, and pull request #30 publishes checkpoints atomically. Pull request #36 records an offline Nightshift probe with status `blocked_preflight`: no offline generation, no measured tokens per second, and no DGX Spark result. Pull request #39 adds OpenRouter backup code on that branch only. The 9:51 AM sweep snapshot still has `paid_fallback_enabled` false. No OpenRouter spend is claimed.
+The October 24, 9:51 AM ET private progress figures are an earlier cut. They are not restated here as the desk.
 
 ## STATUS
 
 ### Works
 
-An operator can open any catalog county or a captured alert when local Zetaris is reachable, read source gaps, export a CSV that carries the alert URL and times when an alert was selected, and record a contact outcome locally. Every catalog county has one audited source chain on record. Scout Intent gates one live call-script path, with one retained $0 receipt. Scoped script checks show both accepted drafts and retained failures. Verified local runs reopen only jobs that already exist on that machine.
+You can open a published county on https://porchlight.earth/nationwide and read ranked facilities, gaps, and the stored draft status. Every catalog county has an audited source chain on record in the sweep report. Scout Intent has one retained $0 call-script receipt. The Milton sheet still opens at `/operate` and is labeled retrospective.
 
-### Broken or unfinished
+### Unfinished
 
-National draft coverage is unfinished: 1,282 of 1,545 batches as of 9:51 AM ET, 12,418 accepted facility drafts and 3,020 unresolved in the batch files, 256 batches still carrying a policy block. Not a completed rollup. The October 23 pack's 1,290 / 340 / 1,380 model baseline and the earlier October 24 pack's 3,153-county figure are stale and are not repeated as live totals.
-
-Clinical validation, measured operator time savings, verified facility conditions, confirmed emergency contacts, shared operator coordination, and continuous public hosting are not established. Grounding verifies adherence to source clauses. It is not clinical validation. Offline or local DGX Spark inference, H-MEM, World Model, and Markovian are not claimed. This package claims no exclusivity and no competition result. The video, rendered slide deck, and external submission remain unfinished.
+Accepted drafts do not cover every county. Clinical validation, measured operator time savings, verified facility conditions, and shared operator coordination are not established. Offline DGX inference did not run (`blocked_preflight`). H-MEM, World Model, and Markovian are not claimed. The video, the rendered deck, and the external form are still open. This package claims no exclusivity and no competition result.
 
 ## What to inspect
 
-Inspect a sourced call sheet, its rank terms, and its query references. Compare the retained CCN `102853` script with a retained failure from the scoped checks. Read county coverage as source-audited for all 3,235, with 2,491 ranked, and read the draft phase as unfinished. The next evidence needed is a finished model rollup that still lists its failures, plus measured operator usefulness. Neither is assumed here.
+Open Doña Ana (`35013`) and read a passed Lightning draft next to its query ids. Open Anchorage (`02020`) and read a failed draft that stayed failed. Open Harris (`48201`) if you want a large county (140 ranked, 96 refused). Read `submission/demo-script.md` before you record.

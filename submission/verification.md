@@ -1,55 +1,60 @@
 # Submission documentation verification
 
-This file records checks for the October 24, 2026, 9:51 AM ET refresh of the submission materials. Product results stay in the linked reports. This pass did not create new county runs, model drafts, receipts, or spend. It read the private sweep directory and counted files; it did not modify that directory.
+This file records the October 25, 2026 refresh. The pass read the committed published pack and the live HTTP API. It did not start a county run, a model draft, or a spend. The refused `POST /api/national` returned before a provider call.
 
 ## What changed
 
-`submission/README.md`, `submission/written-submission.md`, `submission/demo-script.md`, and this file replace the county and model figures from pull requests #27 and #41. `SPONSOR-SETUP.md`, `metadata.json`, `docs/sponsors.mdx`, `docs/local-run.mdx`, `docs/limits.mdx`, and `HANDOFF.md` were edited to carry the same claim language and the same numbers.
+`README.md`, `metadata.json`, `DECLARED_PREEXISTING.md`, `SPONSOR-SETUP.md`, `env.example` (model-id comment), `docs/`, and `submission/` now describe the hosted nationwide desk.
 
-Withdrawn, and not current totals:
+Current figures are the published pack generated `2026-10-24T16:47:04Z` and the live responses at 23:08 UTC on October 25.
 
-- From #27: the reconciliation baseline of 1,290 accepted drafts, 340 exhausted failures, and 1,380 pause batches.
-- From #41: "about 3,153 of 3,235 unique FIPS have runs" and "Connecticut and U.S. territories are skipped." The private sweep directory contains 3,234 county checkpoints plus the retained Robertson failure and its separate retry, and 200 of those checkpoints carry Connecticut planning-region or territory FIPS prefixes. The #41 figure's origin was not found in this pass.
-- From #41: the withdrawal of the October 23 report's closing sentence. That sentence, "all 3,235 counties have completed an audited chain at least once," matches the directory count and stands.
+Marked as an earlier cut, not the desk:
 
-Replacement figures, counted in `%USERPROFILE%\.porchlight\national\sweeps\20261023T200048Z-78a426ba` at 9:51 AM ET while the sweep worker was still writing:
+- October 24, 9:51 AM ET `progress.json`: 1,282 of 1,545 batches, and the batch totals printed with that snapshot.
+- The withdrawn "about 3,153" county figure and the withdrawn 1,290 / 340 / 1,380 baseline from earlier packs.
 
-- Source phase: 3,234 `county-*.json` checkpoints, `failure-48395.json`, `source-retries/county-48395-attempt-2.json`. 3,235 of 3,235 source-audited at least once. 2,490 first-pass counties with ranked rows, 2,491 after the retry.
-- `progress.json`: phase `grounded_drafts`, `completed_batches` 1,282, `total_batches` 1,545, `approved_attempts` 2,000, `reserved_attempts` 1,621, `completed_records` 1,616, `unresolved_reservations` 5, `known_actual_usd` 0, `paid_fallback_enabled` false.
-- 1,544 `model-batch-*.json` files: 15,438 facility rows, 1,386 model executions (1,242 `grounding_passed`, 144 `failed`), `accepted_facilities` 12,418, `unresolved_facilities` 3,020, `not_attempted_budget` 0, `unknown_cost_receipts` 28, `known_actual_usd` 0. Reported models: 1,110 `nvidia/nemotron-3.5-lightning-30b-a3b`, 250 `nvidia/nemotron-3.5-super-vl-120b-a12b`, 28 none. 256 batch files have zero provider requests and the retained reason "Model calls are blocked by a retained provider/cost policy violation" over 2,570 rows. Newest batch file and `progress.json` were both written at 9:51 AM ET; the latest execution `started_at` was 13:51 UTC.
+`metadata.json` `demo_url` is `https://porchlight.earth`. `demo_video` and `slide_deck` remain empty. `meterless.engines` remains `["Scout Intent"]`.
 
-The Lightning model id was added to `metadata.json` `nvidia.models` because it is the `reported_model` in `engines/reports/scout-intent-live-2026-10-23.json` and in most sweep executions. No new receipt was created.
+## Live checks
 
-The engines commits (#40, #30, #36, #39) remain on `origin/devin/engines-manatee`, which is not an ancestor of this web branch. Web ancestry for #24, #38, #34, #31, #37, #33, #35, and #41 is on `8aeccd6`.
+User-Agent browser header. Times are the HTTP `date` on the response.
+
+| Request | Result |
+| --- | --- |
+| `GET /api/national` | 200. 3,235 counties. `ranked_counties` 2,490. `county_snapshots` 3,234. Sweep `20261023T200048Z-78a426ba`. Query `833`. Weather `unavailable` |
+| `GET /api/national?county=02020` | 200. Anchorage. 4 ranked, 2 refused, 6 source. Rank 1 Polaris Extended Care `025036`. Explanation `failed` |
+| `GET /api/national?county=35013` | 200. Doña Ana. 7 / 4 / 11. Rank 1 USRC Las Cruces `322559`. Lightning, `passed`, `actual_usd` 0 |
+| `GET /api/national?county=48201` | 200. Harris. 140 / 96 / 236. Rank 1 DaVita North Houston Dialysis Center `452678`. Super VL, `passed`, `actual_usd` 0 |
+| `GET /api/national?county=12081` | 200. Manatee national snapshot. 14 / 6 / 20. Not the Milton sheet |
+| `GET /api/national?county=48395` | 503. No snapshot. No substitute |
+| `GET /api/national?recent=1` | 200. 20 rows. First: Los Angeles `06037`, 450 ranked |
+| `POST /api/national` `call_script` | 403. `Same-origin local access is required for model operations.` 23:09 UTC |
+| `GET /` | 200. Title `Porch Light | Pick any US county.` Footer link `Hurricane Milton retrospective` |
+
+## Pack recount
+
+Python over `web/data/national/published/counties/*.json.gz` and `catalog.json`:
+
+- Files 3,234. Missing FIPS `48395` only.
+- Outcomes: 2,490 with ranked rows, 391 no rankable rows, 353 no matching source rows, 1 runtime error.
+- Explanations: 14,960 passed at cost 0, 480 failed.
+- Counties: 2,383 all passed, 18 mixed, 89 all failed.
+- Executions: 4,098. 3,637 `grounding_passed`, 461 `failed`. Models 3,229 Lightning, 773 Super VL, 96 none. `paid_fallback_enabled` false. `thinking_disabled` true.
+
+`metadata.json` validates against `metadata.schema.json` (Draft 2020-12). Every local path in sponsor `where`, sponsor `evidence`, and `pre_existing.where` exists.
 
 ## Documentation checks
 
-Run from the repository root:
-
-| Check | What it must show |
-|---|---|
-| Relative links in `submission/*.md` | Each `](...)` target that is not an `http` URL exists on disk. |
-| Dash punctuation | No U+2013 or U+2014 in the four submission files. |
-| Forbidden claims | No file states, in positive form, an offline DGX result, H-MEM, World Model, Markovian, or that all counties are drafted. Negated mentions ("not claimed", "never say") are allowed. |
-| Stale figures | `3,153`, `649 of 1,545`, `6:38 AM`, and "territories skipped" appear only on lines that mark them withdrawn, stale, superseded, or as the earlier pack. |
-| Required snapshot | `submission/README.md` contains `1,282 of 1,545`, `12,418`, `3,020`, `9:51 AM ET`, `blocked_preflight`, `rcpt_req_qsa07grv`, and the reconciled coverage table. |
-| `metadata.json` | Parses as JSON; `nvidia.models` includes both Nemotron ids; `meterless.engines` is exactly `["Scout Intent"]`; every local path in `nvidia.where` and `nvidia.evidence` exists. |
-| Boundaries | The files still say grounding is not clinical validation, and they make no exclusivity claim and no prize claim. |
-| `git diff --check` | No whitespace errors. |
-
-Recorded on this refresh, before commit, with a Python script run from the repository root over `submission/*.md`, `SPONSOR-SETUP.md`, `README.md`, `docs/limits.mdx`, `docs/sponsors.mdx`, `docs/local-run.mdx`, `docs/nationwide.mdx`, `web/README.md`, `engines/README.md`, and `metadata.json`.
+Run from the repository root over `README.md`, `DECLARED_PREEXISTING.md`, `SPONSOR-SETUP.md`, `metadata.json`, `env.example`, `submission/*.md`, and `docs/**/*.mdx` before this commit.
 
 | Check | Result |
-|---|---|
-| Relative links | Passed. Every relative target exists. |
-| Dash punctuation | Passed. No en dash or em dash in the four files. |
-| Forbidden claims | Passed. The only regex hits were the negated rules in `demo-script.md` and `SPONSOR-SETUP.md` ("never say" and "do not say"). |
-| Stale figures | Passed after this file was rewritten. Remaining mentions are marked withdrawn or as the earlier pack. |
-| Required snapshot | Passed. |
-| `metadata.json` | Passed. JSON parses, both model ids present, engines list unchanged, all local paths exist. Full validation against `metadata.schema.json` with `jsonschema` Draft 2020-12 passed. |
-| Boundaries | Passed. |
-| `git diff --check` | Passed. |
+| --- | --- |
+| Dash punctuation | Passed. No U+2013 or U+2014 in those files |
+| Forbidden positive claims | Passed. Mentions of offline DGX, H-MEM, World Model, and Markovian are negated, or they quote the sponsor menu and then say those engines are not claimed. No file says all counties are drafted |
+| Stale totals as current | Passed. `1,282 of 1,545` and `3,153` appear only on lines that call them an earlier cut, a withdrawn figure, or a check for that wording |
+| Stub pages | Passed. No unfinished stub sentence in `docs/*.mdx` |
+| Relative links in `submission/*.md` | Passed. `written-submission.md`, `demo-script.md`, and `verification.md` resolve |
+| `metadata.json` | Passed. Draft 2020-12 validation. `meterless.engines` is `["Scout Intent"]`. Both Nemotron ids are listed. Local sponsor paths exist |
+| `git diff --check` | Passed |
 
-## What this pass did not do
-
-No live provider test, source sweep, model request, application restart, deployment, or spend. No radar, map, or look CSS edit. No change to the private sweep directory. No screenshot or browser pass of the web app. The #27 packaging note recorded an isolated production build that compiled and then failed generated Next.js route-type checks on existing `Page` and `RootLayout` exports. That build was not re-run here, so the failure is not cleared and is not newly confirmed. The two-row difference between the October 23 report's 15,440 rows and the 15,438 rows in the batch files was recorded, not explained. Whether the 256 policy-blocked batches get reprocessed by the running worker was not determined.
+`HANDOFF.md` still contains older review notes. The new section "Hosted desk and docs, Oct 25 at 7:08 PM ET" is the current claim record. The 9:51 AM ET section above it stays as history.

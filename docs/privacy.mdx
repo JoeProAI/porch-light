@@ -1,15 +1,29 @@
 ---
 title: "Privacy"
+description: "Public facility and aggregate records. Contact status stays on your device."
+keywords: ["privacy", "emPOWER", "localStorage", "no patient records"]
 ---
 
-Coming soon.
+Porch Light uses public facility records and public aggregate context. It does not hold a person's medical record.
 
-## What data Porch Light uses
+## What the sheet contains
 
-## What it doesn't collect
+- Facility name, address, CCN, and a CMS directory phone.
+- Tract SVI percentile and ZIP emPOWER counts. The ZIP figure is beneficiaries in that ZIP, not patients of the facility.
+- Score terms, refusals, query ids, and a draft that quotes those source clauses.
 
-## Where data is stored
+The draft questions on a passed national row are contact confirmation and power. They are prompts for the operator. The product does not collect the answers on a server.
 
-## Logs and audit trail
+## What you type
 
-## Contact
+Contact status (**Not contacted**, and any later status you choose) is stored in this browser's `localStorage`. The hosted API does not receive that status when you change the dropdown. Clearing the browser clears the record.
+
+Do not put a patient name, a medical detail, or a secret into the sheet. There is no field for that, and the export will contain whatever status text you saved.
+
+## Logs
+
+Model and data reads on a fresh local job are written to the local audit trail: model, mode, latency, and token counts when the provider returns them. The published snapshots include those fields for the sweep executions. Token values in a receipt are usage counts, not credentials. Do not commit proxy tokens, API keys, or the Scout Intent signing key. Env files stay gitignored. Names of variables are in `env.example`.
+
+## emPOWER
+
+HHS emPOWER is a public reference with its own rules for outreach. Porch Light does not treat it as a partner feed and does not turn a ZIP total into a list of people.

@@ -1,43 +1,39 @@
 ---
 title: "Evidence trail"
+description: "Query ids, source URLs, score terms, and the draft status stored on each ranked row."
+keywords: ["evidence", "zetaris", "query id", "draft"]
 ---
 
-Every row on the call sheet shows where its numbers came from.
+Every ranked row on the hosted sheet has an evidence record. Open it from the row. The drawer is `web/src/components/evidence-drawer.tsx`.
 
-## The Evidence record
+## What you should see
 
-Each ranked facility has an `Evidence` record with:
+1. **Observed.** The CMS certification number (CCN) and the directory phone, with the CMS source URL when the phone status is `available`.
+2. **Audited.** Zetaris query ids for that county chain. Data access mode on these snapshots is `zetaris`.
+3. **Fixed policy.** `score.formula_version`.
+4. **Draft or computed reason.** If `model_explanation.status` is `passed`, the drawer shows the stored draft and says grounding passed. If status is `failed`, it says no approved draft and does not invent a replacement. The line above the spine, `computed_reason`, is the formula sentence either way.
 
-- `zetaris_query_ids`: the Zetaris queries behind the row
-- `sources`: dataset name, id, URL and license
-- `data_as_of`: per-source fetch time, snapshot id, and a `stale` flag. It's set when the source is down and the row comes from the snapshot
-- `join_path`: each `JoinHop` with its match rate, which Zetaris SQL measures and is never an LLM confidence
-- `score`: the full score breakdown
-- `dq_results`: data quality rules and whether each passed
-- `failed_joins`
-- `facts`
-- `reason`: Nemotron's explanation, with its `trace_id`
-- `ledger_ids`: TrustLedger entries that link each claim in the reason to fact ids
+A passed national draft carries `model_id`, `mode` (`meterless/deep`), `provider` (`nvidia`), `trace_id`, `actual_usd`, `questions`, and `grounding`. Grounding method on the Doña Ana rank 1 row is `exact_source_clause_catalog_v1`. Clause ids are `cms_rating`, `tract_svi`, and `zip_context`. The scope string says this is source-clause identity, not clinical validation. `operator_review_required` is true.
 
-## Export receipt
+## Query ids you can match
 
-`POST /runs/{id}/export` returns an `ExportReceipt` with:
+| Sheet | Zetaris query ids on the live response |
+| --- | --- |
+| Catalog | `833` |
+| Anchorage `02020` | `9704`, `9709`, `9717`, `9724`, `9729`, `9731`, `9736` |
+| Doña Ana `35013` | `3001`, `3005`, `3010`, `3016`, `3020`, `3024`, `3028` |
+| Harris `48201` | `4343`, `4348`, `4354`, `4359`, `4364`, `4370`, `4375` |
 
-- `export_id`, `run_id` and `created_at`
-- `artifacts`: one per requested format (`csv`, `print_sheet` or `call_script`), each with a SHA-256 hash and a download `href`
-- `csv_sha256` when CSV was exported
-- `zetaris_query_ids`, `snapshot_id` and `model_trace_ids`
-- `contract`, the Scout Intent execution contract: action, request hash, inputs hash, evidence ids, trace ids, signature and disclaimers
-- `contract_signature`
-- `held`: outputs Scout Intent held back
+Each county snapshot also stores the audited SQL text and vendor query hash per chain step. Seven steps is the national chain the drawer headings expect.
 
-If Scout Intent refuses an export, the API returns `403` with `export_refused`. The agent drafts, and a human decides.
+## Sources on the row
 
-## Two layers
+`evidence.sources` lists dataset name, URL, and license. `evidence.data_as_of` lists fetch time and a stale flag. A stale flag is not a promise about current conditions. SHA-256 fields cover the source artifact and the published JSON sidecar.
 
-The adapter interface keeps two layers apart:
+Coordinates are printed with a short display and the source value. Unknown coordinates stay unknown. The drawer does not invent a pin.
 
-1. **Build time:** adapters download raw files into `data/snapshot/raw/`, write `.provenance.json` sidecars and load them into the PostGIS snapshot.
-2. **Runtime:** the app reads only through Zetaris SQL.
+## Contract fields that are not this drawer
 
-<Note>The receipt in `contract/fixtures/export_receipt_mock.json` uses a mock signature and mock hashes.</Note>
+The contract `Evidence` type also names `ledger_ids` and a join `seen_before` flag whose description mentions H-MEM. Those fields are in `contract/openapi.yaml`. The hosted national drawer does not present an H-MEM memory, a TrustLedger, or a World Model. Scout Intent shows up when a **local** call script returns a contract. It is not attached to the published county GET.
+
+Export on the hosted sheet is the operator CSV and print path in the browser. It is not `POST /runs/{id}/export` from the contract. See [API reference](/api-reference/introduction).

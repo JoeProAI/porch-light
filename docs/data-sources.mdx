@@ -1,17 +1,50 @@
 ---
 title: "Data sources"
+description: "The public sources behind a national county sheet, and the gaps the sheet keeps."
+keywords: ["CMS", "Census", "SVI", "emPOWER", "NWS", "provenance"]
 ---
 
-Coming soon.
+A national county sheet is built from public facility and aggregate sources. The app does not call those sources from the browser. Ingest writes raw files into the filestore with a checksum and `fetched_at`. Runtime reads of a fresh job go through Zetaris. The hosted desk reads the published result of that work.
 
-## Weather alerts and warning areas
+## What a ranked row joined
 
-## Facilities
+| Source | Role on the national sheet | What it is not |
+| --- | --- | --- |
+| CMS nursing homes and dialysis | Facility name, CCN, address, directory phone, rating inputs | A live occupancy or open/closed confirmation beyond the captured flag |
+| U.S. Census Bureau | County catalog (3,235 rows, query `833`) and exact address match into a county | A guessed county when the match is not exact |
+| CDC/ATSDR SVI | 2022 tract percentile used as `svi_pct` | Current demographic conditions, or a clinical risk score |
+| HHS emPOWER | Published ZIP counts of durable medical equipment beneficiaries among Medicare beneficiaries | A facility patient count. emPOWER has its own outreach rules. It is not a partner integration |
+| NWS | County catalog geometry and, on a local job, a captured alert | On the hosted desk, a current warning. Hosted weather status is `unavailable` |
 
-## Vulnerability and population
+Per-row URLs and licenses are in the evidence drawer. Snapshot sidecars are `.provenance.json` next to the published gz files: source URL, `fetched_at_utc`, SHA-256, license line, and fetch command `python build_published_national.py`.
 
-## Geography and crosswalks
+The source capture id on the catalog is `47344192d80249d0c96a69fb2acd0f11a6b32009a8cd0607dca8872609488ac0`.
 
-## County plans
+## Refusals the sweep report counted
 
-## Provenance and attribution
+First-pass source gaps in `engines/reports/national-sweep-2026-10-23.md`, most frequent first:
+
+| Gap | Records |
+| --- | ---: |
+| `census_address_match_not_exact` | 3,579 |
+| `census_address_not_matched` | 1,968 |
+| `missing_valid_cms_rating` | 408 |
+| `missing_zip_context` | 383 |
+| `ambiguous_or_masked_source_count_11` | 70 |
+| `source_point_not_covered_by_current_county_geometry` | 25 |
+| `missing_or_suppressed_exact_tract_svi` | 24 |
+| `cms_source_marked_closed` | 3 |
+
+Those rows stay refused. Missing values are not filled in.
+
+The same report's first-pass join totals (candidates are not unique facilities): CMS to exact Census address and county coverage, 16,326 matched of 21,900 candidates. Exact tract GEOID to SVI, 19,897 of 21,900. ZIP and county to emPOWER, 19,362 of 21,900, with fanout counted.
+
+## Manatee-only captures
+
+`data/adapters/us/` also holds the Milton retrospective intake: CMS files, the IEM Milton warning, Census, the Bradenton CEMP PDF, and SVI tract rows for FIPS `12081`. `counties.py` in that adapter registers Manatee for those capture commands. That intake is the retrospective sheet. It is not a template you copy onto another county.
+
+National source bytes for the full catalog stay in the private filestore named by the provenance sidecars. They are not all committed as raw files. The committed national artifact a judge can recount is `web/data/national/published/`.
+
+## Provenance
+
+Every cached data file in that pack has a `.provenance.json` sidecar. The catalog sidecar records `fetched_at_utc` `2026-10-24T16:47:04.394911+00:00` and SHA-256 `90dccae51b792094eb73275522f8911685b409b9b6d77199dec242a8c1c557a3`.

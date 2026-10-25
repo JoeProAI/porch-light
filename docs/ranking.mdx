@@ -1,29 +1,46 @@
 ---
 title: "Ranking"
+description: "Two published formulas. Nemotron does not set either order."
+keywords: ["ranking", "weights", "score", "national-source-screen"]
 ---
 
-Rank is set by a fixed formula. Nemotron writes the reason for each row. It never sets the order.
+Rank is a fixed formula. The same inputs produce the same order. Nemotron writes the draft beside the row. Contact status does not change the score.
 
-## Score breakdown
+Weights live in `data/scoring/weights.yaml`. The national screen is the object `national_source_screen`. `engines/national_run.py` checks it against `data/scoring/national_weights.json`.
 
-Each ranked facility carries a `ScoreBreakdown`:
+## National sheet
 
-- `total`
-- `terms`, a list of `ScoreTerm`
-- `formula_version`, the version of `data/scoring/weights.yaml` that was used
-- `rank`
-- `tie_break`: ties break by facility type, then facility key
+Formula version on every hosted county row: `national-source-screen-v1`.
 
-## Score terms
+| Term | Weight | What the drawer calls it |
+| --- | ---: | --- |
+| `type_weight` | 0.35 | Facility type |
+| `svi_pct` | 0.30 | Neighborhood vulnerability |
+| `empower_density_pct` | 0.20 | Medical-equipment orders in this ZIP |
+| `cms_risk` | 0.15 | Medicare rating risk |
 
-Each `ScoreTerm` has a `name`, `input`, `weight`, `weighted` and an optional plain `note` for the evidence drawer. Term names in the contract:
+There is no `plan_flag`. The snapshot limit says the national policy omits county plans, does not import the archived Manatee plan, and does not substitute zero.
 
-- `type_weight`
-- `svi_pct`
-- `empower_density_pct`
-- `cms_risk`
-- `plan_flag`
+`policy.clinical_validation` is false. The drawer says the total is a prototype on a 0 to 1 scale.
 
-## Weights
+Example, live Doña Ana rank 1 (USRC Las Cruces, CCN `322559`): total `0.88278`, with type input 1.0, SVI input 0.9426, and the emPOWER term taken from published ZIP context. The ZIP counts are not a count of that facility's patients.
 
-Weights live in `data/scoring/weights.yaml`, not in the contract. They go on this page when that file lands.
+## Milton sheet
+
+Formula version: `manatee-development-v1`.
+
+| Term | Weight |
+| --- | ---: |
+| `type_weight` | 0.30 |
+| `svi_pct` | 0.25 |
+| `empower_density_pct` | 0.20 |
+| `cms_risk` | 0.15 |
+| `plan_flag` | 0.10 |
+
+That fifth term is why the Milton order is not the national Manatee order. See [Milton retrospective](/manatee-walkthrough).
+
+## Ties and refusals
+
+The drawer prints `score.tie_break` for the row. Rows that fail an exact Census address match, lack a usable CMS rating, or otherwise fail a source rule appear in `refused`, with the rule name. They are not given a guessed rank.
+
+A county outcome of `complete_no_matching_source_rows` or `complete_no_rankable_rows` is an empty ranked list plus the recorded gap. The UI does not borrow another county's rows.

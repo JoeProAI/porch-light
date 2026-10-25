@@ -1,5 +1,47 @@
 ---
-title: "Evaluation"
+title: "Measured runs"
+description: "The committed sweep, the published-pack recount, and the scoped script checks. No score is invented."
+keywords: ["eval", "sweep", "verification", "grounding"]
 ---
 
-Coming soon. Results go here once there are measured runs.
+There is no `eval/` harness and no single score for Porch Light. These are the measured artifacts in the repo, plus a recount of the published files. They are not a clinical evaluation and not an operator time-saving study.
+
+## Source sweep
+
+`engines/reports/national-sweep-2026-10-23.md`. Run `20261023T200048Z-78a426ba`. Measured `2026-10-24T01:56:56Z`.
+
+| Measurement | First pass | After the separate Robertson retry |
+| --- | ---: | ---: |
+| Counties attempted | 3,235 | 3,235 audited at least once |
+| Completed audited chains | 3,234 | The retry is a second file, not a rewrite of the failure |
+| Ranked counties | 2,490 | 2,491 |
+| Ranked rows / refusals | 15,440 / 6,460 | 15,442 / 6,461 |
+| Counties with CMS rows | 2,881 | 2,882 |
+| Source time p50 / p95, seconds | 18.888 / 63.258 | Not recomputed. The failure stays in the percentile |
+| Distinct CMS records accounted for | 22,177 / 22,180 on the first-pass line | 22,180 after the report's recovery paragraph |
+
+The hosted pack matches the first-pass column: 3,234 files, 2,490 ranked counties, 15,440 ranked rows. It does not contain the retry.
+
+## Drafts in the published pack
+
+Recounted while writing these docs, from the committed gz files. Detail is on [Meterless and Nemotron](/meterless-and-nemotron). Short version: 14,960 passed drafts at actual cost 0, 480 failed, 89 ranked counties with no passed row. That is the pack generated `2026-10-24T16:47:04Z`.
+
+An earlier private `progress.json` at 9:51 AM ET on 2026-10-24 (1,282 of 1,545 batches) was a mid-sweep cut. This pass did not re-open that directory. Do not quote it as the desk.
+
+## Scoped call scripts
+
+`engines/reports/national-script-verification-2026-10-23.md`, plus the Denver addendum in the same file.
+
+| Check | Result |
+| --- | --- |
+| Baldwin and Providence, 2026-10-23 6:44 PM ET | 12 script outcomes, 10 accepted, 2 Providence failures retained, 14 attempts, $0 |
+| Denver after the JSON-object fix, 10:40 PM ET | 6 of 6 passed on the first request, $0 |
+| Combined | 18 outcomes, 16 passed, 2 retained failures, 20 attempts |
+
+Grounding checks clause identity and approved questions. The report says it is not clinical validation.
+
+One additional Scout Intent receipt, CCN `102853`, is a single facility, not a rate. See [Meterless and Nemotron](/meterless-and-nemotron).
+
+## What was not measured
+
+Operator time saved, clinical usefulness, current facility conditions, and a finished accepted-draft rate for every county. `docs/operator-usefulness.md` is a local timing note from 2026-10-23 on one laptop. It is not a study, and its Anchorage draft result is from that session, not the published snapshot (the published Anchorage drafts failed).

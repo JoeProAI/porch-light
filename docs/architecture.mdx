@@ -1,25 +1,47 @@
 ---
 title: "Architecture"
+description: "What the hosted desk does on a county click, and how that differs from the contract API."
+keywords: ["architecture", "published snapshot", "zetaris", "meterless"]
 ---
 
-Porch Light takes a weather alert in, builds the warning area, ranks the facilities inside it with a fixed formula, and returns a call sheet where every row carries its evidence trail. Zetaris is the only data path. Meterless is the only model path. Nemotron explains, and the formula ranks.
+A county click on the hosted desk reads a snapshot that a Zetaris chain already produced. The formula has already ranked the rows. A stored Nemotron draft is already attached, or the failure is already attached. The browser does not re-rank and does not call a model.
 
-## Request lifecycle
+## Hosted read
 
-1. **Pick an alert.** `GET /alerts/archived` lists alerts replayed from committed captures. `GET /alerts/active` lists live alerts and returns an empty list offline.
-2. **Start a run.** `POST /runs` takes exactly one of `alert_id` or a full `alert`. The run moves through these statuses: `queued`, `building_area`, `finding_facilities`, `measuring_joins`, `scoring`, `writing_reasons`, `ready`, `exporting`, `done`, or `failed`. Every step lands in the audit log.
-3. **Read the call sheet.** `GET /runs/{id}/facilities` returns ranked facilities, each with its score breakdown and evidence.
-4. **Inspect the seams.** `GET /runs/{id}/joins` returns join proposals with measured match rates, plus failed joins.
-5. **Inspect the trace.** `GET /runs/{id}/trace` returns every step with its model id, provider, Meterless mode, latency and tokens.
-6. **Record check-ins.** `POST /runs/{id}/checkins` marks a facility `called`, `answered` or `no_answer`. `GET /runs/{id}/checkins` returns the history.
-7. **Export.** `POST /runs/{id}/export` is checked and signed by Scout Intent and returns an export receipt. Artifacts download from `GET /runs/{id}/exports/{export_id}/artifacts/{format}`.
+```text
+GET /api/national
+  -> web/data/national/published/catalog.json
 
-`GET /health` reports Zetaris, Meterless, network and snapshot status.
+GET /api/national?county=35013
+  -> counties/35013.json.gz
+  -> { phase: completed, publication.mode: published_sweep_snapshot }
+```
 
-## Warning area
+`web/src/app/api/national/route.ts` serves that pack when it is installed. Public responses use `Cache-Control: public, max-age=60`. `POST` is refused unless the request is same-origin on loopback.
 
-A `WarningArea` records how it was built (`built_from`): `zone_shapes`, `storm_polygon`, `admin_boundary` or `gdacs_buffer`. Zone-based alerts, such as hurricane warnings, build from zone shapes.
+The call sheet is `web/src/components/operator.tsx`. The evidence drawer is `web/src/components/evidence-drawer.tsx`. Contact rows stay in `localStorage` on the device.
 
-## Country adapters
+## What produced the snapshot
 
-The contract has no US-specific logic. Country-specific work sits behind the adapter interface in `contract/adapter.md`. See [Country adapters](/country-adapters).
+On the operator machine, a national job runs `engines.national_jobs` against local Zetaris. The source chain joins CMS facility rows, Census address and county coverage, CDC/ATSDR SVI, and HHS emPOWER ZIP context. Those relations share one read-only PostGIS datasource, registered as `porchlight_postgis`. Match counts are SQL counts. The sweep that the host publishes is `20261023T200048Z-78a426ba`.
+
+Ranking then applies `national-source-screen-v1` from `data/scoring/weights.yaml`. Nemotron, through Meterless `meterless/deep`, selects source clauses for a draft. A failed draft stays on the row as `status: failed`. The UI does not fill it with computed prose and call that a model reply. The computed reason on the row is separate, and the drawer labels it that way when no model text is approved.
+
+## Contract API
+
+`contract/openapi.yaml` (PR #14, on main) is the shared contract: `/alerts`, `/runs`, joins, trace, check-ins, export. The generated pages under API reference describe that contract.
+
+The shipped Next app does not mount those paths. Its routes are:
+
+| Route | Role |
+| --- | --- |
+| `/`, `/nationwide`, `/operate`, `/watch` | Pages |
+| `GET /api/national` | Catalog, published county, or local job read |
+| `POST /api/national` | Local-origin catalog refresh, call script, or new run |
+| `/api/weather/*` | Local weather and radar captures |
+
+Read [API reference](/api-reference/introduction) before you treat a contract example as a live call.
+
+## Country shape
+
+US sources sit behind `contract/adapter.md` and `data/adapters/us/`. The contract types are country-agnostic. A global adapter is a stretch goal in that document. It is not operating coverage. See [Country adapters](/country-adapters).

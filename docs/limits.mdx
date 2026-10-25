@@ -1,30 +1,50 @@
 ---
 title: "Limits"
-description: "What Porch Light does not claim yet — coverage, models, contact outcomes, and clinical use."
-keywords: ["limits", "honesty", "gaps", "not claimed"]
+description: "The three allowed claims, the hosted numbers, and the boundaries around them."
+keywords: ["limits", "claim lock", "honesty", "drafts"]
 ---
 
-This page is intentional. Judges should see the gaps next to the working path.
+Say these three things. Keep the figures attached to the artifact you mean.
 
-## Product
+<Check>
+Every Census catalog county was source-audited through Zetaris at least once. The report is `engines/reports/national-sweep-2026-10-23.md`: 3,235 of 3,235 after the separate Robertson retry.
+</Check>
 
-| Claim people might assume | Actual status |
+<Check>
+You can open any of the 2,490 published counties that have ranked facilities, on [porchlight.earth](https://porchlight.earth/nationwide), from the pack generated `2026-10-24T16:47:04Z`.
+</Check>
+
+<Check>
+Stored Nemotron drafts are in that pack, on free routes through Meterless, thinking disabled. 14,960 of 15,440 ranked rows passed with `actual_usd` 0. 480 failed and stayed failed.
+</Check>
+
+## Do not collapse these counts
+
+| Phrase | Use it for | Do not use it for |
+| --- | --- | --- |
+| 3,235 source-audited | The sweep report, including the Robertson retry | The count of files on the hosted desk |
+| 3,234 snapshots | The hosted pack and `manifest.json` `county_files` | A claim that Robertson's retry is on the desk |
+| 2,490 ranked counties | The hosted catalog `ranked_counties` | The report's post-retry 2,491 |
+| 2,491 ranked counties | The report after the separate retry | The live `/api/national` publication block |
+| 15,440 ranked rows | The published pack | The report's post-retry 15,442 |
+| 14,960 passed drafts | Rows in the published gz files | "Every county is drafted" |
+
+This pass did not re-read the private sweep directory. The 2026-10-24 9:51 AM ET `progress.json` figures (1,282 of 1,545 batches, and the batch totals printed with them) are an earlier private cut. They are not the hosted desk.
+
+## Boundaries
+
+| Boundary | What you show instead |
 | --- | --- |
-| Every US county has a polished offline sheet | **No.** Every catalog county has been source-audited through Zetaris once (3,235 of 3,235; 2,491 with ranked rows), and any county can be opened live when local Zetaris is up. Grounded drafts are in progress on free Nemotron routes and are not complete for every county. Nothing runs offline. |
-| Contact **Reached** means someone was called | **Only if an operator chose it.** Default is **Not contacted**. |
-| Nemotron picks who to call first | **No.** Fixed formula ranks; Nemotron drafts explanations / early reasons when receipts exist. |
-| Clinically validated priority | **No.** Transparent prototype heuristic. Operator verification required. |
-| Auto-dial or auto-SMS | **No.** Export and check-ins only. |
+| Accepted drafts for every county | 89 ranked counties in the pack have only failed row drafts. 744 published files have no ranked rows and no model execution. Robertson has no published file |
+| A new model call on the public host | `POST /api/national` returns 403, `Same-origin local access is required for model operations.` |
+| Offline or local DGX inference | Retained route is `meterless/deep` to NVIDIA cloud. `engines/reports/nemotron-offline-proof-2026-10-23.md` records `blocked_preflight` |
+| H-MEM, World Model, Markovian | `metadata.json` lists one Meterless engine: Scout Intent, on the local call-script path |
+| A call that was placed | Contact status defaults to **Not contacted**. **Reached** is stored only when an operator chooses it on that device |
+| Clinical priority | `policy.clinical_validation` is false. The drawer says the score is a prototype |
+| Manatee as the product | `/operate` is the Milton retrospective (18 ranked, 2 refused). The national Manatee snapshot is 14 ranked and 6 refused |
+| A public docs site | These pages are repo source. The product URL is the desk, not a Mintlify deployment |
+| Cursor token counts or spend | Merged product evidence is [PR #22](https://github.com/JoeProAI/porch-light/pull/22), [PR #24](https://github.com/JoeProAI/porch-light/pull/24), and [PR #47](https://github.com/JoeProAI/porch-light/pull/47). No usage export is in this repo |
 
-## Sponsor stack
+Directory phones are CMS directory numbers. They are not verified emergency contacts. A zero-row county is no matching rows in these sources. It is not proof that the county has no care facilities.
 
-| Gap | Why it matters |
-| --- | --- |
-| Meterless engines beyond Scout Intent | Scout Intent gates the live call-script path. H-MEM, World Model, and Markovian are not claimed. Batch explanation drafts are not contract-gated. |
-| Cursor usage totals | Merged PRs #22 and #24 are the product evidence. This repository has no Cursor usage export, token count, or spend total. |
-| Local Nemotron on GPU | Stronger for “best use of Nemotron” than a single hosted Super VL receipt. |
-| Full Zetaris USL across many live physical systems | Not claimed. Audited JDBC + shared PostGIS path is what we show. |
-
-## Data
-
-Source vintages and refusals belong in the evidence drawer. Missing geometry is listed as missing — never guessed onto the map. Fabricated facilities, phones, or alert polygons are forbidden.
+An optional OpenRouter retry exists in `engines/openrouter_backup.py` for `call_script` only, and only when `PORCHLIGHT_OPENROUTER_BACKUP` and `OPENROUTER_API_KEY` are set. Every explanation execution in the published pack has `paid_fallback_enabled` false. Leave that path off for the video. Do not spend against it.

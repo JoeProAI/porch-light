@@ -1,34 +1,66 @@
 ---
-title: "Any US county"
-description: "Nationwide front door: Census catalog search and local jobs when Zetaris is reachable."
-keywords: ["nationwide", "county", "census", "national jobs"]
+title: "Nationwide"
+description: "The hosted Census catalog, the published sweep snapshots, and the one county the host will not open."
+keywords: ["nationwide", "census", "FIPS", "published snapshot"]
 ---
 
-Home primary action: **Pick any US county** → `/nationwide`. The Milton Manatee sheet is the secondary walkthrough.
+`/nationwide` is the product. On [porchlight.earth](https://porchlight.earth/nationwide) a click opens a frozen audited snapshot. It does not start a new Zetaris job and it does not call Nemotron.
 
-<Frame>
-  <img src="/images/screenshot-nationwide.jpg" alt="Nationwide page with county search and night atlas" />
-</Frame>
+## Hosted catalog
 
-## How a county job works
+`GET /api/national` on the public host returns the published catalog when the pack is installed.
 
-1. Search the Census county catalog (3,235 rows in the catalog path) or click a county on the night atlas.
-2. `POST /api/national` starts `engines.national_jobs` for that FIPS (or an alert + capture pair).
-3. Poll the job. On success, open the call sheet for **that** run's audited rows and source gaps.
-4. If Zetaris cannot be reached, the UI says so. It does not load Manatee as a silent fallback for a bad FIPS.
+| Field | Live value, 2026-10-25 23:08 UTC |
+| --- | --- |
+| `publication.mode` | `published_static` |
+| `publication.sweep_run_id` | `20261023T200048Z-78a426ba` |
+| `publication.generated_at` | `2026-10-24T16:47:04.394911+00:00` |
+| `publication.source_capture_id` | `47344192d80249d0c96a69fb2acd0f11a6b32009a8cd0607dca8872609488ac0` |
+| Catalog length | 3,235 |
+| `county_snapshots` | 3,234 |
+| `ranked_counties` | 2,490 |
+| Catalog Zetaris query | `833`, hash `72188e2699f12f0e5db8989a322c045e`, finished `2026-10-23T20:00:50.055+00:00` |
+| Weather | `unavailable`. Live alert refresh stays on local origin |
 
-## Verified local runs (examples)
+The same object is committed as `web/data/national/published/catalog.json`. The manifest is `web/data/national/published/manifest.json`.
 
-Completed jobs have existed on the operator machine for counties such as Los Angeles CA, Cook IL, Harris TX, Maricopa AZ, and Denver CO, plus Manatee. Treat those as **local machine receipts**, not as a finished national product. Catalog size ≠ completed call sheets for every county.
+Catalog outcomes in that file:
 
-## Honesty rules
+| Outcome | Counties |
+| --- | ---: |
+| `complete_with_ranked_rows` | 2,490 |
+| `complete_no_rankable_rows` | 391 |
+| `complete_no_matching_source_rows` | 353 |
+| `runtime_error` | 1 |
 
-- Do not market “3,000+ counties ready” until the sweep and offline replay actually cover them.
-- Contact outcomes stay operator-entered. No sample **Reached** rows.
-- Alert polygon jobs and single-county jobs are different engine inputs. The merged national web work is [PR #24](https://github.com/JoeProAI/porch-light/pull/24); engine notes are in `engines/README.md`.
+Sum of `ranked_rows` is 15,440. Counties with `source_rows` greater than 0: 2,881. Those are first-pass published figures. They match the first-pass table in `engines/reports/national-sweep-2026-10-23.md`.
 
-## Related
+## Open a county
 
-- [Manatee walkthrough](/manatee-walkthrough)
-- [Limits](/limits)
-- [Local run](/local-run)
+`GET /api/national?county=02020` (five-digit FIPS) returns `phase: completed`, `publication.mode: published_sweep_snapshot`, and the county JSON. The same bytes are `web/data/national/published/counties/02020.json.gz`.
+
+The page copy tells you hosted clicks open frozen snapshots and live model POST stays local. The button label is **Open published audited call sheet**.
+
+`GET /api/national?recent=1` returns up to 20 published counties, highest ranked-facility count first. On the same check, the first row was Los Angeles County, California, FIPS `06037`, 450 ranked facilities, `generated_at` equal to the pack time. The list does not invent counties.
+
+## The county the host will not open
+
+Robertson County, Texas, FIPS `48395`, is in the catalog as `runtime_error` with 0 source rows and 0 ranked rows. There is no `48395.json.gz`. Live `GET /api/national?county=48395` returned HTTP 503:
+
+```json
+{"error":"No published audited snapshot is available for this county. No substitute data was returned.","unreachable":false}
+```
+
+The sweep report keeps the first-pass JDBC failure and a separate retry (2 ranked facilities, 1 refusal). The retry is not this hosted file. An empty or missing county is not proof that no care facility exists there.
+
+## Alerts
+
+Choosing **Captured live alert** on the hosted catalog throws: `Live alert runs stay on local origin. Choose a published county on this host.`
+
+A fresh alert run is a local job. Storm Watch (`/watch`) reads the weather capture on that machine. On the public host, treat weather as supporting context only when the page shows a capture time. If the catalog says alerts are unavailable, say that.
+
+## Local jobs
+
+On `127.0.0.1`, with the published pack absent, `GET /api/national` reads the local Zetaris catalog and `POST /api/national` can start `engines.national_jobs`. If Zetaris cannot be reached, the UI says so and returns no rows. A bad FIPS does not load the Manatee sheet.
+
+See [Local run](/local-run).

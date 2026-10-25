@@ -1,15 +1,59 @@
 ---
 title: "Quickstart"
+description: "Shoot the live desk: three published counties, stored drafts, and no invented calls."
+keywords: ["quickstart", "demo", "Anchorage", "Doña Ana", "Harris"]
 ---
 
-Coming soon.
+The remaining human step is the video. The desk is already up. You do not need a local Zetaris install to open a published county.
 
-## Requirements
+<Steps>
+  <Step title="Open the nationwide desk">
+    Go to [https://porchlight.earth/nationwide](https://porchlight.earth/nationwide).
 
-## Replay mode (no credentials)
+    Home is nationwide-first: one amber link, **Pick any US county**. The page title is `Porch Light | Pick any US county.`
+  </Step>
+  <Step title="Read the catalog line">
+    The fine print states the Census count, Zetaris catalog query `833`, sweep `20261023T200048Z-78a426ba`, and **2,490** counties with ranked facilities.
 
-## Live mode (local Zetaris and Nightshift)
+    Weather status on this host is `unavailable`. The message says live alert refresh stays on local origin. County discovery uses the published sweep catalog. Do not describe a captured alert on this host as a current warning.
+  </Step>
+  <Step title="Open Anchorage, then a passed draft, then Harris">
+    Use these URLs in this order so the video shows a failure and a pass.
 
-## Environment variables
+    1. [Anchorage Borough, Alaska, `02020`](https://porchlight.earth/nationwide?county=02020). 4 ranked, 2 refused, 6 source records. Rank 1 is Polaris Extended Care, CCN `025036`. The stored draft status is **failed**. The evidence drawer says no approved draft. Leave it failed.
+    2. [Doña Ana County, New Mexico, `35013`](https://porchlight.earth/nationwide?county=35013). 7 ranked, 4 refused, 11 source records. Rank 1 is USRC Las Cruces, CCN `322559`. The stored draft passed on `nvidia/nemotron-3.5-lightning-30b-a3b` with `actual_usd` 0. Open the evidence drawer and read the source clauses.
+    3. [Harris County, Texas, `48201`](https://porchlight.earth/nationwide?county=48201). 140 ranked, 96 refused, 236 source records. Rank 1 is DaVita North Houston Dialysis Center, CCN `452678`. The stored draft passed on `nvidia/nemotron-3.5-super-vl-120b-a12b` with `actual_usd` 0.
 
-## Run the app
+    The seven Zetaris query ids on each live response are listed on [Evidence trail](/evidence-trail). Anchorage starts at `9704`, Doña Ana at `3001`, Harris at `4343`.
+  </Step>
+  <Step title="Leave the contact control alone">
+    The dropdown starts at **Not contacted**. Record an outcome only for a call you actually made. Do not save **Reached** for the video. Porch Light does not place calls or send messages. The record stays in this browser.
+  </Step>
+  <Step title="Do not press Generate on the public host">
+    The button **Generate live Nemotron call script** is on the sheet. On `porchlight.earth`, `POST /api/national` returns HTTP 403 and this body:
+
+    ```json
+    {"error":"Same-origin local access is required for model operations."}
+    ```
+
+    That check was a refused POST on 2026-10-25 at 23:09 UTC. It did not start a model call. The draft you show is the one already stored on the row. A new script is a local-origin action. See [Meterless and Nemotron](/meterless-and-nemotron).
+  </Step>
+</Steps>
+
+## What to say
+
+Use [Limits](/limits) as the spoken boundary.
+
+- Every catalog county was source-audited through Zetaris at least once. The write-up is `engines/reports/national-sweep-2026-10-23.md`.
+- You can open the 2,490 published counties that have ranked facilities, today, on this host.
+- Stored drafts are on the ranked rows in this pack. 14,960 passed at actual cost 0. 480 failed and stayed failed. 89 ranked counties have only failed drafts. Empty counties were not given invented facilities or invented drafts.
+- The formula ranks. Nemotron writes the draft.
+
+## What to leave off camera
+
+- Do not open `/operate` as if it were the national product. That route, with no county query, is the Milton retrospective. If you show it, say so, then return to `/nationwide`.
+- Do not open FIPS `48395` and expect a sheet. The host returns: `No published audited snapshot is available for this county. No substitute data was returned.`
+- Do not claim an offline DGX run, H-MEM, World Model, or Markovian.
+- Do not say every county has an accepted draft.
+
+The narration sheet in the repo is `submission/demo-script.md`.

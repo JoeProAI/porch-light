@@ -1,5 +1,34 @@
 ---
-title: "EOC snapshot mode"
+title: "Snapshot mode"
+description: "The hosted county sheet is a frozen sweep snapshot you can read, export, and print."
+keywords: ["snapshot", "export", "print", "EOC"]
 ---
 
-Coming soon.
+The hosted county sheet is a snapshot, not a live joint operations picture. It was generated `2026-10-24T16:47:04Z` from sweep `20261023T200048Z-78a426ba`. Opening it does not refresh CMS, Census, SVI, emPOWER, or the weather feed.
+
+## What snapshot mode gives you
+
+- The ranked rows, refusals, and source gaps from that county's audited chain.
+- Score terms and Zetaris query ids.
+- A stored draft, or a retained failure, as of pack time.
+- CSV and print from the browser.
+- A contact status you save on this device.
+
+`publication.note` on each county file says: frozen audited county snapshot from the national source sweep. Live Zetaris and model POST remain local-origin only. Warning geometry coordinates were stripped from the published file (`publication.stripped` includes `warning_geometry_coordinates`).
+
+## What it does not give you
+
+- A shared roster across operators. Contact state is `localStorage` in this browser, keyed so a refresh on this device can restore it. Another person does not see your **Not contacted** edits.
+- A current NWS polygon for that county. Hosted weather status is unavailable. County discovery does not assert that every facility sits inside a warning.
+- Verified operating status, backup power, or a reached phone. The limits list on the snapshot says directory phones are not verified emergency contacts.
+- A new Nemotron call. Pressing **Generate live Nemotron call script** on the public host returns HTTP 403.
+
+## CSV
+
+The export header in `web/src/lib/operator.ts` includes rank, CCN, facility, type, phone, address, ZIP, score, contact status, recorded time, and the evidence fields the code serializes (including `model_explanation`). Contact columns are blank until you record a status. Do not type a sample **Reached** row into the file for the video.
+
+Print uses the same sheet. Source limits stay in the print view.
+
+## Empty counties
+
+A published county with zero ranked rows still opens. The sheet says there are no ranked facilities. Buttons that need rows stay disabled. That empty state is the honest EOC view for that FIPS. Do not paste Manatee rows into it.

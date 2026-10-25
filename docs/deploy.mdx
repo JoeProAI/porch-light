@@ -1,5 +1,23 @@
 ---
 title: "Deploy"
+description: "The desk is already hosted. These docs are not a second public site."
+keywords: ["deploy", "porchlight.earth", "mintlify"]
 ---
 
-Coming soon.
+The product URL is [https://porchlight.earth](https://porchlight.earth). Home and `/nationwide` were checked over HTTPS on 2026-10-25. This docs pass does not deploy, change DNS, or spend.
+
+## What is hosted
+
+The Next app, with `web/data/national/published/` installed, so `GET /api/national` returns the frozen catalog. `web/src/app/layout.tsx` sets `metadataBase` to `https://porchlight.earth`.
+
+Model POST, live alert refresh, and a fresh Zetaris run stay on loopback. See [Local run](/local-run) if you are on the operator machine. `Start-Local.ps1` binds the built app on port 3101 when that port is free. It does not install dependencies, start on boot, or delete retained captures.
+
+## What is not hosted
+
+These Mintlify pages have no public docs URL. Preview them with `npx mint dev` from `docs/`. Do not publish the Mintlify project from this branch.
+
+Do not add a second host, a preview URL, or a public bucket for raw national sources. Raw sweep checkpoints stay in the private filestore.
+
+## This change
+
+Docs and submission copy only. No web feature, no engine change, no merge required to read the desk that is already up. The video can be shot against production as it is.
