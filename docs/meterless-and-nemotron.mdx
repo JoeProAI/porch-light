@@ -1,32 +1,60 @@
 ---
 title: "Meterless and Nemotron"
+description: "Nemotron drafts go through Meterless on the free route. The formula still ranks. Local GPU is not in this submission."
+keywords: ["meterless", "nemotron", "nightshift", "scout intent"]
 ---
 
-Meterless is the only model path, and Nemotron is the only model family in the runtime path. Nemotron proposes joins and writes explanations. It never sets the order. A fixed formula does that (see [Ranking](/ranking)).
+Meterless is the model path. Nemotron is the model family. Rank stays in the formula on [Ranking](/ranking).
 
-## Provider contract
+## Route
 
-Every model step records:
+`engines/runtime_config.py` sets the base URL to `http://127.0.0.1:8088/v1` and the model route to `meterless/deep`. Thinking is disabled. The NVIDIA key stays in Nightshift Providers. The web app does not read it.
 
-- `model_id`, for example `nvidia/nemotron-3.5-super-vl-120b-a12b`
-- `mode`: `meterless/deep`, `meterless/fast` or `meterless/local`. Trace steps that use no model have `none`.
-- `provider`: `local`, `nim` or `none`
-- `trace_id`
+Receipts in the published county pack use that route. On the executions that report a model id, the ids are:
 
-## Reason
+- `nvidia/nemotron-3.5-lightning-30b-a3b`
+- `nvidia/nemotron-3.5-super-vl-120b-a12b`
 
-A `Reason` is Nemotron's explanation for one facility. It carries `text`, optional `rule_cites` (for example `42 CFR 494.62` with a plan section and page), `model_id`, `mode`, `provider` and `trace_id`.
+`execution_location` on those receipts is `nvidia_cloud`. That is hosted NVIDIA through Meterless. It is not a local GPU load and not an offline DGX Spark run. `paid_fallback_enabled` is false on every execution in the published pack. This pass found zero executions with a paid fallback flag set.
 
-## Trace
+## What the hosted pack contains
 
-`GET /runs/{id}/trace` returns a `TraceStep` for every step: `step`, `model_id`, `mode`, `provider`, `latency_ms`, `input_tokens`, `output_tokens`, `tokens_per_sec`, `trace_id`, `started_at` and `detail`.
+Counted from `web/data/national/published/counties/*.json.gz` on 2026-10-25. The same files are what porchlight.earth serves.
 
-## Health
+| | Count |
+| --- | --- |
+| Ranked rows with `model_explanation.status` `passed` | 14,960 |
+| Ranked rows with `failed` | 480 |
+| Counties whose ranked rows all passed | 2,383 |
+| Counties whose ranked rows all failed | 89 |
+| Counties with a mix of passed and failed | 18 |
+| Executions `grounding_passed` | 3,637 (3,085 reported Lightning, 552 reported Super VL) |
+| Executions `failed` | 461 (144 Lightning, 221 Super VL, 96 with no reported model id) |
 
-`GET /health` reports Meterless status (`up`, `down`, `unauthorized`, `offline` or `degraded`) along with the active provider and mode.
+`requested_model` on these executions is the route name `meterless/deep`. The model id, when the receipt has one, is `reported_model`. The 96 failed executions with no reported model id are still failures. They are not a third model family.
 
-## Scout Intent
+Doña Ana's seven drafts passed on Lightning. Harris's 140 passed across 15 executions (11 Lightning, 4 Super VL). Anchorage's four drafts failed. The retained reason on rank 1 is `Extra data: line 1 column 2 (char 1)`. A later local web re-run the same night, recorded in `docs/smoke-national-results.md`, accepted 4 of 4 Anchorage drafts. The hosted sheet is the sweep snapshot, so the recording shows the failures.
 
-Exports pass through Scout Intent, which checks the request and signs an execution contract. See [Evidence trail](/evidence-trail).
+An earlier private-directory reading at 9:51 AM ET on 2026-10-24 (`submission/README.md`) saw the sweep still writing: 1,282 of 1,545 batches, 12,418 accepted facility drafts, 3,020 unresolved. This docs pass did not re-read that private directory. The numbers in the table above are the published pack, which was generated later the same day. They are the sheets a judge opens. They are not a certificate that every future batch passed, and 480 rows remain failed.
 
-<Note>Latencies and token counts in `contract/fixtures/trace_mock.json` are mock values. They aren't measured.</Note>
+## One live call script
+
+Scout Intent gates `call_script` on the local machine. The executor checks a signed contract before the provider call. The retained example is `engines/reports/scout-intent-live-2026-10-23.json`:
+
+- Facility CCN `102853`
+- Contract `01M5NZW047TK9BE2HZQBQVB931`
+- Meterless receipt `rcpt_req_qsa07grv`
+- `actual_usd` 0
+- Reported model `nvidia/nemotron-3.5-lightning-30b-a3b`
+
+Batch explanation drafts in the county snapshots are not on this contract gate. The hosted site refuses model POST, so the recording does not press **Generate live Nemotron call script** on porchlight.earth.
+
+Scoped script checks in `engines/reports/national-script-verification-2026-10-23.md`: Baldwin, Providence, and a later Denver pair. Combined, 18 outcomes, 16 passed, 2 Providence failures retained, 20 provider attempts, actual script-request cost $0. Those checks are not the national pack.
+
+## Not in this submission
+
+H-MEM, World Model, and Markovian are not implemented here. Content Safety and Parse are not demonstrated. Local `meterless/local` is not demonstrated. The engines-branch offline probe is a preflight block with no generation. It is not a DGX result.
+
+`engines/openrouter_backup.py` can call Nemotron only when `OPENROUTER_API_KEY` is set and `PORCHLIGHT_OPENROUTER_BACKUP` is enabled. That module is not the runtime path. No OpenRouter spend is claimed. Leave the flags unset for the demo.
+
+The Milton sheet's own model status is `grounding_partial`: 15 passed drafts and 3 failed, Super VL, on formula `manatee-development-v1`. Rank 1 (DaVita Manatee Bay, CCN `682766`) is one of the failures. The first passed draft on that sheet is rank 4.

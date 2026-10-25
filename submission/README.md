@@ -1,6 +1,16 @@
 # Porch Light submission package
 
-Evidence cut: Saturday, October 24, 2026, 9:51 AM ET. This refresh replaces the earlier October 24 morning pack in pull request #41 and the October 23 pack in pull request #27.
+## Current cut, October 25, 2026
+
+The live desk is https://porchlight.earth (`noindex`). `GET /api/national` on that date matched `web/data/national/published/catalog.json`: 3,235 catalog rows, 2,490 with ranked rows, sweep `20261023T200048Z-78a426ba`, publication `2026-10-24T16:47:04Z`. The committed county gzip files hold 14,960 passed and 480 failed facility drafts. Robertson County `48395` is not in the pack (live county route returns 503). The source report's 2,491 ranked counties include a retry that was not published.
+
+`metadata.json` `demo_url` is that host. `demo_video` and `slide_deck` are empty. The remaining human step for the Monday, October 26, 2026, 6:00 PM ET target is the recording in [demo-script.md](demo-script.md). The judge-facing explanation is [written-submission.md](written-submission.md).
+
+The sections below this note are the October 24, 9:51 AM ET private-directory reading. That directory was not re-opened on October 25. Use them as the earlier sweep snapshot, not as the counts on the live desk.
+
+## October 24 private-directory reading
+
+Evidence cut: Saturday, October 24, 2026, 9:51 AM ET. This refresh replaced the earlier October 24 morning pack in pull request #41 and the October 23 pack in pull request #27.
 
 Two earlier figures are withdrawn. The #27 pack quoted a reconciliation baseline (1,290 accepted drafts, 340 exhausted failures, 1,380 pause batches). The #41 pack said about 3,153 of 3,235 unique FIPS had source runs and that Connecticut and U.S. territories were skipped. Neither statement matches the private sweep directory. This pass counted that directory. See "County coverage, reconciled" below.
 
@@ -16,7 +26,7 @@ Three claims are allowed. Every other wording in this package stays inside them.
 
 1. Every US county in the Census catalog has been source-audited through Zetaris at least once. That is the source phase only.
 2. Grounded Nemotron drafts are in progress on free NVIDIA routes through Meterless. Known actual spend is $0. The draft phase is not finished and not every county has drafts.
-3. An operator can open any catalog county today and get ranked facilities when local Zetaris is reachable and the county has rankable CMS rows.
+3. You can open any catalog county on https://porchlight.earth today. Counties in the published pack with rankable CMS rows open that ranked sheet (2,490 counties). Counties with no rankable rows open as a sourced gap. Robertson `48395` has no snapshot file. A new audit still needs local Zetaris. The October 24 line that required local Zetaris for every open is the pre-host path.
 
 Never claimed: an offline or local DGX Spark run, H-MEM, World Model, Markovian, finished drafts for all counties, clinical validation, exclusivity, or a competition result.
 
@@ -97,7 +107,7 @@ The [October 23 source report](../engines/reports/national-sweep-2026-10-23.md) 
 | Known model cost | `known_actual_usd` 0 is the known actual figure in that snapshot across both reported Nemotron ids. It is not a final cost certificate for a finished sweep. |
 | Retained script failures | The two scoped Providence failures remain failed. Invalid responses were not repaired into successes. |
 | Operator and clinical evidence | No measured operator time saving, clinical validation, verified facility operating conditions, or confirmed phone reachability is established. Directory contacts are not verified emergency contacts. |
-| Release and packaging | No public deployment or continuous hosting is established. Shared operator coordination is unfinished. The video, rendered deck, and final external submission are still to be produced. This docs pass did not re-run the production build. The #27 packaging note recorded a generated Next.js route-type failure and that note is not cleared here. |
+| Release and packaging | As of the October 24 reading, this row said no public deployment was established. On October 25 the desk at https://porchlight.earth was serving the published pack, `noindex`. Shared operator coordination is unfinished. The video and rendered deck are still empty. The #27 packaging note recorded a generated Next.js route-type failure and that note is not cleared here. |
 
 ## Evidence ledger
 

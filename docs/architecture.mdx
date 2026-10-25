@@ -1,25 +1,43 @@
 ---
 title: "Architecture"
+description: "How a county becomes a call sheet: published Zetaris snapshots on the host, Meterless drafts, and a fixed rank."
+keywords: ["architecture", "zetaris", "meterless", "api"]
 ---
 
-Porch Light takes a weather alert in, builds the warning area, ranks the facilities inside it with a fixed formula, and returns a call sheet where every row carries its evidence trail. Zetaris is the only data path. Meterless is the only model path. Nemotron explains, and the formula ranks.
+Porch Light takes public facility records and county geography, ranks the rows that pass the source screen, and shows you the evidence and the gaps. Zetaris is the data path for that audit. Meterless is the model path. Nemotron writes drafts. The formula writes the order.
 
-## Request lifecycle
+## What you use on the live desk
 
-1. **Pick an alert.** `GET /alerts/archived` lists alerts replayed from committed captures. `GET /alerts/active` lists live alerts and returns an empty list offline.
-2. **Start a run.** `POST /runs` takes exactly one of `alert_id` or a full `alert`. The run moves through these statuses: `queued`, `building_area`, `finding_facilities`, `measuring_joins`, `scoring`, `writing_reasons`, `ready`, `exporting`, `done`, or `failed`. Every step lands in the audit log.
-3. **Read the call sheet.** `GET /runs/{id}/facilities` returns ranked facilities, each with its score breakdown and evidence.
-4. **Inspect the seams.** `GET /runs/{id}/joins` returns join proposals with measured match rates, plus failed joins.
-5. **Inspect the trace.** `GET /runs/{id}/trace` returns every step with its model id, provider, Meterless mode, latency and tokens.
-6. **Record check-ins.** `POST /runs/{id}/checkins` marks a facility `called`, `answered` or `no_answer`. `GET /runs/{id}/checkins` returns the history.
-7. **Export.** `POST /runs/{id}/export` is checked and signed by Scout Intent and returns an export receipt. Artifacts download from `GET /runs/{id}/exports/{export_id}/artifacts/{format}`.
+The hosted site is a Next.js app. County reads do not open a new database session in your browser.
 
-`GET /health` reports Zetaris, Meterless, network and snapshot status.
+1. Home (`/`) explains the desk and links to `/nationwide`.
+2. `GET /api/national` returns the published Census catalog: 3,235 counties, Zetaris query id `833`, sweep `20261023T200048Z-78a426ba`.
+3. `GET /api/national?county=` plus a five-digit FIPS returns that county's frozen snapshot with `phase: completed`, or a 503 when no snapshot file exists.
+4. The page renders the ranked facilities, refusals, score terms, query ids, and whatever draft status was stored when the pack was published.
+5. Contact status is written to `localStorage` on your device. CSV and print stay in the browser.
 
-## Warning area
+`POST /api/national` is refused unless the request is same-origin on loopback. Live alert refresh, a new county job, and **Generate live Nemotron call script** stay on `127.0.0.1`. The hosted weather block says live alert refresh stays on local origin.
 
-A `WarningArea` records how it was built (`built_from`): `zone_shapes`, `storm_polygon`, `admin_boundary` or `gdacs_buffer`. Zone-based alerts, such as hurricane warnings, build from zone shapes.
+Published warning-polygon coordinates are stripped (`publication.stripped` includes `warning_geometry_coordinates`). Facility latitude and longitude from the Census geography remain on the row. The county picker is a catalog map, not a live radar product. Storm Watch (`/watch`) is a separate weather surface.
 
-## Country adapters
+## What happened before the snapshot
 
-The contract has no US-specific logic. Country-specific work sits behind the adapter interface in `contract/adapter.md`. See [Country adapters](/country-adapters).
+On the operator machine, `engines/national_run.py` runs audited SQL through the Zetaris JDBC client against `porchlight_postgis`. The relations are separate projections. They share one read-only PostGIS datasource. Each closed statement keeps a Zetaris audit id from `sql_audit_log`.
+
+A row is ranked only when the source screen passes: CMS name, exact Census address match, point covered by official county geometry, a usable directory phone, a CMS star rating, tract SVI, and a single unmasked emPOWER ZIP context. Anything else is a refusal with a reason code. Missing values are not filled in.
+
+`engines/national_jobs.py` can request grounded drafts after the rank exists. A failed draft stays on the row. The rank does not wait on the draft and does not change when the draft fails.
+
+The pack you see on the host was built by `engines/publish_national_static.py` from sweep `20261023T200048Z-78a426ba` and written under `web/data/national/published/`. Catalog `publication.generated_at` is `2026-10-24T16:47:04Z`.
+
+## Two formulas, two Manatee sheets
+
+National counties, including hosted Manatee `12081`, use `national-source-screen-v1`. That screen omits county plans.
+
+`/operate` with no county query loads `web/data/manatee-ranked.json`: Hurricane Milton, formula `manatee-development-v1`, 18 ranked rows and 2 refusals. `/operate?county=` redirects to `/nationwide?county=` and does not silently load Milton.
+
+## Contract API versus the desk
+
+`contract/openapi.yaml` (OpenAPI 3.1, version 0.1.0) is the shared type contract: alerts, runs, facilities, joins, trace, check-ins, export. Its fixtures under `contract/fixtures/` are mock and are labeled that way. The hosted desk does not serve those routes. The route you call is `/api/national`.
+
+Scout Intent (`engines/scout_intent.py`) signs the live call-script path on the local machine before a provider call. Batch explanation drafts in the national snapshots are not on that gate. H-MEM, World Model, and Markovian are not in this product.

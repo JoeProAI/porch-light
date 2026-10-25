@@ -1,6 +1,10 @@
 # Submission documentation verification
 
-This file records checks for the October 24, 2026, 9:51 AM ET refresh of the submission materials. Product results stay in the linked reports. This pass did not create new county runs, model drafts, receipts, or spend. It read the private sweep directory and counted files; it did not modify that directory.
+The October 24, 2026, 9:51 AM ET checks below still describe that private-directory reading. They were not re-run against the private filestore on October 25.
+
+October 25 addition: `GET https://porchlight.earth/api/national` matched `web/data/national/published/catalog.json` (3,235 rows, 2,490 `complete_with_ranked_rows`, 391 `complete_no_rankable_rows`, 353 `complete_no_matching_source_rows`, 1 `runtime_error`). Live county reads for `02020`, `35013`, `48201`, and `12081` matched the committed gzip counts. `48395` returned 503 with no substitute sheet. Draft totals 14,960 passed and 480 failed were counted from the committed gzip files, not from a new model run. Catalog rows with FIPS prefixes `09`, `60`, `66`, `69`, `72`, and `78` sum to 100. The October 24 note of 200 checkpoints with those prefixes was not reproduced from the published catalog.
+
+This pass did not create new county runs, model drafts, receipts, or spend.
 
 ## What changed
 

@@ -15,8 +15,8 @@ Primary sources (not memory):
 
 ## Correct NVIDIA model ids (setup guide)
 
-- Fast lane: `nvidia/nemotron-3.5-lightning-30b-a3b` (evidenced: reported model in `engines/reports/scout-intent-live-2026-10-23.json` and in 1,110 of 1,386 sweep executions counted on 2026-10-24 at 9:51 AM ET)
-- Deep lane: `nvidia/nemotron-3.5-super-vl-120b-a12b` (evidenced: stored Manatee drafts in `engines/snapshots/manatee-zetaris.json` and 250 sweep executions)
+- Fast lane: `nvidia/nemotron-3.5-lightning-30b-a3b` (evidenced: Scout Intent receipt `engines/reports/scout-intent-live-2026-10-23.json`, and 3,085 passed plus 144 failed executions in the published county pack counted 2026-10-25)
+- Deep lane: `nvidia/nemotron-3.5-super-vl-120b-a12b` (evidenced: stored Milton drafts in `engines/snapshots/manatee-zetaris.json`, and 552 passed plus 221 failed executions in that same pack)
 - Do not use deprecated free endpoints flagged after 2026-10-19 for older Super/Nano free APIs.
 
 ## Scoring and stackable prizes (official page)
@@ -31,7 +31,7 @@ Primary sources (not memory):
 1. **Scout Intent scope:** live on `national_jobs --call-script` only. Batch explanation drafts are not contract-gated. Scoring is Stage 1 lexical only; the local embedding stage is not installed. The signing key is a per-machine integrity secret. See `engines/README.md` (Scout Intent gate).
 2. **Cursor evidence:** merged PRs #22 and #24 are the product evidence. This repository does not contain a Cursor usage export, token count, or spend total.
 3. **Local Nemotron:** hosted Lightning and Super VL receipts through Meterless are not a local GPU run, and they are not a measured tokens/sec DGX Spark demo. The offline Nightshift probe on the engines branch ended at `blocked_preflight` with no generation. Parse and Content Safety are not demonstrated.
-4. **National model phase:** every catalog county is source-audited (3,235 of 3,235, including the separate Robertson County, Texas retry). That is not finished draft coverage. Drafts are in progress on free Nemotron routes; see `submission/README.md` for the dated snapshot. Do not treat the stored Manatee receipt as a national rollup, and do not say all counties are drafted.
+4. **National model phase:** every catalog county is source-audited (3,235 of 3,235, including the separate Robertson County, Texas retry). The hosted pack a judge opens has 2,490 ranked counties, 14,960 passed drafts, and 480 failed drafts (counted 2026-10-25 from `web/data/national/published/`). The Robertson retry is not in that pack. Do not say all counties are drafted, and do not treat the Milton receipt as the national rollup.
 5. **Other Meterless engines:** H-MEM, World Model, and Markovian are not implemented and are not claimed anywhere in this repository.
 
 ## Local env template

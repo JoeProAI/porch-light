@@ -207,32 +207,32 @@ blocked: continuous hosting, shared multi-operator coordination, verified facili
 last update: Sat Oct 24 2026. Home hero no longer sells Manatee or Hurricane Milton as a co-equal action. /operate is unchanged. Earlier the same day: origin/main had been merged into devin/web-manatee with contract PR #14, data scaffold PR #1, front matter PR #12, docs stubs PR #13, Wringer notes PR #15, and Manatee intake PR #17. Nationwide pack, Storm Watch, operator workspace, and claim lock stay. Fri Oct 23 2026: typecheck and production build pass. All 54 desktop/mobile Playwright checks pass with no skipped weather checks. Twelve engine checks pass, including real Zetaris and national chains and radar boundary regressions. Tablet routes at 768px have no overflow; Storm Watch and nationwide show no console or failed-request errors.
 
 ## Area: Docs
-owner now: Hackathon Desk docs seat (primary Hackathon Desk docs seat, backup Claude Code). Devin did the bounded private documentation pass.
-state: Mintlify skeleton from PR #13 is on this branch: docs.json groups, product and data stubs, and the OpenAPI reference group. This branch also has operator pages for local run, the Manatee walkthrough, nationwide, limits, and a sponsors page with current sponsor evidence. Twelve MDX pages in the isolated porch-light-docs worktree, private commits 6ec5c7b and 207c49b, record a judge-first walkthrough, sponsor-evidence matrix, and map-mode contract. Static source and route checks passed for that pass. No rendered Mintlify build or publication was performed.
-next step: api-reference and the contract pages (architecture, zetaris-federation, meterless-and-nemotron, ranking, evidence-trail) were built against contract/initial (PR #14), which is now on main and on this branch. Mintlify resolves the openapi path inside docs/, so either copy or sync contract/openapi.yaml to docs/contract/openapi.yaml or set the docs root to the repo root. Fill remaining stubs from product truth. Ranking weights are in data/scoring/weights.yaml. Leave eval numbers until measured results exist. Run a real Mintlify build when tooling is approved. Do not publish until Joe says yes.
-branch: docs stubs from PR #13 are on devin/web-manatee via this merge. The private pass sat on desk/docs-private-progress, based on origin/desk/docs-stubs at 49bd63c. No new docs PR was opened from that pass.
-how to run: cd docs && npx mint dev (check: npx mint broken-links). The private worktree source was at D:\Projects\AI_Projects\porch-light-docs\docs. Eighty-three source and Git checks and seven actual SQL checks were documented there, not as a running API.
-blocked: the API reference pages render only once the spec is reachable at docs/contract/openapi.yaml (see next step). Mintlify CLI was not installed for the private pass. Publication requires Joe's approval. No public docs site, Mintlify connection, deployment, or public preview.
-last update: Thu Oct 22 2026 10:16 AM ET for the private pass. Stub skeleton on main: Wed Oct 21 2026 8:55 PM ET. The same private-pass notes remain under Integration and review.
+owner now: Hackathon Desk docs seat (primary Hackathon Desk docs seat, backup Claude Code)
+state: docs/*.mdx are filled from the live nationwide desk and the committed published pack. Coming-soon stubs are gone. Pages match claim lock: 3,235 source-audited, hosted pack 2,490 ranked counties, drafts in progress (14,960 passed and 480 failed in the pack), Milton is a coda. No public docs URL. noindex was not changed. The API group is one introduction page. Mintlify cannot see contract/openapi.yaml from docs/ (parent paths are stripped), so the spec is not duplicated into docs/. The intro says the hosted route is GET /api/national and the spec is the contract, not a second server.
+next step: Joe reviews the docs PR. Do not publish Mintlify. Do not point the Hermesco Mintlify connection at this repo. A local `npx mint dev` from docs/ is the preview. Recording is the remaining human step, owned by the deck seat.
+branch: cursor/docs-submission-front-matter-8dc8 off main. Earlier stub skeleton remains history from PR #13.
+how to run: cd docs && npx mint dev. npx mint validate passed on this pass. Nothing was published. Live checks: GET https://porchlight.earth/api/national and county=02020, 35013, 48201, 12081, 48395.
+blocked: publication still needs Joe's yes. There is no Porch Light Mintlify deployment.
+last update: Sun Oct 25 2026, after the live catalog check the same date.
 
 ## Area: Front matter and ops
 owner now: Hackathon Desk  (primary Hackathon Desk, backup Devin)
-state: in progress
-next step: (1) verify metadata.json field names against the HackOS submission form (behind Joe's login); current keys follow the community draft schema, not an official format. (2) Nemotron 3.5 Embed 1B stays off metadata.json until a NIM id is confirmed and the lane is demonstrated. (3) Fill remaining where paths in DECLARED_PREEXISTING.md as the build lands. (4) demo_url stays an empty string until a demo is hosted.
-branch: desk/frontmatter-fixes   open PRs: see PR "Front matter: add built_window/demo_url, Zetaris declaration, handoff update"
-how to run: metadata.json validates against metadata.schema.json (demo_url and built_window added to the schema)
-note: the contract was written by Devin (PR #14), not Cursor. metadata.json sponsors.cursor status is used: merged PRs #22 and #24, Storm Watch, national web wiring, and .cursor/rules/. The models list is empty because no usage CSV, token count, or spend is in the repo. demo_url is an empty string. Local GGUF, Content Safety, and Parse ids are not listed because they are not demonstrated. .cursor/rules/ lands with PR #14.
-blocked: HackOS field names need Joe's login (screenshot of the submission form or Setup Guide)
-last update: Wed Oct 21 2026 8:35 PM ET
+state: README, metadata.json, DECLARED_PREEXISTING.md, and SPONSOR-SETUP.md match the nationwide-first desk and the October 25 live catalog check. metadata.json demo_url is https://porchlight.earth. demo_video and slide_deck stay empty. Sponsor engines list is Scout Intent only. OpenRouter is described as an optional unset module, not the runtime path. AGPL-3.0-only, NOTICE, and the private-repo line stay. noindex was not edited.
+next step: Joe records the video and, after the file exists, puts that URL in metadata.json demo_video. HackOS form field names still need Joe's login if the community schema differs from the form. Do not add Embed, Parse, Content Safety, or local GGUF ids.
+branch: cursor/docs-submission-front-matter-8dc8 off main.
+how to run: metadata.json validates against metadata.schema.json.
+note: the contract was written by Devin (PR #14), not Cursor. Cursor evidence remains merged PRs #22 and #24, with no token count or spend. Home nationwide-first is PR #47. Local GGUF, Content Safety, and Parse ids stay off metadata.json.
+blocked: video file and slide deck do not exist yet. HackOS field names still need Joe's login.
+last update: Sun Oct 25 2026, after the live catalog check the same date.
 
 ## Area: Deck, script, explanation
 owner now: Hackathon Desk  (primary Hackathon Desk, backup Claude Code)
-state: not started
-next step: see your CREW brief
-branch: desk/ops-*   open PRs: none
-how to run: n/a
-blocked: none
-last update: Wed Oct 21 2026 8:20 PM ET
+state: submission/written-submission.md and submission/demo-script.md match the hosted desk. Demo path is /nationwide then county 02020 (failed drafts kept), 35013 (passed Lightning drafts), 48201 (scale), optional /operate under about 20 seconds. submission/README.md leads with the October 25 pack counts and keeps the 9:51 AM ET private-directory reading labeled as earlier. Video and slide deck files are not in the repo.
+next step: a person records the script on the live desk and drops the file. Do not press Generate live Nemotron call script on the host. Do not mark a contact Reached. If a count on screen differs from the script, say the count on screen.
+branch: cursor/docs-submission-front-matter-8dc8 off main.
+how to run: follow submission/demo-script.md against https://porchlight.earth.
+blocked: the recording itself. No offline DGX, H-MEM, World Model, Markovian, or all-counties-drafted line belongs in the take.
+last update: Sun Oct 25 2026, after the live catalog check the same date.
 
 ## Area: Integration and review
 owner now: Devin, takeover approved by Joe

@@ -1,43 +1,50 @@
 ---
 title: "Evidence trail"
+description: "Query ids, source files, refusals, and draft status on every ranked row."
+keywords: ["evidence", "zetaris", "query id", "draft"]
 ---
 
-Every row on the call sheet shows where its numbers came from.
+Every ranked row carries the audit that produced it. You should be able to see the source, the join, the score, and whether a draft passed.
 
-## The Evidence record
+## On a national row
 
-Each ranked facility has an `Evidence` record with:
+`engines/national_run.py` stores this on `evidence`:
 
-- `zetaris_query_ids`: the Zetaris queries behind the row
-- `sources`: dataset name, id, URL and license
-- `data_as_of`: per-source fetch time, snapshot id, and a `stale` flag. It's set when the source is down and the row comes from the snapshot
-- `join_path`: each `JoinHop` with its match rate, which Zetaris SQL measures and is never an LLM confidence
-- `score`: the full score breakdown
-- `dq_results`: data quality rules and whether each passed
-- `failed_joins`
-- `facts`
-- `reason`: Nemotron's explanation, with its `trace_id`
-- `ledger_ids`: TrustLedger entries that link each claim in the reason to fact ids
+- `zetaris_query_ids`: the closed statements for that county chain. Anchorage's four ranked rows share `9704`, `9709`, `9717`, `9724`, `9729`, `9731`, `9736`.
+- `sources`: CMS file, 2022 tract SVI, HHS emPOWER ZIP aggregate, Census address geography. Each has a URL and a license line from the capture provenance.
+- `data_as_of`: fetch time and snapshot id. The SVI entry is marked stale because 2022 tract context is historical.
+- `facts`: facility type, CMS stars, directory phone, SVI, emPOWER DME count, Medicare beneficiary count, and the county ZIP percentile, each with a query id.
+- `join_path`: three hops with a measured match rate from the statement's candidate and matched counts. Methods used here are `postgis_point_in_polygon` (CCN point to county), `exact_key` (tract GEOID to SVI), and `zip_to_empower`.
+- `score`: the same breakdown as [Ranking](/ranking).
+- `dq_results`: exact Census match, county geometry cover, and unique unmasked ZIP context pass when the row is ranked. Three rules stay failed on every ranked row: `current_operating_status_verified`, `emergency_contact_verified`, and `county_plan_context_used`.
+- `model_explanation`: `passed` or `failed`, plus attempts. A failed attempt keeps its reason. Nothing writes a substitute paragraph over it.
 
-## Export receipt
+`computed_reason` is a source sentence from the same inputs. It is not a model draft. Both can appear on one row. The rank does not depend on either sentence.
 
-`POST /runs/{id}/export` returns an `ExportReceipt` with:
+`operator_geocode_review_required` is true. Directory phones are CMS source phones.
 
-- `export_id`, `run_id` and `created_at`
-- `artifacts`: one per requested format (`csv`, `print_sheet` or `call_script`), each with a SHA-256 hash and a download `href`
-- `csv_sha256` when CSV was exported
-- `zetaris_query_ids`, `snapshot_id` and `model_trace_ids`
-- `contract`, the Scout Intent execution contract: action, request hash, inputs hash, evidence ids, trace ids, signature and disclaimers
-- `contract_signature`
-- `held`: outputs Scout Intent held back
+## Refusals
 
-If Scout Intent refuses an export, the API returns `403` with `export_refused`. The agent drafts, and a human decides.
+Refused CMS rows sit beside the ranked list with a reason code and the same query ids. They are not dropped and they are not given a guessed coordinate or a zero score.
 
-## Two layers
+Common codes in the source report (`engines/reports/national-sweep-2026-10-23.md`), first pass, most frequent first: `census_address_match_not_exact` (3,579), `census_address_not_matched` (1,968), `missing_valid_cms_rating` (408), `missing_zip_context` (383). Harris County's published sheet shows the same pattern at county scale: 55 non-exact geocodes, 26 unmatched addresses, 10 missing CMS ratings, 5 missing ZIP contexts, 96 refusals in total.
 
-The adapter interface keeps two layers apart:
+A county snapshot with zero facilities still has a data-access block. Loving County, Texas is the example in the local smoke note: no matching CMS rows, and that is not proof the county has no care facilities. The hosted catalog marks 353 counties `complete_no_matching_source_rows` and 391 `complete_no_rankable_rows`.
 
-1. **Build time:** adapters download raw files into `data/snapshot/raw/`, write `.provenance.json` sidecars and load them into the PostGIS snapshot.
-2. **Runtime:** the app reads only through Zetaris SQL.
+## Drafts
 
-<Note>The receipt in `contract/fixtures/export_receipt_mock.json` uses a mock signature and mock hashes.</Note>
+Passed drafts in this product are selections of source clauses and approved verification questions, checked against the row's facts. The Doña Ana rank-1 text begins with the CMS star rating, the tract SVI percentile, and the published ZIP DME and Medicare counts, and it says the ZIP figures are aggregates.
+
+Failed drafts stay failed. Anchorage rank 1 records `Extra data: line 1 column 2 (char 1)`. The published pack has 480 failed facility explanations and 14,960 passed ones.
+
+Batch explanation drafts are not gated by Scout Intent. The call-script gate is separate and local. One retained live script is CCN `102853` in `engines/reports/scout-intent-live-2026-10-23.json`: Meterless receipt `rcpt_req_qsa07grv`, `actual_usd` 0, contract `01M5NZW047TK9BE2HZQBQVB931`, model `nvidia/nemotron-3.5-lightning-30b-a3b`. That file is one facility. It is not a national script rate.
+
+## What you record
+
+Contact status defaults to **Not contacted**. **Reached**, **No answer**, and **Follow-up needed** are written only when you choose them. The key is `porch-light:contacts:v1:` plus the snapshot hash and, for a national sheet, the FIPS or alert id. The record stays in browser storage.
+
+CSV and print include the rows you are looking at. When a local run selected an NWS alert, the CSV carries that alert's URL, capture time, and expiry. Those cells are empty when no alert was selected. The hosted county demos are county discovery, so they have no selected alert.
+
+## Contract fixtures
+
+`contract/fixtures/export_receipt_mock.json` and the other files in that folder are mock. They validate the OpenAPI schemas. They are not the Anchorage, Doña Ana, or Harris receipts. The hosted evidence is the published county JSON and the Zetaris ids inside it.

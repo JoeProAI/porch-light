@@ -1,41 +1,42 @@
 ---
 title: "Sponsors"
-description: "Zetaris, Meterless, Nemotron, Cursor, and Devin: purpose, proof, and honest gaps."
-keywords: ["zetaris", "meterless", "nemotron", "cursor", "devin", "sponsors"]
+description: "Zetaris, Meterless, Nemotron, and Cursor: what a judge can see, and what this submission leaves out."
+keywords: ["zetaris", "meterless", "nemotron", "cursor"]
 ---
 
-Porch Light acknowledges event and build partners. Acknowledgment is not a claim that every integration is complete. Status below tracks repo `metadata.json` and `SPONSOR-SETUP.md` as of 2026-10-24.
+Sponsor credit follows work a judge can inspect. The event rubric includes a sponsor-tech portion. This page is the evidence map, not a prize claim. The in-kind NVIDIA item on the event page is a DGX Spark. This submission does not include an offline or local DGX run.
 
-<Frame>
-  <img src="/images/og-card.jpg" alt="Porch Light Open Graph card: night land and wordmark" />
-</Frame>
+Checked against `metadata.json`, `SPONSOR-SETUP.md`, and the live desk on 2026-10-25.
 
-## Score weights (official)
+## What is working
 
-Rubric /100 includes **Sponsor tech 10**. Track 01 cash prizes are separate. In-kind: Best use of NVIDIA Nemotron → DGX Spark Founder's Edition. The runtime model path is Meterless Nightshift plus NVIDIA Nemotron. Scout Intent is live on the call-script path. Local GPU Nemotron is not verified.
+| Partner | What you can see | Where |
+| --- | --- | --- |
+| **Zetaris** | Catalog query `833` and per-county audit ids on the hosted sheets. Statements joined CMS, Census, SVI, and emPOWER. | `engines/zetaris_client.py`, `engines/national_run.py`, `web/data/national/published/` |
+| **Meterless** | Drafts on the free `meterless/deep` route. Scout Intent signs the local call-script path and the executor checks the contract before the provider call. | `engines/runtime_config.py`, `engines/grounded_drafts.py`, `engines/scout_intent.py` |
+| **NVIDIA Nemotron** | Reported ids `nvidia/nemotron-3.5-lightning-30b-a3b` and `nvidia/nemotron-3.5-super-vl-120b-a12b`. The formula still ranks. | Published county `model_executions`, `engines/reports/scout-intent-live-2026-10-23.json` |
+| **Cursor** | Merged product work: [PR #22](https://github.com/JoeProAI/porch-light/pull/22) (Storm Watch and the shared night desk) and [PR #24](https://github.com/JoeProAI/porch-light/pull/24) (national web). `.cursor/rules/` holds the house rules. | `ops/build-log/cursor/README.md` |
 
-## Contribution matrix
+Devin wrote the contract ([PR #14](https://github.com/JoeProAI/porch-light/pull/14)), the data adapters, the engines, and most of the web app, including the Milton sheet. Devin is not a scoring sponsor. Joe Gaither directed the project.
 
-| Partner | Required purpose in Porch Light | Verified state | Still needed |
-| --- | --- | --- | --- |
-| **Zetaris** | Only runtime data path: JDBC/SQL joins, measured match counts, audit-friendly exports | Working: audited statements over CMS/Census/SVI/emPOWER relations via local Docker + PostGIS datasource | Full USL across multiple live physical systems (not claimed) |
-| **Meterless** | Only runtime model path (Nightshift); an engine has to power a real feature for BUILD | Working: `meterless/deep` Super VL receipts, and Scout Intent on the live call-script path (`engines/scout_intent.py`) | H-MEM, World Model, and Markovian are not claimed. Batch explanation drafts are not contract-gated. |
-| **NVIDIA Nemotron** | Grounded explanations through Meterless; the formula still ranks | Both free ids via `meterless/deep`: `nvidia/nemotron-3.5-lightning-30b-a3b` (Scout Intent live receipt, most sweep executions) and `nvidia/nemotron-3.5-super-vl-120b-a12b` (stored Manatee drafts). National drafts are in progress, not complete for every county | Local GPU lane, offline DGX Spark, Parse, Content Safety, and a measured local eval are not verified |
-| **Cursor** | Development surface; cloud-agent product work | Used: merged [PR #22](https://github.com/JoeProAI/porch-light/pull/22) and [PR #24](https://github.com/JoeProAI/porch-light/pull/24). `metadata.json` status is `used` | No usage export, token count, or spend total is in this repository |
-| **Devin** | Heavy data/engines/web implementation during the build window | Primary author of large integration branches (`devin/web-manatee`, data, engines) | Not a GenAI.Works scoring sponsor. Credit honestly in How-built, do not relabel as Cursor |
+## Zetaris, in practice
 
-## Zetaris
+Local Docker from the licensed bundle. JDBC port `10000`. The datasource name is `porchlight_postgis`. One physical PostGIS database holds the projections. The hosted desk serves the frozen audit. It does not open JDBC from the browser. A multi-system Unified Semantic Layer is not claimed.
 
-Local Docker from the licensed bundle. UI `localhost:3000`, JDBC port `10000`, REST `8888`. Never the paid managed AWS cluster for this hackathon. Spatial predicates may stay in PostGIS; Zetaris still owns the measured join statements the UI cites.
+## Meterless and Nemotron, in practice
 
-## Meterless and Nemotron
+Nightshift on the operator machine at `http://127.0.0.1:8088/v1`. Hosted county sheets show drafts that already ran: 14,960 passed and 480 failed in the published pack. `execution_location` is `nvidia_cloud`. `paid_fallback_enabled` is false across that pack.
 
-Nightshift at `http://127.0.0.1:8088/v1`. Put the NVIDIA key in Nightshift Providers only. Fast and deep model ids must match the Participant Setup Guide (3.5 Lightning / Super VL). A route preview is not proof of generation. A missing local lane must fail visibly. No silent cloud substitution in the demo story.
+Scout Intent is the engine this build uses. The retained $0 script is one facility, CCN `102853`, receipt `rcpt_req_qsa07grv`. Batch explanation drafts are not contract-gated.
 
-## Cursor and Devin
+H-MEM, World Model, and Markovian are not in the product. Local GPU, offline DGX, Content Safety, and Parse are not demonstrated.
 
-Cursor is required by event rules for development and has stackable credit value. Devin has done substantial private-repo implementation. Keep attribution straight: Cursor cloud PRs and rules count for Cursor; Devin sessions count as Devin. Do not claim one for the other's commits.
+`engines/openrouter_backup.py` is an optional module. It stays off unless `OPENROUTER_API_KEY` and `PORCHLIGHT_OPENROUTER_BACKUP` are set. It is not a scoring sponsor and no spend is claimed.
 
-## Open data (not event sponsors)
+## Cursor, in practice
 
-NWS, IEM, CMS, U.S. Census Bureau, CDC/ATSDR SVI, HHS emPOWER, and local plan PDFs keep their own attribution in NOTICE / provenance sidecars.
+Status in `metadata.json` is `used`. The evidence is the merged pull requests above and the rules in `.cursor/rules/`. This repository has no Cursor token count and no spend total. Do not invent one.
+
+## Open data, not sponsors
+
+NWS, IEM, CMS, the U.S. Census Bureau, CDC/ATSDR, and HHS emPOWER are sources. Their attribution stays on the provenance sidecars and in `NOTICE`. They are not event sponsors and not partner integrations.

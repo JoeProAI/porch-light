@@ -1,77 +1,85 @@
 ---
 title: "Porch Light"
-description: "Who to call first when a storm warning drops: honest local docs for the night desk."
+description: "Nationwide call sheet for dialysis centers and nursing homes. Open any Census county, read the ranked rows, and keep the gaps visible."
 keywords: ["porch light", "call sheet", "NWS", "Zetaris", "Meterless", "Nemotron"]
 ---
 
-emPOWER tells you how many. Porch Light tells you who to call first, and why.
+Porch Light is the call sheet you open when a county needs an order of outreach for dialysis centers and nursing homes. The live desk is [porchlight.earth](https://porchlight.earth). Home leads with **Pick any US county**. Hurricane Milton stays on a footer link.
 
 <Frame>
-  <img src="/images/hero-key-art.webp" alt="Night storm over land with one amber porch light on" />
+  <img src="/images/hero-key-art.webp" alt="Night storm over land with one amber porch light on. Project key art, not a satellite image and not a live warning." />
 </Frame>
 
-Porch Light is a county emergency operator's **call-first** workflow. Pick a real warning area, get a ranked facility list with phones and reasons, inspect the evidence, mark contact status yourself, and export. No call or message is sent automatically. The priority formula is a transparent prototype heuristic, not a clinically validated order.
+You pick a county. You get that county's ranked facilities, directory phones, score terms, refusals, and a Nemotron draft where the published snapshot has one. You record a contact outcome on your own device if you actually made a call. The app does not place calls or send messages.
 
-## Two doors
+The ranking formula is a published prototype. It is not a clinical order. Current facility conditions are not verified.
 
-| Door | What it is | What it is not |
+## Record this path
+
+Use the hosted desk. These three counties were read from `GET /api/national?county=` on 2026-10-25 and match the committed pack `web/data/national/published/`.
+
+| Open | What the published snapshot shows |
+| --- | --- |
+| [/nationwide?county=02020](https://porchlight.earth/nationwide?county=02020) | Anchorage, AK. 6 CMS rows, 4 ranked, 2 refused (`census_address_match_not_exact`). Rank 1 is Polaris Extended Care (CCN `025036`). All 4 drafts in this snapshot failed and stay failed. |
+| [/nationwide?county=35013](https://porchlight.earth/nationwide?county=35013) | Doña Ana, NM. 11 CMS rows, 7 ranked, 4 refused (same geocode reason). Rank 1 is USRC Las Cruces (CCN `322559`). All 7 drafts passed on `nvidia/nemotron-3.5-lightning-30b-a3b`. |
+| [/nationwide?county=48201](https://porchlight.earth/nationwide?county=48201) | Harris, TX. 236 CMS rows, 140 ranked, 96 refused. Rank 1 is DaVita North Houston Dialysis Center (CCN `452678`). All 140 drafts in this snapshot passed. |
+
+Keep the Milton sheet, [/operate](https://porchlight.earth/operate), under about 20 seconds if you show it at all. It is a saved retrospective, not the national product. The hosted national row for Manatee (`12081`) is a different sheet: 20 CMS rows, 14 ranked, 6 refused.
+
+## What you can say
+
+Three claims, and the counts underneath them:
+
+1. Every county in the 3,235-row Census catalog has been source-audited through Zetaris at least once. The source report is `engines/reports/national-sweep-2026-10-23.md`. After a separate retry for Robertson County, Texas (`48395`), 2,491 counties return ranked rows.
+2. Grounded drafts are in progress on free Nemotron routes through Meterless. The hosted pack, generated `2026-10-24T16:47:04Z`, contains 14,960 passed facility explanations and 480 failed ones across 15,440 ranked rows. 89 counties with ranked rows have only failed drafts. Anchorage is one of them.
+3. You can open any catalog county on the live desk today. Counties with ranked rows open that published snapshot. Counties with no rankable rows open as an empty, sourced result. Robertson has no snapshot file: the live county route returns 503 and does not substitute Manatee.
+
+Leave these out of the recording and the submission text: an offline or local DGX run, H-MEM, World Model, Markovian, drafts for every county, a reach-out you did not make, and Manatee as the product.
+
+## Numbers to keep apart
+
+Counted from the committed catalog and county snapshots on 2026-10-25. The live `GET /api/national` body matched this catalog (3,235 rows, the same outcome counts, sweep `20261023T200048Z-78a426ba`).
+
+| Count | Value | Where it comes from |
 | --- | --- | --- |
-| [Manatee walkthrough](/manatee-walkthrough) | Saved Hurricane Milton sheet for Manatee County, FL: audited ranks, evidence drawer, operator contact states | Proof that every US county already runs the same path |
-| [Any US county](/nationwide) | Local nationwide job against the Census catalog when Zetaris is up on this machine | A finished national offline product or fabricated coverage |
+| Catalog rows | 3,235 | Zetaris catalog query `833`, `2026-10-23T20:00:50Z` |
+| Hosted snapshots | 3,234 | `web/data/national/published/counties/` |
+| Hosted counties with ranked rows | 2,490 | Catalog outcome `complete_with_ranked_rows` |
+| No matching CMS rows | 353 | Catalog outcome `complete_no_matching_source_rows` |
+| CMS rows, none rankable | 391 | Catalog outcome `complete_no_rankable_rows` |
+| First-pass runtime error | 1 | Robertson `48395`. Live read returns no substitute sheet |
+| Ranked facility rows in the pack | 15,440 | Sum of `ranked_rows` in the catalog |
+| Passed drafts in the pack | 14,960 | `model_explanation.status` `passed` |
+| Failed drafts in the pack | 480 | `model_explanation.status` `failed` |
 
-PR #24 flips home primary to **Pick any US county** with Milton as secondary. The live :3101 shot below still shows Manatee as the primary button until that branch is rebuilt onto the running app.
+The 2,491 ranked-county figure includes the Robertson retry. That retry is not in the hosted pack. Say 2,490 when you are pointing at porchlight.earth. Say 2,491 only when you are pointing at the source report's recovery note.
 
-## Live product shots
-
-These are captures from the local app at `http://127.0.0.1:3101` on Joe's machine (America/New_York). They are not stock photography.
-
-<Frame>
-  <img src="/images/screenshot-home.jpg" alt="Porch Light home on :3101: night hero, amber first-call card; current build still leads with Manatee walkthrough while PR #24 flips primary to any county" />
-</Frame>
-
-<Frame>
-  <img src="/images/screenshot-nationwide.jpg" alt="Nationwide county picker with night map and search" />
-</Frame>
-
-<Frame>
-  <img src="/images/screenshot-operate.jpg" alt="Operator call sheet with Not contacted default and evidence drawer" />
-</Frame>
-
-## Design plates
-
-Declared pre-existing art from the design folder: night land, warning in, evidence, call-first ranking.
-
-<Columns cols={3}>
-  <Frame>
-    <img src="/images/section-warning-in.jpg" alt="Design plate: warning in" />
-  </Frame>
-  <Frame>
-    <img src="/images/section-evidence.jpg" alt="Design plate: evidence trail" />
-  </Frame>
-  <Frame>
-    <img src="/images/section-call-first.jpg" alt="Design plate: who to call first" />
-  </Frame>
-</Columns>
+A county with zero CMS rows is not proof that no care facility exists there.
 
 ## Start here
 
 <Columns cols={2}>
-  <Card title="Local run" icon="terminal" href="/local-run">
-    Bring up the web app, Zetaris, and Meterless/Nemotron on this machine.
+  <Card title="Quickstart" icon="play" href="/quickstart">
+    Open the hosted desk with no credentials, or run a new county on the local machine.
   </Card>
-  <Card title="Sponsors" icon="handshake" href="/sponsors">
-    Zetaris, Meterless, Nemotron, Cursor, and Devin: purpose, proof, and gaps.
+  <Card title="Any US county" icon="map" href="/nationwide">
+    Search, the three demo counties, and what a published snapshot includes.
   </Card>
-  <Card title="Manatee walkthrough" icon="list-ordered" href="/manatee-walkthrough">
-    Hurricane Milton saved sheet for judges and operators.
+  <Card title="Ranking" icon="list-ordered" href="/ranking">
+    The fixed national weights, and the separate Milton formula.
   </Card>
   <Card title="Limits" icon="triangle-alert" href="/limits">
-    What we do not claim yet, including national coverage and contact outcomes.
+    Drafts still failing, clinical use, and sponsor engines that are not in this build.
   </Card>
 </Columns>
 
-## Honest bar
+The plates below are earlier local captures and design art. The live home copy is the nationwide-first page, not a Manatee-first hero.
 
-- Contact status defaults to **Not contacted**. **Reached** is stored only when an operator chooses it.
-- Rank order comes from a fixed formula. Nemotron does not set the order.
-- Sponsor labels link only to work that actually ran. See [Sponsors](/sponsors) and repo `metadata.json`.
+<Columns cols={2}>
+  <Frame>
+    <img src="/images/screenshot-nationwide.jpg" alt="Earlier local capture of the nationwide county picker" />
+  </Frame>
+  <Frame>
+    <img src="/images/screenshot-operate.jpg" alt="Earlier local capture of an operator call sheet" />
+  </Frame>
+</Columns>

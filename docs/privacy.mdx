@@ -1,15 +1,34 @@
 ---
 title: "Privacy"
+description: "Public facility and aggregate data, contact notes on your device, and a noindex live site."
+keywords: ["privacy", "empower", "localStorage", "noindex"]
 ---
 
-Coming soon.
+Porch Light uses public facility records and public aggregate context. It does not hold a patient chart.
 
-## What data Porch Light uses
+## What the sheets contain
 
-## What it doesn't collect
+- CMS facility name, address, directory phone, and star rating
+- Census geography for that address
+- 2022 tract SVI for that tract
+- HHS emPOWER counts of Medicare beneficiaries in the ZIP who use electricity-dependent equipment
 
-## Where data is stored
+The emPOWER number is a ZIP aggregate. The interface says it is not a count of patients at the facility. Masked small counts are refused rather than shown as a precise total.
 
-## Logs and audit trail
+Contact outcomes that you record (**Not contacted**, **Reached**, **No answer**, **Follow-up needed**) are stored in this browser under `porch-light:contacts:v1:` plus the snapshot hash and the county or alert id. The default, when nothing is stored, is **Not contacted**. The server does not receive that choice as an outreach. If browser storage fails, the page says changes may last only for the session and tells you to export CSV before leaving.
 
-## Contact
+## What a run does not do
+
+The app does not place a phone call, send a message, or pull a personal health record. Model prompts for drafts are built from the public facts already on the row. Scout Intent's retained script for CCN `102853` asks verification questions. It does not report a facility condition as known.
+
+Storm Watch is a weather surface. Operator contact notes are not part of that public weather view.
+
+## Site and logs
+
+The live layout sets `robots` to `noindex, nofollow` (`web/src/app/layout.tsx`). This documentation folder is not a published docs site.
+
+Audit logs keep model route, mode, latency, and token counts for model calls, and Zetaris query ids for data reads. They are not a place for tokens or keys. Env files, the Nightshift proxy-token file, and JDBC passwords stay outside git. Do not paste them into an issue, a commit, or a recording.
+
+## If you need the publisher's rules
+
+CMS, Census, CDC/ATSDR, HHS emPOWER, and NWS each keep their own terms. emPOWER's public map is a reference, not a partner integration. Restricted outreach rules on the emPOWER program still apply to anyone who uses those aggregates. The call sheet does not waive them.

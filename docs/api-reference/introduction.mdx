@@ -1,19 +1,34 @@
 ---
 title: "API reference"
+description: "The hosted county API, and the OpenAPI contract that the desk does not serve."
+keywords: ["api", "national", "openapi"]
 ---
 
-The API reference is generated from `contract/openapi.yaml` (OpenAPI 3.1, Porch Light API version 0.1.0). Right now it reads the spec from the `contract/initial` branch (PR #14). It moves to main once that PR merges.
+Two descriptions exist. Only one answers on porchlight.earth.
 
-## Tags
+## Hosted desk
 
-- `alerts`: archived and active weather alerts
-- `runs`: start a run, read its ranked facilities, joins, trace and check-ins, and export the call sheet
-- `health`: Zetaris, Meterless, network and snapshot status
+Base: `https://porchlight.earth`
 
-## Errors
+| Request | Result |
+| --- | --- |
+| `GET /api/national` | Published catalog. 3,235 counties, query id `833`, sweep `20261023T200048Z-78a426ba`. Weather status `unavailable`. |
+| `GET /api/national?county=` plus five digits | That county's snapshot, `phase` `completed`, or 503 when no file exists. A bad FIPS shape is 400. |
+| `GET /api/national?recent=1` | Up to 20 published counties with the largest ranked-row counts. |
+| `POST /api/national` | 403 unless the caller is same-origin on loopback. Body actions used locally: start a county or alert run, `refresh_alerts`, `call_script`. |
 
-Every error returns an `ApiError` with a `code` and `message`. Codes in the contract: `not_found`, `bad_request`, `no_facilities`, `source_stale`, `zetaris_down`, `meterless_unauthorized`, `meterless_offline`, `timeout`, `export_refused`.
+County JSON is the national-run document: `counts`, `facilities`, `refused`, `model_executions`, `data_access.zetaris_query_ids`, `limits`. Cache-Control on hosted GET is `public, max-age=60`.
 
-## Empty states
+Empty and error behavior you can check:
 
-An empty result is a typed empty state, not an error. `EmptyState.code` is one of `no_facilities`, `no_alerts`, `no_joins`, `no_dependents_data`.
+- Unknown catalog FIPS: the page states it is not in the catalog. Milton is not returned.
+- `48395`: HTTP 503, `No published audited snapshot is available for this county. No substitute data was returned.`
+- Alert mode on the host: the client throws `Live alert runs stay on local origin. Choose a published county on this host.`
+
+## Contract spec
+
+`contract/openapi.yaml` is OpenAPI 3.1, title Porch Light API, version `0.1.0`. Tags: `alerts`, `runs`, `health`. Error codes in the spec include `not_found`, `bad_request`, `no_facilities`, `source_stale`, `zetaris_down`, `meterless_unauthorized`, `meterless_offline`, `timeout`, and `export_refused`.
+
+That file is the type contract agents share. `python3 contract/validate_fixtures.py` checks `contract/fixtures/` against it. Those fixtures are mock. The hosted routes above are not generated from this spec, and the spec's `/alerts` and `/runs` paths are not what the live site serves.
+
+Mintlify's preview looks for an OpenAPI file inside `docs/`. The spec lives at the repo root, `contract/openapi.yaml`, so this group does not generate a second copy of those routes. Open that file for the contract types. Use the table on this page for the desk you can call. `python3 contract/validate_fixtures.py` checks the mock fixtures.

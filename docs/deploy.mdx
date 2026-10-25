@@ -1,5 +1,35 @@
 ---
 title: "Deploy"
+description: "The live desk is porchlight.earth, noindex, serving the published county pack. This pass does not deploy."
+keywords: ["deploy", "porchlight.earth", "noindex"]
 ---
 
-Coming soon.
+The live desk is [https://porchlight.earth](https://porchlight.earth). On 2026-10-25, `GET /` returned the nationwide-first home, and `GET /api/national` returned the committed catalog (3,235 counties, sweep `20261023T200048Z-78a426ba`). Response headers included `server: cloudflare`, `x-vercel-cache`, and `x-matched-path`. The HTML `robots` meta is `noindex, nofollow`, matching `web/src/app/layout.tsx`.
+
+This documentation pass does not deploy, change DNS, change `noindex`, or start a Mintlify project.
+
+## What that host serves
+
+Hosted `GET` reads `web/data/national/published/` when the pack is present (`web/src/lib/national-published.ts`). County snapshots are cacheable for 60 seconds. The home page itself is `no-store`.
+
+`POST /api/national` requires a loopback `Host` and a matching `Origin`. New county jobs, alert refresh, and call-script generation do not run on the public host. The in-page copy says live model POST stays local.
+
+## What you run locally
+
+From `web/`, `npm run build` then `npm run start` listens on port 3101 when you pass that port. `Start-Local.ps1` is the Windows helper. Zetaris, PostGIS, and Nightshift have to be running already if you want a new audit or a new draft. See [Quickstart](/quickstart) and [Local run](/local-run).
+
+National raw captures stay in the private `.porchlight` directory. They are not required to read a county that is already in the published pack.
+
+## Docs
+
+Preview with `npx mint dev` from `docs/` if you need a local docs server. There is no Porch Light docs URL to publish, and this repo does not set one. The connected Mintlify account used for other work is not this product. Do not point it at Porch Light and do not flip a public docs setting.
+
+## Rebuild the pack
+
+Only on a machine that already has the private sweep filestore:
+
+```bash
+python engines/publish_national_static.py
+```
+
+That command republishes snapshots. It is not part of the recording, and this pass did not run it. Missing snapshots stay missing. The publisher does not invent a county to fill a hole.

@@ -1,33 +1,38 @@
 ---
-title: "Manatee walkthrough"
-description: "Hurricane Milton saved call sheet for Manatee County — the judge-friendly walkthrough, not the whole product."
-keywords: ["manatee", "milton", "operate", "walkthrough"]
+title: "Milton walkthrough"
+description: "The saved Hurricane Milton sheet for Manatee County. A short coda, not the nationwide product."
+keywords: ["milton", "manatee", "operate"]
 ---
 
-The Manatee sheet is the **saved walkthrough**: archived Hurricane Milton warning area, audited facility ranks, evidence drawer, and operator contact states. It is not a claim that every county already has the same frozen snapshot.
+`/operate` with no query is the Hurricane Milton retrospective for Manatee County, Florida. Use it at the end of a recording, and keep it under about 20 seconds. The product is [Any US county](/nationwide).
 
 <Frame>
-  <img src="/images/screenshot-operate.jpg" alt="Manatee operate call sheet on the night desk" />
+  <img src="/images/screenshot-operate.jpg" alt="Earlier local capture of the operator call sheet" />
 </Frame>
 
-<Frame>
-  <img src="/images/section-call-first.jpg" alt="Design plate: ranked porch lights for who to call first" />
-</Frame>
+## What this file contains
 
-## Route
+`web/data/manatee-ranked.json`, generated `2026-10-23T20:25:15Z`.
 
-1. Open `http://127.0.0.1:3101/operate` (no county query) — Milton walkthrough.
-2. Read the warning identity and data-as-of stamps.
-3. Select rank 1 (amber porch row). Open the evidence drawer: source joins, refusals, query identity when present.
-4. Contact status starts as **Not contacted**. Change it only for a call you actually made. **Reached** is never the default.
-5. Export print/CSV when you need a paper trail. Nothing auto-dials.
+| | Value |
+| --- | --- |
+| Scenario | Hurricane Milton, warning year 2024, mode `retrospective` |
+| Source rows | 20 |
+| Ranked | 18 |
+| Refused | 2: one missing address match, one source closed label |
+| Formula | `manatee-development-v1`, including `plan_flag` at 0.10 |
+| Drafts | 15 passed, 3 failed. Model status `grounding_partial`. Reported model Super VL. |
+| Rank 1 | DaVita Manatee Bay, dialysis, CCN `682766`. The draft on that row failed. |
+| First passed draft | Rank 4, Manatee Springs Rehabilitation and Nursing Center |
 
-## What is real here
+Historical boundary equivalence is false. The limits on the sheet say current source records do not establish October 2024 facility conditions, and geocode quality and plan applicability stay unverified.
 
-- Facilities and phones come from the audited Manatee snapshot path, not invented demo rows.
-- Reasons may include Nemotron drafts for early ranks when a Meterless receipt exists; remaining rows use computed reasons. Ranking stays formula-driven.
-- Storm Watch / radar are separate surfaces. A missing radar tile must say so — never paint a decorative storm as live echo.
+Contact status starts at **Not contacted**. The app does not dial.
 
-## What this page does not prove
+## Not the same sheet as hosted Manatee
 
-Nationwide any-county coverage, offline national replay for every FIPS, or clinical correctness. For county reuse, see [Any US county](/nationwide) and [Limits](/limits).
+`/nationwide?county=12081` is the national source screen, generated `2026-10-23T22:35:28Z`: 20 source rows, 14 ranked, 6 refused, 14 passed drafts, formula `national-source-screen-v1`, no county-plan term. If a link adds `?county=` or `?alert=` to `/operate`, the app redirects to `/nationwide` and will not mount this Milton file.
+
+## Why it exists
+
+The Milton file is a real-source snapshot with a warning identity, an evidence drawer, and operator contact state. It is the retrospective example. It is not a template. Other counties do not inherit its plan, its formula, or its 18 rows.
