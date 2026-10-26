@@ -326,7 +326,7 @@ export const Nationwide = () => {
   return <>
     <div className="app-shell national-controls">
       <Masthead
-        sourceHref="#source-map"
+        sourceHref="#source-atlas"
         ledgerHref={snapshot && snapshot.state !== "source_gap" ? "#call-ledger" : "#county-catalog"}
       />
       <Content>
