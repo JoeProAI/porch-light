@@ -18,6 +18,12 @@ export const GET = async (request: Request): Promise<Response> => {
     }
     const captureId = params.get("capture") ?? "";
     const weather = await readLiveWeather(captureId);
+    if (weather.data_access.data_access_mode === "public_nws") {
+      return new Response("Regional NOAA frames stay on the local audited filestore. No substitute map is drawn.", {
+        status: 404,
+        headers: { "Cache-Control": "no-store", "X-Porchlight-Data-Access": "public_nws" },
+      });
+    }
     if (params.get("capture") !== weather.capture_id) {
       return new Response("Map capture changed. Refresh the metadata.", { status: 409 });
     }

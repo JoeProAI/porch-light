@@ -4,15 +4,32 @@ import { createHash } from "node:crypto";
 import { homedir } from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
+import { auditedEngineRequired, markAuditedEngineDown, skipAuditedEngine } from "./audited-engine";
+import { fetchPublicRadar } from "./public-radar";
 
 const execute = promisify(execFile);
+const pythonBins = (): string[] => process.env.PORCHLIGHT_PYTHON_EXECUTABLE
+  ? [process.env.PORCHLIGHT_PYTHON_EXECUTABLE]
+  : ["python", "python3"];
+const runEngine = async (args: string[], options: { cwd: string; timeout: number; maxBuffer: number; windowsHide: boolean }) => {
+  let last: unknown;
+  for (const bin of pythonBins()) {
+    try { return await execute(bin, args, options); }
+    catch (error) {
+      last = error;
+      if ((error as { code?: string }).code !== "ENOENT") throw error;
+    }
+  }
+  throw last;
+};
 type Audit = { query_id: string; finish_successfully: boolean; sql_query: string };
 export type RadarAsset = {
   source_key: string; capture_id: string; captured_at: string; sha256: string;
   source_url: string; content_type: string; file_path: string; license: string;
   clock?: Record<string, unknown>; source_last_modified: string | null; limits: string[];
 };
-type Verified = { asset: RadarAsset; data_access: { data_access_mode: string; zetaris_query_ids: string[]; zetaris_audit: Audit } };
+type Verified = { asset: RadarAsset; data_access: { data_access_mode: string; zetaris_query_ids: string[]; zetaris_audit?: Audit } };
+const inlineBytes = new Map<string, Buffer>();
 type Waiting = { resolve: (value: Verified) => void; reject: (error: Error) => void };
 const cache = new Map<string, { value: Verified; until: number }>();
 const pending = new Map<string, Promise<Verified>>();
@@ -42,7 +59,7 @@ const flush = async () => {
   running++;
   try {
     const keys = batch.map(([key]) => key);
-    const { stdout } = await execute(process.env.PORCHLIGHT_PYTHON_EXECUTABLE ?? "python",
+    const { stdout } = await runEngine(
       ["-m", "engines.radar_assets", "--keys", JSON.stringify(keys)], {
         cwd: process.env.PORCHLIGHT_ENGINE_ROOT ?? path.resolve(process.cwd(), ".."),
         timeout: 190000, maxBuffer: 2 * 1024 * 1024, windowsHide: true,
@@ -77,7 +94,7 @@ const flush = async () => {
   }
 };
 
-export const readRadarAsset = async (key: string): Promise<Verified> => {
+const readAuditedRadarAsset = async (key: string): Promise<Verified> => {
   if (!validRadarKey(key)) throw new Error("Unsupported IEM source");
   const previous = cache.get(key);
   if (previous && Date.now() < previous.until) return previous.value;
@@ -90,7 +107,37 @@ export const readRadarAsset = async (key: string): Promise<Verified> => {
   return operation;
 };
 
+const rememberInline = (captureId: string, bytes: Buffer) => {
+  inlineBytes.set(captureId, bytes);
+  while (inlineBytes.size > 400) inlineBytes.delete(inlineBytes.keys().next().value!);
+};
+
+export const readRadarAsset = async (key: string): Promise<Verified> => {
+  if (!validRadarKey(key)) throw new Error("Unsupported IEM source");
+  if (!skipAuditedEngine()) {
+    try {
+      return await readAuditedRadarAsset(key);
+    } catch (error) {
+      if (auditedEngineRequired()) throw error;
+      markAuditedEngineDown();
+    }
+  } else if (auditedEngineRequired()) {
+    return readAuditedRadarAsset(key);
+  }
+  const pub = await fetchPublicRadar(key);
+  rememberInline(pub.asset.capture_id, pub.bytes);
+  return { asset: pub.asset, data_access: pub.data_access };
+};
+
 export const readRadarBytes = async (asset: RadarAsset): Promise<Buffer> => {
+  const inline = inlineBytes.get(asset.capture_id);
+  if (inline) {
+    if (createHash("sha256").update(inline).digest("hex") !== asset.sha256) {
+      throw new Error("Radar checksum or source sidecar refused");
+    }
+    return inline;
+  }
+  if (!asset.file_path) throw new Error("Radar filestore boundary refused");
   const root = path.resolve(homedir(), ".porchlight", "radar-assets") + path.sep;
   const file = path.resolve(asset.file_path);
   if (!file.startsWith(root)) throw new Error("Radar filestore boundary refused");

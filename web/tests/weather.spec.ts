@@ -12,8 +12,6 @@ test("zoomable radar assets close actual source hashes and Zetaris receipts with
   const clock = await request.get("/api/weather/radar-assets/clock", { timeout: 190000 });
   expect(clock.ok()).toBe(true);
   const value = await clock.json();
-  expect(value.data_access.data_access_mode).toBe("zetaris");
-  expect(value.data_access.zetaris_query_ids).toEqual([clock.headers()["x-porchlight-zetaris-query"]]);
   expect(Array.isArray(value.scans)).toBe(true);
   expect(JSON.stringify(value).includes("file_path")).toBe(false);
   const image = await request.get("/api/weather/radar-assets/nexrad-n0q-900913/4/3/6.png", { timeout: 190000 });
@@ -21,8 +19,19 @@ test("zoomable radar assets close actual source hashes and Zetaris receipts with
   const bytes = await image.body();
   expect(bytes.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
   expect(createHash("sha256").update(bytes).digest("hex")).toBe(image.headers()["x-porchlight-source-sha256"]);
-  expect(image.headers()["x-porchlight-zetaris-query"]).toMatch(/^\d+$/);
   expect(image.headers()["x-porchlight-source-capture"]).toMatch(/^[a-f0-9]{64}$/);
+  if (value.data_access.data_access_mode === "zetaris") {
+    expect(value.data_access.zetaris_query_ids).toEqual([clock.headers()["x-porchlight-zetaris-query"]]);
+    expect(image.headers()["x-porchlight-zetaris-query"]).toMatch(/^\d+$/);
+  } else {
+    expect(value.data_access.data_access_mode).toBe("public_iem");
+    expect(value.data_access.zetaris_query_ids).toEqual([]);
+    expect(value.source.source_url).toContain("https://mesonet.agron.iastate.edu/");
+    expect(clock.headers()["x-porchlight-data-access"]).toBe("public_iem");
+    expect(clock.headers()["x-porchlight-zetaris-query"]).toBeUndefined();
+    expect(image.headers()["x-porchlight-data-access"]).toBe("public_iem");
+    expect(image.headers()["x-porchlight-zetaris-query"]).toBeUndefined();
+  }
   for (const key of ["nexrad-n0q-900913/4/16/0.png", "nexrad-n0q-900913-m01m/4/1/1.png"]) {
     expect((await request.get(`/api/weather/radar-assets/${key}`)).status()).toBe(400);
   }
@@ -42,22 +51,35 @@ test("actual national weather API has closed audit references and original radar
   expect(response.ok()).toBe(true);
   const weather = await response.json() as LiveWeather;
   expect(weather.schema_version).toBe("porch-light.live-weather.v1");
-  expect(weather.data_access.data_access_mode).toBe("zetaris");
-  expect(weather.data_access.zetaris_query_ids.length).toBeGreaterThan(0);
-  expect(weather.alerts.every(alert => alert.zetaris_query_ids.every(id =>
-    weather.data_access.zetaris_query_ids.includes(id)))).toBe(true);
   expect("file_path" in weather.radar).toBe(false);
   const captureTime = Date.parse(weather.captured_at);
   expect(weatherFreshness(weather.captured_at, captureTime + 1000)).toBe("recent");
   expect(weatherFreshness(weather.captured_at, captureTime + 660000)).toBe("stale");
   expect(weatherFreshness(weather.captured_at, captureTime - 400000)).toBe("unverified");
-  const radar = await request.get(weather.radar.image_url);
-  expect(radar.ok()).toBe(true);
-  const bytes = await radar.body();
-  expect(["GIF87a", "GIF89a"]).toContain(bytes.subarray(0, 6).toString());
-  expect(createHash("sha256").update(bytes).digest("hex")).toBe(weather.radar.sha256);
-  expect(radar.headers()["x-porchlight-zetaris-query"]).toMatch(/^\d+(,\d+)*$/);
   expect(weather.radar.coverage).toContain("Alaska, Hawaii");
+  if (weather.data_access.data_access_mode === "zetaris") {
+    expect(weather.data_access.zetaris_query_ids.length).toBeGreaterThan(0);
+    expect(weather.alerts.every(alert => alert.zetaris_query_ids.every(id =>
+      weather.data_access.zetaris_query_ids.includes(id)))).toBe(true);
+    const radar = await request.get(weather.radar.image_url);
+    expect(radar.ok()).toBe(true);
+    const bytes = await radar.body();
+    expect(["GIF87a", "GIF89a"]).toContain(bytes.subarray(0, 6).toString());
+    expect(createHash("sha256").update(bytes).digest("hex")).toBe(weather.radar.sha256);
+    expect(radar.headers()["x-porchlight-zetaris-query"]).toMatch(/^\d+(,\d+)*$/);
+  } else {
+    expect(weather.data_access.data_access_mode).toBe("public_nws");
+    expect(weather.data_access.zetaris_query_ids).toEqual([]);
+    expect(weather.alert_feed.source_url).toBe("https://api.weather.gov/alerts/active");
+    expect(weather.alert_feed.sha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(weather.alerts.length).toBeGreaterThan(0);
+    expect(weather.alerts.every(alert => alert.id.startsWith("https://api.weather.gov/alerts/") && alert.zetaris_query_ids.length === 0)).toBe(true);
+    expect(weather.radar.tile_template).toContain("/api/weather/radar-assets/nexrad-n0q-900913/");
+    expect(weather.data_access.source_note ?? "").toContain("Not a Zetaris query");
+    const tile = await request.get("/api/weather/radar-assets/nexrad-n0q-900913/4/3/6.png");
+    expect(tile.ok()).toBe(true);
+    expect((await tile.body()).subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
+  }
 });
 
 test("Storm Watch renders actual alerts, authentic radar and explicit national scope", async ({ page }) => {
@@ -70,6 +92,14 @@ test("Storm Watch renders actual alerts, authentic radar and explicit national s
   await expect(page.locator(".radar-coverage")).toContainText("contiguous US only");
   await radar;
   await waitForChart(page);
+  await expect(page.locator(".storm-map")).toHaveAttribute("data-markers", "cluster");
+  const cluster = page.getByRole("button", { name: /retrospective facilities located in Manatee, FL/ });
+  await expect(cluster).toBeVisible();
+  const clusterBox = await cluster.boundingBox();
+  expect(clusterBox).toBeTruthy();
+  expect(clusterBox!.width).toBeLessThan(96);
+  expect(clusterBox!.height).toBeLessThan(42);
+  expect(await cluster.evaluate(node => getComputedStyle(node).boxShadow)).not.toContain("42px");
   await expect(page.locator(".storm-map")).toHaveAttribute("data-frame", "nexrad-n0q-900913");
   await expect(page.locator(".storm-map")).toHaveAttribute("data-playing", "false");
   await expect(page.locator(".storm-map")).toHaveAttribute("data-radar-opacity", "0.45");
@@ -79,7 +109,8 @@ test("Storm Watch renders actual alerts, authentic radar and explicit national s
   const unavailable = page.getByRole("heading", { name: "Weather data is unavailable." });
   await expect(loadedFeed.or(unavailable)).toBeVisible();
   if (await loadedFeed.isVisible()) {
-    await expect(page.locator(".watch-evidence")).toContainText("Zetaris query");
+    const evidence = await page.locator(".watch-evidence").innerText();
+    expect(evidence.includes("Zetaris query") || evidence.includes("Not a Zetaris query")).toBe(true);
     await expect(page.locator(".watch-evidence")).toContainText("isn't proof of rankable care-facility coverage");
     await expect(page.getByRole("region", { name: "Alerts with no shape from NWS" })).toBeVisible();
     await page.getByRole("searchbox").fill("No source weather event matches this search");
@@ -90,7 +121,7 @@ test("Storm Watch renders actual alerts, authentic radar and explicit national s
     await expect(page.locator(".watch-evidence")).toContainText("No audited capture is loaded");
     await expect(page.locator(".watch-evidence")).toContainText("No alerts are invented");
   }
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
   expect(errors).toEqual([]);
 });
 
@@ -109,6 +140,10 @@ test("regional map assets are original source PNGs and use the provider geograph
   test.skip(!response.ok(), "Audited weather feed is not published in this environment");
   expect(response.ok()).toBe(true);
   const weather = await response.json() as LiveWeather;
+  if (weather.data_access.data_access_mode !== "zetaris") {
+    expect(weather.radar_maps?.available).not.toBe(true);
+    return;
+  }
   expect(weather.radar_maps?.available).toBe(true);
   expect(Boolean(JSON.stringify(weather).includes("file_path"))).toBe(false);
   for (const key of ["conus", "alaska", "hawaii", "caribbean", "guam"]) {
@@ -146,7 +181,7 @@ test("the night chart keeps radar tiles unfiltered and supports zoom, keyboard p
   await page.getByRole("button", { name: "Radar layer: off", exact: true }).click();
   await expect(page.getByRole("button", { name: "Radar layer: on", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".severity-legend")).toContainText("Extreme");
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
 });
 
 test("geographic labels, source-bound fitting and cursor-centered navigation identify actual places", async ({ page, request }, testInfo) => {
@@ -155,7 +190,8 @@ test("geographic labels, source-bound fitting and cursor-centered navigation ide
   const response = await request.get("/api/weather");
   if (response.ok()) {
     const weather = await response.json() as LiveWeather;
-    const region = weather.radar_maps!.regions!.conus;
+    if (weather.data_access.data_access_mode === "zetaris" && weather.radar_maps?.regions?.conus && weather.radar_maps.states) {
+    const region = weather.radar_maps.regions.conus;
     const projection = createRadarProjection(region);
     const florida = weather.radar_maps!.states!.features.find(state => state.properties.STUSAB === "FL")!;
     const point = projection.labelPoint(florida.geometry)!;
@@ -168,6 +204,7 @@ test("geographic labels, source-bound fitting and cursor-centered navigation ide
     expect(fitted.width).toBeLessThan(1200);
     expect(fitted.x).toBeGreaterThanOrEqual(0);
     expect(fitted.y + fitted.height).toBeLessThanOrEqual(700);
+    }
   }
   const zoomed = zoomRadarView(initialRadarView, 2, { x: .2, y: .3 });
   expect(zoomed.x + zoomed.width * .2).toBeCloseTo(1200 * .2);
@@ -191,7 +228,7 @@ test("geographic labels, source-bound fitting and cursor-centered navigation ide
     await page.getByRole("button", { name: "Zoom in", exact: true }).click();
     await expect.poll(() => map.getAttribute("data-zoom")).not.toBe(before);
   }
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
   expect(errors).toEqual([]);
   await page.locator(".watch-map-frame").screenshot({ path: testInfo.outputPath("geographic-map.png") });
 });
@@ -236,6 +273,10 @@ test("map load, alert click and facility pin open the evidence drawer", async ({
   await page.getByRole("button", { name: "Fit ranked facilities", exact: true }).click();
   const pin = page.getByRole("button", { name: `Rank 1, ${snapshot.facilities[0].name}`, exact: true });
   await expect(pin).toBeVisible();
+  const pinBox = await pin.boundingBox();
+  expect(pinBox).toBeTruthy();
+  expect(pinBox!.height).toBeLessThan(28);
+  expect(pinBox!.width).toBeLessThan(48);
   await pin.focus();
   await page.keyboard.press("Enter");
   const dialog = page.getByRole("dialog");
@@ -252,7 +293,11 @@ test("aging a real capture preserves the stale warning and explains how to resta
   await page.clock.setFixedTime(Date.parse(weather.captured_at) + 1800000);
   await page.goto("/watch");
   await expect(page.locator(".watch-error")).toContainText("Don't treat the displayed weather or alert list as current");
-  await expect(page.locator(".watch-error")).toContainText("Refreshing this page only rereads the stored capture");
-  await expect(page.locator(".watch-error code")).toHaveText(".\\Start-Local.ps1");
+  if (weather.data_access.data_access_mode === "zetaris") {
+    await expect(page.locator(".watch-error")).toContainText("Refreshing this page only rereads the stored capture");
+    await expect(page.locator(".watch-error code")).toHaveText(".\\Start-Local.ps1");
+  } else {
+    await expect(page.locator(".watch-error")).toContainText("Refresh weather to read the National Weather Service feed again");
+  }
   await expect(page.getByRole("link", { name: "Check current weather warnings" })).toHaveAttribute("href", "https://www.weather.gov/");
 });

@@ -28,11 +28,17 @@ export const parseIemClock = (payload: unknown): IemClock | null => {
   const value = payload as { source?: { captured_at?: string }; data_access?: {
     data_access_mode?: string; zetaris_query_ids?: string[];
   } };
-  const queryIds = value.data_access?.zetaris_query_ids;
-  if (value.data_access?.data_access_mode !== "zetaris" || !queryIds?.length ||
-    queryIds.some(id => !/^\d+$/.test(id)) || !value.source?.captured_at ||
-    !Number.isFinite(Date.parse(value.source.captured_at))) return null;
-  return { latest: new Date(parsed).toISOString(), queryIds, capturedAt: value.source.captured_at };
+  const mode = value.data_access?.data_access_mode;
+  const queryIds = value.data_access?.zetaris_query_ids ?? [];
+  const capturedAt = value.source?.captured_at;
+  if (!capturedAt || !Number.isFinite(Date.parse(capturedAt))) return null;
+  if (mode === "zetaris") {
+    if (!queryIds.length || queryIds.some(id => !/^\d+$/.test(id))) return null;
+  } else if (mode === "public_iem") {
+    const sourceUrl = (value.source as { source_url?: unknown } | undefined)?.source_url;
+    if (queryIds.length || typeof sourceUrl !== "string" || !sourceUrl.startsWith("https://mesonet.agron.iastate.edu/")) return null;
+  } else return null;
+  return { latest: new Date(parsed).toISOString(), queryIds, capturedAt };
 };
 
 export const derivedFrameTime = (latestIso: string, offsetMinutes: number): string | null => {

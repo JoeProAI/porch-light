@@ -12,12 +12,16 @@ export const GET = async (request: Request, context: { params: Promise<{ asset: 
   try {
     const verified = await readRadarAsset(key);
     const bytes = await readRadarBytes(verified.asset);
-    const headers = {
-      "Cache-Control": "private, max-age=30",
-      "X-Porchlight-Zetaris-Query": verified.data_access.zetaris_query_ids.join(","),
+    const hosted = verified.data_access.data_access_mode === "public_iem";
+    const headers: Record<string, string> = {
+      "Cache-Control": hosted ? "public, max-age=60" : "private, max-age=30",
+      "X-Porchlight-Data-Access": verified.data_access.data_access_mode,
       "X-Porchlight-Source-Capture": verified.asset.capture_id,
       "X-Porchlight-Source-SHA256": verified.asset.sha256,
     };
+    if (verified.data_access.zetaris_query_ids.length) {
+      headers["X-Porchlight-Zetaris-Query"] = verified.data_access.zetaris_query_ids.join(",");
+    }
     if (key === "clock") {
       const { file_path, clock, ...source } = verified.asset;
       void file_path;

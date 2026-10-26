@@ -1,9 +1,25 @@
 import { execFile } from "node:child_process";
 import path from "node:path";
 import { promisify } from "node:util";
+import { auditedEngineRequired, markAuditedEngineDown, skipAuditedEngine } from "./audited-engine";
+import { peekPublicWeather, readPublicWeather } from "./public-weather";
 import type { LiveWeather, RadarMaps, RadarRegion } from "./weather-types";
 
 const execute = promisify(execFile);
+const pythonBins = (): string[] => process.env.PORCHLIGHT_PYTHON_EXECUTABLE
+  ? [process.env.PORCHLIGHT_PYTHON_EXECUTABLE]
+  : ["python", "python3"];
+const runEngine = async (args: string[], options: { cwd: string; timeout: number; maxBuffer: number; windowsHide: boolean }) => {
+  let last: unknown;
+  for (const bin of pythonBins()) {
+    try { return await execute(bin, args, options); }
+    catch (error) {
+      last = error;
+      if ((error as { code?: string }).code !== "ENOENT") throw error;
+    }
+  }
+  throw last;
+};
 type InternalRegion = RadarRegion & { file_path?: string; legend_file_path?: string };
 type InternalWeather = Omit<LiveWeather, "radar" | "radar_maps"> & {
   radar: LiveWeather["radar"] & { file_path: string; content_type: string };
@@ -12,15 +28,14 @@ type InternalWeather = Omit<LiveWeather, "radar" | "radar_maps"> & {
 const cached = new Map<string, { value: InternalWeather; until: number }>();
 const pending = new Map<string, Promise<InternalWeather>>();
 
-export const readLiveWeather = async (captureId?: string): Promise<InternalWeather> => {
+const readAuditedWeather = async (captureId?: string): Promise<InternalWeather> => {
   if (captureId !== undefined && !/^[a-f0-9]{64}$/.test(captureId)) throw new Error("Invalid capture reference");
   const key = captureId ?? "latest";
   const previous = cached.get(key);
   if (previous && Date.now() < previous.until) return previous.value;
   if (pending.has(key)) return pending.get(key)!;
   const operation = (async () => {
-    const { stdout } = await execute(
-      process.env.PORCHLIGHT_PYTHON_EXECUTABLE ?? "python",
+    const { stdout } = await runEngine(
       ["-m", "engines.live_weather", ...(captureId ? ["--capture-id", captureId] : [])],
       {
         cwd: process.env.PORCHLIGHT_ENGINE_ROOT ?? path.resolve(process.cwd(), ".."),
@@ -45,9 +60,31 @@ export const readLiveWeather = async (captureId?: string): Promise<InternalWeath
   finally { pending.delete(key); }
 };
 
+export const readLiveWeather = async (captureId?: string): Promise<InternalWeather> => {
+  if (captureId !== undefined && !/^[a-f0-9]{64}$/.test(captureId)) throw new Error("Invalid capture reference");
+  if (!skipAuditedEngine()) {
+    try {
+      return await readAuditedWeather(captureId);
+    } catch (error) {
+      if (captureId || auditedEngineRequired()) throw error;
+      markAuditedEngineDown();
+    }
+  } else if (auditedEngineRequired()) {
+    return readAuditedWeather(captureId);
+  }
+  if (captureId) {
+    const pinned = peekPublicWeather(captureId);
+    if (!pinned) throw new Error("Immutable capture identity mismatch");
+    return pinned;
+  }
+  return readPublicWeather();
+};
+
 export const publicWeather = (value: InternalWeather): LiveWeather => {
-  const { file_path: privatePath, ...radar } = value.radar;
+  const { file_path: privatePath, content_type: contentType, ...radar } = value.radar;
   void privatePath;
+  void contentType;
+  const hosted = value.data_access.data_access_mode === "public_nws";
   const { radar_maps: privateMaps, ...base } = value;
   const maps: RadarMaps | undefined = privateMaps ? {
     ...privateMaps,
@@ -63,7 +100,10 @@ export const publicWeather = (value: InternalWeather): LiveWeather => {
   } : undefined;
   return {
     ...base,
-    radar: { ...radar, image_url: `/api/weather/radar?capture=${value.capture_id}` },
+    radar: {
+      ...radar,
+      image_url: hosted && radar.image_url ? radar.image_url : `/api/weather/radar?capture=${value.capture_id}`,
+    },
     radar_maps: maps,
   };
 };
