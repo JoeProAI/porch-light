@@ -7,6 +7,7 @@ import { createCsv, formatDateEt, formatFigure, formatPhone, parseContacts } fro
 import { CoverageMap } from "./coverage-map";
 import { EvidenceDrawer } from "./evidence-drawer";
 import { CallScript } from "./call-script";
+import { DocsLink } from "./docs-link";
 import { Masthead } from "./masthead";
 import { WatchBezel } from "./watch-bezel";
 
@@ -214,6 +215,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
           </details>
         </div>
         <span className="mono">{snapshot.county.name.toUpperCase()} / {snapshot.county.state}<br />{snapshot.scenario.event}</span>
+        <DocsLink className="footer-docs" />
         <a className="design-credit mono" href="/">About Porch Light</a>
       </footer>
       {row && <EvidenceDrawer row={row} snapshot={snapshot} provenance={provenance} open={evidenceOpen} onClose={() => setEvidenceOpen(false)} />}

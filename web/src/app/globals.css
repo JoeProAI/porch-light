@@ -40,6 +40,8 @@ h1, h2, h3 { font-weight: 400; }
 .workspace-nav { display: flex; gap: var(--space-6); margin-left: auto; font-size: 13px; }
 .workspace-nav a { display: grid; align-items: center; min-height: 44px; text-decoration: none; border-bottom: 1px solid transparent; }
 .workspace-nav a:hover { border-color: var(--amber); }
+.workspace-nav a.nav-docs, a.footer-docs { color: var(--amber); border-bottom: 1px solid var(--amber); text-decoration: none; }
+a.footer-docs { min-height: 44px; display: inline-flex; align-items: center; }
 .intro { display: grid; grid-template-columns: 1.2fr .65fr 1fr; gap: var(--space-8); padding: var(--space-6) 0; position: relative; }
 .intro-heading { padding-left: var(--space-6); border-left: 2px solid var(--amber); align-self: center; }
 .eyebrow { font-size: 11px; font-weight: 500; line-height: 1.6; letter-spacing: .12em; text-transform: uppercase; }
@@ -275,7 +277,9 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--mono); 
   .masthead { min-height: 64px; gap: 12px; }
   .wordmark { font-size: 28px; }
   .masthead-descriptor { display: none; }
-  .workspace-nav { display: none; }
+  .workspace-nav { display: flex; margin-left: auto; gap: 12px; }
+  .workspace-nav a:not(.nav-docs) { display: none; }
+  .edition { margin-left: 12px; }
   .edition { font-size: 10px; gap: 12px; }
   .edition-number { padding-left: 12px; }
   .intro { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); padding: var(--space-4) 0; }

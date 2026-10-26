@@ -44,7 +44,9 @@ test("storm watch uses the night masthead, type, and a solid radar bar", async (
   await expect(page.locator("header.masthead")).toBeVisible();
   await expect(page.locator("header.entry-header")).toHaveCount(0);
   const nav = await page.locator("header nav a").allTextContents();
-  expect(nav).toEqual(["Project home", "US county runs", "Storm Watch", "Source map", "Call order"]);
+  expect(nav).toEqual(["Project home", "US county runs", "Storm Watch", "Source map", "Call order", "Docs"]);
+  await expect(page.getByRole("link", { name: "Docs" }).first()).toHaveAttribute("href", "https://joeproai.mintlify.app");
+  await expect(page.getByRole("link", { name: "Docs" }).first()).toHaveAttribute("target", "_blank");
   await expect(page.getByRole("link", { name: "About the project" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Manatee call sheet" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: /retrospective/i })).toHaveCount(0);

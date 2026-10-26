@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { DocsLink } from "./docs-link";
 import { LogoMark } from "./logo-mark";
 
 export const Masthead = ({ edition, sourceHref = "/nationwide#source-atlas", ledgerHref = "/nationwide#county-catalog" }: {
@@ -18,6 +19,7 @@ export const Masthead = ({ edition, sourceHref = "/nationwide#source-atlas", led
       <Link href="/watch">Storm Watch</Link>
       <Link href={sourceHref}>Source map</Link>
       <Link href={ledgerHref}>Call order</Link>
+      <DocsLink className="nav-docs" />
     </nav>
     {edition ? <span className="edition">{edition}</span> : null}
   </header>

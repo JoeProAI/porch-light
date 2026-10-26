@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import type { Snapshot } from "@/lib/types";
 import { ActiveWeatherStrip } from "./active-weather-strip";
 import { HeroFilm } from "./hero-film";
+import { DocsLink } from "./docs-link";
 import { Masthead } from "./masthead";
 import { ResourceLinks } from "./resource-links";
 import { SourceMap } from "./source-map";
@@ -54,7 +55,7 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
         <SponsorEvidence snapshot={snapshot} />
         <ResourceLinks />
       </main>
-      <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Prototype policy, not clinically validated. No emergency or clinical guidance. No calls are placed.</p><span className="mono">Real source records. Visible limits.</span></footer>
+      <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Prototype policy, not clinically validated. No emergency or clinical guidance. No calls are placed.</p><DocsLink className="footer-docs" /><span className="mono">Real source records. Visible limits.</span></footer>
     </div>
   );
 };

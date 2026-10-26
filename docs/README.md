@@ -1,6 +1,8 @@
 # Porch Light docs (Mintlify)
 
-Night and amber theme (`#05070b` / `#f2a93b`). These pages are the docs source in this repo. They are not a published docs site. Do not invent a docs URL.
+Night storm and amber (`#05070b` / `#f2a93b`). Published docs: [https://joeproai.mintlify.app](https://joeproai.mintlify.app). The product desk is [https://porchlight.earth/nationwide](https://porchlight.earth/nationwide).
+
+`docs/contract/openapi.yaml` is a full copy of `contract/openapi.yaml`. Keep it a regular file. A symlink at that path is a 27-byte pointer, and Mintlify cannot follow it.
 
 Preview locally:
 
@@ -14,5 +16,3 @@ Validate:
 ```bash
 npx mint validate
 ```
-
-The product desk is [https://porchlight.earth](https://porchlight.earth). Publishing this Mintlify project still waits on Joe.

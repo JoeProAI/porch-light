@@ -199,21 +199,21 @@ last update: Wed Oct 21 2026 8:20 PM ET
 
 ## Area: Web
 owner now: Cursor cloud agent (web). Devin integrates the national workflow; Cursor authored PR22's MapLibre map, the Storm Watch hosted-feed fix, the nationwide live-weather desk, and the light click-through overlay.
-state: Masthead Source map is `/nationwide#source-atlas` from home, Watch, and the Milton retrospective. On `/nationwide`, including an open national county sheet, Source map is the same-page `#source-atlas` facility atlas. Call order is unchanged: `/nationwide#county-catalog` until a county sheet is open, then `#call-ledger`. Home hero keeps the storm photo rain and, when motion is allowed, a soft particle fall. The harsh 104-degree repeating-gradient hatch from the old `.storm-photo::after` overlay stays gone. Nationwide map hotlink still scrolls to `#source-atlas`. Home footer still has no Hurricane Milton link. `/watch` and `/nationwide` chrome do not surface Manatee or Milton. `/operate` stays a deep URL for the labeled 2024 retrospective. Alert polygons keep a solid wash. Facility call sheets stay on `/nationwide` and `/operate?county=`. No offline DGX, H-MEM, World Model, or all-counties-drafted claim.
+state: Masthead on home, `/nationwide`, `/watch`, and an open county sheet includes Docs. It opens https://joeproai.mintlify.app in a new tab. The same link is in the home footer, the Storm Watch footer, and the county-sheet footer. On a narrow screen the other masthead links stay hidden and Docs stays visible. Source map is `/nationwide#source-atlas` from home, Watch, and the Milton retrospective. On `/nationwide`, including an open national county sheet, Source map is the same-page `#source-atlas` facility atlas. Call order is unchanged: `/nationwide#county-catalog` until a county sheet is open, then `#call-ledger`. Home footer still has no Hurricane Milton link. `/watch` and `/nationwide` chrome do not surface Manatee or Milton. `/operate` stays a deep URL for the labeled 2024 retrospective. No offline DGX, H-MEM, World Model, or all-counties-drafted claim.
 next step: Joe reviews this PR. Do not merge and do not deploy from this branch.
-branch: cursor/source-map-nationwide-atlas-1e80 off main b7b59c5.
-how to run: from `web`, `npm run typecheck`, `npm run test:unit`, then `PORCHLIGHT_WEATHER_SOURCE=public npm run dev`. Source map on `/`, `/watch`, and `/operate` opens `/nationwide#source-atlas`. On `/nationwide` it is `#source-atlas`. Call order stays on the county catalog until a sheet is open. Playwright: `PLAYWRIGHT_CHROME` set to the local Chrome binary, then `npx playwright test tests/operator.spec.ts tests/nationwide-weather.spec.ts`.
+branch: cursor/docs-site-link-theme-b245 off main 2e37124.
+how to run: from `web`, `npm run typecheck`, `npm run test:unit`, then `PORCHLIGHT_WEATHER_SOURCE=public npm run dev`. Docs in the masthead and the home, Watch, and county-sheet footers opens https://joeproai.mintlify.app. Source map on `/`, `/watch`, and `/operate` opens `/nationwide#source-atlas`. On `/nationwide` it is `#source-atlas`.
 blocked: continuous hosting, shared multi-operator coordination, verified facility conditions, clinical validation and measured operator usefulness aren't established. Basemap cartography is external reference, not cited hazard or facility evidence. This pass does not deploy and does not spend. The NOAA CONUS GIF is about 6 MB and is not proxied on the hosted path (serverless response limit). The map uses IEM tiles.
-last update: Mon Oct 26 2026, 11:40 AM ET.
+last update: Mon Oct 26 2026, 1:50 PM ET.
 
 ## Area: Docs
 owner now: Hackathon Desk docs seat (primary Hackathon Desk docs seat, backup Claude Code)
-state: docs/index.mdx is a nationwide-first docs home. It links https://porchlight.earth/nationwide, states the three allowed claims, and dates the pack figures to a live GET /api/national on 2026-10-26 (sweep 20261023T200048Z-78a426ba: catalog 3,235, snapshots 3,234, ranked counties 2,490, sum of ranked_rows 15,440, query id 833). The home footer Milton claim is gone. manatee-walkthrough stays in the repo and is not in the Get started nav. No public docs URL.
-next step: Joe shoots the video from docs/quickstart.mdx and submission/demo-script.md. Do not publish Mintlify until Joe says yes. Do not merge this docs PR from the agent seat.
-branch: cursor/docs-home-nationwide-fa52 off main.
-how to run: cd docs && npx mint dev. Product desk: https://porchlight.earth/nationwide
-blocked: Mintlify publication still needs Joe's yes. No separate docs deployment exists.
-last update: Mon Oct 26 2026, after a live read of porchlight.earth and GET /api/national.
+state: Published docs are https://joeproai.mintlify.app. Theme is strict dark, storm background `#05070b`, amber `#f2a93b`, Libre Baskerville and Atkinson Hyperlegible, with the repo logo and favicon. The docs home stays nationwide-first: live desk link, the three allowed claims, pack figures from the 2026-10-26 GET (sweep `20261023T200048Z-78a426ba`: catalog 3,235, snapshots 3,234, ranked counties 2,490, sum of ranked_rows 15,440, query id 833), plus card art and one labeled earlier call-sheet JPG. `docs/contract/openapi.yaml` is a regular-file copy of `contract/openapi.yaml`. The API reference group is back. Those generated pages are the contract, not the routes porchlight.earth serves. manatee-walkthrough stays out of the Get started nav. No offline DGX, H-MEM, World Model, or all-counties-drafted claim.
+next step: Joe reviews this PR. Do not merge from the agent seat. After merge, the Mintlify project on main should rebuild from `docs/`.
+branch: cursor/docs-site-link-theme-b245 off main 2e37124.
+how to run: cd docs && npx mint validate. Product desk: https://porchlight.earth/nationwide. Docs: https://joeproai.mintlify.app
+blocked: none for the docs source. This pass does not deploy the product site and does not spend.
+last update: Mon Oct 26 2026, 1:50 PM ET.
 
 ## Area: Front matter and ops
 owner now: Hackathon Desk  (primary Hackathon Desk, backup Devin)
