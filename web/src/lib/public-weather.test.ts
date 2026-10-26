@@ -15,7 +15,10 @@ test("public alert feed keeps official ids and does not invent geometry", () => 
       {
         id: "https://api.weather.gov/alerts/urn:oid:example",
         geometry: polygon,
-        properties: { event: "Flood Warning", severity: "Severe", status: "Actual", areaDesc: "Curry, NM" },
+        properties: {
+          event: "Flood Warning", severity: "Severe", status: "Actual", areaDesc: "Curry, NM",
+          geocode: { SAME: ["035009"], UGC: ["NMC009"] },
+        },
       },
       {
         id: "https://api.weather.gov/alerts/urn:oid:shapeless",
@@ -31,8 +34,10 @@ test("public alert feed keeps official ids and does not invent geometry", () => 
   });
   assert.equal(alerts.length, 2);
   assert.equal(alerts[0].geometry?.type, "Polygon");
+  assert.deepEqual(alerts[0].same_county_fips, ["35009"]);
   assert.equal(alerts[0].zetaris_query_ids.length, 0);
   assert.equal(alerts[1].geometry, null);
+  assert.deepEqual(alerts[1].same_county_fips, []);
   assert.equal(alerts.some(alert => alert.event === "Invented"), false);
 });
 

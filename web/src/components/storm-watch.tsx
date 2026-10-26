@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { formatDate, formatDateEt, parseContacts } from "@/lib/operator";
 import { hasAlertShape } from "@/lib/geo";
 import { derivedFrameTime, IEM_CLOCK_URL, parseIemClock, radarFrames, type IemClock, type RadarFrame } from "@/lib/radar-frames";
+import { acceptedLiveWeather } from "@/lib/live-weather";
 import { weatherFreshness, type LiveWeather, type OfficialAlert } from "@/lib/weather-types";
 import type { Provenance, Snapshot } from "@/lib/types";
 import { EvidenceDrawer } from "./evidence-drawer";
@@ -54,7 +55,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
       });
       if (!response.ok) throw new Error("Audited weather feed unavailable");
       const next = await response.json() as LiveWeather;
-      if (!acceptedWeather(next)) throw new Error("Weather source evidence missing");
+      if (!acceptedLiveWeather(next)) throw new Error("Weather source evidence missing");
       setData(next);
       setSelectedId(previous => next.alerts.some(alert => alert.id === previous) ? previous : "");
       setError("");
@@ -323,22 +324,6 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
       }} />}
     </div>
   );
-};
-
-const acceptedWeather = (next: LiveWeather): boolean => {
-  if (next.schema_version !== "porch-light.live-weather.v1" || !Array.isArray(next.alerts) || !next.data_access) return false;
-  const mode = next.data_access.data_access_mode;
-  if (mode === "zetaris") {
-    return next.data_access.zetaris_query_ids.length > 0 && next.alerts.every(alert =>
-      alert.zetaris_query_ids.every(id => next.data_access.zetaris_query_ids.includes(id)));
-  }
-  if (mode === "public_nws") {
-    return next.data_access.zetaris_query_ids.length === 0
-      && next.alert_feed?.source_url === "https://api.weather.gov/alerts/active"
-      && /^[a-f0-9]{64}$/.test(next.alert_feed.sha256)
-      && next.alerts.every(alert => alert.id.startsWith("https://api.weather.gov/alerts/") && alert.zetaris_query_ids.length === 0);
-  }
-  return false;
 };
 
 const frameClockLabel = (iso: string | null): string | null => {

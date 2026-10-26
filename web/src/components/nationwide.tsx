@@ -2,10 +2,14 @@
 
 import { useEffect, useState } from "react";
 import type { Provenance, Snapshot } from "@/lib/types";
+import { orderAffectedAlerts } from "@/lib/affected-alerts";
+import { hasAlertShape } from "@/lib/geo";
+import { acceptedLiveWeather } from "@/lib/live-weather";
 import { formatDate } from "@/lib/operator";
 import { searchCounties, type CountyRecord } from "@/lib/county-search";
-import { CountyMap } from "./national/county-map";
+import type { LiveWeather } from "@/lib/weather-types";
 import { SourceGaps } from "./national/source-gaps";
+import { StormDesk } from "./national/storm-desk";
 import { Masthead } from "./masthead";
 import { Operator } from "./operator";
 import "./national/national.css";
@@ -71,6 +75,11 @@ export const Nationwide = () => {
   const [countyQuery, setCountyQuery] = useState("");
   const [recentRuns, setRecentRuns] = useState<RecentRun[] | null>(null);
   const [recentError, setRecentError] = useState("");
+  const [weather, setWeather] = useState<LiveWeather | null>(null);
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [weatherError, setWeatherError] = useState("");
+  const [weatherAttempt, setWeatherAttempt] = useState(0);
+  const [liveAlertId, setLiveAlertId] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -111,7 +120,11 @@ export const Nationwide = () => {
         const query = new URLSearchParams(window.location.search);
         const saved = query.get("run");
         if (saved && /^[a-f0-9]{32}$/.test(saved)) setJob({ id: saved, phase: "checking_saved_run" });
-        if (query.get("alert")) { setMode("alert"); setAlert(query.get("alert")!); }
+        const alertId = query.get("alert");
+        if (alertId && (value as unknown as Catalog).weather.alerts?.some(row => row.id === alertId)) {
+          setMode("alert");
+          setAlert(alertId);
+        }
         const fips = query.get("county");
         const rows = (value as unknown as Catalog).catalog.counties;
         if (fips && !saved) {
@@ -155,6 +168,42 @@ export const Nationwide = () => {
     })();
     return () => controller.abort();
   }, [refreshKey]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setWeatherLoading(true);
+    void (async () => {
+      try {
+        const timeout = AbortSignal.timeout(30000);
+        const response = await fetch("/api/weather", {
+          cache: "no-store",
+          signal: AbortSignal.any([controller.signal, timeout]),
+        });
+        const body: unknown = await response.json();
+        if (!response.ok || !acceptedLiveWeather(body as LiveWeather)) {
+          throw new Error("The live weather feed could not be read.");
+        }
+        if (controller.signal.aborted) return;
+        const next = body as LiveWeather;
+        setWeather(next);
+        setWeatherError("");
+        const fromUrl = new URLSearchParams(window.location.search).get("alert");
+        setLiveAlertId(current => {
+          if (current && next.alerts.some(alert => alert.id === current)) return current;
+          if (fromUrl && next.alerts.some(alert => alert.id === fromUrl)) return fromUrl;
+          const ordered = orderAffectedAlerts(next.alerts, new Set());
+          return ordered.find(alert => hasAlertShape(alert.geometry))?.id ?? ordered[0]?.id ?? "";
+        });
+      } catch (failure) {
+        if (controller.signal.aborted || (failure instanceof DOMException && failure.name === "AbortError")) return;
+        setWeather(null);
+        setWeatherError("The live weather feed could not be read. The county catalog is unchanged.");
+      } finally {
+        if (!controller.signal.aborted) setWeatherLoading(false);
+      }
+    })();
+    return () => controller.abort();
+  }, [refreshKey, weatherAttempt]);
 
   const polling = job && !["completed", "failed"].includes(job.phase) ? job.id : null;
   useEffect(() => {
@@ -244,13 +293,15 @@ export const Nationwide = () => {
       <Masthead />
       <Content>
         <section className="intro" aria-labelledby="national-title">
-          <div className="intro-heading"><p className="eyebrow">County discovery / Official alert captures</p>
-            <h1 id="national-title">Find the next <em>care-facility call.</em></h1>
-            <p className="intro-description">Click a county or search the catalog. One run returns that county&apos;s audited rows and source gaps. A captured weather alert can run the counties it maps.</p>
+          <div className="intro-heading"><p className="eyebrow">Active weather / Published county catalog</p>
+            <h1 id="national-title">See the warning. <em>Then open the county.</em></h1>
+            <p className="intro-description">Active National Weather Service alerts load with the county catalog. A shape is drawn when the alert has one. A county lights up only when the alert carries that Census code and this catalog can open it. The full county search stays below.</p>
           </div>
           <div className="edition-note"><p>Directory records, not verified facility conditions. Prototype ranking, not clinical urgency.</p><a href="https://api.weather.gov/alerts/active" target="_blank" rel="noreferrer">Current official weather alerts</a></div>
         </section>
-        {mode === "county" && <CountyMap selected={county} disabled={busy} onPick={pickCounty} />}
+        <StormDesk weather={weather} loading={weatherLoading} error={weatherError} onRetry={() => setWeatherAttempt(attempt => attempt + 1)}
+          counties={catalog?.catalog.counties ?? []} selectedId={liveAlertId} onSelect={setLiveAlertId}
+          onOpenCounty={pickCounty} busy={busy} published={catalogIsPublished(catalog)} selectedCounty={county} />
         {loading && <p role="status">Reading the audited national source catalog. No sample counties are loaded.</p>}
         {error && <div className="watch-error" role="alert"><p>{error}</p><button onClick={() => setRefreshKey(key => key + 1)} disabled={loading}>Retry verified source catalog</button></div>}
         {recentRuns !== null && <section className="source-strip verified-local-runs" aria-labelledby="verified-runs-title">
@@ -266,6 +317,9 @@ export const Nationwide = () => {
               {run.alert_event ? ` / ${run.alert_event}` : ""} / {formatDate(run.generated_at)}</span>
           </li>)}</ul>}
         </section>}
+        <section className="county-catalog-block" aria-labelledby="county-catalog-title">
+          <h2 id="county-catalog-title">County catalog</h2>
+          <p className="fineprint">Search and the state list stay available after the weather list. Choosing a county opens that county&apos;s audited sheet. It does not, by itself, mean the county is under a warning.</p>
         {mode === "county" && <section className="contact-form" aria-label="Search the audited county catalog">
             <label htmlFor="county-search">Search US counties by name or FIPS</label>
             <input id="county-search" type="search" value={countyQuery} disabled={busy}
@@ -322,6 +376,7 @@ export const Nationwide = () => {
             <p className="fineprint">Nemotron only, through Meterless. Approved free NVIDIA route only. A failed draft is kept, retried at most once and never replaced with invented text. The shared call cap can leave drafts unattempted.</p>
           </form>
         </>}
+        </section>
         {job && <section className="source-strip" role="status" aria-live="polite">
           <p>Run {job.id}. {job.phase.replaceAll("_", " ")}.
             {job.total_counties !== undefined && <> {job.completed_counties} of {job.total_counties} affected counties read.</>}

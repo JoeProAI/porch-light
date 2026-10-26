@@ -30,6 +30,13 @@
   stroke: #d7f0ff;
 }
 
+.county-map path.is-affected {
+  fill: var(--color-severity-severe, #ef7a5f);
+  fill-opacity: 0.72;
+  stroke: var(--color-severity-severe, #ef7a5f);
+  stroke-width: 1.1;
+}
+
 .county-map path.is-selected {
   fill: #f2a93b;
   fill-opacity: 0.85;

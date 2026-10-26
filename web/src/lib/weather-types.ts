@@ -30,6 +30,8 @@ export type OfficialAlert = {
   senderName: string | null;
   geometry?: MapGeometry | null;
   zetaris_query_ids: string[];
+  /** Census county FIPS copied from NWS geocode.SAME. Absent or empty means the source did not send a whole-county code. */
+  same_county_fips?: string[];
 };
 
 export type LiveWeather = {
