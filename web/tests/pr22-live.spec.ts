@@ -34,21 +34,11 @@ test("PR22 opens an actual locally audited warning and its original instructions
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await expect(page.locator(".storm-map")).toHaveAttribute("data-tiles-loaded", "true", { timeout: 120000 });
   await page.screenshot({ path: testInfo.outputPath("pr22-real-alert.png"), fullPage: true });
-  if (testInfo.project.name === "mobile") {
-    await page.getByText("Optional Hurricane Milton retrospective").click();
-    const choice = page.getByRole("combobox", { name: "Retrospective facility", exact: true });
-    const id = await choice.locator("option").nth(1).getAttribute("value");
-    await choice.selectOption(id!);
-    await page.getByRole("button", { name: "Inspect selected facility evidence" }).click();
-  } else {
-    await page.getByRole("button", { name: "Retrospective marks: off" }).click();
-    await page.getByRole("button", { name: "Fit retrospective marks", exact: true }).click();
-    await page.locator(".facility-pin").first().focus();
-    await page.keyboard.press("Enter");
-  }
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await expect(page.getByRole("dialog")).toContainText("Zetaris audit verified");
-  await page.screenshot({ path: testInfo.outputPath("pr22-real-pin-evidence.png"), fullPage: true });
+  await expect(page.getByRole("button", { name: /retrospective/i })).toHaveCount(0);
+  await expect(page.getByText(/Hurricane Milton/i)).toHaveCount(0);
+  await expect(page.locator(".watch-evidence")).not.toContainText("Manatee");
+  await expect(page.locator(".facility-pin")).toHaveCount(0);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(errors).toEqual([]);
   expect(failed).toEqual([]);
 });

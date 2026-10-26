@@ -47,7 +47,9 @@ test("storm watch uses the night masthead, type, and a solid radar bar", async (
   expect(nav).toEqual(["Project home", "US county runs", "Storm Watch", "Source map", "Call order"]);
   await expect(page.getByRole("link", { name: "About the project" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Manatee call sheet" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Retrospective marks: off" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /retrospective/i })).toHaveCount(0);
+  await expect(page.getByText(/Hurricane Milton/i)).toHaveCount(0);
+  await expect(page.locator(".watch-evidence")).not.toContainText("Manatee");
   await expect(page.locator(".facility-cluster")).toHaveCount(0);
   await expect(page.locator(".radar-controls")).toBeVisible();
   await expect(page.getByRole("button", { name: "Play radar" })).toBeVisible();
@@ -198,7 +200,9 @@ test("source map and call order stay nationwide, not the Manatee retrospective",
   await page.goto("/watch");
   await expect(sourceLink).toHaveAttribute("href", "/#source-map");
   await expect(orderLink).toHaveAttribute("href", "/nationwide#county-catalog");
-  await expect(page.getByRole("button", { name: "Retrospective marks: off" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /retrospective/i })).toHaveCount(0);
+  await expect(page.getByText(/Hurricane Milton/i)).toHaveCount(0);
+  await expect(page.locator(".watch-evidence")).not.toContainText("Manatee");
   await expect(page.locator(".facility-cluster")).toHaveCount(0);
 
   await page.goto("/operate");
