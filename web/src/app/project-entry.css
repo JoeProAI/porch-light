@@ -6,7 +6,6 @@
 .mission { position: relative; isolation: isolate; min-height: 100dvh; display: grid; grid-template-columns: minmax(0, 820px); align-items: center; padding: 8vh max(32px, calc((100vw - 1504px) / 2)) 7vh; overflow: hidden; }
 .storm-photo { position: absolute; inset: 0; z-index: -2; background: #05070b; }
 .storm-photo img, .storm-photo video { width: 100%; height: 100%; object-fit: cover; object-position: 84% 36%; display: block; }
-.storm-photo::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: repeating-linear-gradient(104deg, transparent 0 11px, rgba(232, 240, 255, .11) 12px 13px); opacity: .7; }
 .mission::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #05070bf0 0%, #05070bb8 24%, #05070b38 48%, transparent 70%), linear-gradient(0deg, #05070bd0 0%, transparent 36%); }
 .mission-copy { max-width: 760px; background: #05070bf2; padding: 28px 32px 32px; align-self: center; }
 .mission-kicker { color: var(--muted); margin-bottom: 28px; }

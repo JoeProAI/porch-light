@@ -146,6 +146,12 @@ test("project entry explains the storm and care-facility use case and opens the 
   await expect(page.locator(".entry-footer")).not.toContainText("Hurricane Milton");
   await expect(page.locator(".entry-footer")).not.toContainText("Manatee");
   await expect(page.locator(".satellite-credit")).toContainText("not a live warning");
+  const rain = await page.locator(".storm-photo").evaluate(node => {
+    const after = getComputedStyle(node, "::after");
+    return { content: after.content, image: after.backgroundImage };
+  });
+  expect(rain.image).toBe("none");
+  expect(rain.content === "none" || rain.content === "normal").toBe(true);
   const primary = page.getByRole("link", { name: "Pick any US county" });
   await expect(primary).toHaveCount(1);
   await expect(primary).toHaveAttribute("href", "/nationwide");
