@@ -7,6 +7,7 @@ import { hasAlertShape } from "@/lib/geo";
 import { derivedFrameTime, IEM_CLOCK_URL, parseIemClock, radarFrames, type IemClock, type RadarFrame } from "@/lib/radar-frames";
 import { acceptedLiveWeather } from "@/lib/live-weather";
 import { weatherFreshness, type LiveWeather, type OfficialAlert } from "@/lib/weather-types";
+import { DocsLink } from "./docs-link";
 import { Masthead } from "./masthead";
 import { StormMap, type StormMapApi, type StormMapStatus } from "./storm-map";
 
@@ -281,7 +282,7 @@ export const StormWatch = () => {
           </> : <p>No audited capture is loaded. The street map can stay up. No facility marks are drawn. No alerts are invented.</p>}
         </section>
       </main>
-      <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Follow official warnings. No patient tracking. No inferred outages or facility conditions.</p><Link href="/#resources">Related official resources</Link></footer>
+      <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Follow official warnings. No patient tracking. No inferred outages or facility conditions.</p><DocsLink className="footer-docs" /><Link href="/#resources">Related official resources</Link></footer>
     </div>
   );
 };

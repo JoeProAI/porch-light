@@ -6,13 +6,14 @@
   "colors": {
     "primary": "#f2a93b",
     "light": "#ffb547",
-    "dark": "#05070b"
+    "dark": "#e09a2b"
   },
   "appearance": {
     "default": "dark",
     "strict": true
   },
   "background": {
+    "decoration": "grid",
     "color": {
       "light": "#f3eee3",
       "dark": "#05070b"
@@ -27,10 +28,10 @@
   "fonts": {
     "heading": {
       "family": "Libre Baskerville",
-      "weight": 700
+      "weight": 400
     },
     "body": {
-      "family": "IBM Plex Sans",
+      "family": "Atkinson Hyperlegible",
       "weight": 400
     }
   },
@@ -109,6 +110,25 @@
         "group": "Sponsors",
         "pages": [
           "sponsors"
+        ]
+      },
+      {
+        "group": "API reference",
+        "openapi": "/contract/openapi.yaml",
+        "pages": [
+          "api-reference/introduction",
+          "GET /alerts/archived",
+          "GET /alerts/active",
+          "POST /runs",
+          "GET /runs/{id}",
+          "GET /runs/{id}/facilities",
+          "GET /runs/{id}/joins",
+          "GET /runs/{id}/trace",
+          "GET /runs/{id}/checkins",
+          "POST /runs/{id}/checkins",
+          "POST /runs/{id}/export",
+          "GET /runs/{id}/exports/{export_id}/artifacts/{format}",
+          "GET /health"
         ]
       }
     ]

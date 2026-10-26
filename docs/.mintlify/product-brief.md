@@ -3,7 +3,7 @@
 ## Description
 Porch Light ranks care facilities for a US county and hands you a call-first sheet with directory phones, score terms, source gaps, and a Nemotron draft when the published sweep stored one. The formula ranks. The model writes the reason. Nothing auto-dials.
 
-The live desk is https://porchlight.earth. Home is nationwide-first. These docs live in the repo. There is no separate public docs site.
+The live desk is https://porchlight.earth/nationwide. Home is nationwide-first. Published docs are https://joeproai.mintlify.app.
 
 ## Primary audience
 Hackathon judges and the person shooting the submission video. They need the hosted path, the numbers they can recount, and the limits that stay on screen.

@@ -13,7 +13,7 @@ export const BlockedCallSheet = ({ heading, detail }: { heading: string; detail:
   <div className="app-shell national-controls">
     <header className="masthead">
       <a href="/" className="wordmark">Porch Light<span className="wordmark-period">.</span></a>
-      <nav className="workspace-nav" aria-label="Workspace sections"><a href="/nationwide">Pick any US county</a></nav>
+      <nav className="workspace-nav" aria-label="Workspace sections"><a href="/nationwide">Pick any US county</a><a className="nav-docs" href="https://joeproai.mintlify.app" target="_blank" rel="noreferrer">Docs</a></nav>
     </header>
     <main>
       <div className="watch-error" role="alert"><h1>{heading}</h1><p>{detail}</p></div>
