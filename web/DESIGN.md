@@ -16,7 +16,7 @@ The home page is the hero film: `hero-loop-web-1280.mp4` on the key art poster. 
 
 Rank numerals go large, up to 14rem on the call sheet index. Operational sentences stay 16–18px in Atkinson Hyperlegible. Clocks, scores, and ids use IBM Plex Mono. Print is black on white. Rank 1 prints with a heavy bar and the word FIRST.
 
-Rain and grain sit on the hero and the masthead chrome. They do not sit behind the ledger or the alert text.
+Grain sits on the masthead chrome. The hero film is the storm photo only, with no rain-streak overlay. Neither sits behind the ledger or the alert text.
 
 ## Storm Watch
 

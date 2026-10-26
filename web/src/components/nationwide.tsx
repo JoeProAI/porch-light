@@ -308,9 +308,19 @@ export const Nationwide = () => {
   const snapshot = job?.snapshot;
   const Content = snapshot && snapshot.state !== "source_gap" ? "section" : "main";
   useEffect(() => {
-    if (job?.snapshot && job.snapshot.state !== "source_gap") {
-      document.getElementById("national-result")?.focus();
-    }
+    if (!job?.snapshot || job.snapshot.state === "source_gap") return;
+    const frame = window.requestAnimationFrame(() => {
+      const atlas = document.getElementById("source-atlas");
+      const result = document.getElementById("national-result");
+      if (!atlas) {
+        result?.focus();
+        return;
+      }
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      atlas.scrollIntoView({ behavior: reduced ? "instant" : "smooth", block: "start" });
+      result?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [job?.id, !!job?.snapshot, job?.snapshot?.state]);
 
   return <>
