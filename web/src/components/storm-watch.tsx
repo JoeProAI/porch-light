@@ -45,6 +45,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
   const [locateMessage, setLocateMessage] = useState("");
   const [facilityId, setFacilityId] = useState("");
   const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const [showRetrospective, setShowRetrospective] = useState(false);
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
     setLoading(true);
@@ -167,6 +168,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
   const expired = selected?.expires ? Date.parse(selected.expires) <= (now || Date.now()) : false;
   const facility = facilities.find(row => row.id === facilityId);
   const locating = locateMessage === "Asking this browser for a location.";
+  const mappedFacilities = showRetrospective ? facilities : [];
 
   const chooseAlert = (id: string) => {
     setSelectedId(id);
@@ -202,17 +204,20 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
               <div className="map-toolbar" role="toolbar" aria-label="Chart controls">
                 <button type="button" onClick={() => mapApi.current?.national()} disabled={basemapStatus !== "ready"}>National view</button>
                 <button type="button" onClick={() => selected && hasAlertShape(selected.geometry) && mapApi.current?.fitGeometry(selected.geometry)} disabled={!selected || !hasAlertShape(selected?.geometry)}>Fit selected alert</button>
-                <button type="button" onClick={() => mapApi.current?.fitFacilities()} disabled={!facilities.length || basemapStatus !== "ready"}>Fit ranked facilities</button>
+                <button type="button" aria-pressed={showRetrospective} onClick={() => setShowRetrospective(value => !value)} disabled={!facilities.length}>
+                  Retrospective marks: {showRetrospective ? "on" : "off"}
+                </button>
+                <button type="button" onClick={() => mapApi.current?.fitFacilities()} disabled={!mappedFacilities.length || basemapStatus !== "ready"}>Fit retrospective marks</button>
                 <button type="button" onClick={() => mapApi.current?.locate()} disabled={basemapStatus !== "ready" || locating} aria-busy={locating}>{locating ? "Locating…" : "Locate"}</button>
                 <button type="button" onClick={() => mapApi.current?.zoomBy(1.6)} disabled={basemapStatus !== "ready"} aria-label="Zoom in">Zoom in</button>
                 <button type="button" onClick={() => mapApi.current?.zoomBy(1 / 1.6)} disabled={basemapStatus !== "ready"} aria-label="Zoom out">Zoom out</button>
                 <button type="button" aria-pressed={alertsVisible} onClick={() => setAlertsVisible(value => !value)}>Alert shapes: {alertsVisible ? "on" : "off"}</button>
               </div>
               <div className="storm-stage">
-                <StormMap key={mapGeneration} ref={mapApi} alerts={data?.alerts ?? []} facilities={facilities}
-                  countyName={snapshot?.county.name} countyState={snapshot?.county.state}
+                <StormMap key={mapGeneration} ref={mapApi} alerts={data?.alerts ?? []} facilities={mappedFacilities}
+                  countyName={showRetrospective ? snapshot?.county.name : undefined} countyState={showRetrospective ? snapshot?.county.state : undefined}
                   selectedAlertId={selectedId} selectedFacilityId={facilityId} frameId={frame.id}
-                  radarVisible={radarVisible} radarOpacity={radarOpacity} playing={playing} porchId={porchId}
+                  radarVisible={radarVisible} radarOpacity={radarOpacity} playing={playing} porchId={showRetrospective ? porchId : ""}
                   alertsVisible={alertsVisible} radarRetry={radarRetry} reducedMotion={reduced}
                   onSelectAlert={chooseAlert} onSelectFacility={openEvidence}
                   onBasemapStatus={setBasemapStatus} onRadarStatus={setRadarStatus} onLocateResult={setLocateMessage} />
@@ -286,7 +291,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
                   <h3>Official instructions</h3>
                   <p className="official-instructions">{selected.instruction ?? "No instructions supplied in this source record. Consult the issuing NWS office."}</p>
                   <h3>Care-facility source chain</h3>
-                  <p>Warning coverage and the care-facility sources are checked against the audited data connection. The Manatee pins are a past example, not a match to this alert.</p>
+                  <p>Warning coverage and the care-facility sources are checked against the audited data connection. Retrospective Manatee marks stay off until you turn them on. They are a past example, not a match to this alert.</p>
                   {freshness === "recent" && !expired && <Link className="entry-secondary" href={`/nationwide?alert=${encodeURIComponent(selected.id)}`}>Build the sourced care-facility call sheet</Link>}
                   <a href={selected.id} target="_blank" rel="noreferrer" className="entry-secondary">Inspect original NWS record</a>
                   <p className="fineprint">{selected.zetaris_query_ids.length ? `Zetaris query ${selected.zetaris_query_ids.join(", ")}` : "Direct National Weather Service record. No Zetaris query id."}</p>
@@ -297,8 +302,15 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
         </div>
         <section className="watch-evidence">
           <span className="eyebrow">Capture and audit evidence</span>
-          {!!facilities.length && <details><summary>Select a retrospective Manatee facility without overlapping pins</summary>
-            <label className="alert-search">Retrospective facility<select aria-label="Retrospective facility" value={facilityId} onChange={event => setFacilityId(event.target.value)}>
+          {!!facilities.length && <details><summary>Optional Hurricane Milton retrospective</summary>
+            <p className="fineprint">Off the default chart. These marks are the 2024 Manatee snapshot, not current facility conditions and not a match to the live alerts.</p>
+            <button type="button" aria-pressed={showRetrospective} onClick={() => setShowRetrospective(value => !value)}>
+              {showRetrospective ? "Hide retrospective marks" : "Show retrospective marks"}
+            </button>
+            <label className="alert-search">Retrospective facility<select aria-label="Retrospective facility" value={facilityId} onChange={event => {
+              setFacilityId(event.target.value);
+              if (event.target.value) setShowRetrospective(true);
+            }}>
               <option value="">Choose a source facility</option>
               {facilities.map(item => <option key={item.id} value={item.id}>Rank {item.rank}, {item.name}</option>)}
             </select></label>
@@ -313,8 +325,8 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
               <p>Map radar is the Iowa Environmental Mesonet USCOMP N0Q tile layer, read when the chart requests a tile. It is not a Zetaris audit. Alert text and shapes are the National Weather Service feed at this capture time.</p>
             </>}
             <ul>{data.limits.map(limit => <li key={limit}>{limit}</li>)}</ul>
-            <p className="fineprint">National weather isn't proof of rankable care-facility coverage. Run the actual source chain for a county or alert. Manatee remains the separate retrospective walkthrough.</p>
-          </> : <p>No audited capture is loaded. The street map can stay up. Manatee pins are a past example, not current facility conditions. No alerts are invented.</p>}
+            <p className="fineprint">National weather isn't proof of rankable care-facility coverage. Run the actual source chain for a county or alert. Manatee remains an optional labeled retrospective, not the default Watch frame.</p>
+          </> : <p>No audited capture is loaded. The street map can stay up. No facility marks are drawn by default. No alerts are invented.</p>}
         </section>
       </main>
       <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Follow official warnings. No patient tracking. No inferred outages or facility conditions.</p><Link href="/#resources">Related official resources</Link></footer>

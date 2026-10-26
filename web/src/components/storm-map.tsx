@@ -426,15 +426,12 @@ export const StormMap = forwardRef<StormMapApi, {
         element.setAttribute("aria-pressed", row.id === props.selectedFacilityId ? "true" : "false");
         element.addEventListener("click", () => propsRef.current.onSelectFacility(row.id));
       } else {
-        element.className = `facility-cluster${porch ? " is-porch" : ""}`;
+        element.className = "facility-cluster";
         element.dataset.count = String(group.length);
         const count = document.createElement("span");
         count.className = "facility-cluster-count";
         count.textContent = String(group.length);
-        const caption = document.createElement("span");
-        caption.className = "facility-cluster-caption";
-        caption.textContent = props.countyName ?? "Facilities";
-        element.append(count, caption);
+        element.append(count);
         element.setAttribute("aria-label", `${group.length} retrospective facilities located in ${place || "this county"}. Not a live alert count.`);
         element.addEventListener("click", () => {
           const current = mapRef.current;

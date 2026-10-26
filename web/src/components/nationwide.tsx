@@ -13,6 +13,7 @@ import { SourceGaps } from "./national/source-gaps";
 import { StormDesk } from "./national/storm-desk";
 import { Masthead } from "./masthead";
 import { Operator } from "./operator";
+import { SourceMap } from "./source-map";
 import "./national/national.css";
 
 type Alert = { id: string; event: string; areaDesc: string; expires: string; county_fips: string[]; mapping_status: string };
@@ -314,7 +315,10 @@ export const Nationwide = () => {
 
   return <>
     <div className="app-shell national-controls">
-      <Masthead />
+      <Masthead
+        sourceHref="#source-map"
+        ledgerHref={snapshot && snapshot.state !== "source_gap" ? "#call-ledger" : "#county-catalog"}
+      />
       <Content>
         <section className="intro" aria-labelledby="national-title">
           <div className="intro-heading"><p className="eyebrow">Active weather / Published county catalog</p>
@@ -327,6 +331,7 @@ export const Nationwide = () => {
           counties={catalog?.catalog.counties ?? []} selectedId={liveAlertId} onSelect={setLiveAlertId}
           onOpenCounty={pickCounty} onShortlist={changeShortlist} shortlist={shortlist} readPublished={readPublished}
           busy={busy} published={catalogIsPublished(catalog)} />
+        <SourceMap compact />
         {loading && <p role="status">Reading the audited national source catalog. No sample counties are loaded.</p>}
         {error && <div className="watch-error" role="alert"><p>{error}</p><button onClick={() => setRefreshKey(key => key + 1)} disabled={loading}>Retry verified source catalog</button></div>}
         {recentRuns !== null && <section className="source-strip verified-local-runs" aria-labelledby="verified-runs-title">
@@ -342,7 +347,7 @@ export const Nationwide = () => {
               {run.alert_event ? ` / ${run.alert_event}` : ""} / {formatDate(run.generated_at)}</span>
           </li>)}</ul>}
         </section>}
-        <section className="county-catalog-block" aria-labelledby="county-catalog-title">
+        <section className="county-catalog-block" id="county-catalog" aria-labelledby="county-catalog-title">
           <h2 id="county-catalog-title">County catalog</h2>
           <p className="fineprint">Search and the state list stay available after the weather list. Choosing a county opens that county&apos;s audited sheet. It does not, by itself, mean the county is under a warning.</p>
         {mode === "county" && <section className="contact-form" aria-label="Search the audited county catalog">

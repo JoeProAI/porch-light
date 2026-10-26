@@ -47,6 +47,8 @@ test("storm watch uses the night masthead, type, and a solid radar bar", async (
   expect(nav).toEqual(["Project home", "US county runs", "Storm Watch", "Source map", "Call order"]);
   await expect(page.getByRole("link", { name: "About the project" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Manatee call sheet" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Retrospective marks: off" })).toBeVisible();
+  await expect(page.locator(".facility-cluster")).toHaveCount(0);
   await expect(page.locator(".radar-controls")).toBeVisible();
   await expect(page.getByRole("button", { name: "Play radar" })).toBeVisible();
   await expect(page.getByLabel("Radar frame")).toBeVisible();
@@ -166,6 +168,44 @@ test("project entry explains the storm and care-facility use case and opens the 
   await page.getByRole("link", { name: "Hurricane Milton retrospective" }).click();
   await expect(page).toHaveURL(/\/operate$/);
   await expect(page.locator(".facility-row")).toHaveCount(18);
+});
+
+test("source map and call order stay nationwide, not the Manatee retrospective", async ({ page }) => {
+  const sourceLink = page.locator("header.masthead nav a", { hasText: "Source map" }).first();
+  const orderLink = page.locator("header.masthead nav a", { hasText: "Call order" }).first();
+
+  await page.goto("/");
+  await expect(sourceLink).toHaveAttribute("href", "/#source-map");
+  await expect(orderLink).toHaveAttribute("href", "/nationwide#county-catalog");
+  await page.goto("/#source-map");
+  await expect(page.locator("#source-map")).toBeVisible();
+  await expect(page.locator("#source-map")).toContainText("any US county");
+  await expect(page.locator("#source-map")).toContainText("Gaps stay visible");
+  await expect(page.locator("#source-map")).toContainText("No Manatee substitute");
+  await expect(page.locator("#source-map")).not.toContainText("Manatee Bay");
+  await expect(page.locator("#source-map")).not.toContainText("Hurricane Milton");
+  await expect(page.getByRole("heading", { name: "How sources work for every county." })).toBeVisible();
+
+  await page.goto("/nationwide");
+  await expect(sourceLink).toHaveAttribute("href", "#source-map");
+  await expect(orderLink).toHaveAttribute("href", "#county-catalog");
+  await expect(sourceLink).not.toHaveAttribute("href", /operate/);
+  await expect(orderLink).not.toHaveAttribute("href", /operate/);
+  await expect(page.locator("#source-map")).toBeVisible();
+  await expect(page.locator("#source-map")).toContainText("any US county");
+  await expect(page.locator("#county-catalog")).toBeAttached();
+
+  await page.goto("/watch");
+  await expect(sourceLink).toHaveAttribute("href", "/#source-map");
+  await expect(orderLink).toHaveAttribute("href", "/nationwide#county-catalog");
+  await expect(page.getByRole("button", { name: "Retrospective marks: off" })).toBeVisible();
+  await expect(page.locator(".facility-cluster")).toHaveCount(0);
+
+  await page.goto("/operate");
+  await expect(page.getByText("Retrospective · Hurricane Milton / 2024")).toBeVisible();
+  await expect(page.getByText("RETROSPECTIVE / MANATEE")).toBeVisible();
+  await expect(sourceLink).toHaveAttribute("href", "#source-atlas");
+  await expect(orderLink).toHaveAttribute("href", "#call-ledger");
 });
 
 test("source atlas and contact workbench stay ordered across desktop and tablet", async ({ page }) => {

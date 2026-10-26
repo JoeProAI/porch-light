@@ -4,7 +4,7 @@ import { readSnapshot } from "@/lib/snapshot";
 
 export const metadata: Metadata = {
   title: "Storm Watch | Porch Light",
-  description: "Iowa Environmental Mesonet radar, National Weather Service alerts with published shapes, and ranked Manatee facility pins.",
+  description: "Iowa Environmental Mesonet radar and National Weather Service alerts with published shapes. Facility marks are an optional Milton retrospective, off by default.",
 };
 export const dynamic = "force-dynamic";
 
