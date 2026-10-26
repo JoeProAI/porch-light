@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { LogoMark } from "./logo-mark";
 
-export const Masthead = ({ edition, sourceHref = "/#source-map", ledgerHref = "/nationwide#county-catalog" }: {
+export const Masthead = ({ edition, sourceHref = "/nationwide#source-atlas", ledgerHref = "/nationwide#county-catalog" }: {
   edition?: ReactNode;
   sourceHref?: string;
   ledgerHref?: string;

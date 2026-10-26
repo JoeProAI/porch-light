@@ -304,4 +304,16 @@ test("a nationwide county open scrolls to the large county map with facility dot
   expect(placement.resultTop!).toBeLessThan(0);
   expect(placement.footerTop).toBeGreaterThan(placement.viewport * 0.5);
   expect(placement.atPageBottom).toBe(false);
+  const sourceLinks = page.locator("header.masthead nav a", { hasText: "Source map" });
+  await expect(sourceLinks).toHaveCount(2);
+  await expect(sourceLinks.nth(0)).toHaveAttribute("href", "#source-atlas");
+  await expect(sourceLinks.nth(1)).toHaveAttribute("href", "#source-atlas");
+  if (test.info().project.name === "desktop") {
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await sourceLinks.first().click();
+    await expect.poll(async () => atlas.evaluate(node => {
+      const box = node.getBoundingClientRect();
+      return box.top >= -8 && box.top < window.innerHeight * 0.45;
+    })).toBe(true);
+  }
 });
