@@ -54,7 +54,7 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
         <SponsorEvidence snapshot={snapshot} />
         <ResourceLinks />
       </main>
-      <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Prototype policy, not clinically validated. No emergency or clinical guidance. No calls are placed.</p><span className="mono">Real source records. Visible limits.</span><Link className="retrospective-link" href="/operate">Hurricane Milton retrospective</Link></footer>
+      <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Prototype policy, not clinically validated. No emergency or clinical guidance. No calls are placed.</p><span className="mono">Real source records. Visible limits.</span></footer>
     </div>
   );
 };

@@ -29,14 +29,13 @@ export const CoverageMap = ({ geometry, facilities, selectedId, onSelect, contex
           <desc id="map-svg-desc">{contextLabel ? "Official source boundaries and ranked facility locations. County context is not a warning boundary. Select a point to inspect its source record." : "Static Web Mercator projection. Current published NWS geometry, not a verified 2024 boundary or live warning. Choose a point to select its ledger row."}</desc>
           <defs>
             <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" className="map-grid" /></pattern>
-            <pattern id="zone-hatch" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M -1 1 L 1 -1 M 0 7 L 7 0 M 6 8 L 8 6" className="zone-hatch-line" /></pattern>
             <clipPath id="map-clip"><rect width="600" height="400" /></clipPath>
           </defs>
           <rect width="600" height="500" fill="url(#grid)" />
           <g className="map-registration" aria-hidden="true"><path d="M 16 44 V 16 H 44 M 556 16 H 584 V 44 M 16 456 V 484 H 44 M 556 484 H 584 V 456" /></g>
           <g transform="translate(0 50)">
           <g clipPath="url(#map-clip)">
-            {projection.paths.map((d, i) => <g key={i}><path d={d} className="zone-underlay" fillRule="evenodd" /><path d={d} className="zone-path" fill="url(#zone-hatch)" fillRule="evenodd" /></g>)}
+            {projection.paths.map((d, i) => <path key={i} d={d} className="zone-underlay" fillRule="evenodd" />)}
             {selectedPoint && <g className="selected-registration" aria-hidden="true">
               <path d={`M 24 ${selectedPoint[1]} H 576 M ${selectedPoint[0]} 12 V 388`} />
               <circle cx={selectedPoint[0]} cy={selectedPoint[1]} r="27" />
