@@ -11,7 +11,6 @@ html { scroll-behavior: smooth; background: #05070b; }
 body { margin: 0; background: #05070b; color: var(--ink); font-family: var(--font-body); font-size: var(--text-base); line-height: var(--leading-base); -webkit-font-smoothing: antialiased; }
 .masthead, .entry-header { position: relative; }
 .masthead::before, .entry-header::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .22; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); }
-.masthead::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: repeating-linear-gradient(104deg, transparent 0 14px, rgba(232, 240, 255, .08) 15px 16px); }
 button, select, a { -webkit-tap-highlight-color: transparent; }
 button, select { font: inherit; }
 button, .button { min-height: 44px; border: 1px solid var(--line); background: transparent; color: var(--ink); padding: 10px 15px; cursor: pointer; text-decoration: none; transition: background var(--fast), border-color var(--fast), color var(--fast); }
@@ -143,9 +142,7 @@ select { border: 1px solid var(--line); background: var(--surface); color: var(-
 .map-canvas { background: #05070b; border: 1px solid var(--line); position: relative; overflow: hidden; transform: translateZ(0); }
 .map-canvas svg { width: 100%; height: auto; min-height: 400px; display: block; position: relative; }
 .map-grid { stroke: color-mix(in srgb, var(--quiet-ink) 14%, transparent); fill: none; stroke-width: .6; }
-.zone-underlay { fill: color-mix(in srgb, var(--color-focus) 9%, var(--bg)); }
-.zone-path { stroke: var(--color-focus); stroke-width: 1; vector-effect: non-scaling-stroke; }
-.zone-hatch-line { stroke: var(--color-focus); stroke-width: .4; opacity: .3; fill: none; }
+.zone-underlay { fill: color-mix(in srgb, var(--color-focus) 9%, var(--bg)); stroke: var(--color-focus); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .map-registration path, .atlas-compass path { stroke: var(--amber); stroke-width: 1; fill: none; opacity: .7; }
 .atlas-compass text, .map-axis { fill: var(--muted); font: 10px var(--mono); letter-spacing: .07em; }
 .selected-registration { pointer-events: none; }
@@ -173,7 +170,7 @@ select { border: 1px solid var(--line); background: var(--surface); color: var(-
 .map-direction { fill: var(--muted); font-size: 10px; font-family: var(--mono); letter-spacing: .1em; pointer-events: none; }
 .map-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; color: var(--muted); font-size: 10px; padding: 12px 0; }
 .map-legend > span { display: flex; align-items: center; gap: 7px; }
-.legend-zone { width: 12px; height: 8px; border: 1px solid var(--color-focus); }
+.legend-zone { width: 12px; height: 8px; border: 1px solid var(--color-focus); background: color-mix(in srgb, var(--color-focus) 9%, var(--bg)); }
 .legend-point { width: 6px; height: 6px; border: 1px solid var(--ink); border-radius: 50%; }
 .map-empty { position: absolute; top: 40%; padding: 0 20px; font-size: 12px; }
 .refusals { border-block: 1px solid var(--line); margin-top: 36px; padding: 28px 0; display: grid; grid-template-columns: 1fr 1.3fr; gap: 48px; }

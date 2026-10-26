@@ -95,6 +95,16 @@ test("Storm Watch renders actual alerts, authentic radar and explicit national s
   await expect(page.locator(".facility-cluster")).toHaveCount(0);
   await expect(page.locator(".facility-pin")).toHaveCount(0);
   await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.locator("#zone-hatch")).toHaveCount(0);
+  await expect(page.locator(".zone-hatch-line")).toHaveCount(0);
+  const overlay = await page.evaluate(() => {
+    const after = getComputedStyle(document.querySelector("header.masthead")!, "::after").backgroundImage;
+    const mapAfter = getComputedStyle(document.querySelector(".storm-map")!, "::after").backgroundImage;
+    return { after, mapAfter, wood: document.querySelector(".storm-map")?.getAttribute("data-wood-pattern") };
+  });
+  expect(overlay.after).toBe("none");
+  expect(overlay.mapAfter).toBe("none");
+  expect(overlay.wood === "off" || overlay.wood === null).toBe(true);
   await expect(page.locator(".storm-map")).toHaveAttribute("data-frame", "nexrad-n0q-900913");
   await expect(page.locator(".storm-map")).toHaveAttribute("data-playing", "false");
   await expect(page.locator(".storm-map")).toHaveAttribute("data-radar-opacity", "0.45");

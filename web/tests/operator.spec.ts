@@ -142,22 +142,10 @@ test("project entry explains the storm and care-facility use case and opens the 
   await expect(page.locator(".first-call-preview")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "See the Hurricane Milton walkthrough" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Manatee County, Florida." })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Hurricane Milton retrospective" })).toHaveCount(0);
+  await expect(page.locator(".entry-footer")).not.toContainText("Hurricane Milton");
+  await expect(page.locator(".entry-footer")).not.toContainText("Manatee");
   await expect(page.locator(".satellite-credit")).toContainText("not a live warning");
-  const milton = page.getByRole("link", { name: "Hurricane Milton retrospective" });
-  await expect(milton).toHaveCount(1);
-  const retrospective = await milton.evaluate(el => {
-    const style = getComputedStyle(el);
-    return {
-      fontSize: Number.parseFloat(style.fontSize),
-      weight: Number(style.fontWeight),
-      borderWidth: Number.parseFloat(style.borderTopWidth),
-      paddingTop: Number.parseFloat(style.paddingTop),
-    };
-  });
-  expect(retrospective.fontSize).toBeLessThanOrEqual(13);
-  expect(retrospective.weight).toBeLessThanOrEqual(400);
-  expect(retrospective.borderWidth).toBe(0);
-  expect(retrospective.paddingTop).toBe(0);
   const primary = page.getByRole("link", { name: "Pick any US county" });
   await expect(primary).toHaveCount(1);
   await expect(primary).toHaveAttribute("href", "/nationwide");
@@ -166,10 +154,6 @@ test("project entry explains the storm and care-facility use case and opens the 
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await primary.click();
   await expect(page).toHaveURL(/\/nationwide$/);
-  await page.goto("/");
-  await page.getByRole("link", { name: "Hurricane Milton retrospective" }).click();
-  await expect(page).toHaveURL(/\/operate$/);
-  await expect(page.locator(".facility-row")).toHaveCount(18);
 });
 
 test("source map and call order stay nationwide, not the Manatee retrospective", async ({ page }) => {
@@ -179,6 +163,10 @@ test("source map and call order stay nationwide, not the Manatee retrospective",
   await page.goto("/");
   await expect(sourceLink).toHaveAttribute("href", "/#source-map");
   await expect(orderLink).toHaveAttribute("href", "/nationwide#county-catalog");
+  await expect(page.getByRole("link", { name: "Hurricane Milton retrospective" })).toHaveCount(0);
+  await expect(page.locator(".entry-footer")).not.toContainText("Hurricane Milton");
+  await expect(page.locator(".entry-footer")).not.toContainText("Manatee");
+  expect(await page.locator("header.masthead").evaluate(node => getComputedStyle(node, "::after").backgroundImage)).toBe("none");
   await page.goto("/#source-map");
   await expect(page.locator("#source-map")).toBeVisible();
   await expect(page.locator("#source-map")).toContainText("any US county");
@@ -196,6 +184,8 @@ test("source map and call order stay nationwide, not the Manatee retrospective",
   await expect(page.locator("#source-map")).toBeVisible();
   await expect(page.locator("#source-map")).toContainText("any US county");
   await expect(page.locator("#county-catalog")).toBeAttached();
+  await expect(page.locator("#zone-hatch")).toHaveCount(0);
+  expect(await page.locator("header.masthead").evaluate(node => getComputedStyle(node, "::after").backgroundImage)).toBe("none");
 
   await page.goto("/watch");
   await expect(sourceLink).toHaveAttribute("href", "/#source-map");
@@ -204,12 +194,16 @@ test("source map and call order stay nationwide, not the Manatee retrospective",
   await expect(page.getByText(/Hurricane Milton/i)).toHaveCount(0);
   await expect(page.locator(".watch-evidence")).not.toContainText("Manatee");
   await expect(page.locator(".facility-cluster")).toHaveCount(0);
+  await expect(page.locator("#zone-hatch")).toHaveCount(0);
+  expect(await page.locator("header.masthead").evaluate(node => getComputedStyle(node, "::after").backgroundImage)).toBe("none");
 
   await page.goto("/operate");
   await expect(page.getByText("Retrospective · Hurricane Milton / 2024")).toBeVisible();
   await expect(page.getByText("RETROSPECTIVE / MANATEE")).toBeVisible();
   await expect(sourceLink).toHaveAttribute("href", "#source-atlas");
   await expect(orderLink).toHaveAttribute("href", "#call-ledger");
+  await expect(page.locator("#zone-hatch")).toHaveCount(0);
+  await expect(page.locator(".zone-underlay")).not.toHaveCount(0);
 });
 
 test("source atlas and contact workbench stay ordered across desktop and tablet", async ({ page }) => {
