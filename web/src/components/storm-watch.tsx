@@ -2,22 +2,17 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { formatDate, formatDateEt, parseContacts } from "@/lib/operator";
+import { formatDate, formatDateEt } from "@/lib/operator";
 import { hasAlertShape } from "@/lib/geo";
 import { derivedFrameTime, IEM_CLOCK_URL, parseIemClock, radarFrames, type IemClock, type RadarFrame } from "@/lib/radar-frames";
 import { acceptedLiveWeather } from "@/lib/live-weather";
 import { weatherFreshness, type LiveWeather, type OfficialAlert } from "@/lib/weather-types";
-import type { Provenance, Snapshot } from "@/lib/types";
-import { EvidenceDrawer } from "./evidence-drawer";
 import { Masthead } from "./masthead";
 import { StormMap, type StormMapApi, type StormMapStatus } from "./storm-map";
 
 const severities = ["Extreme", "Severe", "Moderate", "Minor", "Unknown"] as const;
 
-export const StormWatch = ({ snapshot, provenance, sheetError }: {
-  snapshot: Snapshot | null; provenance: Provenance | null; sheetError: string;
-}) => {
-  const facilities = snapshot?.facilities ?? [];
+export const StormWatch = () => {
   const mapApi = useRef<StormMapApi>(null);
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const [data, setData] = useState<LiveWeather | null>(null);
@@ -34,7 +29,6 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
   const [reduced, setReduced] = useState(false);
   const [radarVisible, setRadarVisible] = useState(true);
   const [radarOpacity, setRadarOpacity] = useState(0.45);
-  const [porchId, setPorchId] = useState(facilities[0]?.id ?? "");
   const [flash, setFlash] = useState(false);
   const seenAlerts = useRef<Set<string> | null>(null);
   const [alertsVisible, setAlertsVisible] = useState(true);
@@ -43,9 +37,6 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
   const [mapGeneration, setMapGeneration] = useState(0);
   const [radarRetry, setRadarRetry] = useState(0);
   const [locateMessage, setLocateMessage] = useState("");
-  const [facilityId, setFacilityId] = useState("");
-  const [evidenceOpen, setEvidenceOpen] = useState(false);
-  const [showRetrospective, setShowRetrospective] = useState(false);
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
     setLoading(true);
@@ -120,22 +111,6 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
   useEffect(() => { if (radarStatus === "error" || !radarVisible) setPlaying(false); }, [radarStatus, radarVisible]);
 
   useEffect(() => {
-    if (!snapshot) return;
-    const key = `porch-light:contacts:v1:${snapshot.source_snapshot_hash}`;
-    const read = () => {
-      try {
-        const stored = parseContacts(localStorage.getItem(key), snapshot.facilities);
-        const next = [...snapshot.facilities].sort((a, b) => a.rank - b.rank)
-          .find(item => !stored[item.id] || stored[item.id].status === "uncontacted");
-        setPorchId(next?.id ?? "");
-      } catch { setPorchId(snapshot.facilities[0]?.id ?? ""); }
-    };
-    read();
-    window.addEventListener("storage", read);
-    return () => window.removeEventListener("storage", read);
-  }, [snapshot]);
-
-  useEffect(() => {
     if (!data) return;
     const ids = data.alerts.map(alert => alert.id);
     if (seenAlerts.current === null) {
@@ -166,9 +141,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
   const shapeless = filtered.filter(alert => !hasAlertShape(alert.geometry));
   const selected = data?.alerts.find(alert => alert.id === selectedId);
   const expired = selected?.expires ? Date.parse(selected.expires) <= (now || Date.now()) : false;
-  const facility = facilities.find(row => row.id === facilityId);
   const locating = locateMessage === "Asking this browser for a location.";
-  const mappedFacilities = showRetrospective ? facilities : [];
 
   const chooseAlert = (id: string) => {
     setSelectedId(id);
@@ -176,7 +149,6 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
     if (alert && hasAlertShape(alert.geometry)) mapApi.current?.fitGeometry(alert.geometry);
     window.requestAnimationFrame(() => detailHeading.current?.focus());
   };
-  const openEvidence = (id: string) => { setFacilityId(id); setEvidenceOpen(true); };
 
   return (
     <div className={`watch-shell${flash ? " is-lightning" : ""}`}>
@@ -204,22 +176,17 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
               <div className="map-toolbar" role="toolbar" aria-label="Chart controls">
                 <button type="button" onClick={() => mapApi.current?.national()} disabled={basemapStatus !== "ready"}>National view</button>
                 <button type="button" onClick={() => selected && hasAlertShape(selected.geometry) && mapApi.current?.fitGeometry(selected.geometry)} disabled={!selected || !hasAlertShape(selected?.geometry)}>Fit selected alert</button>
-                <button type="button" aria-pressed={showRetrospective} onClick={() => setShowRetrospective(value => !value)} disabled={!facilities.length}>
-                  Retrospective marks: {showRetrospective ? "on" : "off"}
-                </button>
-                <button type="button" onClick={() => mapApi.current?.fitFacilities()} disabled={!mappedFacilities.length || basemapStatus !== "ready"}>Fit retrospective marks</button>
                 <button type="button" onClick={() => mapApi.current?.locate()} disabled={basemapStatus !== "ready" || locating} aria-busy={locating}>{locating ? "Locating…" : "Locate"}</button>
                 <button type="button" onClick={() => mapApi.current?.zoomBy(1.6)} disabled={basemapStatus !== "ready"} aria-label="Zoom in">Zoom in</button>
                 <button type="button" onClick={() => mapApi.current?.zoomBy(1 / 1.6)} disabled={basemapStatus !== "ready"} aria-label="Zoom out">Zoom out</button>
                 <button type="button" aria-pressed={alertsVisible} onClick={() => setAlertsVisible(value => !value)}>Alert shapes: {alertsVisible ? "on" : "off"}</button>
               </div>
               <div className="storm-stage">
-                <StormMap key={mapGeneration} ref={mapApi} alerts={data?.alerts ?? []} facilities={mappedFacilities}
-                  countyName={showRetrospective ? snapshot?.county.name : undefined} countyState={showRetrospective ? snapshot?.county.state : undefined}
-                  selectedAlertId={selectedId} selectedFacilityId={facilityId} frameId={frame.id}
-                  radarVisible={radarVisible} radarOpacity={radarOpacity} playing={playing} porchId={showRetrospective ? porchId : ""}
+                <StormMap key={mapGeneration} ref={mapApi} alerts={data?.alerts ?? []} facilities={[]}
+                  selectedAlertId={selectedId} selectedFacilityId="" frameId={frame.id}
+                  radarVisible={radarVisible} radarOpacity={radarOpacity} playing={playing} porchId=""
                   alertsVisible={alertsVisible} radarRetry={radarRetry} reducedMotion={reduced}
-                  onSelectAlert={chooseAlert} onSelectFacility={openEvidence}
+                  onSelectAlert={chooseAlert} onSelectFacility={() => undefined}
                   onBasemapStatus={setBasemapStatus} onRadarStatus={setRadarStatus} onLocateResult={setLocateMessage} />
                 {basemapStatus === "loading" && <p className="map-status-note" role="status">Opening the night chart.</p>}
                 {basemapStatus === "error" && <div className="map-failure" role="alert"><h3>The base map didn't load.</h3><p>The street map didn't return. No substitute imagery is drawn.</p><button type="button" onClick={() => { setBasemapStatus("loading"); setMapGeneration(value => value + 1); }}>Retry base map</button></div>}
@@ -251,7 +218,6 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
                 <p className="radar-coverage">National radar, contiguous US only. Roads stay visible. Not a forecast or a call ranking. Base map © OpenStreetMap, © OpenMapTiles, © OpenFreeMap. Radar © Iowa Environmental Mesonet.</p>
                 {reduced && <p className="radar-note">Reduced motion is on. Press Play to move the radar.</p>}
                 {locateMessage && <p className="radar-note">{locateMessage}</p>}
-                {sheetError && <p className="radar-note">{sheetError}</p>}
               </div>
             </div>
           </section>
@@ -291,7 +257,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
                   <h3>Official instructions</h3>
                   <p className="official-instructions">{selected.instruction ?? "No instructions supplied in this source record. Consult the issuing NWS office."}</p>
                   <h3>Care-facility source chain</h3>
-                  <p>Warning coverage and the care-facility sources are checked against the audited data connection. Retrospective Manatee marks stay off until you turn them on. They are a past example, not a match to this alert.</p>
+                  <p>Warning coverage and care-facility sources are checked against the audited data connection for the county you open on the nationwide desk. This page does not load a county snapshot or draw facility marks.</p>
                   {freshness === "recent" && !expired && <Link className="entry-secondary" href={`/nationwide?alert=${encodeURIComponent(selected.id)}`}>Build the sourced care-facility call sheet</Link>}
                   <a href={selected.id} target="_blank" rel="noreferrer" className="entry-secondary">Inspect original NWS record</a>
                   <p className="fineprint">{selected.zetaris_query_ids.length ? `Zetaris query ${selected.zetaris_query_ids.join(", ")}` : "Direct National Weather Service record. No Zetaris query id."}</p>
@@ -302,20 +268,6 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
         </div>
         <section className="watch-evidence">
           <span className="eyebrow">Capture and audit evidence</span>
-          {!!facilities.length && <details><summary>Optional Hurricane Milton retrospective</summary>
-            <p className="fineprint">Off the default chart. These marks are the 2024 Manatee snapshot, not current facility conditions and not a match to the live alerts.</p>
-            <button type="button" aria-pressed={showRetrospective} onClick={() => setShowRetrospective(value => !value)}>
-              {showRetrospective ? "Hide retrospective marks" : "Show retrospective marks"}
-            </button>
-            <label className="alert-search">Retrospective facility<select aria-label="Retrospective facility" value={facilityId} onChange={event => {
-              setFacilityId(event.target.value);
-              if (event.target.value) setShowRetrospective(true);
-            }}>
-              <option value="">Choose a source facility</option>
-              {facilities.map(item => <option key={item.id} value={item.id}>Rank {item.rank}, {item.name}</option>)}
-            </select></label>
-            <button type="button" disabled={!facility} onClick={() => facility && openEvidence(facility.id)}>Inspect selected facility evidence</button>
-          </details>}
           {data ? <>
             {data.data_access.data_access_mode === "zetaris" ? <>
               <p>Zetaris query <code>{data.data_access.zetaris_query_ids.join(", ")}</code> / automatic view refresh every minute / source ingestion targets five-minute captures.</p>
@@ -325,15 +277,11 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
               <p>Map radar is the Iowa Environmental Mesonet USCOMP N0Q tile layer, read when the chart requests a tile. It is not a Zetaris audit. Alert text and shapes are the National Weather Service feed at this capture time.</p>
             </>}
             <ul>{data.limits.map(limit => <li key={limit}>{limit}</li>)}</ul>
-            <p className="fineprint">National weather isn't proof of rankable care-facility coverage. Run the actual source chain for a county or alert. Manatee remains an optional labeled retrospective, not the default Watch frame.</p>
-          </> : <p>No audited capture is loaded. The street map can stay up. No facility marks are drawn by default. No alerts are invented.</p>}
+            <p className="fineprint">National weather isn't proof of rankable care-facility coverage. Open any US county on the nationwide desk to run that county's source chain. This page is weather and alerts only.</p>
+          </> : <p>No audited capture is loaded. The street map can stay up. No facility marks are drawn. No alerts are invented.</p>}
         </section>
       </main>
       <footer className="entry-footer"><Link className="wordmark" href="/">Porch Light.</Link><p>Follow official warnings. No patient tracking. No inferred outages or facility conditions.</p><Link href="/#resources">Related official resources</Link></footer>
-      {facility && snapshot && provenance && <EvidenceDrawer row={facility} snapshot={snapshot} provenance={provenance} open={evidenceOpen} onClose={() => {
-        setEvidenceOpen(false);
-        document.querySelector<HTMLElement>(`[data-facility-id="${CSS.escape(facility.id)}"]`)?.focus();
-      }} />}
     </div>
   );
 };

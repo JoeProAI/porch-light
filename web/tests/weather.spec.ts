@@ -1,11 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { createHash } from "node:crypto";
-import snapshotJson from "../data/manatee-ranked.json";
 import { weatherFreshness, type LiveWeather } from "../src/lib/weather-types";
 import { createRadarProjection, initialRadarView, zoomRadarView } from "../src/lib/radar-map";
-import type { Snapshot } from "../src/lib/types";
-
-const snapshot = snapshotJson as unknown as Snapshot;
 
 test("zoomable radar assets close actual source hashes and Zetaris receipts without leaking paths", async ({ request }) => {
   test.setTimeout(190000);
@@ -92,20 +88,13 @@ test("Storm Watch renders actual alerts, authentic radar and explicit national s
   await expect(page.locator(".radar-coverage")).toContainText("contiguous US only");
   await radar;
   await waitForChart(page);
-  await expect(page.getByRole("button", { name: /retrospective facilities located in Manatee/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /retrospective/i })).toHaveCount(0);
+  await expect(page.getByText(/Hurricane Milton/i)).toHaveCount(0);
+  await expect(page.locator(".watch-evidence")).not.toContainText("Manatee");
+  await expect(page.locator(".map-toolbar")).not.toContainText("Retrospective");
   await expect(page.locator(".facility-cluster")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Retrospective marks: off" })).toBeVisible();
-  await page.getByRole("button", { name: "Retrospective marks: off" }).click();
-  await expect(page.locator(".storm-map")).toHaveAttribute("data-markers", "cluster");
-  const cluster = page.getByRole("button", { name: /retrospective facilities located in Manatee, FL/ });
-  await expect(cluster).toBeVisible();
-  const clusterBox = await cluster.boundingBox();
-  expect(clusterBox).toBeTruthy();
-  expect(clusterBox!.width).toBeLessThan(28);
-  expect(clusterBox!.height).toBeLessThan(22);
-  expect(await cluster.innerText()).toMatch(/^\d+$/);
-  expect(await cluster.evaluate(node => getComputedStyle(node).backgroundColor)).not.toBe("rgb(242, 169, 59)");
-  expect(await cluster.evaluate(node => getComputedStyle(node).boxShadow)).not.toContain("42px");
+  await expect(page.locator(".facility-pin")).toHaveCount(0);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page.locator(".storm-map")).toHaveAttribute("data-frame", "nexrad-n0q-900913");
   await expect(page.locator(".storm-map")).toHaveAttribute("data-playing", "false");
   await expect(page.locator(".storm-map")).toHaveAttribute("data-radar-opacity", "0.45");
@@ -220,14 +209,15 @@ test("geographic labels, source-bound fitting and cursor-centered navigation ide
   await page.goto("/watch");
   await waitForChart(page);
   const map = page.locator(".storm-map");
+  await expect(page.getByRole("button", { name: /retrospective/i })).toHaveCount(0);
+  await expect(page.locator(".facility-cluster")).toHaveCount(0);
   const nationalZoom = await map.getAttribute("data-zoom");
-  await page.getByRole("button", { name: "Retrospective marks: off" }).click();
-  await page.getByRole("button", { name: "Fit retrospective marks", exact: true }).click();
-  await expect.poll(() => map.getAttribute("data-zoom")).not.toBe(nationalZoom);
-  await expect.poll(async () => Number(await map.getAttribute("data-lng"))).toBeLessThan(-80);
-  const countyZoom = await map.getAttribute("data-zoom");
+  await expect.poll(async () => Number(nationalZoom)).toBeLessThan(6);
   await page.getByRole("button", { name: "Zoom in", exact: true }).click();
-  await expect.poll(async () => Number(await map.getAttribute("data-zoom"))).toBeGreaterThan(Number(countyZoom));
+  await expect.poll(() => map.getAttribute("data-zoom")).not.toBe(nationalZoom);
+  const afterFirstZoom = await map.getAttribute("data-zoom");
+  await page.getByRole("button", { name: "Zoom in", exact: true }).click();
+  await expect.poll(async () => Number(await map.getAttribute("data-zoom"))).toBeGreaterThan(Number(afterFirstZoom));
   await page.getByRole("button", { name: "National view", exact: true }).click();
   await expect.poll(async () => Number(await map.getAttribute("data-zoom"))).toBeLessThan(6);
   if (testInfo.project.name === "mobile") {
@@ -252,7 +242,7 @@ test("a failed radar tile stays explicit and can retry without substituting imag
   await expect(page.getByRole("heading", { name: "Radar tiles didn't load." })).toHaveCount(0);
 });
 
-test("map load, alert click and facility pin open the evidence drawer", async ({ page }) => {
+test("map load and alert click stay on weather, with no facility pin drawer", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
   const style = page.waitForResponse(response => response.url().includes("tiles.openfreemap.org/styles/dark") && response.ok());
@@ -277,20 +267,9 @@ test("map load, alert click and facility pin open the evidence drawer", async ({
   await page.getByLabel("Radar frame").selectOption("nexrad-n0q-900913-m25m");
   await expect(page.locator(".storm-map")).toHaveAttribute("data-frame", "nexrad-n0q-900913-m25m");
   await expect(page.locator(".storm-map")).toHaveAttribute("data-playing", "false");
-  await page.getByRole("button", { name: "Retrospective marks: off" }).click();
-  await page.getByRole("button", { name: "Fit retrospective marks", exact: true }).click();
-  const pin = page.getByRole("button", { name: `Rank 1, ${snapshot.facilities[0].name}`, exact: true });
-  await expect(pin).toBeVisible();
-  const pinBox = await pin.boundingBox();
-  expect(pinBox).toBeTruthy();
-  expect(pinBox!.height).toBeLessThan(28);
-  expect(pinBox!.width).toBeLessThan(48);
-  await pin.focus();
-  await page.keyboard.press("Enter");
-  const dialog = page.getByRole("dialog");
-  await expect(dialog).toBeVisible();
-  await expect(dialog).toContainText(snapshot.facilities[0].name);
-  await expect(dialog).toContainText("UTC");
+  await expect(page.getByRole("button", { name: /retrospective/i })).toHaveCount(0);
+  await expect(page.locator(".facility-pin")).toHaveCount(0);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(errors).toEqual([]);
 });
 
