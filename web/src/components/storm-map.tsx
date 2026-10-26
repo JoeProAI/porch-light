@@ -127,9 +127,26 @@ const alertCollection = (alerts: OfficialAlert[]) => ({
   })),
 });
 
+type LocatedFacility = Facility & { lat: number; lon: number };
+const markerGroups = (rows: Facility[], zoom: number): LocatedFacility[][] => {
+  const located = rows.filter(hasCoordinates);
+  if (zoom >= 8 || located.length < 2) return located.map(row => [row]);
+  const cell = zoom < 5 ? 1.5 : 0.6;
+  const groups = new Map<string, LocatedFacility[]>();
+  for (const row of located) {
+    const key = `${Math.round(row.lat / cell)}:${Math.round(row.lon / cell)}`;
+    const list = groups.get(key);
+    if (list) list.push(row);
+    else groups.set(key, [row]);
+  }
+  return [...groups.values()];
+};
+
 export const StormMap = forwardRef<StormMapApi, {
   alerts: OfficialAlert[];
   facilities: Facility[];
+  countyName?: string;
+  countyState?: string;
   selectedAlertId: string;
   selectedFacilityId: string;
   frameId: string;
@@ -156,6 +173,7 @@ export const StormMap = forwardRef<StormMapApi, {
   const propsRef = useRef(props);
   propsRef.current = props;
   const [mapReady, setMapReady] = useState(false);
+  const [markerZoom, setMarkerZoom] = useState(4);
 
   const motion = (ms: number) => props.reducedMotion ? 0 : ms;
 
@@ -255,6 +273,7 @@ export const StormMap = forwardRef<StormMapApi, {
         compact: true,
         customAttribution: "Base map © OpenStreetMap, © OpenMapTiles, © OpenFreeMap. Radar © Iowa Environmental Mesonet.",
       }), "bottom-right");
+      map.getContainer().querySelector(".maplibregl-ctrl-attrib")?.classList.remove("maplibregl-compact-show");
       const surface = map.getCanvas();
       surface.setAttribute("aria-label", "Storm Watch chart with a dark street map, NEXRAD radar, and official alert shapes");
       surface.tabIndex = 0;
@@ -268,6 +287,7 @@ export const StormMap = forwardRef<StormMapApi, {
         shellNode.dataset.tilesLoaded = String(map.areTilesLoaded());
       };
       map.on("moveend", sync);
+      map.on("zoomend", () => { if (!cancelled && map) setMarkerZoom(map.getZoom()); });
       map.on("idle", sync);
       map.on("load", () => {
         if (!map || cancelled) return;
@@ -301,10 +321,11 @@ export const StormMap = forwardRef<StormMapApi, {
             id: "alert-label", type: "symbol", source: "alerts",
             layout: {
               "text-field": ["concat", ["get", "event"], " · ", ["get", "severity"]],
-              "text-size": 14,
+              "text-size": 12,
               "text-font": textFont,
-              "text-max-width": 16,
-              "text-allow-overlap": true,
+              "text-max-width": 14,
+              "text-allow-overlap": false,
+              "text-padding": 2,
             },
             paint: { "text-color": "#fffaf0", "text-halo-color": HALO, "text-halo-width": 3.2, "text-halo-blur": 0.2 },
           });
@@ -320,7 +341,10 @@ export const StormMap = forwardRef<StormMapApi, {
         shellNode.dataset.ready = "true";
         propsRef.current.onBasemapStatus("ready");
         sync();
-        if (!cancelled) setMapReady(true);
+        if (!cancelled) {
+          setMarkerZoom(map.getZoom());
+          setMapReady(true);
+        }
       });
       map.on("error", event => {
         const sourceId = "sourceId" in event ? String((event as { sourceId?: string }).sourceId ?? "") : "";
@@ -384,25 +408,50 @@ export const StormMap = forwardRef<StormMapApi, {
     const map = mapRef.current;
     const lib = libRef.current;
     if (!mapReady || !map || !lib) return;
-    let cancelled = false;
     markers.current.forEach(marker => marker.remove());
-    markers.current = props.facilities.filter(hasCoordinates).map(row => {
+    const place = [props.countyName, props.countyState].filter(Boolean).join(", ");
+    markers.current = markerGroups(props.facilities, markerZoom).map(group => {
       const element = document.createElement("button");
       element.type = "button";
-      element.className = `facility-pin${row.id === props.selectedFacilityId ? " is-selected" : ""}${row.id === props.porchId ? " is-porch" : ""}`;
-      element.dataset.facilityId = row.id;
-      element.dataset.type = row.type;
-      element.textContent = String(row.rank);
-      element.setAttribute("aria-label", `Rank ${row.rank}, ${row.name}`);
-      element.setAttribute("aria-pressed", row.id === props.selectedFacilityId ? "true" : "false");
-      element.addEventListener("click", () => propsRef.current.onSelectFacility(row.id));
-      const marker = new lib.Marker({ element, anchor: "center" }).setLngLat([row.lon, row.lat]).addTo(map);
+      const porch = group.some(row => row.id === props.porchId);
+      const lat = group.reduce((sum, row) => sum + row.lat, 0) / group.length;
+      const lon = group.reduce((sum, row) => sum + row.lon, 0) / group.length;
+      if (group.length === 1) {
+        const row = group[0];
+        element.className = `facility-pin${row.id === props.selectedFacilityId ? " is-selected" : ""}${row.id === props.porchId ? " is-porch" : ""}`;
+        element.dataset.facilityId = row.id;
+        element.dataset.type = row.type;
+        element.textContent = String(row.rank);
+        element.setAttribute("aria-label", `Rank ${row.rank}, ${row.name}`);
+        element.setAttribute("aria-pressed", row.id === props.selectedFacilityId ? "true" : "false");
+        element.addEventListener("click", () => propsRef.current.onSelectFacility(row.id));
+      } else {
+        element.className = `facility-cluster${porch ? " is-porch" : ""}`;
+        element.dataset.count = String(group.length);
+        const count = document.createElement("span");
+        count.className = "facility-cluster-count";
+        count.textContent = String(group.length);
+        const caption = document.createElement("span");
+        caption.className = "facility-cluster-caption";
+        caption.textContent = props.countyName ?? "Facilities";
+        element.append(count, caption);
+        element.setAttribute("aria-label", `${group.length} retrospective facilities located in ${place || "this county"}. Not a live alert count.`);
+        element.addEventListener("click", () => {
+          const current = mapRef.current;
+          const currentLib = libRef.current;
+          if (!current || !currentLib) return;
+          const bounds = new currentLib.LngLatBounds();
+          group.forEach(row => bounds.extend([row.lon, row.lat]));
+          current.fitBounds(bounds, { padding: 72, duration: propsRef.current.reducedMotion ? 0 : 480, maxZoom: 12 });
+        });
+      }
+      const marker = new lib.Marker({ element, anchor: "center" }).setLngLat([lon, lat]).addTo(map);
       const parent = element.parentElement;
-      if (parent) parent.style.zIndex = row.id === props.porchId ? "6" : "4";
+      if (parent) parent.style.zIndex = porch ? "5" : "4";
       return marker;
     });
-    return () => { cancelled = true; void cancelled; };
-  }, [mapReady, props.facilities, props.selectedFacilityId, props.porchId]);
+    return () => { markers.current.forEach(marker => marker.remove()); };
+  }, [mapReady, markerZoom, props.facilities, props.selectedFacilityId, props.porchId, props.countyName, props.countyState]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -414,7 +463,7 @@ export const StormMap = forwardRef<StormMapApi, {
   }, [mapReady, props.frameId, props.radarRetry]);
 
   return (
-    <div ref={shell} className="storm-map" data-loaded="false" data-ready={mapReady ? "true" : "false"} data-frame={props.frameId} data-playing={props.playing ? "true" : "false"} data-radar-opacity={props.radarOpacity.toFixed(2)}>
+    <div ref={shell} className="storm-map" data-loaded="false" data-ready={mapReady ? "true" : "false"} data-frame={props.frameId} data-playing={props.playing ? "true" : "false"} data-radar-opacity={props.radarOpacity.toFixed(2)} data-markers={markerGroups(props.facilities, markerZoom).some(group => group.length > 1) ? "cluster" : "pins"}>
       <div ref={canvas} className="storm-map-canvas" />
     </div>
   );

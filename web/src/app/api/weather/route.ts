@@ -5,8 +5,13 @@ export const dynamic = "force-dynamic";
 
 export const GET = async (): Promise<Response> => {
   try {
-    return Response.json(publicWeather(await readLiveWeather()), {
-      headers: { "Cache-Control": "private, no-store" },
+    const weather = publicWeather(await readLiveWeather());
+    const hosted = weather.data_access.data_access_mode === "public_nws";
+    return Response.json(weather, {
+      headers: {
+        "Cache-Control": hosted ? "public, max-age=30" : "private, no-store",
+        "X-Porchlight-Data-Access": weather.data_access.data_access_mode,
+      },
     });
   } catch {
     return Response.json({

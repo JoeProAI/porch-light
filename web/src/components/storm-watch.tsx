@@ -54,10 +54,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
       });
       if (!response.ok) throw new Error("Audited weather feed unavailable");
       const next = await response.json() as LiveWeather;
-      if (next.schema_version !== "porch-light.live-weather.v1" ||
-        !Array.isArray(next.alerts) || !next.data_access?.zetaris_query_ids.length) {
-        throw new Error("Weather audit evidence missing");
-      }
+      if (!acceptedWeather(next)) throw new Error("Weather source evidence missing");
       setData(next);
       setSelectedId(previous => next.alerts.some(alert => alert.id === previous) ? previous : "");
       setError("");
@@ -191,14 +188,14 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
                 <h1>Watch the weather. <em>Keep the source in view.</em></h1>
               </div>
               <div className="watch-status" role="status" aria-live="polite">
-                <span className={`weather-state ${freshness}`}>{!data ? (loading ? "Connecting to the weather feed" : "Weather feed unavailable") : freshness === "recent" ? "Recent official capture" : "This capture is out of date"}</span>
+                <span className={`weather-state ${freshness}`}>{!data ? (loading ? "Connecting to the weather feed" : "Weather feed unavailable") : freshness === "recent" ? (data.data_access.data_access_mode === "zetaris" ? "Recent audited capture" : "Recent NWS capture") : "This capture is out of date"}</span>
                 {offline && <span>Offline. No new source updates are available.</span>}
                 {data && <><time dateTime={data.captured_at}>{formatDateEt(data.captured_at)}</time><span>Source capture age: {Math.max(0, Math.floor(((now || Date.now()) - Date.parse(data.captured_at)) / 60000))} minutes</span></>}
                 <button type="button" onClick={() => void refresh()} disabled={loading} aria-busy={loading}>{loading ? "Reading sources..." : "Refresh weather"}</button>
               </div>
             </div>
             {error && <p className="watch-error" role="alert">{error}</p>}
-            {data && freshness !== "recent" && <div className="watch-error" role="alert"><p>This capture isn't recent. Don't treat the displayed weather or alert list as current. Use the official source links.</p><p>The local capture worker may be stopped or an upstream source may be unavailable. Refreshing this page only rereads the stored capture. On this machine, run <code>.\Start-Local.ps1</code> from the repository root to start a bounded worker if none is running.</p><a href="https://www.weather.gov/" target="_blank" rel="noreferrer">Check current weather warnings</a></div>}
+            {data && freshness !== "recent" && <div className="watch-error" role="alert"><p>This capture isn't recent. Don't treat the displayed weather or alert list as current. Use the official source links.</p>{data.data_access.data_access_mode === "zetaris" ? <p>The local capture worker may be stopped or an upstream source may be unavailable. Refreshing this page only rereads the stored capture. On this machine, run <code>.\Start-Local.ps1</code> from the repository root to start a bounded worker if none is running.</p> : <p>Refresh weather to read the National Weather Service feed again. This page does not invent a newer alert.</p>}<a href="https://www.weather.gov/" target="_blank" rel="noreferrer">Check current weather warnings</a></div>}
             <div className="watch-map-frame" id="storm-chart">
               <h2 id="radar-title" className="radar-title">Observed radar. Real warning shapes.</h2>
               <div className="map-toolbar" role="toolbar" aria-label="Chart controls">
@@ -212,6 +209,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
               </div>
               <div className="storm-stage">
                 <StormMap key={mapGeneration} ref={mapApi} alerts={data?.alerts ?? []} facilities={facilities}
+                  countyName={snapshot?.county.name} countyState={snapshot?.county.state}
                   selectedAlertId={selectedId} selectedFacilityId={facilityId} frameId={frame.id}
                   radarVisible={radarVisible} radarOpacity={radarOpacity} playing={playing} porchId={porchId}
                   alertsVisible={alertsVisible} radarRetry={radarRetry} reducedMotion={reduced}
@@ -244,7 +242,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
                 </label>
                 <button type="button" aria-pressed={radarVisible} onClick={() => setRadarVisible(value => !value)}>Radar layer: {radarVisible ? "on" : "off"}</button>
                 <ul className="severity-legend" aria-label="Alert severity colors">{severities.map(severity => <li key={severity}><i data-severity={severity} />{severity}</li>)}</ul>
-                <p className="radar-coverage">National radar, contiguous US only. Roads stay visible. Not a forecast or a call ranking.</p>
+                <p className="radar-coverage">National radar, contiguous US only. Roads stay visible. Not a forecast or a call ranking. Base map © OpenStreetMap, © OpenMapTiles, © OpenFreeMap. Radar © Iowa Environmental Mesonet.</p>
                 {reduced && <p className="radar-note">Reduced motion is on. Press Play to move the radar.</p>}
                 {locateMessage && <p className="radar-note">{locateMessage}</p>}
                 {sheetError && <p className="radar-note">{sheetError}</p>}
@@ -252,7 +250,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
             </div>
           </section>
           <aside className="watch-alert-pane" aria-label="Official alerts">
-            {!data && loading && <section className="watch-loading" aria-busy="true"><span className="eyebrow">Checking the weather source</span><h2>Checking the saved weather capture.</h2><p>No sample warnings or replacement radar are used.</p></section>}
+            {!data && loading && <section className="watch-loading" aria-busy="true"><span className="eyebrow">Checking the weather source</span><h2>Reading the weather feed.</h2><p>No sample warnings or replacement radar are used.</p></section>}
             {!data && !loading && <section className="watch-loading"><h2>Weather data is unavailable.</h2><p>The weather connection needs attention. No cached example is passed off as live.</p><button type="button" onClick={() => void refresh()}>Retry weather</button></section>}
             {data && <>
               <div className="alert-list-heading"><span className="eyebrow">US National Weather Service feed</span><h2 id="national-alerts-title">{data.alerts.length} source alerts.</h2><p>Warnings, watches and advisories as published at capture time. Alerts may expire between captures. Times below are Eastern. The evidence clock keeps UTC.</p></div>
@@ -290,7 +288,7 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
                   <p>Warning coverage and the care-facility sources are checked against the audited data connection. The Manatee pins are a past example, not a match to this alert.</p>
                   {freshness === "recent" && !expired && <Link className="entry-secondary" href={`/nationwide?alert=${encodeURIComponent(selected.id)}`}>Build the sourced care-facility call sheet</Link>}
                   <a href={selected.id} target="_blank" rel="noreferrer" className="entry-secondary">Inspect original NWS record</a>
-                  <p className="fineprint">Zetaris query {selected.zetaris_query_ids.join(", ")}</p>
+                  <p className="fineprint">{selected.zetaris_query_ids.length ? `Zetaris query ${selected.zetaris_query_ids.join(", ")}` : "Direct National Weather Service record. No Zetaris query id."}</p>
                 </> : <><h2 ref={detailHeading} tabIndex={-1}>No alert selected.</h2><p>Select an actual source alert from the list or the chart. No warning text is synthesized.</p></>}
               </div>
             </>}
@@ -306,8 +304,13 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
             <button type="button" disabled={!facility} onClick={() => facility && openEvidence(facility.id)}>Inspect selected facility evidence</button>
           </details>}
           {data ? <>
-            <p>Zetaris query <code>{data.data_access.zetaris_query_ids.join(", ")}</code> / automatic view refresh every minute / source ingestion targets five-minute captures.</p>
-            <p>Map radar uses captured national radar images, checked against the audited source. These aren't a separate observation loop. Alert text and shapes keep their own source record.</p>
+            {data.data_access.data_access_mode === "zetaris" ? <>
+              <p>Zetaris query <code>{data.data_access.zetaris_query_ids.join(", ")}</code> / automatic view refresh every minute / source ingestion targets five-minute captures.</p>
+              <p>Map radar uses captured national radar images, checked against the audited source. These aren't a separate observation loop. Alert text and shapes keep their own source record.</p>
+            </> : <>
+              <p>{data.data_access.source_note ?? "Direct National Weather Service capture. Not a Zetaris query."} SHA-256 <code>{data.alert_feed.sha256}</code>.</p>
+              <p>Map radar is the Iowa Environmental Mesonet USCOMP N0Q tile layer, read when the chart requests a tile. It is not a Zetaris audit. Alert text and shapes are the National Weather Service feed at this capture time.</p>
+            </>}
             <ul>{data.limits.map(limit => <li key={limit}>{limit}</li>)}</ul>
             <p className="fineprint">National weather isn't proof of rankable care-facility coverage. Run the actual source chain for a county or alert. Manatee remains the separate retrospective walkthrough.</p>
           </> : <p>No audited capture is loaded. The street map can stay up. Manatee pins are a past example, not current facility conditions. No alerts are invented.</p>}
@@ -320,6 +323,22 @@ export const StormWatch = ({ snapshot, provenance, sheetError }: {
       }} />}
     </div>
   );
+};
+
+const acceptedWeather = (next: LiveWeather): boolean => {
+  if (next.schema_version !== "porch-light.live-weather.v1" || !Array.isArray(next.alerts) || !next.data_access) return false;
+  const mode = next.data_access.data_access_mode;
+  if (mode === "zetaris") {
+    return next.data_access.zetaris_query_ids.length > 0 && next.alerts.every(alert =>
+      alert.zetaris_query_ids.every(id => next.data_access.zetaris_query_ids.includes(id)));
+  }
+  if (mode === "public_nws") {
+    return next.data_access.zetaris_query_ids.length === 0
+      && next.alert_feed?.source_url === "https://api.weather.gov/alerts/active"
+      && /^[a-f0-9]{64}$/.test(next.alert_feed.sha256)
+      && next.alerts.every(alert => alert.id.startsWith("https://api.weather.gov/alerts/") && alert.zetaris_query_ids.length === 0);
+  }
+  return false;
 };
 
 const frameClockLabel = (iso: string | null): string | null => {

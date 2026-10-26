@@ -37,13 +37,17 @@ export type LiveWeather = {
   capture_id: string;
   captured_at: string;
   alerts: OfficialAlert[];
-  alert_feed: { source_url: string; fetched_at: string; sha256: string; coverage: string };
+  alert_feed: { source_url: string; fetched_at: string; sha256: string; coverage: string; provider_updated_at?: string };
   radar: {
     source_url: string; fetched_at: string; sha256: string;
     provider_last_modified: string | null; coverage: string; observation_time_note: string;
     image_url: string;
+    tile_template?: string;
   };
-  data_access: { data_access_mode: string; executed_at: string; zetaris_query_ids: string[] };
+  data_access: {
+    data_access_mode: string; executed_at: string; zetaris_query_ids: string[];
+    source_note?: string;
+  };
   limits: string[];
   radar_maps?: RadarMaps;
 };

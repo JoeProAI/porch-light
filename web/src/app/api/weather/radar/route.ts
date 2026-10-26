@@ -11,6 +11,12 @@ export const GET = async (request: Request): Promise<Response> => {
   try {
     const captureId = new URL(request.url).searchParams.get("capture") ?? "";
     const weather = await readLiveWeather(captureId);
+    if (weather.data_access.data_access_mode === "public_nws") {
+      return new Response("Hosted Storm Watch draws IEM radar tiles. The NOAA GIF loop stays on the local audited filestore. No substitute GIF is drawn.", {
+        status: 404,
+        headers: { "Cache-Control": "no-store", "X-Porchlight-Data-Access": "public_nws" },
+      });
+    }
     if (captureId !== weather.capture_id) {
       return new Response("Weather capture changed. Refresh the source metadata.", { status: 409 });
     }
