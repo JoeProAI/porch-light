@@ -8,7 +8,7 @@ type Atlas = { view: [number, number]; counties: { fips: string; d: string }[] }
 export const CountyMap = ({ selected, disabled, onPick, affected = [] }: {
   selected: string;
   disabled: boolean;
-  onPick: (fips: string) => void;
+  onPick: (fips: string, additive: boolean) => void;
   affected?: string[];
 }) => {
   const affectedSet = new Set(affected);
@@ -42,7 +42,7 @@ export const CountyMap = ({ selected, disabled, onPick, affected = [] }: {
         ].filter(Boolean).join(" ");
         return <path key={county.fips} d={county.d} data-fips={county.fips}
           className={classes || undefined}
-          onClick={() => { if (!disabled) onPick(county.fips); }}>
+          onClick={event => { if (!disabled) onPick(county.fips, event.shiftKey || event.metaKey || event.ctrlKey); }}>
           {affectedSet.has(county.fips) ? <title>{county.fips} is on an active alert</title> : null}
         </path>;
       })}
