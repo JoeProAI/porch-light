@@ -1,12 +1,12 @@
 ---
 title: "Porch Light"
-description: "Open a published US county and read who to call first, with the source gaps left on the sheet."
+description: "Open any US county and read a ranked care-facility call sheet, with the gaps left on the sheet."
 keywords: ["porch light", "nationwide", "call sheet", "Nemotron", "Zetaris"]
 ---
 
-You open a US county. Porch Light shows the dialysis centers and nursing homes that joined the audited sources, in an order a fixed formula set, with directory phones and the facts that did not join.
+Porch Light is an emergency-operations call sheet for dialysis centers and nursing homes in any US county. You pick a county. A fixed formula ranks the facilities that joined the audited sources. Nemotron writes the reason. Records that did not join stay on the sheet.
 
-The live desk is [porchlight.earth](https://porchlight.earth). Home says **Pick any US county** and goes to `/nationwide`. The Hurricane Milton sheet is a footer link, **Hurricane Milton retrospective**. It is a saved example. It is not the product.
+The live desk is [porchlight.earth/nationwide](https://porchlight.earth/nationwide). Home says **Pick any US county** and opens that desk. The page title is `Porch Light | Pick any US county.`
 
 <Frame>
   <img src="/images/hero-key-art.webp" alt="Illustration of a night storm with one amber porch light" />
@@ -16,82 +16,58 @@ The live desk is [porchlight.earth](https://porchlight.earth). Home says **Pick 
 The picture is project key art. It is not a satellite image, a live warning, or a facility map.
 </Note>
 
-## What you can check today
+## What you can say
 
-Checked against `GET https://porchlight.earth/api/national` on 2026-10-25 at 23:08 UTC, and against `web/data/national/published/` in this repo. Both describe sweep `20261023T200048Z-78a426ba`, generated `2026-10-24T16:47:04Z`.
+Read on the live home, 2026-10-26.
 
-| What you see | Figure | Where it comes from |
-| --- | --- | --- |
-| Census catalog rows | 3,235 | Hosted catalog `catalog.counties`, Zetaris query `833` |
-| Published county snapshots | 3,234 | `publication.county_snapshots` and the `counties/*.json.gz` files |
-| Counties with ranked facilities | 2,490 | `publication.ranked_counties` |
-| Ranked facility rows in that pack | 15,440 | Sum of `ranked_rows` in the catalog |
-| Passed stored drafts | 14,960 | Row `model_explanation.status` `passed`, `actual_usd` 0 |
-| Failed stored drafts, kept failed | 480 | Row status `failed`. No replacement prose |
-| County with no published file | Robertson County, Texas, FIPS `48395` | Catalog outcome `runtime_error`. Hosted GET returns 503 and does not substitute another county |
+<Check>
+Every catalog county has been source-audited. An empty county stays empty. Nothing is filled in from another county.
+</Check>
 
-A separate retry for Robertson is written up in `engines/reports/national-sweep-2026-10-23.md` (2 ranked rows after recovery, 2,491 counties with ranked rows in that report). That retry file is not in the hosted pack. Quote 2,490 when you mean the desk a judge can open. Quote 2,491 only when you mean that report's post-retry source count.
+<Check>
+Drafts are in progress on free Nemotron routes. Not every county has an accepted draft. A failed draft stays failed.
+</Check>
 
-## Three counties for the video
+<Check>
+An operator can open any published county that has ranked facilities, today, on the live desk.
+</Check>
 
-| County | Open | Ranked / refused / source | Rank 1 on the live response |
-| --- | --- | --- | --- |
-| Anchorage, Alaska | `/nationwide?county=02020` | 4 / 2 / 6 | Polaris Extended Care, CCN `025036`. Stored draft **failed** |
-| Doña Ana, New Mexico | `/nationwide?county=35013` | 7 / 4 / 11 | USRC Las Cruces, CCN `322559`. Lightning draft **passed**, actual cost 0 |
-| Harris County, Texas | `/nationwide?county=48201` | 140 / 96 / 236 | DaVita North Houston Dialysis Center, CCN `452678`. Super VL draft **passed**, actual cost 0 |
+The formula ranks. Nemotron does not rank. Do not claim an offline DGX run, H-MEM, or a World Model.
 
-Walk through them on [Quickstart](/quickstart). Leave contact status on **Not contacted** unless you placed the call yourself.
+## Published pack
 
-## Two sheets, on purpose
+`GET https://porchlight.earth/api/national` on 2026-10-26, this docs pass, still serves sweep `20261023T200048Z-78a426ba`, generated `2026-10-24T16:47:04Z`. Catalog query id `833`.
 
-| Sheet | Route | What it is |
-| --- | --- | --- |
-| Published national county | `/nationwide?county=` then the call sheet | Frozen audited sweep snapshot. National weights `national-source-screen-v1`. No county plan term |
-| Hurricane Milton retrospective | `/operate` with no county query | Saved Manatee sheet: 18 ranked rows, 2 refusals, weights `manatee-development-v1`, including an archived plan term |
+| Field on that response | Figure |
+| --- | --- |
+| Census catalog rows | 3,235 |
+| `publication.county_snapshots` | 3,234 |
+| `publication.ranked_counties` | 2,490 |
+| Sum of catalog `ranked_rows` | 15,440 |
+| Catalog `weather.status` | `unavailable`. Live alert refresh stays on local origin |
 
-The national snapshot for Manatee (`12081`) is a different sheet: 14 ranked and 6 refused. Do not describe that national row count as the Milton walkthrough.
+Open the [live desk](https://porchlight.earth/nationwide) for the sheet a judge sees now. These figures are that response. They are not a promise that the host stays on this pack. The county the catalog marks `runtime_error` is written up on [Nationwide](/nationwide).
 
 ## Start here
 
 <Columns cols={2}>
   <Card title="Quickstart" icon="clapperboard" href="/quickstart">
-    The live path for the submission video. Three counties, no invented calls.
+    Open the live desk and read a published county. Do not invent a call.
   </Card>
   <Card title="Nationwide" icon="map" href="/nationwide">
-    Catalog, published snapshots, and the county the host will not open.
+    The hosted catalog, the published snapshots, and the county file the host does not serve.
   </Card>
   <Card title="Limits" icon="triangle-alert" href="/limits">
-    Source audit, drafts, and the claims this submission does not make.
+    The claims this submission makes, and the ones it does not.
   </Card>
   <Card title="Sponsors" icon="handshake" href="/sponsors">
     Zetaris, Meterless, Nemotron, and Cursor, with the proof a judge can open.
   </Card>
 </Columns>
 
-## Earlier local captures
-
-These JPGs are from the local app before the nationwide-first home. They are not captures of the current [porchlight.earth](https://porchlight.earth) home.
-
-<AccordionGroup>
-  <Accordion title="Home, earlier local build">
-    <Frame>
-      <img src="/images/screenshot-home.jpg" alt="Earlier local home with two buttons: Open the Manatee walkthrough and Open the nationwide workbench" />
-    </Frame>
-    That build offered Manatee and nationwide as peer buttons. The live home has one amber action, **Pick any US county**. Milton is a footer text link.
-  </Accordion>
-  <Accordion title="Nationwide, earlier local session">
-    <Frame>
-      <img src="/images/screenshot-nationwide.jpg" alt="Earlier local nationwide page titled Verified runs on this machine" />
-    </Frame>
-    That session listed completed jobs on one machine. The hosted page lists **Published ranked counties** from the frozen sweep, capped at 20, highest ranked-facility count first.
-  </Accordion>
-  <Accordion title="Operator sheet, earlier local session">
-    <Frame>
-      <img src="/images/screenshot-operate.jpg" alt="Earlier local operator call sheet with a Not contacted control" />
-    </Frame>
-    Contact status still defaults to **Not contacted**. The hosted national sheet uses the same control, stored in the browser.
-  </Accordion>
-</AccordionGroup>
+<Note>
+`/operate` with no county query is a saved 2024 Hurricane Milton sheet for Manatee County. The live home footer does not link it. It is not the product. The write-up is [Milton retrospective](/manatee-walkthrough).
+</Note>
 
 ## Design plates
 
