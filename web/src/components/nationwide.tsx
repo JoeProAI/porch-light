@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Provenance, Snapshot } from "@/lib/types";
 import { orderAffectedAlerts } from "@/lib/affected-alerts";
+import { toggleShortlist } from "@/lib/shortlist";
 import { hasAlertShape } from "@/lib/geo";
 import { acceptedLiveWeather } from "@/lib/live-weather";
 import { formatDate } from "@/lib/operator";
@@ -80,6 +81,7 @@ export const Nationwide = () => {
   const [weatherError, setWeatherError] = useState("");
   const [weatherAttempt, setWeatherAttempt] = useState(0);
   const [liveAlertId, setLiveAlertId] = useState("");
+  const [shortlist, setShortlist] = useState<string[]>([]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -266,6 +268,28 @@ export const Nationwide = () => {
   const alertUnmapped = !!selectedAlert && !selectedAlert.county_fips.length;
   const busy = submitting || !!polling;
   const start = () => void begin(mode === "county" ? { county } : { alert, capture: catalog?.weather.capture_id });
+  const changeShortlist = (fips: string, additive: boolean) => {
+    if (!/^\d{5}$/.test(fips)) return;
+    const row = catalog?.catalog.counties.find(item => item.fips === fips);
+    if (catalog && !row) {
+      setError(`${fips} is not in the official Census catalog. No Manatee sheet was substituted.`);
+      return;
+    }
+    setShortlist(current => toggleShortlist(current, fips, additive));
+    if (row && !additive) {
+      setMode("county");
+      setState(row.state);
+      setCounty(row.fips);
+    }
+  };
+  const readPublished = async (fips: string): Promise<unknown> => {
+    const response = await fetch(`/api/national?county=${encodeURIComponent(fips)}`, { cache: "no-store" });
+    const value: unknown = await response.json();
+    if (!response.ok) {
+      throw new Error(object(value) && typeof value.error === "string" ? value.error : "The published county snapshot couldn't be read.");
+    }
+    return value;
+  };
   const pickCounty = (fips: string) => {
     if (!/^\d{5}$/.test(fips) || busy) return;
     const row = catalog?.catalog.counties.find(item => item.fips === fips);
@@ -295,13 +319,14 @@ export const Nationwide = () => {
         <section className="intro" aria-labelledby="national-title">
           <div className="intro-heading"><p className="eyebrow">Active weather / Published county catalog</p>
             <h1 id="national-title">See the warning. <em>Then open the county.</em></h1>
-            <p className="intro-description">Active National Weather Service alerts load with the county catalog. A shape is drawn when the alert has one. A county lights up only when the alert carries that Census code and this catalog can open it. The full county search stays below.</p>
+            <p className="intro-description">Warning shapes and the counties they match are on the map when the page opens. Radar sits lightly under the county lines, and a click lands on the county. Check several counties to compare published sheets or export a shortlist. The full county search stays below.</p>
           </div>
           <div className="edition-note"><p>Directory records, not verified facility conditions. Prototype ranking, not clinical urgency.</p><a href="https://api.weather.gov/alerts/active" target="_blank" rel="noreferrer">Current official weather alerts</a></div>
         </section>
         <StormDesk weather={weather} loading={weatherLoading} error={weatherError} onRetry={() => setWeatherAttempt(attempt => attempt + 1)}
           counties={catalog?.catalog.counties ?? []} selectedId={liveAlertId} onSelect={setLiveAlertId}
-          onOpenCounty={pickCounty} busy={busy} published={catalogIsPublished(catalog)} selectedCounty={county} />
+          onOpenCounty={pickCounty} onShortlist={changeShortlist} shortlist={shortlist} readPublished={readPublished}
+          busy={busy} published={catalogIsPublished(catalog)} />
         {loading && <p role="status">Reading the audited national source catalog. No sample counties are loaded.</p>}
         {error && <div className="watch-error" role="alert"><p>{error}</p><button onClick={() => setRefreshKey(key => key + 1)} disabled={loading}>Retry verified source catalog</button></div>}
         {recentRuns !== null && <section className="source-strip verified-local-runs" aria-labelledby="verified-runs-title">
@@ -326,7 +351,8 @@ export const Nationwide = () => {
               onChange={event => setCountyQuery(event.target.value)} placeholder="Baldwin, Doña Ana, or 01003" />
             {catalog && !!countyQuery.trim() && <>
               <p role="status">{countyMatches.length} matching source counties. Select the state and county you mean.</p>
-              <ul>{countyMatches.slice(0, 20).map(item => <li key={item.fips}>
+              <ul>{countyMatches.slice(0, 20).map(item => <li key={item.fips} className="catalog-match">
+                <label><input type="checkbox" checked={shortlist.includes(item.fips)} onChange={() => changeShortlist(item.fips, true)} aria-label={`Add ${item.name}, ${item.state} / ${item.fips} to the shortlist`} /></label>
                 <button type="button" disabled={busy} onClick={() => {
                   setState(item.state); setCounty(item.fips); setCountyQuery(""); setJob(null);
                 }}>{item.name}, {item.state} / {item.fips}</button>

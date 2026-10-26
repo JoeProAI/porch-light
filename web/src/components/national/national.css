@@ -21,6 +21,25 @@
 .national-gaps .gap-source { color: var(--amber); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
 .national-controls .watch-error h2 { font-family: var(--display); font-size: 26px; font-weight: 400; margin: 0 0 8px; }
 .storm-desk { margin: 8px 0 28px; }
+.warning-surface { font-size: 18px; line-height: 1.45; margin: 8px 0; }
+.storm-desk-stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 340px); gap: 16px; align-items: stretch; }
+.county-weather-frame { position: relative; height: 560px; min-height: 420px; background: #05070b; border: 1px solid var(--line); overflow: hidden; }
+.warning-rail { max-height: 560px; overflow: auto; border: 1px solid var(--line); padding: 12px 14px; background: #05070b; }
+.warning-rail h3, .shortlist h3 { font-family: var(--display); font-weight: 400; letter-spacing: -.04em; font-size: 22px; margin: 12px 0 8px; }
+.warning-rail h3:first-child { margin-top: 0; }
+.matched-counties, .shortlist ol { list-style: none; margin: 0 0 12px; padding: 0; }
+.matched-counties li, .shortlist li { border-bottom: 1px solid var(--line); padding: 6px 0; }
+.matched-counties label, .catalog-match label, .affected-county-list label { display: flex; gap: 8px; align-items: center; min-height: 44px; }
+.shortlist-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.sheet-compare ul { margin: 4px 0 0; padding-left: 18px; }
+.catalog-match { display: flex; gap: 8px; align-items: center; }
+.catalog-match button { flex: 1; text-align: left; }
+.overlay-note { max-width: 70rem; }
+@media (max-width: 900px) {
+  .storm-desk-stage { grid-template-columns: 1fr; }
+  .county-weather-frame { height: 70vw; min-height: 420px; }
+  .warning-rail { max-height: 420px; }
+}
 .storm-desk-heading h2 { font-family: var(--display); font-weight: 400; letter-spacing: -.04em; font-size: clamp(1.8rem, 3vw, 2.6rem); margin: 0 0 8px; }
 .national-storm-stage { min-height: 420px; border: 1px solid var(--line); }
 .national-alert-list { max-height: 420px; overflow: auto; margin: 12px 0; }

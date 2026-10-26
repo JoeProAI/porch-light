@@ -18,5 +18,5 @@
     "paths": { "@/*": ["./src/*"] }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
-  "exclude": ["node_modules", "src/lib/national-gaps.test.ts", "src/lib/public-weather.test.ts", "src/lib/affected-alerts.test.ts"]
+  "exclude": ["node_modules", "src/lib/national-gaps.test.ts", "src/lib/public-weather.test.ts", "src/lib/affected-alerts.test.ts", "src/lib/shortlist.test.ts"]
 }

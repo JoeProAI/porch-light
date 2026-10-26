@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start --hostname 127.0.0.1 --port 3101",
     "typecheck": "tsc --noEmit",
-    "test:unit": "node --experimental-strip-types --experimental-detect-module --test src/lib/national-gaps.test.ts src/lib/public-weather.test.ts src/lib/affected-alerts.test.ts",
+    "test:unit": "node --experimental-strip-types --experimental-detect-module --test src/lib/national-gaps.test.ts src/lib/public-weather.test.ts src/lib/affected-alerts.test.ts src/lib/shortlist.test.ts",
     "test": "playwright test"
   },
   "dependencies": {

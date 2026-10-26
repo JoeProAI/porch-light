@@ -1,0 +1,7 @@
+{
+  "source_url": "https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_us_county_20m.zip",
+  "fetched_at_utc": "2026-10-26T01:27:32Z",
+  "sha256": "410b9f86d944179522784c0c95e3a3e08a6f10306d86b2b7d2e08deaa445d586",
+  "license": "U.S. Census Bureau cartographic boundary, public domain. Zip sha256 479956f6e3cb1573705c1ceb35d17ca7cd1b5179f3947ee6adbaa274b7e931e4. Display file keeps NAD83 degrees with no datum shift, Douglas-Peucker 0.002 degrees, coordinates rounded to 4 decimal places.",
+  "fetch_command": "curl -fsSL -o cb_2023_us_county_20m.zip https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_us_county_20m.zip"
+}

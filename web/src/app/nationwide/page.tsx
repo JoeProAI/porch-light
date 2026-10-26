@@ -3,7 +3,7 @@ import { Nationwide } from "@/components/nationwide";
 
 export const metadata: Metadata = {
   title: "National Care-Facility Outreach | Porch Light",
-  description: "Active National Weather Service alerts, then the published county catalog. A county opens its audited call sheet. Area text is not treated as a county.",
+  description: "Warning shapes sit lightly on the county map. A click lands on the county. Check several counties to compare published sheets or export a shortlist.",
 };
 export const dynamic = "force-dynamic";
 export const Page = () => <Nationwide />;
