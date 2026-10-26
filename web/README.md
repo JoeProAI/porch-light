@@ -14,7 +14,8 @@
 
 ## Nationwide Operator Workflow
 
-- `/nationwide` searches the audited 3,235-entry county catalog by name, state abbreviation or FIPS. Ambiguous names require an explicit selection. Names with diacritics can be searched without accents.
+- `/nationwide` reads `/api/weather` in parallel with the county catalog. Severe, extreme, and warning alerts are listed first. A shape is drawn when the alert has one. A county is highlighted only when NWS `geocode.SAME` is a whole-county Census FIPS in that catalog. Area text is not turned into a county. Opening a highlighted county uses the published snapshot on the hosted desk. Live alert model POST stays local-origin. The frozen catalog weather blob is not rewritten.
+- `/nationwide` searches the audited 3,235-entry county catalog by name, state abbreviation or FIPS. Ambiguous names require an explicit selection. Names with diacritics can be searched without accents. The search stays below the weather list.
 - County discovery and captured active-alert runs execute the national Zetaris chain. Neither substitutes the Manatee demonstration. Official alert polygons or source zone mappings determine inclusion, not place-name guesses.
 - The verified call sheet appears as soon as the source chain finishes, before model processing completes. A model failure doesn't replace the ranking or hide an already verified source result.
 - Unmapped alerts return an audited source gap with no facilities invented. Missing joins and excluded source rows remain explicit refusals.

@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import type { Snapshot } from "@/lib/types";
+import { ActiveWeatherStrip } from "./active-weather-strip";
 import { HeroFilm } from "./hero-film";
 import { Masthead } from "./masthead";
 import { ResourceLinks } from "./resource-links";
@@ -20,6 +22,9 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
             <h1 id="mission-title">Storm warning.<br /><em>Clear first call.</em></h1>
             <p className="mission-description">An emergency-operations call sheet for dialysis centers and nursing homes in any US county. Real phone numbers from that run. A transparent order of outreach. Evidence behind every priority.</p>
             <Link className="entry-primary" href="/nationwide">Pick any US county <span aria-hidden="true">↗</span></Link>
+            <Suspense fallback={<section className="active-weather-strip" aria-label="Active weather" aria-busy="true"><p>Reading the National Weather Service feed. No alert count is shown yet.</p></section>}>
+              <ActiveWeatherStrip />
+            </Suspense>
             <p className="mission-limit">One county per run, or the counties a captured weather alert maps. Verified local runs, with gaps left visible. Drafts are in progress. This page is not a live warning or current facility conditions.</p>
             <a className="mission-sponsor-proof" href="#sponsor-title">Built with Zetaris, Meterless and NVIDIA Nemotron. <span>Inspect the proof.</span></a>
             <Link className="watch-entry-link" href="/watch">For current official weather, open Storm Watch</Link>

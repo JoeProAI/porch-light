@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { sameCountyFips } from "./affected-alerts.ts";
 import { hasAlertShape } from "./geo.ts";
 import type { LiveWeather, MapGeometry, OfficialAlert } from "./weather-types";
 
@@ -36,6 +37,10 @@ export const alertsFromFeed = (payload: unknown): OfficialAlert[] => {
     const id = typeof row.id === "string" ? row.id : text((properties as { id?: unknown }).id);
     if (!id || !id.startsWith("https://api.weather.gov/alerts/")) continue;
     const fields = properties as Record<string, unknown>;
+    const geocode = fields.geocode;
+    const same = geocode && typeof geocode === "object" && !Array.isArray(geocode)
+      ? (geocode as { SAME?: unknown }).SAME
+      : undefined;
     alerts.push({
       id,
       status: text(fields.status),
@@ -52,6 +57,7 @@ export const alertsFromFeed = (payload: unknown): OfficialAlert[] => {
       senderName: text(fields.senderName),
       geometry: geometryOf(row.geometry),
       zetaris_query_ids: [],
+      same_county_fips: sameCountyFips(same),
     });
   }
   return alerts;

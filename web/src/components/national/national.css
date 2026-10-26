@@ -20,3 +20,13 @@
 .national-gaps li strong { display: block; font-size: 15px; }
 .national-gaps .gap-source { color: var(--amber); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
 .national-controls .watch-error h2 { font-family: var(--display); font-size: 26px; font-weight: 400; margin: 0 0 8px; }
+.storm-desk { margin: 8px 0 28px; }
+.storm-desk-heading h2 { font-family: var(--display); font-weight: 400; letter-spacing: -.04em; font-size: clamp(1.8rem, 3vw, 2.6rem); margin: 0 0 8px; }
+.national-storm-stage { min-height: 420px; border: 1px solid var(--line); }
+.national-alert-list { max-height: 420px; overflow: auto; margin: 12px 0; }
+.affected-county-list { list-style: none; margin: 8px 0; padding: 0; }
+.affected-county-list button { text-align: left; }
+.storm-alert-detail { border-top: 1px solid var(--line); padding-top: 12px; }
+.storm-alert-detail h3 { margin: 0 0 8px; }
+.county-catalog-block { margin-top: 12px; }
+.county-catalog-block h2 { font-family: var(--display); font-weight: 400; letter-spacing: -.04em; font-size: clamp(1.8rem, 3vw, 2.4rem); margin: 0 0 8px; }

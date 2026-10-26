@@ -43,6 +43,10 @@ a.entry-primary:active { background: color-mix(in srgb, var(--amber) 80%, var(--
 .entry-secondary { color: var(--ink); }
 .entry-secondary:hover { background: var(--surface); color: var(--ink); }
 .mission-limit { max-width: 36rem; font-size: 16px; line-height: 1.5; color: var(--muted); margin: 20px 0 0; }
+.active-weather-strip { max-width: 36rem; margin: 18px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; background: transparent; }
+.active-weather-strip p { margin: 0; font-size: 16px; line-height: 1.45; }
+.active-weather-strip .eyebrow { margin-right: 10px; }
+.active-weather-strip a { font-weight: 700; min-height: 44px; display: inline-flex; align-items: center; }
 .entry-footer { border-top: 1px solid var(--line); justify-content: space-between; flex-wrap: wrap; }
 .entry-footer p, .entry-footer .mono { font-size: 16px; color: var(--muted); max-width: 40rem; margin: 0; }
 .retrospective-link { flex-basis: 100%; font-size: 12px; font-weight: 400; line-height: 1.4; color: var(--quiet-ink); text-decoration: underline; text-underline-offset: 3px; }

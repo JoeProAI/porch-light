@@ -5,11 +5,13 @@ import "./county-map.css";
 
 type Atlas = { view: [number, number]; counties: { fips: string; d: string }[] };
 
-export const CountyMap = ({ selected, disabled, onPick }: {
+export const CountyMap = ({ selected, disabled, onPick, affected = [] }: {
   selected: string;
   disabled: boolean;
   onPick: (fips: string) => void;
+  affected?: string[];
 }) => {
+  const affectedSet = new Set(affected);
   const [atlas, setAtlas] = useState<Atlas | null>(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
@@ -28,14 +30,22 @@ export const CountyMap = ({ selected, disabled, onPick }: {
     })();
     return () => controller.abort();
   }, []);
-  return <figure className="county-map-frame">
-    <figcaption>Census 2023 cartographic counties for the states, the District of Columbia, and Puerto Rico. Click a county to fill its FIPS and start that county&apos;s source run. Amber marks the county you picked. Island-area counties stay in the search.</figcaption>
+  return <figure className="county-map-frame" data-affected={affected.length}>
+    <figcaption>Census 2023 cartographic counties for the states, the District of Columbia, and Puerto Rico. Click a county to open its audited call sheet. Amber marks the county you picked. The severe color marks a catalog county whose FIPS was on an active severe or warning alert. Area text does not light a county. Island-area counties stay in the search.</figcaption>
     {failed && <p className="watch-error" role="alert">The county outline file on this site could not be read.</p>}
     {!atlas && !failed && <p role="status">Reading county outlines.</p>}
     {atlas && <svg className="county-map" viewBox={`0 0 ${atlas.view[0]} ${atlas.view[1]}`} role="img" aria-label="US county outlines. Click a county to fill its FIPS and start that county's source run.">
-      {atlas.counties.map(county => <path key={county.fips} d={county.d} data-fips={county.fips}
-        className={county.fips === selected ? "is-selected" : undefined}
-        onClick={() => { if (!disabled) onPick(county.fips); }} />)}
+      {atlas.counties.map(county => {
+        const classes = [
+          affectedSet.has(county.fips) ? "is-affected" : "",
+          county.fips === selected ? "is-selected" : "",
+        ].filter(Boolean).join(" ");
+        return <path key={county.fips} d={county.d} data-fips={county.fips}
+          className={classes || undefined}
+          onClick={() => { if (!disabled) onPick(county.fips); }}>
+          {affectedSet.has(county.fips) ? <title>{county.fips} is on an active alert</title> : null}
+        </path>;
+      })}
     </svg>}
   </figure>;
 };
