@@ -208,12 +208,12 @@ last update: Mon Oct 26 2026, 11:40 AM ET.
 
 ## Area: Docs
 owner now: Hackathon Desk docs seat (primary Hackathon Desk docs seat, backup Claude Code)
-state: docs/*.mdx are filled from the hosted nationwide desk and the committed published pack. No page is a Coming soon stub. docs/contract/openapi.yaml points at contract/openapi.yaml so Mintlify can read the contract spec. The API introduction says those generated pages are the contract, not the routes porchlight.earth serves. No public docs URL.
+state: docs/index.mdx is a nationwide-first docs home. It links https://porchlight.earth/nationwide, states the three allowed claims, and dates the pack figures to a live GET /api/national on 2026-10-26 (sweep 20261023T200048Z-78a426ba: catalog 3,235, snapshots 3,234, ranked counties 2,490, sum of ranked_rows 15,440, query id 833). The home footer Milton claim is gone. manatee-walkthrough stays in the repo and is not in the Get started nav. No public docs URL.
 next step: Joe shoots the video from docs/quickstart.mdx and submission/demo-script.md. Do not publish Mintlify until Joe says yes. Do not merge this docs PR from the agent seat.
-branch: cursor/docs-submission-front-matter-fe66 off main. Earlier stubs were PR #13.
+branch: cursor/docs-home-nationwide-fa52 off main.
 how to run: cd docs && npx mint dev. Product desk: https://porchlight.earth/nationwide
 blocked: Mintlify publication still needs Joe's yes. No separate docs deployment exists.
-last update: Sun Oct 25 2026, after a live GET of /api/national at 23:08 UTC.
+last update: Mon Oct 26 2026, after a live read of porchlight.earth and GET /api/national.
 
 ## Area: Front matter and ops
 owner now: Hackathon Desk  (primary Hackathon Desk, backup Devin)
