@@ -146,12 +146,20 @@ test("project entry explains the storm and care-facility use case and opens the 
   await expect(page.locator(".entry-footer")).not.toContainText("Hurricane Milton");
   await expect(page.locator(".entry-footer")).not.toContainText("Manatee");
   await expect(page.locator(".satellite-credit")).toContainText("not a live warning");
-  const rain = await page.locator(".storm-photo").evaluate(node => {
+  const overlay = await page.locator(".storm-photo").evaluate(node => {
     const after = getComputedStyle(node, "::after");
-    return { content: after.content, image: after.backgroundImage };
+    const mission = getComputedStyle(document.querySelector(".mission")!, "::before");
+    return {
+      afterContent: after.content,
+      afterImage: after.backgroundImage,
+      missionImage: mission.backgroundImage,
+    };
   });
-  expect(rain.image).toBe("none");
-  expect(rain.content === "none" || rain.content === "normal").toBe(true);
+  expect(overlay.afterImage).toBe("none");
+  expect(overlay.afterContent === "none" || overlay.afterContent === "normal").toBe(true);
+  expect(overlay.missionImage).not.toContain("repeating-linear-gradient");
+  expect(overlay.missionImage).not.toContain("104deg");
+  await expect(page.locator(".hero-rain")).toHaveCount(0);
   const primary = page.getByRole("link", { name: "Pick any US county" });
   await expect(primary).toHaveCount(1);
   await expect(primary).toHaveAttribute("href", "/nationwide");
@@ -160,6 +168,35 @@ test("project entry explains the storm and care-facility use case and opens the 
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await primary.click();
   await expect(page).toHaveURL(/\/nationwide$/);
+});
+
+test.describe("home hero rain with motion", () => {
+  test.use({ contextOptions: { reducedMotion: "no-preference" } });
+  test("soft particle rain sits on the photo without a hatch overlay", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: "Storm warning. Clear first call." })).toBeVisible();
+    const rain = page.locator(".hero-rain");
+    await expect(rain).toHaveCount(1);
+    await expect(rain).toHaveAttribute("data-rain", "particles");
+    const overlay = await page.locator(".storm-photo").evaluate(node => {
+      const after = getComputedStyle(node, "::after");
+      return { image: after.backgroundImage, content: after.content };
+    });
+    expect(overlay.image).toBe("none");
+    expect(overlay.content === "none" || overlay.content === "normal").toBe(true);
+    await expect.poll(async () => rain.evaluate(node => {
+      const canvas = node as HTMLCanvasElement;
+      if (!canvas.width || !canvas.height) return 0;
+      const context = canvas.getContext("2d");
+      if (!context) return 0;
+      const sample = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      let lit = 0;
+      for (let index = 3; index < sample.length; index += 16) {
+        if (sample[index] > 8) lit += 1;
+      }
+      return lit;
+    })).toBeGreaterThan(10);
+  });
 });
 
 test("source map and call order stay nationwide, not the Manatee retrospective", async ({ page }) => {
