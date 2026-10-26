@@ -60,6 +60,28 @@
   margin-top: 8px;
 }
 
+.national-controls .source-map-compact {
+  max-width: none;
+  margin: 28px 0 8px;
+  padding: 24px 0 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.national-controls .source-map-compact .source-map-intro h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+
+.national-controls .source-map-compact .source-map-layers {
+  margin-top: 22px;
+  gap: 18px;
+}
+
+.national-controls .source-map-compact .source-map-join,
+.national-controls .source-map-compact .source-map-limit {
+  margin-top: 18px;
+  font-size: 15px;
+}
+
 @media (max-width: 767px) {
   .national-controls .intro {
     grid-template-columns: 1fr;

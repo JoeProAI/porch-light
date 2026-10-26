@@ -35,13 +35,14 @@ test("PR22 opens an actual locally audited warning and its original instructions
   await expect(page.locator(".storm-map")).toHaveAttribute("data-tiles-loaded", "true", { timeout: 120000 });
   await page.screenshot({ path: testInfo.outputPath("pr22-real-alert.png"), fullPage: true });
   if (testInfo.project.name === "mobile") {
-    await page.getByText("Select a retrospective Manatee facility without overlapping pins").click();
+    await page.getByText("Optional Hurricane Milton retrospective").click();
     const choice = page.getByRole("combobox", { name: "Retrospective facility", exact: true });
     const id = await choice.locator("option").nth(1).getAttribute("value");
     await choice.selectOption(id!);
     await page.getByRole("button", { name: "Inspect selected facility evidence" }).click();
   } else {
-    await page.getByRole("button", { name: "Fit ranked facilities", exact: true }).click();
+    await page.getByRole("button", { name: "Retrospective marks: off" }).click();
+    await page.getByRole("button", { name: "Fit retrospective marks", exact: true }).click();
     await page.locator(".facility-pin").first().focus();
     await page.keyboard.press("Enter");
   }

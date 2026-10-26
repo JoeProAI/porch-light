@@ -5,6 +5,7 @@ import { ActiveWeatherStrip } from "./active-weather-strip";
 import { HeroFilm } from "./hero-film";
 import { Masthead } from "./masthead";
 import { ResourceLinks } from "./resource-links";
+import { SourceMap } from "./source-map";
 import { SponsorEvidence } from "./sponsor-evidence";
 
 export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
@@ -40,6 +41,7 @@ export const ProjectEntry = ({ snapshot }: { snapshot: Snapshot }) => {
           </ul>
           <span className="scope-note">A captured weather alert can run the counties it maps. Drafts are in progress on free Nemotron routes. A live run needs the local audited data connection. Directory records, not verified facility conditions.</span>
         </section>
+        <SourceMap />
         <section className="project-workflow" id="workflow" aria-labelledby="workflow-title">
           <div className="workflow-intro"><p className="eyebrow">From county to outreach</p><h2 id="workflow-title">Less searching.<br />A call sheet you can inspect.</h2><p>Porch Light brings fragmented public records into one working order. It does not decide clinical urgency, place calls or invent missing evidence.</p></div>
           <ol className="workflow-chain">

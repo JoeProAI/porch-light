@@ -65,16 +65,17 @@
   background: #f2a93b; color: #14110c; border-color: #ffb547; box-shadow: 0 0 0 1px #05070b; animation: none;
 }
 .storm-map button.facility-cluster {
-  display: grid; justify-items: center; gap: 1px; padding: 3px 6px 4px;
-  background: #121820f2; color: #f7f2e8; border: 1px solid #d9d3c5;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; min-width: 16px; height: 16px; padding: 0;
+  background: #121820cc; color: #c6c1b4; border: 1px solid #6a7380;
 }
 .storm-map button.facility-cluster:hover,
 .storm-map button.facility-cluster:focus-visible { background: #1a2230; border-color: #fff; color: #fff; }
-.facility-cluster-count { font: 600 12px/1.15 var(--font-mono); }
-.facility-cluster-caption { max-width: 88px; overflow: hidden; text-overflow: ellipsis; font: 9px/1.15 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; color: #d9d3c5; }
+.facility-cluster-count { font: 600 9px/1 var(--font-mono); }
+.facility-cluster-caption { display: none; }
 .storm-map button.facility-cluster.is-porch,
 .storm-map button.facility-cluster.is-porch:hover {
-  border-color: #f2a93b; background: #121820f2; color: #f7f2e8; box-shadow: 0 0 0 1px #05070b; animation: none;
+  border-color: #6a7380; background: #121820cc; color: #c6c1b4; box-shadow: 0 0 0 1px #05070b; animation: none;
 }
 .storm-map .locate-pin {
   min-width: 0; min-height: 0; width: auto; padding: 2px 6px; line-height: 1.2;

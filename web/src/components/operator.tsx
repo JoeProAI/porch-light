@@ -106,7 +106,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
   return (
     <div className="app-shell">
       <a className="skip-link" href="#call-ledger">Skip to call ledger</a>
-      <Masthead sourceHref="#source-atlas" ledgerHref="#call-ledger" edition={<>{snapshot.county.name.toUpperCase()} / {snapshot.county.state} <span className="edition-number">01</span></>} />
+      <Masthead sourceHref={national ? "#source-map" : "#source-atlas"} ledgerHref="#call-ledger" edition={<>{national ? `${snapshot.county.name.toUpperCase()} / ${snapshot.county.state}` : `RETROSPECTIVE / ${snapshot.county.name.toUpperCase()}`} <span className="edition-number">01</span></>} />
       <main>
         <section className="intro" aria-labelledby="page-title">
           <div className="intro-heading">
