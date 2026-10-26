@@ -200,7 +200,7 @@ const eddySheet = {
     source_snapshot_hash: "f".repeat(64),
     warning_geometry: {
       type: "MultiPolygon",
-      coordinates: [[[[-104.5, 32.2], [-103.9, 32.2], [-103.9, 32.8], [-104.5, 32.8], [-104.5, 32.2]]]],
+      coordinates: [],
     },
     policy: {
       version: "national.v1",
@@ -282,7 +282,12 @@ test("a nationwide county open scrolls to the large county map with facility dot
   await page.getByRole("button", { name: "Open published call sheet: Eddy, NM / 35015" }).click();
   const atlas = page.locator("#source-atlas");
   await expect(atlas).toBeVisible();
-  await expect(page.locator("#map-title")).toHaveText("Care facilities in the source area");
+  await expect(page.locator("#map-title")).toHaveText("Care facilities in the warning area");
+  await expect(page.locator(".map-section")).toHaveAttribute("data-warning-outline", "shape");
+  await expect(page.locator("path[data-warning-polygon='live']")).toHaveCount(1);
+  await expect(page.locator(".map-legend")).toContainText("Flood Warning polygon");
+  await expect(page.getByText("No outline was drawn from the area text.")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Full zone" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".map-point")).toHaveCount(1);
   await expect.poll(async () => atlas.evaluate(node => {
     const box = node.getBoundingClientRect();
@@ -309,6 +314,9 @@ test("a nationwide county open scrolls to the large county map with facility dot
   await expect(sourceLinks.nth(0)).toHaveAttribute("href", "#source-atlas");
   await expect(sourceLinks.nth(1)).toHaveAttribute("href", "#source-atlas");
   if (test.info().project.name === "desktop") {
+    await page.locator(".map-section").screenshot({ path: "test-results/eddy-nm-warning-outline.png" });
+  }
+  if (test.info().project.name === "desktop") {
     await page.evaluate(() => window.scrollTo(0, 0));
     await sourceLinks.first().click();
     await expect.poll(async () => atlas.evaluate(node => {
@@ -316,4 +324,69 @@ test("a nationwide county open scrolls to the large county map with facility dot
       return box.top >= -8 && box.top < window.innerHeight * 0.45;
     })).toBe(true);
   }
+});
+
+const routePublished = async (page: import("@playwright/test").Page, sheet: unknown, weatherBody: unknown) => {
+  await page.route("**/api/national**", async route => {
+    const url = new URL(route.request().url());
+    if (url.searchParams.get("recent") === "1") {
+      await route.fulfill({ json: { recent: [] } });
+      return;
+    }
+    const county = url.searchParams.get("county");
+    if (county === "35015" || county === "35009") {
+      const body = sheet as { snapshot: { county: { fips: string; name: string } } };
+      await route.fulfill({ json: {
+        ...body,
+        id: `published-${county}`,
+        snapshot: {
+          ...body.snapshot,
+          county: county === "35009"
+            ? { name: "Curry", fips: "35009", state: "NM" }
+            : body.snapshot.county,
+        },
+      } });
+      return;
+    }
+    if (county) {
+      await route.fulfill({ status: 404, json: { error: "No published snapshot for this county." } });
+      return;
+    }
+    await route.fulfill({ json: catalog });
+  });
+  await page.route("**/api/weather", async route => {
+    if (route.request().method() !== "GET" || new URL(route.request().url()).pathname !== "/api/weather") {
+      await route.continue();
+      return;
+    }
+    await route.fulfill({ json: weatherBody });
+  });
+};
+
+test("a county on a shapeless alert gets no invented outline", async ({ page }) => {
+  const shapeless = {
+    ...weather,
+    alerts: weather.alerts.map(alert => alert.id === floodId ? { ...alert, geometry: null } : alert),
+  };
+  await routePublished(page, eddySheet, shapeless);
+  await page.goto("/nationwide");
+  await page.getByRole("button", { name: "Open published call sheet: Eddy, NM / 35015" }).click();
+  await expect(page.locator(".map-section")).toHaveAttribute("data-warning-outline", "missing");
+  await expect(page.locator("#map-title")).toHaveText("Care facilities in the source area");
+  await expect(page.locator("path[data-warning-polygon='live']")).toHaveCount(0);
+  await expect(page.locator(".zone-underlay")).toHaveCount(0);
+  await expect(page.getByText("This county is on Flood Warning, but the National Weather Service did not send a shape. No outline was drawn from the area text.")).toBeVisible();
+});
+
+test("a county outside the selected alert does not borrow another warning polygon", async ({ page }) => {
+  await routePublished(page, eddySheet, weather);
+  await page.goto("/nationwide");
+  await page.getByRole("searchbox", { name: "Search US counties by name or FIPS" }).fill("Curry");
+  await page.getByRole("button", { name: "Curry, NM / 35009" }).click();
+  await page.getByRole("button", { name: "Open published audited call sheet" }).click();
+  await expect(page.locator(".map-section")).toHaveAttribute("data-warning-outline", "none");
+  await expect(page.locator("#map-title")).toHaveText("Care facilities in the source area");
+  await expect(page.locator("path[data-warning-polygon='live']")).toHaveCount(0);
+  await expect(page.locator(".zone-underlay")).toHaveCount(0);
+  await expect(page.getByText("did not send a shape")).toHaveCount(0);
 });

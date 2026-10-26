@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { contactLabels, type Contacts, type ContactStatus, type Provenance, type Snapshot } from "@/lib/types";
 import { createCsv, formatDateEt, formatFigure, formatPhone, parseContacts } from "@/lib/operator";
+import { sheetOutline, type OutlinePhase, type WarningOutline } from "@/lib/warning-outline";
 import { CoverageMap } from "./coverage-map";
 import { EvidenceDrawer } from "./evidence-drawer";
 import { CallScript } from "./call-script";
@@ -17,8 +18,9 @@ const plainReason = (value: string) => value
   .replaceAll("published ZIP DME", "medical-equipment orders in this ZIP")
   .replaceAll("ZIP context is not a facility patient count.", "ZIP totals are not a count of this facility's patients.");
 
-export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, initialRank, sourceRunId }: {
+export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, initialRank, sourceRunId, liveWarning }: {
   snapshot: Snapshot; provenance: Provenance; initialEvidenceOpen?: boolean; initialRank?: number; sourceRunId?: string;
+  liveWarning?: { phase: OutlinePhase; outline: WarningOutline };
 }) => {
   const [selectedId, setSelectedId] = useState(snapshot.facilities[0]?.id ?? "");
   const [contacts, setContacts] = useState<Contacts>({});
@@ -33,6 +35,13 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
   const reducedMotion = useReducedMotion();
   const isZetaris = snapshot.data_access.data_access_mode === "zetaris";
   const national = snapshot.schema_version === "porch-light.national-run.v1";
+  const outline = sheetOutline({
+    national,
+    geometryMode: snapshot.scenario.geometry_mode,
+    snapshotGeometry: snapshot.warning_geometry,
+    facilities: snapshot.facilities,
+    live: liveWarning,
+  });
   const storageKey = `porch-light:contacts:v1:${snapshot.source_snapshot_hash}${national ? ":" + (snapshot.selected_alert?.id ?? snapshot.county.fips) : ""}`;
   const row = snapshot.facilities.find(item => item.id === selectedId);
   const porch = [...snapshot.facilities].sort((a, b) => a.rank - b.rank)
@@ -161,7 +170,9 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
           </section>
           <section className="atlas-column" id="source-atlas" aria-label="Source response atlas">
             <CoverageMap geometry={snapshot.warning_geometry} facilities={snapshot.facilities} selectedId={selectedId} porchId={porch?.id ?? ""} onSelect={selectRow}
-              contextLabel={national ? snapshot.scenario.geometry_mode === "official_alert_polygon" ? "Official NWS alert polygon" : snapshot.selected_alert ? "County context, not the warning boundary" : "Official county boundaries, not a warning" : undefined} />
+              contextLabel={national ? snapshot.scenario.geometry_mode === "official_alert_polygon" ? "Official NWS alert polygon" : snapshot.selected_alert ? "County context, not the warning boundary" : "Official county boundaries, not a warning" : undefined}
+              frame={outline.frame} warningGeometry={outline.geometry} warningLabel={outline.label ?? undefined}
+              outlineNote={outline.note} outlineState={outline.state} extent={outline.extent} />
             {row && <div className={`atlas-index-strip${porch && row.id === porch.id ? " is-porch" : ""}`}>
               <span className="index-numeral" aria-hidden="true">{String(row.rank).padStart(2, "0")}</span>
               <div><span className="eyebrow">Selected care facility</span><strong>{row.name}</strong><span className="mono" title={`${row.lat}, ${row.lon}`}>Provider no. {row.ccn} / {formatFigure(row.lat)}, {formatFigure(row.lon)}</span></div>

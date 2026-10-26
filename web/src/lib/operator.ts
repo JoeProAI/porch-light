@@ -65,20 +65,28 @@ export const hasCoordinates = (row: Facility): row is Facility & { lon: number; 
   typeof row.lon === "number" && typeof row.lat === "number" && Number.isFinite(row.lon) &&
   Number.isFinite(row.lat) && Math.abs(row.lon) <= 180 && Math.abs(row.lat) < 85;
 
-export const createProjection = (geometry: Geometry, facilities: Facility[], scope: "coverage" | "facilities") => {
+export const createProjection = (
+  geometry: Geometry,
+  facilities: Facility[],
+  scope: "coverage" | "facilities",
+  overlay?: Geometry | null,
+) => {
   const mercator = ([lon, lat]: Coordinate): Coordinate => [
     lon * Math.PI / 180,
     Math.log(Math.tan(Math.PI / 4 + Math.max(-85, Math.min(85, lat)) * Math.PI / 360)),
   ];
+  const overlayCoordinates = overlay?.coordinates ?? [];
   const facilityPoints: Coordinate[] = facilities.filter(hasCoordinates).map(row => [row.lon, row.lat]);
   const points = (scope === "facilities" && facilityPoints.length ? facilityPoints : [
-    ...geometry.coordinates.flat(2), ...facilityPoints,
+    ...geometry.coordinates.flat(2), ...overlayCoordinates.flat(2), ...facilityPoints,
   ]).map(mercator);
-  if (!points.length) return {
+  const empty = {
     project: (): Coordinate => [300, 200],
     unproject: (): Coordinate => [Number.NaN, Number.NaN],
     paths: [] as string[],
+    overlayPaths: [] as string[],
   };
+  if (!points.length) return empty;
   const xs = points.map(point => point[0]), ys = points.map(point => point[1]);
   const minX = xs.reduce((a, b) => Math.min(a, b), Infinity), maxX = xs.reduce((a, b) => Math.max(a, b), -Infinity);
   const minY = ys.reduce((a, b) => Math.min(a, b), Infinity), maxY = ys.reduce((a, b) => Math.max(a, b), -Infinity);
@@ -87,7 +95,7 @@ export const createProjection = (geometry: Geometry, facilities: Facility[], sco
     const [x, y] = mercator(point);
     return [300 + (x - (minX + maxX) / 2) * scale, 200 - (y - (minY + maxY) / 2) * scale];
   };
-  const paths = geometry.coordinates.map(polygon => polygon.map(ring =>
+  const toPaths = (coordinates: Geometry["coordinates"]) => coordinates.map(polygon => polygon.map(ring =>
     ring.map((point, i) => `${i === 0 ? "M" : "L"}${project(point).map(n => n.toFixed(2)).join(",")}`).join(" ") + " Z",
   ).join(" "));
   const unproject = ([x, y]: Coordinate): Coordinate => {
@@ -95,5 +103,5 @@ export const createProjection = (geometry: Geometry, facilities: Facility[], sco
     const rawY = (200 - y) / scale + (minY + maxY) / 2;
     return [rawX * 180 / Math.PI, (2 * Math.atan(Math.exp(rawY)) - Math.PI / 2) * 180 / Math.PI];
   };
-  return { project, unproject, paths };
+  return { project, unproject, paths: toPaths(geometry.coordinates), overlayPaths: toPaths(overlayCoordinates) };
 };
