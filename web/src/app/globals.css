@@ -82,6 +82,8 @@ h1 em { color: var(--amber); font-weight: 400; }
 .pane-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: 50px; border-bottom: 1px solid var(--line); color: var(--muted); }
 .pane-heading .eyebrow { font-size: 13px; letter-spacing: .08em; }
 .pane-heading .mono { font-size: 13px; }
+.map-section .pane-heading { flex-wrap: wrap; align-items: baseline; }
+.map-context-label { flex: 1 1 12rem; margin-left: auto; text-align: right; min-width: 0; overflow-wrap: anywhere; }
 .ledger { min-width: 0; padding-right: var(--space-4); isolation: isolate; }
 .ledger-columns { display: grid; grid-template-columns: 30px 1fr 54px; gap: 10px; padding: 14px 10px; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
 .ledger-columns > :last-child { text-align: right; }
@@ -144,7 +146,8 @@ select { border: 1px solid var(--line); background: var(--surface); color: var(-
 .map-canvas { background: #05070b; border: 1px solid var(--line); position: relative; overflow: hidden; transform: translateZ(0); }
 .map-canvas svg { width: 100%; height: auto; min-height: 400px; display: block; position: relative; }
 .map-grid { stroke: color-mix(in srgb, var(--quiet-ink) 14%, transparent); fill: none; stroke-width: .6; }
-.zone-underlay { fill: color-mix(in srgb, var(--color-focus) 9%, var(--bg)); stroke: var(--color-focus); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.zone-underlay { fill: color-mix(in srgb, var(--color-focus) 9%, var(--bg)); stroke: var(--color-focus); stroke-width: 1; vector-effect: non-scaling-stroke; pointer-events: none; }
+.zone-context { fill: none; stroke: color-mix(in srgb, var(--muted) 80%, transparent); stroke-width: 1; stroke-dasharray: 2 3; vector-effect: non-scaling-stroke; pointer-events: none; }
 .map-registration path, .atlas-compass path { stroke: var(--amber); stroke-width: 1; fill: none; opacity: .7; }
 .atlas-compass text, .map-axis { fill: var(--muted); font: 10px var(--mono); letter-spacing: .07em; }
 .selected-registration { pointer-events: none; }
@@ -173,6 +176,7 @@ select { border: 1px solid var(--line); background: var(--surface); color: var(-
 .map-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; color: var(--muted); font-size: 10px; padding: 12px 0; }
 .map-legend > span { display: flex; align-items: center; gap: 7px; }
 .legend-zone { width: 12px; height: 8px; border: 1px solid var(--color-focus); background: color-mix(in srgb, var(--color-focus) 9%, var(--bg)); }
+.legend-context { width: 12px; height: 8px; border: 1px dashed var(--muted); background: transparent; }
 .legend-point { width: 6px; height: 6px; border: 1px solid var(--ink); border-radius: 50%; }
 .map-empty { position: absolute; top: 40%; padding: 0 20px; font-size: 12px; }
 .refusals { border-block: 1px solid var(--line); margin-top: 36px; padding: 28px 0; display: grid; grid-template-columns: 1fr 1.3fr; gap: 48px; }

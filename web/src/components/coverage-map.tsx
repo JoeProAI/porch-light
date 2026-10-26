@@ -1,32 +1,69 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createProjection, hasCoordinates } from "@/lib/operator";
 import type { Facility, Geometry } from "@/lib/types";
 
-export const CoverageMap = ({ geometry, facilities, selectedId, onSelect, contextLabel, porchId = "" }: {
-  geometry: Geometry; facilities: Facility[]; selectedId: string; onSelect: (id: string) => void; contextLabel?: string; porchId?: string;
+export const CoverageMap = ({
+  geometry, facilities, selectedId, onSelect, contextLabel, porchId = "",
+  frame, warningGeometry = null, warningLabel, outlineNote = "", outlineState = "none", extent = "facilities",
+}: {
+  geometry: Geometry;
+  facilities: Facility[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+  contextLabel?: string;
+  porchId?: string;
+  frame?: "warning" | "source";
+  warningGeometry?: Geometry | null;
+  warningLabel?: string;
+  outlineNote?: string;
+  outlineState?: "snapshot" | "shape" | "missing" | "loading" | "unavailable" | "none";
+  extent?: "coverage" | "facilities";
 }) => {
-  const [scope, setScope] = useState<"coverage" | "facilities">("facilities");
-  const projection = useMemo(() => createProjection(geometry, facilities, scope), [geometry, facilities, scope]);
+  const resolvedFrame = frame ?? (contextLabel ? "source" : "warning");
+  const [scope, setScope] = useState<"coverage" | "facilities">(extent);
+  const touched = useRef(false);
+  useEffect(() => {
+    if (!touched.current) setScope(extent);
+  }, [extent]);
+  const projection = useMemo(
+    () => createProjection(geometry, facilities, scope, warningGeometry),
+    [geometry, facilities, scope, warningGeometry],
+  );
   const located = facilities.filter(hasCoordinates);
   const selected = located.find(row => row.id === selectedId);
   const selectedPoint = selected ? projection.project([selected.lon, selected.lat]) : null;
+  const warningFrame = resolvedFrame === "warning";
+  const mono = warningLabel ?? contextLabel ?? "Official warning area";
+  const svgTitle = warningLabel
+    ? `${warningLabel} and ranked facility locations`
+    : (contextLabel ?? "Manatee source geometry and ranked facility locations");
+  const svgDesc = warningLabel
+    ? "Live National Weather Service polygon for this county and ranked facility locations. The outline is the alert shape from the feed. No shape is invented when geometry is missing. Select a point to inspect its source record."
+    : contextLabel
+      ? "Official source boundaries and ranked facility locations. County context is not a warning boundary. Select a point to inspect its source record."
+      : "Static Web Mercator projection. Current published NWS geometry, not a verified 2024 boundary or live warning. Choose a point to select its ledger row.";
+  const contextUnderWarning = projection.overlayPaths.length > 0 && projection.paths.length > 0;
+  const chooseScope = (next: "coverage" | "facilities") => {
+    touched.current = true;
+    setScope(next);
+  };
   return (
-    <section className="map-section" aria-labelledby="map-title">
-      <div className="pane-heading"><span className="eyebrow">02 / {contextLabel ? "Source-area facilities" : "Warning-area facilities"}</span><span className="mono">{contextLabel ?? "Official warning area"}</span></div>
+    <section className="map-section" aria-labelledby="map-title" data-warning-outline={outlineState}>
+      <div className="pane-heading"><span className="eyebrow">02 / {warningFrame ? "Warning-area facilities" : "Source-area facilities"}</span><span className="mono map-context-label">{mono}</span></div>
       <div className="section-heading">
-        <h2 id="map-title">{contextLabel ? "Care facilities in the source area" : "Care facilities in the warning area"}</h2>
+        <h2 id="map-title">{warningFrame ? "Care facilities in the warning area" : "Care facilities in the source area"}</h2>
         <span className="mono muted">{located.length}/{facilities.length} located</span>
       </div>
       <div className="map-toolbar" role="group" aria-label="Map extent">
-        <button aria-pressed={scope === "facilities"} onClick={() => setScope("facilities")}>Facility extent</button>
-        <button aria-pressed={scope === "coverage"} onClick={() => setScope("coverage")}>Full zone</button>
+        <button aria-pressed={scope === "facilities"} onClick={() => chooseScope("facilities")}>Facility extent</button>
+        <button aria-pressed={scope === "coverage"} onClick={() => chooseScope("coverage")}>Full zone</button>
       </div>
       <div className="map-canvas">
         <svg viewBox="0 0 600 500" aria-labelledby="map-svg-title map-svg-desc" role="group">
-          <title id="map-svg-title">{contextLabel ?? "Manatee source geometry and ranked facility locations"}</title>
-          <desc id="map-svg-desc">{contextLabel ? "Official source boundaries and ranked facility locations. County context is not a warning boundary. Select a point to inspect its source record." : "Static Web Mercator projection. Current published NWS geometry, not a verified 2024 boundary or live warning. Choose a point to select its ledger row."}</desc>
+          <title id="map-svg-title">{svgTitle}</title>
+          <desc id="map-svg-desc">{svgDesc}</desc>
           <defs>
             <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" className="map-grid" /></pattern>
             <clipPath id="map-clip"><rect width="600" height="400" /></clipPath>
@@ -35,7 +72,8 @@ export const CoverageMap = ({ geometry, facilities, selectedId, onSelect, contex
           <g className="map-registration" aria-hidden="true"><path d="M 16 44 V 16 H 44 M 556 16 H 584 V 44 M 16 456 V 484 H 44 M 556 484 H 584 V 456" /></g>
           <g transform="translate(0 50)">
           <g clipPath="url(#map-clip)">
-            {projection.paths.map((d, i) => <path key={i} d={d} className="zone-underlay" fillRule="evenodd" />)}
+            {projection.paths.map((d, i) => <path key={`zone-${i}`} d={d} className={contextUnderWarning ? "zone-context" : "zone-underlay"} fillRule="evenodd" />)}
+            {projection.overlayPaths.map((d, i) => <path key={`alert-${i}`} d={d} className="zone-underlay" data-warning-polygon="live" fillRule="evenodd" />)}
             {selectedPoint && <g className="selected-registration" aria-hidden="true">
               <path d={`M 24 ${selectedPoint[1]} H 576 M ${selectedPoint[0]} 12 V 388`} />
               <circle cx={selectedPoint[0]} cy={selectedPoint[1]} r="27" />
@@ -70,7 +108,13 @@ export const CoverageMap = ({ geometry, facilities, selectedId, onSelect, contex
         </svg>
         {!located.length && <p className="map-empty">No verified coordinates available. Use the ledger instead.</p>}
       </div>
-      <div className="map-legend"><span><i className="legend-zone" /> {contextLabel ?? "Current NWS zone shapes"}</span><span><i className="legend-point" /> Facility</span></div>
+      <div className="map-legend">
+        {projection.overlayPaths.length > 0 && <span><i className="legend-zone" /> {warningLabel ?? "Official NWS alert polygon"}</span>}
+        {contextUnderWarning && contextLabel && <span><i className="legend-context" /> {contextLabel}</span>}
+        {projection.paths.length > 0 && !contextUnderWarning && <span><i className="legend-zone" /> {contextLabel ?? "Current NWS zone shapes"}</span>}
+        <span><i className="legend-point" /> Facility</span>
+      </div>
+      {outlineNote && <p className="fineprint" role="status">{outlineNote}</p>}
       <p className="fineprint">{contextLabel ? "Points require exact Census address matches and official county coverage. Boundaries are identified as context or official alert geometry. No patient locations." : "Points use CMS or Census address-match coordinates. Address quality needs operator review. No 2024 boundary equivalence verified. No patient locations."}</p>
     </section>
   );

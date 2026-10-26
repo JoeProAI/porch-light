@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Provenance, Snapshot } from "@/lib/types";
 import { orderAffectedAlerts } from "@/lib/affected-alerts";
+import { warningOutlineForCounty } from "@/lib/warning-outline";
 import { toggleShortlist } from "@/lib/shortlist";
 import { hasAlertShape } from "@/lib/geo";
 import { acceptedLiveWeather } from "@/lib/live-weather";
@@ -433,7 +434,11 @@ export const Nationwide = () => {
     {snapshot && snapshot.state !== "source_gap" && job?.provenance &&
       <div id="national-result" tabIndex={-1} role="region" aria-label="Verified care-facility call sheet">
         <SourceGaps value={snapshot} />
-        <Operator key={job.id} snapshot={snapshot} provenance={job.provenance} sourceRunId={job.id} />
+        <Operator key={job.id} snapshot={snapshot} provenance={job.provenance} sourceRunId={job.id}
+          liveWarning={{
+            phase: weather ? "ready" : weatherLoading ? "loading" : "unavailable",
+            outline: warningOutlineForCounty(snapshot.county.fips, weather?.alerts ?? [], liveAlertId),
+          }} />
       </div>}
   </>;
 };
