@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 const floodId = "https://api.weather.gov/alerts/urn:oid:nationwide-flood";
 const galeId = "https://api.weather.gov/alerts/urn:oid:nationwide-gale";
@@ -253,6 +253,27 @@ const eddySheet = {
   },
 };
 
+const axisAlignedPath = (d: string | null): boolean => {
+  if (!d) return true;
+  const nums = [...d.matchAll(/-?\d+(?:\.\d+)?/g)].map(match => Number(match[0]));
+  const xs = new Set<number>();
+  const ys = new Set<number>();
+  for (let index = 0; index < nums.length; index += 2) {
+    xs.add(nums[index]);
+    ys.add(nums[index + 1]);
+  }
+  return xs.size <= 2 && ys.size <= 2;
+};
+
+const expectCensusCountyOutline = async (page: Page) => {
+  const outline = page.locator("path[data-county-outline='census']");
+  await expect(outline.first()).toBeVisible();
+  expect(axisAlignedPath(await outline.first().getAttribute("d"))).toBe(false);
+  await expect(page.locator(".map-section")).toHaveAttribute("data-county-outline", "census");
+  await expect(page.getByText("Census 2023 cartographic county boundary")).toBeVisible();
+  await expect(page.getByText("No bounding box was drawn in its place.")).toHaveCount(0);
+};
+
 test("a nationwide county open scrolls to the large county map with facility dots", async ({ page }) => {
   await page.route("**/api/national**", async route => {
     const url = new URL(route.request().url());
@@ -285,7 +306,9 @@ test("a nationwide county open scrolls to the large county map with facility dot
   await expect(page.locator("#map-title")).toHaveText("Care facilities in the warning area");
   await expect(page.locator(".map-section")).toHaveAttribute("data-warning-outline", "shape");
   await expect(page.locator("path[data-warning-polygon='live']")).toHaveCount(1);
+  await expectCensusCountyOutline(page);
   await expect(page.locator(".map-legend")).toContainText("Flood Warning polygon");
+  await expect(page.locator(".map-legend")).toContainText("Census county boundary");
   await expect(page.getByText("No outline was drawn from the area text.")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Full zone" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".map-point")).toHaveCount(1);
@@ -375,6 +398,8 @@ test("a county on a shapeless alert gets no invented outline", async ({ page }) 
   await expect(page.locator("#map-title")).toHaveText("Care facilities in the source area");
   await expect(page.locator("path[data-warning-polygon='live']")).toHaveCount(0);
   await expect(page.locator(".zone-underlay")).toHaveCount(0);
+  await expectCensusCountyOutline(page);
+  await expect(page.getByRole("button", { name: "Full zone" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText("This county is on Flood Warning, but the National Weather Service did not send a shape. No outline was drawn from the area text.")).toBeVisible();
 });
 
@@ -388,5 +413,6 @@ test("a county outside the selected alert does not borrow another warning polygo
   await expect(page.locator("#map-title")).toHaveText("Care facilities in the source area");
   await expect(page.locator("path[data-warning-polygon='live']")).toHaveCount(0);
   await expect(page.locator(".zone-underlay")).toHaveCount(0);
+  await expectCensusCountyOutline(page);
   await expect(page.getByText("did not send a shape")).toHaveCount(0);
 });

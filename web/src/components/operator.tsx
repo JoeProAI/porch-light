@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { contactLabels, type Contacts, type ContactStatus, type Provenance, type Snapshot } from "@/lib/types";
 import { createCsv, formatDateEt, formatFigure, formatPhone, parseContacts } from "@/lib/operator";
+import { hasDrawableRings } from "@/lib/county-outline";
 import { sheetOutline, type OutlinePhase, type WarningOutline } from "@/lib/warning-outline";
 import { CoverageMap } from "./coverage-map";
 import { EvidenceDrawer } from "./evidence-drawer";
@@ -169,7 +170,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
             <div className="ledger-footnote">Descending fixed score, 0–1, shown to 2 decimals. The evidence drawer keeps the source figure. Prototype weights, not a prediction of harm. Manual outcomes do not reorder the list.</div>
           </section>
           <section className="atlas-column" id="source-atlas" aria-label="Source response atlas">
-            <CoverageMap geometry={snapshot.warning_geometry} facilities={snapshot.facilities} selectedId={selectedId} porchId={porch?.id ?? ""} onSelect={selectRow}
+            <CoverageMap geometry={snapshot.warning_geometry} facilities={snapshot.facilities} selectedId={selectedId} porchId={porch?.id ?? ""} countyFips={national ? snapshot.county.fips : ""} onSelect={selectRow}
               contextLabel={national ? snapshot.scenario.geometry_mode === "official_alert_polygon" ? "Official NWS alert polygon" : snapshot.selected_alert ? "County context, not the warning boundary" : "Official county boundaries, not a warning" : undefined}
               frame={outline.frame} warningGeometry={outline.geometry} warningLabel={outline.label ?? undefined}
               outlineNote={outline.note} outlineState={outline.state} extent={outline.extent} />
@@ -183,7 +184,7 @@ export const Operator = ({ snapshot, provenance, initialEvidenceOpen = false, in
             <div className="atlas-provenance">
               <span className="eyebrow">{isZetaris ? "Source query, not model confidence" : "Source integration state"}</span>
               <p>{isZetaris ? <>Zetaris audit <code>{snapshot.data_access.zetaris_query_ids.join(", ")}</code> carries this snapshot.</> : "Direct development data. Zetaris audit attribution is not claimed."}</p>
-              <p className="fineprint">Published geometry and source points. No imagined roads, patient locations or weather radar.</p>
+              <p className="fineprint">{national && !hasDrawableRings(snapshot.warning_geometry) ? "The county outline is the Census cartographic boundary on this site. Facility points are from this snapshot. No imagined roads, patient locations, or weather radar." : "Published geometry and source points. No imagined roads, patient locations or weather radar."}</p>
             </div>
           </section>
           <aside className="operator-rail" aria-label="Selected facility contact desk">
