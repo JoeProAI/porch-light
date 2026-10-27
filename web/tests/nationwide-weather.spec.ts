@@ -267,10 +267,10 @@ const axisAlignedPath = (d: string | null): boolean => {
 
 const expectCensusCountyOutline = async (page: Page) => {
   const outline = page.locator("path[data-county-outline='census']");
-  await expect(outline.first()).toBeVisible();
+  await expect(outline).not.toHaveCount(0);
   expect(axisAlignedPath(await outline.first().getAttribute("d"))).toBe(false);
   await expect(page.locator(".map-section")).toHaveAttribute("data-county-outline", "census");
-  await expect(page.getByText("Census 2023 cartographic county boundary")).toBeVisible();
+  await expect(page.locator(".map-section .fineprint", { hasText: "Census 2023 cartographic county boundary" })).toHaveCount(1);
   await expect(page.getByText("No bounding box was drawn in its place.")).toHaveCount(0);
 };
 

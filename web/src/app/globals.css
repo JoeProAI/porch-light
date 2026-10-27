@@ -143,7 +143,7 @@ select { border: 1px solid var(--line); background: var(--surface); color: var(-
 .map-toolbar { display: flex; gap: 8px; margin-bottom: 12px; }
 .map-toolbar button { font-size: 11px; padding: 8px 12px; }
 .map-toolbar button[aria-pressed="true"] { border-color: var(--amber); color: var(--amber); }
-.map-canvas { background: #05070b; border: 1px solid var(--line); position: relative; overflow: hidden; transform: translateZ(0); }
+.map-canvas { background: #05070b; border: 1px solid var(--line); position: relative; overflow: hidden; transform: translateZ(0); min-height: 400px; }
 .map-canvas svg { width: 100%; height: auto; min-height: 400px; display: block; position: relative; }
 .map-grid { stroke: color-mix(in srgb, var(--quiet-ink) 14%, transparent); fill: none; stroke-width: .6; }
 .zone-underlay { fill: color-mix(in srgb, var(--color-focus) 9%, var(--bg)); stroke: var(--color-focus); stroke-width: 1; vector-effect: non-scaling-stroke; pointer-events: none; }
@@ -270,7 +270,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--mono); 
   .atlas-column .map-section { grid-row: 1 / 3; }
   .atlas-column .atlas-index-strip { align-self: end; }
   .atlas-provenance { padding-bottom: 0; }
-  .map-canvas svg { min-height: 320px; max-height: 400px; }
+  .map-canvas, .map-canvas svg { min-height: 320px; }
+  .map-canvas svg { max-height: 400px; }
   .ledger { padding-right: var(--space-6); border-right: 1px solid var(--line); }
   .operator-rail { padding-left: var(--space-6); }
   .facility-row, .ledger-columns { grid-template-columns: 26px minmax(0, 1fr) 58px; gap: 10px; padding-left: 10px; padding-right: 10px; }
@@ -317,7 +318,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--mono); 
   .focus-header { margin-bottom: var(--space-3); }
   .atlas-column { display: block; width: 100%; border: 0; border-top: 1px solid var(--line); order: 0; margin-top: var(--space-8); }
   .map-section { margin-top: 0; }
-  .map-canvas svg { min-height: 300px; max-height: none; }
+  .map-canvas, .map-canvas svg { min-height: 300px; }
+  .map-canvas svg { max-height: none; }
   .ledger { order: 1; width: 100%; border-right: 0; padding: 0; margin-top: 24px; border-top: 1px solid var(--line); }
   .facility-list { max-height: none; overflow: visible; }
   .facility-row, .ledger-columns { grid-template-columns: 26px minmax(0, 1fr) 58px; gap: 12px; }
