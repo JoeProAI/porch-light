@@ -8,6 +8,9 @@ The ranking formula is published. Operators still verify facility conditions. Ne
 
 Built for the GenAI.Works Open Agent Hackathon 2026, Track 01 (Solving Fragmented Intelligence), by team Burden of Proof.
 
+**Demo video:** [Porch Light — Open Agent Hackathon 2026](https://youtu.be/g8oD89YI1MI)  
+**Slide deck:** [Gamma deck](https://gamma.app/docs/13lszmdvl0o1cv5)
+
 ## What you can say
 
 Checked `GET https://porchlight.earth/api/national` on 2026-10-25 at 23:08 UTC. The body matches `web/data/national/published/` in this repo. Sweep `20261023T200048Z-78a426ba`, generated `2026-10-24T16:47:04Z`.
@@ -36,7 +39,7 @@ Open `/nationwide`, then:
 | Doña Ana, New Mexico | `?county=35013` | 7 / 4 / 11 | USRC Las Cruces, CCN `322559`. Lightning draft passed, cost 0 |
 | Harris County, Texas | `?county=48201` | 140 / 96 / 236 | DaVita North Houston Dialysis Center, CCN `452678`. Super VL draft passed, cost 0 |
 
-Narration and the claim boundary are in `submission/demo-script.md` and `docs/quickstart.mdx`. The video and slide deck fields in `metadata.json` stay empty until those files exist.
+Narration and the claim boundary are in `submission/demo-script.md` and `docs/quickstart.mdx`. Demo video and slide deck are set in `metadata.json` (`https://youtu.be/g8oD89YI1MI`, `https://gamma.app/docs/13lszmdvl0o1cv5`).
 
 ## Who built it
 
